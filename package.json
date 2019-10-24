@@ -1,0 +1,19 @@
+{
+  "name": "visualization",
+  "version": "0.0.1",
+  "description": "数据可视化",
+  "main": "gulpfile.js",
+  "scripts": {
+    "test": "gulp"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "gulp": "^4.0.2"
+  },
+  "dependencies": {
+    "@babel/core": "^7.5.5",
+    "babel": "^6.23.0",
+    "gulp-babel": "^8.0.0"
+  }
+}

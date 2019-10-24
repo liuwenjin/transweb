@@ -1,0 +1,70 @@
+<div class="CardItem_contentArea">
+	<div class="CardItem_content">
+		<div class="CardItem_titleArea">
+			<div class="CardItem_title">{{title}}</div>
+		</div>
+		<div class="__CardItem_componentArea"><div class="CardItem_componentArea"></div></div>
+		<div class="CardItem_footArea">
+			{{foot}}
+		</div>
+	</div>
+	<div class="CardItem_mask" style="text-align: center;"></div>
+</div>
+<div class="CardItem_modifyArea">
+	<p class="CardItem_btnsArea">		
+		<label>
+			<input type="checkbox" class="CardItem_mark CardItem_btn">
+			<span class="CardItem_name"></span>
+		</label>
+		<label>
+			<span title="删除" class="CardItem_close CardItem_btn glyphicon glyphicon-remove"></span>
+			<span title="编辑" class="CardItem_edit CardItem_btn glyphicon glyphicon-pencil"></span>		
+			<span title="预览" class="CardItem_preview CardItem_btn  glyphicon glyphicon-eye-open"></span>				
+		</label>
+	</p>
+	<div class="CardItem_eventArea">
+		<span class="CardItem_adjust CardItem_top" adjusttype="ns" type="top"></span>
+		<span class="CardItem_adjust CardItem_right" adjusttype="ew" type="right"></span>
+		<span class="CardItem_adjust CardItem_bottom" adjusttype="ns" type="bottom"></span>
+		<span class="CardItem_adjust CardItem_left" adjusttype="ew" type="left"></span>	
+	</div>	
+</div>
+<div class="CardItem_loading" style="display: none">
+	<div style="width: 100%; display: inline-block; text-align:center;">
+		<div class="pswp__preloader__icn">
+		  <div class="pswp__preloader__cut">
+			<div class="pswp__preloader__donut"></div>
+		  </div>
+		</div>
+	</div>
+</div>
+<div class="CardItem_stateTemplate" style="display: none">
+	<textarea class="CardItem_template_loading">
+		<div style="width: 100%; height: 100%; display: flex; justify-content:center; align-items:center;">
+			<span class="CardItem_loadingTips CardItem_stateTips"></span>
+		</div>
+	</textarea>
+	<textarea class="CardItem_template_error">
+		<div style="color: #600; width: 100%; height: 100%; display: flex; justify-content:center; align-items:center;">
+			<span class="CardItem_stateTips"></span>
+		</div>
+	</textarea>
+	<textarea class="CardItem_template_empty">
+		<div style="width: 100%; height: 100%; display: flex; justify-content:center; align-items:center;">
+			<span class="CardItem_stateTips"></span>
+		</div>
+	</textarea>
+	<textarea class="CardItem_template_notice">
+		<div style="width: 100%; height: 100%; display: flex; justify-content:center; align-items:center;">
+			<span class="CardItem_stateTips"></span>
+		</div>
+	</textarea>
+	<textarea class="CardItem_template_html">
+		<div style="width: 100%; height: 100%; display: flex; flex-wrap: wrap; justify-content:center; align-items:center;">
+			<span class="CardItem_stateTips">HTML片段区域</span>
+		</div>
+	</textarea>
+</div>
+
+
+

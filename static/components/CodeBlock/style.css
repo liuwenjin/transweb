@@ -1,0 +1,100 @@
+.CodeBlock {
+	float: right;
+	height: 100%;
+    overflow: auto;
+}
+
+.CodeBlock .blocksHead {
+    position: absolute;
+    padding: 3px 20px; 
+    border-bottom: solid 1px #ddd; 
+    width: 100%; 
+    z-index: 3;
+    background: #fff;
+    height: 29px; 
+}
+
+.CodeBlock .blocksArea {
+    padding: 50px 15px 10px 25px; 
+    width: 100%; 
+    /* box-shadow: 0px 1px 0px inset #e2e2e2;  */
+    height: 100%; 
+    overflow: auto;
+}
+
+.CodeBlock .blocksArea>div{
+    background-color: transparent;
+}
+.CodeBlock .blocksArea>div[state=active] {
+    background-color: #f2f200;
+    border-radius: 5px;
+}
+
+.CodeBlock_filesArea {
+	float: right;
+    position: relative;
+    background-color: #ffffff;
+    width: 180px;
+    height: 100%;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    box-shadow: -1px 0px 0px inset #e2e2e2;
+}
+
+.CodeBlock_openFilesTree {
+    float: right;
+}
+
+.CodeBlock_tipsArea {
+	min-height: 20px;
+	width: 330px;
+    height: auto;
+    left: 5px;
+    padding: 10px;
+    border-radius: 5px;
+    color: #666;
+    position: absolute;
+    background: #f2f200;
+    z-index: 99;
+}
+
+.CodeBlock_tipsArrow {
+	display: block;
+    width: 0;
+    height: 0;
+    border-width: 5px 0 5px 180px;
+    border-style: solid;
+    border-color: transparent transparent transparent #f2f200;
+    position: absolute;
+    top: calc( 50% - 3px );
+    left: 100%;
+}
+
+.CodeBlock_filesArea .ZtreeList>ul>li span {
+    display: inline-block;
+    max-width: 90px;
+    text-overflow:ellipsis;
+    overflow: hidden;
+    white-space:nowrap;
+}
+
+.CodeBlock .blocksArea>div {
+    background: #fff;
+    padding: 5px;
+}
+
+.CodeBlock .blocksArea>div textarea {
+    -webkit-text-fill-color: #000;
+    -webkit-opacity: 1;
+    color: #000;
+    height: auto;
+    background: transparent;
+}
+
+.CodeBlock .blocksArea>div textarea.commentsTextarea:read-only {
+    -webkit-text-fill-color: #999;
+    border-radius: 5px;
+}
+.CodeBlock .blocksArea>div textarea:nth-child(2) {
+    color: #000;
+}

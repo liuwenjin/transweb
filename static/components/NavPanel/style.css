@@ -1,0 +1,90 @@
+.NavPanel {
+	float: left;
+	position: relative;
+	left: 0px; top: 0px;
+	width: 100%; height: 100% !important;
+}
+.NavPanel>.NavIndex {
+	position: absolute;
+	width: 100%; height: 34px;
+    top: 0px;
+    bottom: 0px;
+	overflow: auto;
+	margin: 0px; padding: 0px;
+}
+
+.NavPanel>.NavIndex>li {
+	float: none;
+	display: inline-block;
+	position: relative;
+	list-style: none;
+	padding: 5px 8px;
+	margin: 0px 5px 0px 0px;
+	color: #393C3F;
+}
+
+
+.NavPanel>.NavIndex>li:hover {
+	cursor: pointer;
+	color: #77B941;
+}
+
+.NavPanel>.NavIndex>li.active {
+	color: #77B941;
+}
+
+.NavPanel>.NavSheetArea {
+	position: absolute;
+	width: 100%;
+	top: 33px; 
+	bottom: 0px;
+    overflow: auto;
+}
+.NavPanel>.NavSheetArea>.NavSheet {
+	height: 100%;
+	width: 100%;
+	display: none;
+	overflow: auto;
+	 -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+}
+._NavSheet {
+	height: calc( 100% - 8px );
+	width: 100%;
+	display: inline-block;
+	position: relative;
+}
+
+.NavPanel[mode=leftMenu]>.NavIndex{
+	width: 100px;
+	height: 100%;
+	z-index: 3;
+}
+.NavPanel[mode=leftMenu]>.NavSheetArea{
+	top: 0px;
+	padding-left: 100px;
+}
+.NavPanel[mode=leftMenu]>.NavIndex>li {
+	width: 100%;
+	margin: 0px;
+
+}
+
+
+
+.NavPanel[mode=rightMenu]>.NavIndex{
+	right: 0px;
+	width: 100px;
+	height: 100%;
+	z-index: 3;
+}
+.NavPanel[mode=rightMenu]>.NavSheetArea{
+	top: 0px;
+	padding-right: 100px;
+}
+.NavPanel[mode=rightMenu]>.NavIndex>li {
+	width: 100%;
+	margin: 0px;
+
+}

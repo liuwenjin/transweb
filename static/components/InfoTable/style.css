@@ -1,0 +1,6 @@
+.InfoTable table tr td:nth-child(1) {
+	width: 25%;
+}
+.InfoTable table tr td:nth-child(2) {
+	width: 75%;
+}

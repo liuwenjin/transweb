@@ -1,0 +1,36 @@
+#tModalDialog>.modal-dialog>.modal-content {
+	height:auto!important; 
+	min-height:50px;
+	padding: 0px;
+}
+
+#tModalDialog>.modal-dialog>.modal-content>.modal-header {
+	padding: 15px 25px 10px 25px;
+}
+
+#tModalDialog>.modal-dialog>.modal-content>.modal-body {
+	overflow: auto;
+	padding: 15px 25px;
+}
+
+
+#tModalDialog>.modal-dialog>.modal-content .modal-title {
+	font-weight: 900;
+	overflow:hidden !important; 
+    text-overflow:ellipsis !important;
+    white-space: nowrap !important;
+	display: inline-block;
+	max-width: 100%;
+}
+
+
+#tModalDialog .modal-header button.close {
+	display: inline-block;
+	border-radius: 100%;
+	width: 20px;
+    position: absolute;
+	font-weight: normal;
+    height: 20px;
+    right: 25px;
+    top: 18px;
+}

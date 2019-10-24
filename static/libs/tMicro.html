@@ -1,0 +1,70 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0, user-scalable=no" />
+	<meta http-equiv="Access-Control-Allow-Origin" content="*">
+	<meta HTTP-EQUIV="pragma" CONTENT="no-cache">
+	<meta HTTP-EQUIV="Cache-Control" CONTENT="no-store, must-revalidate">
+	<meta HTTP-EQUIV="expires" CONTENT="Wed, 26 Feb 1997 08:21:57 GMT">
+	<meta HTTP-EQUIV="expires" CONTENT="0">
+	<title>micro</title>
+</head>
+
+<body style="width: 100%; height: 100%; display: flex; flex-wrap: wrap; justify-content:center; align-items:center;">
+	<div class="contentArea" style="width: 100%; height: 100%; max-width: 1200px;">微服务跨域接口</div>
+</body>
+<script src="webCpu.js"></script>
+<script>
+	var myApi = null;
+	if (window.name) {
+		myApi = new BackInterface(window.name, function (data) {
+			if (window !== window.parent) {
+				var t = JSON.stringify(data);
+				data = JSON.parse(t);
+				window.parent.postMessage({
+					type: "tServiceInit",
+					data: data.data.data
+				}, "*");
+			}
+		});
+	} else {
+		window.parent.postMessage({
+			type: "tServiceInit",
+			data: []
+		}, "*");
+	}
+
+	WebTool.listenMessage(function (e) {
+		var data = e.data;
+		if (typeof (data) === "string" && data.search('{') !== -1 && data.search('}') !== -1) {
+			data = JSON.parse(data);
+		}
+		var query = data.query;
+		var dType = data.type || "json";
+		var dealFeeback = function (d, q) {
+
+			var result = {
+				messageId: data.messageId,
+				data: d
+			}
+			window.parent.postMessage(result, "*");
+		};
+		if (data.messageId) {
+			var key = data.key;
+			if (myApi && key && typeof (myApi[key]) === "function") {
+				myApi[key](query, function (d) {
+					dealFeeback(d, query);
+				}, dType);
+			} else if (data.url && data.requestType) {
+				WebAdapter.request(data.url, data.requestType, query, function (d) {
+					dealFeeback(d, query);
+				}, dType);
+			} else {}
+		}
+
+	});
+</script>
+
+</html>

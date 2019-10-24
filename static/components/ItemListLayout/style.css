@@ -1,0 +1,27 @@
+.ItemListLayout {
+  width: 100%;
+  padding: 0px;
+  margin: 0px;
+}
+
+.ItemListLayout_item {
+	position: relative;
+	height: 0px;
+	padding-top: 0px;
+	-webkit-box-sizing: content-box;
+     -moz-box-sizing: content-box;
+          box-sizing: content-box;
+	display: inline-block;
+}
+
+
+
+.ItemListLayout_container {
+	position: absolute;
+	width: 100%; height: 100%;
+	-webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+	overflow: hidden;
+}
+

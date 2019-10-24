@@ -1,0 +1,81 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0, user-scalable=no" />
+	<meta http-equiv="Access-Control-Allow-Origin" content="*">
+	<meta HTTP-EQUIV="pragma" CONTENT="no-cache">
+	<meta HTTP-EQUIV="Cache-Control" CONTENT="no-store, must-revalidate">
+	<meta HTTP-EQUIV="expires" CONTENT="Wed, 26 Feb 1997 08:21:57 GMT">
+	<meta HTTP-EQUIV="expires" CONTENT="0">
+	<title>Demo</title>
+	<link rel="stylesheet" href="libs/bootstrap/bootstrap.min.css" />
+	<style>
+		html,
+		body {
+			height: 100%;
+		}
+
+		* {
+			box-sizing: border-box;
+			-moz-box-sizing: border-box;
+			-webkit-box-sizing: border-box;
+		}
+	</style>
+</head>
+
+<body style="width: 100%; height: 100%; position: relative;">
+
+</body>
+<script src="libs/jquery.min.js"></script>
+<script src="libs/bootstrap/bootstrap.min.js"></script>
+<script src="libs/webCpu.js"></script>
+<script>
+	webCpu.componentPath = "components";
+	webCpu.initProject(document.body, {
+		"index": {
+			"url": "microApp/layout/index.js",
+			"children": {
+				"testA": {
+					"key": 'transweb_bookList',
+					"url": "microApp/cards/bookList.js"
+				}
+			}
+		}, "book": {
+			"url": "microApp/layout/book.js",
+			"children": {
+				"testA": {
+					"key": 'transweb_bookContent',
+					"url": "microApp/cards/bookContent.js"
+				}
+			}
+		}, "search": {
+			"url": "microApp/layout/search.js",
+			"children": {
+				"testA": {
+					"key": 'transweb_bookItems',
+					"url": "microApp/cards/bookItems.js"
+				}
+			}
+		}, "history": {
+			"url": "microApp/layout/history.js",
+			"children": {
+				"testA": {
+					"key": 'transweb_readRecord',
+					"url": "microApp/cards/readRecord.js"
+				}
+			}
+		}, "favorites": {
+			"url": "microApp/layout/favorites.js",
+			"children": {
+				"testA": {
+					"key": 'transweb_bookItems',
+					"url": "microApp/cards/bookItems.js"
+				}
+			}
+		}
+	}, "", 1);
+</script>
+
+</html>

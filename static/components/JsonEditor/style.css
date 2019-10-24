@@ -1,0 +1,58 @@
+.JsonEditor td:nth-child(1) {
+	width: 100px;
+	text-align: right;
+}
+
+.JsonEditor_name, .JsonEditor_value, .JsonEditor_tilte {
+	display: inline-block;
+	width: 100%;
+	overflow:hidden; 
+	text-overflow:ellipsis;
+	white-space: nowrap;
+	
+}
+
+.JsonEditor caption {
+	padding: 0px;
+}
+
+.JsonEditor_tilte {
+	text-align: left;
+	font-weight: 900;
+}
+
+.JsonEditor_name:after {
+	content: ":";
+}
+
+.JsonEditor td:nth-child(2) {
+	width: calc( 100% - 100px );
+	text-align: left;
+}
+
+.JsonEditor tr:last-child {
+	border-bottom: solid 1px #ddd;
+}
+
+.JsonEditor_container {
+	width: 100%;
+	display: inline-block;
+}
+
+.JsonEditor_inputItem {
+	width: 100%;
+}
+
+.JsonEditor td {
+	padding-left: 0px!important;
+	padding-right: 0px!important;
+}
+
+.JsonEditor td select {
+	width: 100%; height: 30px;
+	text-indent: 5px;
+}
+.JsonEditor td input {
+	width: 100%; height: 30px;
+	text-indent: 12px;
+}

@@ -1,0 +1,43 @@
+
+.FormItem {
+	font-size: 14px;
+	padding-bottom: 10px;
+	height: auto !important;
+	display: block;
+	text-align: left;
+}
+
+.FormItem>.FormItem_title {
+	display: inline-block;
+	padding: 0px;
+	margin: 0px;
+	width: 100%;
+	padding-right: 5px !important;
+	vertical-align: middle;
+	font-size: 14px;
+	margin-bottom: 2px;
+	font-weight: normal;
+}
+.FormItem>.FormItem_title:after {
+	content: ":";
+}
+
+.FormItem>div.FormItem_content {
+	width: 100%;
+	display: inline-block;
+	vertical-align: middle;
+	text-align: left;
+}
+
+.FormItem>div.FormItem_content label.FormItem_inputItem {
+	width: 100%;
+	margin: 0px !important;
+	padding: 0px !important;
+	vertical-align: middle;
+	float: left;
+}
+
+
+.FormItem_inputItem[type=checkbox] input {
+	box-shadow: none;
+}
