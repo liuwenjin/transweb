@@ -1,0 +1,40 @@
+
+#tPopupDialog {
+	top: 0px;
+    left: 0px;
+	position: absolute;
+    z-index: 9999;
+}
+
+.PopupDialog_container {
+	position: relative;
+	width: 100%; height: 100%;
+	line-height: 1;
+	border-radius: 5px;
+    padding: 4px 4px 6px 4px;
+    color: #888;
+    display: inline-block;
+	-webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;    
+	overflow: auto;
+}
+
+.PopupDialog_header {
+	width: 100%;
+	padding: 5px;
+	margin: 0px;
+}
+
+.PopupDialog_content {
+	width: 100%;
+	height: 100%;
+}
+
+.PopupDialog_title {
+	float: left;
+}
+.PopupDialog_closeBtn {
+	float: right;
+}
+

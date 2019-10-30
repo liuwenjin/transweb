@@ -1,0 +1,161 @@
+﻿<div class="TimeSelector_Container">
+	<div class="TimeSelector_Block">
+		<label class="TimeSelector_leftAjust"></label>
+		<label class="TimeSelector_center"></label>
+		<label class="TimeSelector_rightAjust"></label>
+	</div>
+    <div class="TimeSelector_ScaleTipsArea"><label trick="28"></label><label trick="29"></label><label trick="30"></label><label topTips="5月" trick="31"></label><label topTips="6月" trick="1" ></label><label trick="2"></label><label trick="3"></label><label trick="4" extraTrick="5"></label></div>
+</div>
+<style>
+
+.TimeSelector_Container {
+	position: relative;
+	float: left;
+	overflow:hidden;
+}
+
+.TimeSelector_Block {
+	position: absolute;
+	margin-top: 15px;
+	height: 20px;
+	width: auto;
+	max-width: 100%;
+	background-color: rgba(2, 134, 255, 0.7);
+	overflow: visible;
+	z-index: 3;
+}
+
+/* .TimeSelector_Block:before {
+	content: attr(start);
+	position: absolute;
+    width: 60px;
+	text-align: right;
+	left: -60px;
+	padding-right: 3px;
+}
+.TimeSelector_Block:after {
+	content: attr(end);
+	position: absolute;
+    left: calc( 100% );
+    display: inline-block;
+    width: 60px;
+	padding-left: 3px;
+} */
+
+.TimeSelector_Block:hover {
+	cursor: move;
+}
+
+.TimeSelector_leftAjust {
+	float: left;
+	width: 20px; height: 300%;
+	left: 0px;
+	margin-top: -20px;
+	background-color: rgba(2, 134, 255, 1);
+	text-align: center;
+	position: absolute;
+}
+
+.TimeSelector_leftAjust:before {
+	content: "";
+	display: inline-block;
+	width: 12px;
+	height: 10px;
+	border: none;
+	border-top: solid 3px #fff;
+	border-bottom: solid 3px #fff;
+	margin-top: 27px;
+	
+}
+.TimeSelector_rightAjust:before {
+	content: "";
+	display: inline-block;
+	width: 12px;
+	height: 10px;
+	border: none;
+	border-top: solid 3px #fff;
+	border-bottom: solid 3px #fff;
+	margin-top: 27px;
+	
+}
+
+
+.TimeSelector_rightAjust {
+	float: right;
+	width: 20px; height: 300%;
+	right: 0px;
+	margin-top: -20px;
+	background-color: rgba(2, 134, 255, 1);
+	text-align: center;
+	position: absolute;
+}
+.TimeSelector_leftAjust:hover, .TimeSelector_rightAjust:hover {
+	cursor: e-resize;
+}
+
+
+.TimeSelector_ScaleTipsArea {
+	text-align: left;
+	margin-top: 10px;
+}
+.TimeSelector_ScaleTipsArea>label {
+	float: left;
+	position: relative;	
+	width: 40px; 
+	height: 10px;
+	border: 1px dotted #999;
+	border-top: none;
+	border-right: none;
+	padding: 0px;
+	margin: 15px 0px 15px 0px;
+	color: #999;
+}
+
+.TimeSelector_ScaleTipsArea>label:last-child {
+	border-right: 1px dotted #999;
+}
+
+.TimeSelector_ScaleTipsArea>label:before {
+	content: attr(Trick);
+	position: absolute;
+	font-weight: normal;
+	font-size: 12px;
+	top: 100%;
+	left: -50%;
+	margin-left: -6px;
+}
+
+.TimeSelector_ScaleTipsArea>label:first-child:before {
+	display: none;	
+}
+
+.TimeSelector_ScaleTipsArea>label:after {
+	content: attr(topTips);
+	position: relative;
+	font-weight: normal;
+	font-size: 12px;
+	top: -18px;
+	left: -50%;
+    margin-left: -12px;
+    display: inline-block;
+    width: 60px;
+}
+
+.TimeSelector_ScaleTipsArea>label:last-child:after {
+	content: attr(extraTrick);
+	position: absolute;
+	font-weight: normal;
+	font-size: 12px;
+	top: 100%;
+	left: 50%;
+    margin-left: 0px;
+}
+.TimeSelector_ScaleTipsArea>label.endFirst:after {
+	content: attr(extraTrick);
+    position: relative;
+    font-weight: normal;
+    font-size: 12px;
+    top: 100%;    
+}
+
+</style>

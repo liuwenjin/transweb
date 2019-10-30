@@ -1,0 +1,172 @@
+.TableLayout_container {
+	position: absolute;
+	display: inline-block;
+	width: 100%;
+	height: 100%;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	overflow: hidden;
+}
+
+.TableLayout table.TableLayout_Table {
+	position: relative;
+	margin: auto;
+	overflow: hidden;
+}
+
+.TableLayout table.TableLayout_Table>tbody>tr {
+	float: left;
+}
+
+.TableLayout table.TableLayout_Table>tbody>tr>td {
+	float: left;
+	position: relative;
+	overflow: visible;
+	text-align: left;
+}
+
+.TableLayout table.TableLayout_Table>tbody>tr>td .TableLayout_container {
+	overflow: visible;
+}
+
+
+.TableLayout_Table[state=edit] .CardItem {
+	z-index: 2;
+}
+
+.TableLayout_Table[state=edit] .TableLayout_container {
+	border-right: solid 1px #ddd;
+	border-bottom: solid 1px #ddd;
+	line-height: 1.42857143;
+}
+
+.TableLayout_Table[state=edit] tr td:first-child .TableLayout_container {
+	border-left: solid 1px #ddd;
+}
+
+.TableLayout_Table[state=edit] tr:first-child td .TableLayout_container {
+	border-top: solid 1px #ddd;
+}
+
+/* .TableLayout_Table[state=edit] td[flag=highlight] {
+	background-color: #aaa;
+	border: none;
+}
+
+.TableLayout_Table[state=edit] td[flag=highlight]  .TableLayout_container {
+	border: none !important;
+} */
+
+
+.TableLayout_Table[state=edit] .TableLayout_container>.CardItem>.CardItem_contentArea>.CardItem_content {
+	border-radius: 5px;
+	background-color: #fff;
+	overflow: hidden;
+	display: none;
+}
+
+.TableLayout_Table[state=edit] .TableLayout_container .CardItem_modifyArea .CardItem_btnsArea {
+	height: 0px;
+	overflow: visible;
+}
+
+.TableLayout_Table[state=edit] .TableLayout_container .CardItem_modifyArea .CardItem_btnsArea>label:nth-child(1) {
+	display: none;
+}
+
+.TableLayout_Table[state=edit] .TableLayout_container .CardItem_modifyArea .CardItem_btnsArea>label:nth-child(2) {
+	width: 40px;
+	margin-right: 3px;
+	border-bottom-left-radius: 5px;
+	margin-top: 3px;
+	height: 30px;
+	background-color: rgba(222, 222, 222, 0.8);
+}
+
+.TableLayout_Table[state=edit] .TableLayout_container .CardItem_modifyArea .CardItem_btnsArea>label:nth-child(2) .CardItem_btn {
+	position: relative;
+	float: right;
+	width: 20px;
+	height: 20px;
+	border-radius: 100%;
+	top: 0px !important;
+	margin-top: 5px;
+	margin-right: 3px;
+	transform: translateY(0) !important;
+}
+
+.TableLayout_Table[state=edit] .TableLayout_container .CardItem_modifyArea .CardItem_btnsArea>label:nth-child(2) .CardItem_edit {
+	padding: 4px;
+	font-size: 14px;
+	margin-right: 20px;
+	color: #000;
+	background: none;
+}
+
+.TableLayout_Table[state=edit] .TableLayout_container .CardItem_modifyArea .CardItem_btnsArea>label:nth-child(2) .CardItem_edit:hover {
+	color: #333;
+}
+
+
+
+.TableLayout_Table[state=edit] .TableLayout_container .CardItem_modifyArea:hover .CardItem_btnsArea {
+	display: none;
+
+}
+
+.TableLayout_Table[state=edit] .TableLayout_container .CardItem .CardItem_modifyArea:hover .CardItem_btnsArea {
+	display: inline-block;
+}
+
+.TableLayout_Table[state=edit] .TableLayout_container .CardItem[state=selected] .CardItem_modifyArea:hover .CardItem_btnsArea {
+	display: none;
+}
+
+.TableLayout_Table[state=edit] .TableLayout_container>.CardItem .CardItem_close {
+	margin-top: 8px !important;
+}
+
+.TableLayout_Table[state=edit] .TableLayout_container>.CardItem .CardItem_close:hover {
+	color: #333;
+}
+
+.TableLayout_Table[state=edit] .TableLayout_container .CardItem_modifyArea {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	left: 0px;
+	top: 0px;
+	z-index: 998;
+	background-color: rgba(255, 255, 255, 0.1);
+	display: none;
+}
+
+.TableLayout_Table[state=edit] .CardItem_eventArea {
+	display: block;
+	left: 0px;
+	top: 0px;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	z-index: 999;
+	background-color: rgba(255, 255, 255, 0);
+}
+
+.TableLayout_Table[state=edit] .TableLayout_container>.CardItem[state=selected] .CardItem_eventArea {
+	outline: #77B941 solid 2px;
+}
+
+@-moz-document url-prefix() {
+	.TableLayout_Table[state=edit] .TableLayout_container>.CardItem[state=selected] .CardItem_eventArea {
+		outline-offset: -26px;
+	}
+}
+
+.TableLayout_Table[state=edit] .TableLayout_container>.CardItem[state=selected] .CardItem_adjust {
+	display: inline-block;
+}
+
+.TableLayout_Table[state=edit] .TableLayout_container>.CardItem[state=selected] .CardItem_eventArea:hover {
+	cursor: move;
+}

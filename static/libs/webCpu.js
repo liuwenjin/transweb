@@ -102,30 +102,32 @@ WebAdapter.loadCardData = function (url, key, myCallback) {
     d.appUrl = url.split("?")[0];
     myCallback(d);
   };
-  var elem = document.getElementById(key);
+  var id = MurmurHash.rule(url);
+  var elem = document.getElementById(id);
   if (elem) {
     elem.parentNode.removeChild(elem);
   }
   var s = document.createElement("script");
-  s.id = key;
+  s.id = id;
   s.src = WebTool.attachParams(url, {
     callback: key
   });
   document.head.appendChild(s);
 }
 
-var WebRequest = function (url, type, dataType, options) {
+var WebRequest = function (url, type, dataType, options, errCallback) {
   var type = type || "jsonp";
   if (type === "jsonp" || type === "noEcho") {
-    return (new CustomInterface(url, type, options));
+    return (new CustomInterface(url, type, options, errCallback));
   } else {
-    return (new AjaxInterface(url, type, dataType));
+    return (new AjaxInterface(url, type, dataType, errCallback));
   }
 }
 
-var CustomInterface = function (url, type, options) {
+var CustomInterface = function (url, type, options, errCallback) {
   this.options = {};
   this.type = type || "jsonp";
+  this.errCallback = errCallback;
   for (var k in options) {
     if (options[k] === 1) {
       this.options[k] = 1;
@@ -162,11 +164,11 @@ CustomInterface.prototype.check = function (options, params) {
   return ret;
 }
 
-var AjaxInterface = function (url, type, dType) {
+var AjaxInterface = function (url, type, dType, errCallback) {
   this.url = url;
-  return this.init(type, dType);
+  return this.init(type, dType, errCallback);
 }
-AjaxInterface.prototype.init = function (type, dType) {
+AjaxInterface.prototype.init = function (type, dType, errCallback) {
   this.httpObj = this.getHttpObj();
   if (this.httpObj) {
     var _this = this;
@@ -1143,7 +1145,7 @@ WebCpu.prototype.excuteSingleTask = function (elem, path, cards) {
         key: cItem.key,
         callback: function (c, d, t) {
           d.cardName = cardName;
-          if(typeof(cItem.callback) === "function") {
+          if (typeof (cItem.callback) === "function") {
             cItem.callback(c, d, t);
           }
         }
@@ -1160,8 +1162,6 @@ WebCpu.prototype.excuteSingleTask = function (elem, path, cards) {
 
   }
 }
-
-
 
 WebCpu.prototype.addCardItem = function (container, cardData, options, callback) {
   var options = options || {};
@@ -1219,8 +1219,7 @@ WebCpu.prototype.transferCardData = function (container, cardData, options, call
     task.requestType = "_jsonp";
     task.query = options.key || "transweb_cn";
     task.cardName = options.cardName;
-  }
-  else {
+  } else {
     task.data = cardData;
     task.url = "";
   }
@@ -1402,32 +1401,60 @@ WebCpu.prototype.install = function (name) {
   }
 }
 
-WebCpu.prototype.renderModule = function(elem, name, callback) {
+WebCpu.prototype.renderModule = function (elem, name) {
   var option = this.cards.main.task.option.router[name];
-  if(!option) {
-    option = this.cards.main.task.option.router["index"];
+  if (!option) {
+    option = this.cards.main.task.option.router["index"] || {};
   }
+  this.updateModuleStyle(option.css);
   this.addCardItem(elem, option.url, {
     key: option.key || "transweb_cn",
-    callback: function(c, d, t) {
+    callback: function (c, d, t) {
       d.task.cards = option.children;
-      if(d.cardName) {
+      if (d.cardName) {
         webCpu.cards[d.cardName] = d;
-      }
-      if(typeof(callback) === "function") {
-        callback(c, d, t);
       }
     }
   });
 }
 
-WebCpu.prototype.initProject = function(elem, routerOption, titleData, flag) {
+WebCpu.prototype.updateModuleStyle = function (cssUrl) {
+  var styleDom = document.getElementById("webCpuModuleStyle");
+  if (styleDom) {
+    document.head.removeChild(styleDom);
+  }
+  if (cssUrl) {
+    styleDom = document.createElement("link");
+    styleDom.setAttribute("type", "text/css");
+    styleDom.setAttribute("rel", "stylesheet");
+    styleDom.setAttribute("href", cssUrl);
+    styleDom.setAttribute("id", "webCpuModuleStyle");
+    document.head.appendChild(styleDom);
+  }
+}
+
+WebCpu.prototype.initWebApp = function (elem, url, callback, flag) {
+  if (!url) {
+    return false;
+  }
+  var key = url.key || "transweb_cn";
+  var url = url.url || url;
+  var _self = this;
+  WebAdapter.loadCardData(url, key, function (data) {
+    if(typeof(callback) === "function") {
+      callback(data);
+    }
+    _self.initProject(elem, data.routerOption, data.titleData, flag);
+  });
+}
+
+WebCpu.prototype.initProject = function (elem, routerOption, titleData, flag) {
   var _self = this;
   var main = {
     cardName: "main",
     titleData: titleData,
     task: {
-      closeRouter: flag, 
+      closeRouter: flag,
       "current": "index",
       "option": {
         "default": "index",
@@ -1435,44 +1462,84 @@ WebCpu.prototype.initProject = function(elem, routerOption, titleData, flag) {
       },
       promise: {
         beforeRender: function (container, data, task) {
-          var tArr = location.pathname.split("/");
-          if(!task.closeRouter && tArr.length > 1) {
-            task.current = tArr[1];
-          }
+          task.current = location.pathname.replace(/^\//, "");
         },
         afterRender: function (container, data, task) {
           task.switchModule();
         }
       },
-      "switchModule": function(name) {
-        name = name || this.current;
+      updateStyle: function (name) {
         var mOption = this.option.router[name];
+        if(mOption && mOption.css) {
+          _self.updateModuleStyle(mOption.css);
+        }
+      },
+      getRouterOption: function(name) {
+        var arr = name.split("/");
+        if(arr.length < 1) {
+          return this.option.router["index"];
+        }
+        var mOption = WebTool.copyObject(this.option.router[arr[0]]);
+        if(arr.length > 1 && mOption && mOption.secondRouter && mOption.secondRouter[arr[1]]) {
+          var sOption = mOption.secondRouter[arr[1]];
+          mOption.breadcrumb = sOption.breadcrumb || mOption.breadcrumb;
+          mOption.callback = sOption.callback;
+          mOption.beforeRender = sOption.beforeRender || [];
+          if(sOption.beforeRender.constructor.name !== "Array") {
+            sOption.beforeRender = [sOption.beforeRender];
+          }
+          for(var i = 0; i < sOption.beforeRender.length; i++) {
+            var tOption =  sOption.beforeRender[i];
+            if(tOption.cardName && tOption.callback && mOption.children && mOption.children[tOption.cardName]) {
+              var cardOption = mOption.children[tOption.cardName];
+              cardOption.callback = tOption.callback;
+            }
+          }
+        }
         if (!mOption) {
           name = this.option.default || "index";
-          mOption = this.option.router[name];
+          mOption = this.option.router["index"];
         }
+        return mOption;
+      },
+      "switchModule": function (path) {
+        var name = path || this.current;
+        var mOption = this.getRouterOption(name);
+        var arr = name.split("/");
+        this.current = name;
+        name = arr[0];
         //render the card
         var tCard = _self.cards[name] || mOption.url;
-        if(typeof(tCard === "string")) {
+        if (typeof (tCard === "string")) {
           _self.addCardItem(this.container, tCard, {
             key: mOption.key,
-            callback: function(c, d, t) {
+            callback: function (c, d, t) {
               d.cardName = name;
               d.breadcrumb = mOption.breadcrumb;
               d.task.cards = mOption.children;
+              if(typeof(mOption.callback) === "function") {
+                mOption.callback(c, d, t);
+              }
             }
           });
-        }
-        else {
+        } else {
           tCard.cardName = name;
           tCard.breadcrumb = mOption.breadcrumb;
           tCard.task.cards = mOption.children;
+          if(typeof(mOption.callback) === "function") {
+            mOption.callback(tCard.task.container, tCard);
+          }
           _self.CardItem._fresh(tCard);
         }
-        
+        this.updateStyle(name);
 
-        if(history.pushState && !this.closeRouter) {
-          history.pushState({}, "关于", "/" + name);
+        if (history.pushState && !this.closeRouter && path) {
+          var t = location.href.split("?");
+          var url = path;
+          if (t.length > 1) {
+            url += "?" + t[1]
+          }
+          history.pushState({}, "关于", url);
         }
       }
     }
@@ -1482,81 +1549,8 @@ WebCpu.prototype.initProject = function(elem, routerOption, titleData, flag) {
 }
 
 window.webCpu = new WebCpu();
+webCpu.componentPath = "components";
 
-var TranswebRouter = function (config, prefix) {
-  this.config = config;
-  this.prefix = prefix;
-  var _self = this;
-  window.onhashchange = function () {
-    _self.switchPage();
-  }
-  // this.switchPage();
-}
-TranswebRouter.prototype.switchPage = function () {
-  var hash = location.hash.replace("#", "");
-  var temp = Object.keys(this.config)[0];
-  var p = this.config[hash] || this.config[temp];
-  var url = this.prefix + "&path=" + p;
-  location.href = url;
-}
-
-var WebRouter = function (config, prefix, _prefix) {
-  this.config = config;
-  this.prefix = prefix;
-  this._prefix = _prefix;
-  if (typeof (this.prefix) === "object") {
-    this.initModules();
-  }
-  var _self = this;
-  window.onhashchange = function () {
-    _self.switchPage();
-  }
-  this.switchPage();
-}
-WebRouter.prototype.switchPage = function () {
-  var path = this.getPath();
-  this.switchModule(path);
-}
-
-WebRouter.prototype.initModules = function (prefix) {
-  var modules = this.prefix;
-  for (var k in modules) {
-    if (typeof (modules[k]) === "object") {
-      webCpu.initModule(modules[k], this._prefix || prefix, k);
-    }
-  }
-}
-
-WebRouter.prototype.switchModule = function (path) {
-  if (this.config.indexOf && this.config.indexOf(path) === -1) {
-    path = this.config[0] || "index";
-  }
-  if (typeof (this.prefix) === "string") {
-    if (this.config.constructor.name == "Array") {
-      WebCpu.path = this.prefix;
-      WebCpu.identity = path;
-    } else {
-      var url = (path && this.config[path]) || this.config["#"];
-    }
-    var viewControl = new ViewControl({
-      script: url
-    });
-  } else {
-    webCpu.update(path, this.prefix[path]);
-  }
-}
-
-WebRouter.prototype.getPath = function () {
-  var hash = location.hash;
-  var path = hash.split("?")[0];
-  if (path.length !== 0) {
-    path = path.slice(1);
-  }
-  path = path || "#";
-  var index = path.split("_");
-  this.index = index;
-  return index[0];
-}
 
 var CrossDomainService = function (interfaceData, callback, cardList, dataAdapter) {
   this.cardList = cardList;
@@ -1581,7 +1575,7 @@ var CrossDomainService = function (interfaceData, callback, cardList, dataAdapte
       data = JSON.parse(data);
     }
     if (data.messageId && typeof (_self.messageCallback[data.messageId]) === "function") {
-      _self.messageCallback[data.messageId](data);
+      _self.messageCallback[data.messageId](data.data);
       delete _self.messageCallback[data.messageId];
     } else if (data.type === "tServiceInit") {
       if (typeof (callback) === "function") {
@@ -1616,7 +1610,7 @@ CrossDomainService.prototype.render = function (container, cardName, dataAdapter
 }
 
 CrossDomainService.prototype.request = function (url, query, requestType, callback, type) {
-  var messageId =  "_" + (new Date()).getTime();
+  var messageId = "_" + (new Date()).getTime();
   var requestData = {
     query: query,
     requestType: requestType,

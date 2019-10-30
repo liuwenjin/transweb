@@ -1,0 +1,49 @@
+.CodeReader {
+	float: right;
+	height: 100%;
+    overflow: auto;
+}
+
+
+.CodeReader_filesArea {
+	float: right;
+    position: relative;
+    background-color: #ffffff;
+    width: 180px;
+    height: 100%;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    box-shadow: -1px 0px 0px inset #e2e2e2;
+}
+
+.CodeReader_tipsArea {
+	min-height: 20px;
+	width: 330px;
+    height: auto;
+    left: 5px;
+    padding: 10px;
+    border-radius: 5px;
+    background: rgb(242, 242, 0);
+    position: absolute;
+    z-index: 99;
+}
+
+.CodeReader_tipsArrow {
+	display: block;
+    width: 0;
+    height: 0;
+    border-width: 5px 0 5px 180px;
+    border-style: solid;
+    border-color: transparent transparent transparent #f2f200;
+    position: absolute;
+    top: calc( 50% - 3px );
+    left: 100%;
+}
+
+.CodeReader_filesArea .ZtreeList>ul>li span {
+    display: inline-block;
+    max-width: 90px;
+    text-overflow:ellipsis;
+    overflow: hidden;
+    white-space:nowrap;
+}
