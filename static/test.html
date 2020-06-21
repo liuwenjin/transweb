@@ -1,0 +1,82 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0, user-scalable=no" />
+  <meta http-equiv="Access-Control-Allow-Origin" content="*">
+  <meta HTTP-EQUIV="pragma" CONTENT="no-cache">
+  <meta HTTP-EQUIV="Cache-Control" CONTENT="no-store, must-revalidate">
+  <meta HTTP-EQUIV="expires" CONTENT="Wed, 26 Feb 1997 08:21:57 GMT">
+  <meta HTTP-EQUIV="expires" CONTENT="0">
+  <link rel='stylesheet' type='text/css' href="libs/bootstrap/css/bootstrap.min.css" />
+  <script src="libs/jquery.min.js"></script>
+  <script src="libs/bootstrap/js/bootstrap.min.js"></script>
+  <script src="transweb/webCpu.js"></script>
+  <title>Demo</title>
+  <style>
+    html,
+    body {
+      height: 100%;
+    }
+
+    * {
+      box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      -webkit-box-sizing: border-box;
+    }
+  </style>
+</head>
+
+<body style="width: 100%; height: 100%; position: relative;">
+  <div class="container-fluid">
+    <button type="button" class="btn btn-default" data-container="body" data-toggle="popover" data-placement="left"
+      data-content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus.">
+      Popover on 左侧
+    </button>
+
+    <button type="button" class="btn btn-default" data-container="body" data-toggle="popover" data-placement="top"
+      data-content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus.">
+      Popover on 顶部
+    </button>
+
+    <button type="button" class="btn btn-default" data-container="body" data-toggle="popover" data-placement="bottom"
+      data-content="Vivamus
+      sagittis lacus vel augue laoreet rutrum faucibus.">
+      Popover on 底部
+    </button>
+
+    <button type="button" class="btn btn-default" data-container="body" data-toggle="popover" data-placement="right"
+      data-content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus.">
+      Popover on 右侧
+    </button>
+
+    <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="left"
+      title="Tooltip on left">Tooltip on left</button>
+
+    <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="top"
+      title="Tooltip on top">Tooltip on top</button>
+
+    <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom"
+      title="Tooltip on bottom">Tooltip on bottom</button>
+
+    <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="right"
+      title="Tooltip on right">Tooltip on right</button>
+
+  </div>
+
+</body>
+
+<script>
+  webCpu.componentPath = "transweb/components";
+  var app = {
+    url: "cards/itemsEditor.js",
+    key: "myItemsEditor"
+  }
+  webCpu.updateView(document.body, app);
+
+  
+
+</script>
+
+</html>

@@ -1,0 +1,37 @@
+.DataTable_tdContent[key=name] {
+  text-align: left;
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 150px;
+}
+
+.CardItem[cardName='myItemsEditor'] .activeItem .menuItemArea .btn {
+  display: inline-block;
+}
+
+.CardItem[cardName='myItemsEditor'] .menuItemArea .btn{
+  display: none;
+}
+
+.CardItem[cardName='myItemsEditor'] .menuItemArea:hover .btn {
+  display: inline-block;
+}
+
+.CardItem[cardName='myItemsEditor'] .panel {
+  border: none;
+}
+
+.CardItem[cardName='myItemsEditor']  .panel-heading{
+  border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+}
+
+.CardItem[cardName='myItemsEditor'] .list-group-item {
+  padding-right: 0px;
+}
+
+.CardItem[cardName='myItemsEditor'] .list-group-item:last-child a{
+  border: none;
+}

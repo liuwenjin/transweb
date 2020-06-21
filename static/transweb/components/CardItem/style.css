@@ -1,0 +1,352 @@
+
+.CardItem {
+	position: relative;
+	width: 600px; height: 400px;
+	-webkit-overflow-scrolling: touch;
+	box-sizing: border-box;
+}
+.CardItem * {
+	box-sizing: border-box;
+}
+
+.CardItem_contentArea {
+	position: relative;
+	width: 100%; height: 100%;
+	z-index: 997;
+	display: flex;
+    justify-content: center;
+	align-items: center;
+	-webkit-overflow-scrolling: touch;
+}
+
+.CardItem_content {
+	position: relative;
+	width: 100%; height: 100%;
+	border-radius: 5px;
+	-webkit-overflow-scrolling: touch;
+}
+.CardItem_mask {
+	position: absolute;
+	display: none;
+	width:100%;
+	height: 100%;
+	z-index: 999;
+	left: 0px; 
+	top: 0px;
+	border-radius: 5px;
+	background-color: rgba(250, 250, 250, 0.95);
+	-webkit-overflow-scrolling: touch;
+}
+
+.CardItem_stateTips {
+	color: #fff;
+}
+
+.CardItem_titleArea {
+	position: absolute;
+	margin: 0px;
+	padding: 0px;
+	width: 100%;
+    top: 0px;
+	height: 23px;	
+	overflow:hidden; 
+	text-overflow:ellipsis;
+	white-space: nowrap;
+	font-weight: 900;
+	color: #999;
+	z-index: 999;
+}
+
+.CardItem_footArea {
+	position: absolute;
+	margin: 0px;
+	padding: 0px;
+	width: 100%;
+    bottom: 0px;
+	height: 23px;	
+	overflow:hidden; 
+	text-overflow:ellipsis;
+	white-space: nowrap;
+	font-weight: 900;
+	display: block;
+}
+.CardItem_title {
+	font-size: 14px;
+	font-weight: 900;
+	margin: 0px;	
+	width: 100%;
+	height: 100%;
+	display: flex;
+	align-items: center;
+}
+
+.CardItem_title>.breadcrumb {
+	background: none;
+    padding: 0px;
+    margin: 0px;
+}
+
+.__CardItem_componentArea {
+	position: absolute;
+	width: 100%;
+	top: 0px;
+	bottom: 0px;
+	text-align: left;
+	display: flex;
+    justify-content: center;
+	align-items: center;
+	-webkit-overflow-scrolling: touch;
+}
+.CardItem_componentArea {
+	position: relative;
+	width: 100%;
+	height: 100%;
+
+	align-items: center;
+	-webkit-overflow-scrolling: touch;
+}
+.CardItem_componentArea>._task_container {
+	position: relative;
+	width: 100%; 
+	height: 100%;
+	margin: auto;
+}
+
+.CardItem_componentArea[mouldName=FormItem] {
+	display: block;
+	text-align: center;
+}
+
+
+
+.CardItem_eventArea .CardItem_adjust {
+	position: absolute;
+	width: 50px; height: 50px;	
+	display: none;
+}
+.CardItem_eventArea .CardItem_adjust:before {
+	content: "";
+	position: absolute;
+	left: 18px; top: 18px;
+	width: 15px; height: 15px;
+	background-color: #77B941; 
+}
+
+.CardItem_eventArea .CardItem_top:before {
+	left: 18px; top: 16px;
+}
+
+.CardItem_eventArea .CardItem_left:before {
+	left: 16px; top: 18px;
+}
+
+
+
+
+.CardItem_eventArea .CardItem_adjust:before :hover {
+	cursor: ns-resize;
+}
+
+.CardItem_adjust[adjustType=ns]:hover {
+	cursor: ns-resize;
+}
+.CardItem_adjust[adjustType=ew]:hover {
+	cursor: ew-resize;
+}
+
+.CardItem_adjust:nth-child(1) {
+	left: calc( 50% - 25px ); top: -25px;	
+}
+.CardItem_adjust:nth-child(2) {
+	right: -25px; top: calc( 50% - 25px );
+}
+.CardItem_adjust:nth-child(3) {
+	bottom: -25px; left: calc( 50% - 25px );
+}
+.CardItem_adjust:nth-child(4) {
+	left: -25px; top: calc( 50% - 25px );
+}
+
+.CardItem_btnsArea {
+	float: right;
+	position: absolute;	
+	text-align: center; 
+	color: #fff;
+	width: 100%; height: 100%;
+	z-index: 1000;	
+	font-size: 8px;
+	right: 0px;
+	margin: 0px;
+	padding: 0px;
+	display: none;
+}
+
+.CardItem_eventArea {
+	display: none;
+}
+
+.CardItem_btn {
+	display: inline-block;
+	width: 40px; height: 40px;
+	border-radius: 100%;	
+}
+
+input.CardItem_mark {	
+	width: 20px; height: 20px;
+	margin-top: 8px; margin-left: 10px;
+}
+
+.CardItem_btnsArea>label:nth-child(2) .CardItem_close {
+	font-size: 14px;
+	width: 20px;  height: 20px;
+    border-radius: 100%;
+    top: 100% !important;
+    float: right;
+    transform: translateY(-140%)!important;
+    text-align: center;
+    color: #000;
+}
+
+.CardItem_btn:hover {
+	color: #333;
+	cursor: pointer;
+}
+
+
+.CardItem_modifyArea:hover  label:nth-child(2){
+	display: inline-block;
+}
+
+.CardItem_btnsArea>label {
+	position: absolute;
+}
+.CardItem_btnsArea>label:nth-child(1) {
+	width: 100%;
+	height: 35px;
+	left: 0px;
+    bottom: 0px;
+	text-align: left;
+	background-color: rgba(232, 232, 232, 0.8);
+	margin: 0px;
+
+}
+.CardItem_btnsArea>label:nth-child(2) {
+	width: 60px;
+	padding-right: 3px;
+	height: 100%;
+	top: 0px;
+	right: 0px;	
+	display: none;
+	z-index: 2;	
+} 
+.CardItem_btnsArea>label:nth-child(2) .CardItem_btn {
+	position: absolute;
+	top: 50%; right: 3px;
+	transform: translateY(-50%);
+}
+
+.CardItem_btnsArea>label:nth-child(2) .CardItem_edit {
+	margin-top: -30px;
+	font-size: 20px;
+    padding-top: 10px;
+	background-color: #999;
+}
+.CardItem_btnsArea>label:nth-child(2) .CardItem_preview {
+	margin-top: 30px;
+	font-size: 20px;
+    padding-top: 10px;
+	background-color: #999;
+}
+
+.CardItem_sketch {
+	width: 100%; height: 100%;
+	text-align: center;
+}
+
+.CardItem_sketch>img {
+	max-width: 100%;
+	height: 100%;	
+}
+
+.CardItem_loadingTips {
+	opacity: 1;
+    visibility: visible;
+    left: 50%;
+    top: 50%;
+    position: absolute;
+    padding: 3px 5px;
+    font-size: 14px;
+    z-index: 9999;
+    margin-left: -30px;
+    text-align: center;
+    width: auto;
+	color: #e4e4e4;
+    background-color: #373737;
+	animation: bar-stripes 2s linear infinite;
+    border-color: #797979;
+	cursor: default;
+	border: 1px solid transparent;
+    border-radius: 4px;
+    font-family: Verdana;
+	background-image: linear-gradient(45deg, rgba(255, 255, 255, .15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%, transparent 75%, transparent);
+	background-size: 40px 40px;
+	box-shadow: inset 0 -1px 0 rgba(0, 0, 0, .15);	
+	display: block;
+}
+
+
+
+/**********************/
+.pswp__preloader__icn {
+  vertical-align: middle;
+  margin-top: 30px;
+  display: inline-block;
+  opacity:0.75;
+  width: 24px;
+  height: 24px;
+  -webkit-animation: clockwise 500ms linear infinite;
+  animation: clockwise 500ms linear infinite;
+}
+ 
+/* The idea of animating inner circle is based on Polymer loading indicator by Keanu Lee https://blog.keanulee.com/2014/10/20/the-tale-of-three-spinners.html */
+.pswp__preloader__cut {
+  position: relative;
+  width: 12px;
+  height: 24px;
+  overflow: hidden;
+  top: 0;
+  left: 0;
+}
+ 
+.pswp__preloader__donut {
+  box-sizing: border-box;
+  width: 24px;
+  height: 24px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  border-left-color: transparent;
+  border-bottom-color: transparent;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: none;
+  margin:0;
+   -webkit-animation: donut-rotate 1000ms cubic-bezier(.4,0,.22,1) infinite;
+  animation: donut-rotate 1000ms cubic-bezier(.4,0,.22,1) infinite;
+} 
+
+@keyframes clockwise {
+  0% { transform: rotate(0deg) }
+  100% { transform: rotate(360deg) }
+}
+@-webkit-keyframes donut-rotate {
+  0% { -webkit-transform: rotate(0) }
+  50% { -webkit-transform: rotate(-140deg) }
+  100% { -webkit-transform: rotate(0) }
+}
+@keyframes donut-rotate {
+  0% { transform: rotate(0) }
+  50% { transform: rotate(-140deg) }
+  100% { transform: rotate(0) }
+}
+

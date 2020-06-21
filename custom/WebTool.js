@@ -60,6 +60,9 @@ objectTool.urlQuery = function (url, key) {
 }
 
 objectTool.attachParams = function(url, params) {
+  if(!url) {
+    return url;
+  }
   if (url.indexOf("?") === -1) {
     flag = 0;
   } else {
@@ -99,6 +102,20 @@ objectTool.readFile = function (path, callback) {
       }
     }
   })
+}
+
+objectTool.deleteFile = function(path, callback) {
+  console.log(path)
+  if(fs.existsSync(path)) {
+    fs.unlink(path, function (err) {
+      if (err) {
+        throw err;
+      }
+      if(typeof(callback) === "function") {
+        callback();
+      }
+    })
+  }
 }
 
 objectTool.stringToObject = function (str) {
@@ -152,7 +169,7 @@ requestTool.getClientIp = function (req) {
 };
 
 requestTool.sendData = function (data, req, res) {
-  res.setHeader('content-type', 'text/html;charset=utf-8');
+  
   if (req.query && req.query.callback) {
     //jsonp
     if (typeof (data) === "object") {
@@ -163,12 +180,58 @@ requestTool.sendData = function (data, req, res) {
       data: data
     };
     var str = "typeof {{callback}} === 'function' && {{callback}}({{data}})".bindData(param);
+    res.setHeader('content-type', 'text/html;charset=utf-8');
     res.send(str);
   } else {
     //json
     res.json(data);
   }
+  return ;
 }
+//模板HTML字符串与JSON对象绑定
+String.prototype.bindData = function (obj, filter) {
+  var ret = this;
+  if (obj && typeof (obj) === "object") {
+    var re = /{{([^}}]+)?}}/g;
+    this.filter = filter;
+    var _self = this;
+    var ret = this.replace(re, function (m, t) {
+      var temp = obj;
+      var ret = (function () {
+        var o = temp;
+        var keys = t.split(".");
+        for (var i = 0; i < keys.length; i++) {
+          o = o[keys[i]];
+          if (o === undefined || o === null) {
+            o = "{{" + keys[i] + "}}";
+          }
+        }
+        var m = !(_self.filter && typeof (_self.filter[keys[i - 1]]) === "function") ? o : _self.filter[keys[i - 1]](o);
+        return m;
+      })();
+      return ret;
+    });
+  }
+  return ret;
+}
+
+Array.prototype.getIndex = function (key, value) {
+  var ret = -1;
+  for (var i = 0; i < this.length; i++) {
+    if (this[i][key] === value) {
+      ret = i;
+      break;
+    }
+  }
+  return ret;
+}
+
+Array.prototype.removeItem = function (key, value) {
+  var index = this.getIndex(key, value);
+  var ret = this.splice(index, 1);
+  return ret;
+}
+
 
 exports.requestTool = requestTool;
 exports.objectTool = objectTool;

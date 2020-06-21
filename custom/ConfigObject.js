@@ -50,6 +50,66 @@ ConfigObject.prototype.update = function (data) {
   this.save();
 }
 
-exports.create = function (name, obj, flag) {
-  return new ConfigObject(name, obj, flag);
-};
+
+ConfigObject.prototype.get = function (key) {
+  var data = null;
+  var ret = null;
+  if (this.config) {
+    data = this.data;
+    if (key && data && data[key]) {
+      ret = data[key];
+    }
+  }
+  return ret;
+}
+
+ConfigObject.prototype.remove = function (key) {
+  var data = null;
+  var ret = null;
+  data = this.data;
+  if (key && data && data[key]) {
+    ret = data[key];
+    delete data[key];
+    this.save();
+  }
+  return ret;
+}
+
+ConfigObject.prototype.add = function (d, key) {
+  if (typeof (d) === "string") {
+    d = JSON.parse(d);
+  }
+  var ret = null;
+  if (d && d.constructor.name === "Array") {
+    ret = [];
+    for (var i = 0; i < d.length; i++) {
+      var t = this._add(d[i]);
+      ret.push(t);
+    }
+  } else {
+    ret = this._add(d, key);
+  }
+  return ret;
+}
+
+
+ConfigObject.prototype._add = function (d, key) {
+  var data = this.data;
+  if (!key && d) {
+    key = murmur.x86.hash32(JSON.stringify(d), 25);
+  }
+  if (key && data) {
+    data[key] = d;
+    this.save();
+    data = {
+      key: key,
+      value: d
+    }
+  }
+
+  return data;
+}
+
+
+
+module.exports = ConfigObject;

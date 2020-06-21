@@ -1,0 +1,82 @@
+﻿.DataTable_emptyTip {
+    color: #fff;
+    text-shadow: 0px 0px 2px rgba(111, 111, 111, 1);
+    text-align: center;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.DataTable {
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+.DataTable .table>thead {
+    background-color: rgba(237, 237, 237, 0.8);
+    color: rgb(2, 82, 149);
+}
+
+.DataTable .table>thead>tr>th {
+    border-top: none;
+    text-align: center;
+    border-bottom: 1px solid rgba(51, 122, 183);
+}
+
+.DataTable>.table-striped>tbody>tr {
+    box-shadow: 0px -1px 0px inset rgba(51, 122, 183);
+    
+}
+
+
+
+.DataTable>.table>tbody>tr>td {
+    border-top: none;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.DataTable_page {
+    text-align: right;
+}
+
+.DataTable_page ul.pagination {
+    float: right;
+}
+
+ul.pagination li>a {
+    cursor: pointer;
+}
+
+.DataTable_tdContent {
+    text-align: center;
+    white-space: nowrap;
+}
+
+.DataTable_page ul.pagination li:hover {
+    cursor: pointer;
+}
+
+.DataTable_page ul.pagination li.active {
+    background-color: #337ab7;
+    color: #fff;
+}
+
+.DataTable_goBtnArea {
+    width: auto;
+    display: inline-block;
+    vertical-align: middle;
+    float: right;
+    margin: 5px 5px;
+}
+
+.DataTable_goBtnArea>.input-group {
+    width: 100%;
+}
+
+.CardItem_footArea {
+    display: flex;
+    align-items: center;
+}
+
+.CardItem_footArea .pagination {
+    margin: 5px 0px;
+}
