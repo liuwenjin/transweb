@@ -1401,21 +1401,25 @@ WebCpu.prototype.install = function (name) {
   }
 }
 
+WebCpu.prototype.renderCard = function(elem, option, callback) {
+  option = WebTool.copyObject(option);
+  option.callback = callback;
+  this.addCardItem(elem, option.url, option);
+}
+
 WebCpu.prototype.renderModule = function (elem, name) {
   var option = this.cards.main.task.option.router[name];
   if (!option) {
     option = this.cards.main.task.option.router["index"] || {};
   }
   this.updateModuleStyle(option.css);
-  this.addCardItem(elem, option.url, {
-    key: option.key || "transweb_cn",
-    callback: function (c, d, t) {
-      d.task.cards = option.children;
+  var callback = function(c, d, t) {
+    d.task.cards = option.children;
       if (d.cardName) {
         webCpu.cards[d.cardName] = d;
       }
-    }
-  });
+  }
+  this.renderCard(elem, option, callback);
 }
 
 WebCpu.prototype.updateModuleStyle = function (cssUrl) {
