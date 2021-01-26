@@ -43,4 +43,4 @@ transweb_cn({
     }
 })
 ```
-这个小程序可以在浏览器地址栏输入localhost:8686?url=view/helloword.js，再按会车运行。
+这个小程序可以在浏览器地址栏输入localhost:8686?url=view/helloword.js，再按回车运行。
