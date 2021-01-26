@@ -1,0 +1,9 @@
+{ secretId: 'AKID89zjIgR2b2LchaTuLqCRVN4gCbpxAmPr',
+  secretKey: 'RjOzRjqmX9jEdWL1Yw9ACDQXiknrqnZB',
+  appid: '1254183942',
+  bucket: 'transweb',
+  region: 'ap-beijing',
+  prefix: 'material/',
+  domain: 'https://transweb-1254183942.cos.ap-beijing.myqcloud.com' }
+http://localhost:8888/2018242870
+http://localhost:8888

@@ -1,6 +1,5 @@
-var path = require('path');
+
 var fs = require("fs");
-var moment = require('moment');
 
 var objectTool = {};
 objectTool.objectToString = function (obj) {
@@ -40,11 +39,7 @@ objectTool.objectToString = function (obj) {
   return str;
 }
 
-objectTool.getTime = function (format, time) {
-  var format = format || "YYYY-MM-DD";
-  var curDate = moment(time).format("YYYY-MM-DD");
-  return curDate;
-}
+
 
 objectTool.urlQuery = function (url, key) {
   if (url) {
@@ -104,20 +99,6 @@ objectTool.readFile = function (path, callback) {
   })
 }
 
-objectTool.deleteFile = function(path, callback) {
-  console.log(path)
-  if(fs.existsSync(path)) {
-    fs.unlink(path, function (err) {
-      if (err) {
-        throw err;
-      }
-      if(typeof(callback) === "function") {
-        callback();
-      }
-    })
-  }
-}
-
 objectTool.stringToObject = function (str) {
   function getObj(data) {
     return data;
@@ -130,11 +111,6 @@ objectTool.stringToObject = function (str) {
   }
 }
 
-objectTool.isExpired = function (duration, time) {
-  var now = moment().format();
-  var t = moment(time).add(duration, "y");
-  return t < now;
-}
 
 objectTool.calcOrderList = function (list, config) {
   var v = 0;
@@ -212,23 +188,6 @@ String.prototype.bindData = function (obj, filter) {
       return ret;
     });
   }
-  return ret;
-}
-
-Array.prototype.getIndex = function (key, value) {
-  var ret = -1;
-  for (var i = 0; i < this.length; i++) {
-    if (this[i][key] === value) {
-      ret = i;
-      break;
-    }
-  }
-  return ret;
-}
-
-Array.prototype.removeItem = function (key, value) {
-  var index = this.getIndex(key, value);
-  var ret = this.splice(index, 1);
   return ret;
 }
 

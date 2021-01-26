@@ -98,11 +98,37 @@ WebAdapter.request = function (url, type, params, callback, dataType, dsl) {
 }
 
 WebAdapter.loadCardData = function (url, key, myCallback) {
+  var id = MurmurHash.rule(url);
+  var aItem = {
+    id: id,
+    url: url,
+    key: key,
+    callback: myCallback
+  };
+  this.jsonpMap = this.jsonpMap || {};
+  this.jsonpMap[key] = this.jsonpMap[key] || {};
+  this.jsonpMap[key][id] = aItem;
+
+  this.jsonpCallback = this.jsonpCallback || {};
+  this.jsonpCallback[key] = this.jsonpCallback[key] || [];
+  this.jsonpCallback[key].push(aItem);
+  var _self = this;
   window[key] = function (d) {
     d.appUrl = url.split("?")[0];
-    myCallback(d);
+    var item = _self.jsonpMap[key][id];
+    if (item && item.id === id && _self.jsonpMap[key][id] && item.callback) {
+      item.callback(d);
+    }
+    var index = _self.jsonpCallback[key].indexOf(item);
+    _self.jsonpCallback[key].splice(index, 1);
+    delete _self.jsonpMap[key][id];
+
+    if (_self.jsonpCallback[key].length !== 0) {
+      item = _self.jsonpCallback[key].pop();
+      _self.loadCardData(item.url, item.key, item.callback);
+    }
   };
-  var id = MurmurHash.rule(url);
+
   var elem = document.getElementById(id);
   if (elem) {
     elem.parentNode.removeChild(elem);
@@ -115,12 +141,12 @@ WebAdapter.loadCardData = function (url, key, myCallback) {
   document.head.appendChild(s);
 }
 
-var WebRequest = function (url, type, options) {
+var WebRequest = function (url, type, options, contentType, origin) {
   var type = type || "jsonp";
   if (type === "jsonp" || type === "noEcho") {
     return (new CustomInterface(url, type, options));
   } else {
-    return (new AjaxInterface(url, type, options));
+    return (new AjaxInterface(url, type, options, contentType, origin));
   }
 }
 
@@ -198,44 +224,87 @@ BackInterface.prototype.init = function (data) {
 }
 
 
-var AjaxInterface = function (url, type, dType) {
+var AjaxInterface = function (url, type, dType, cType, origin) {
   this.url = url;
+  this.contentType = cType
+  this.type = type;
+  this.dType = dType;
+  this.cType = cType;
+  this.origin = origin;
   return this.init(type, dType);
 }
-AjaxInterface.prototype.init = function (type, dType) {
-  this.httpObj = this.getHttpObj();
-  if (this.httpObj) {
-    var _this = this;
 
-    return (function (query, callback, dsl) {
-      var data = dsl;
-      var url = _this.url;
-      if (type.toLocaleUpperCase() === "GET") {
-        url = WebTool.attachParams(url, query);
-      } else {
-        var data = WebTool.attachParams("", query).split("?")[1] || dsl;
-      }
-      _this.httpObj.onreadystatechange = function () {
-        if (_this.httpObj.readyState == 4 || _this.httpObj.readyState == "complete") {
-          if (typeof (callback) === "function") {
-            var d = _this.httpObj.responseText;
-            tData = d;
-            if (dType === "json") {
-              try {
-                d = JSON.parse(d);
-              } catch (e) {
-                if (window["$"] && $.xml2json) {
-                  d = $.xml2json(tData);
-                }
-              }
+AjaxInterface.prototype.sendData = function (query, callback, dsl) {
+  var data = "";
+  var url = this.url;
+  var type = this.type;
+  var dType = this.dType;
+  if (type.toLocaleUpperCase() === "GET" || type.toLocaleUpperCase() === "DELETE") {
+    url = WebTool.attachParams(url, query);
+  } else if (query.constructor.name === "FormData") {
+    data = query;
+  } else {
+    data = WebTool.attachParams("", query).split("?")[1];
+  }
+  var _self = this;
+  this.httpObj.onreadystatechange = function () {
+    if (_self.httpObj.readyState == 4 || _self.httpObj.readyState == "complete") {
+      if (typeof (callback) === "function") {
+        var d = _self.httpObj.responseText;
+        tData = d;
+        if (dType === "json") {
+          try {
+            d = JSON.parse(d);
+          } catch (e) {
+            if (window["$"] && $.xml2json) {
+              d = $.xml2json(tData);
             }
-            callback(d);
           }
         }
-      };
-      _this.httpObj.open(type, url, true);
-      _this.httpObj.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
-      _this.httpObj.send(data);
+        callback(d);
+      }
+    }
+  };
+  this.httpObj.open(type, url, true);
+  if (dsl && typeof (dsl) !== "string") {
+    this.httpObj.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
+    data = dsl;
+  } else if (dsl && typeof (dsl) === "string") {
+    this.httpObj.setRequestHeader("Content-Type", dsl);
+    data = JSON.stringify(query);
+    if (dsl.search("application/x-www-form-urlencoded") !== -1) {
+      data = WebTool.attachParams("", query).split("?")[1];
+    }
+  } else if (this.contentType && query.constructor.name !== "FormData") {
+    this.httpObj.setRequestHeader("Content-Type", this.contentType);
+    data = JSON.stringify(query);
+    if (this.contentType.search("application/x-www-form-urlencoded") !== -1) {
+      data = WebTool.attachParams("", query).split("?")[1];
+    }
+  } else {}
+  this.httpObj.send(data);
+}
+
+AjaxInterface.prototype.init = function (origin) {
+  this.httpObj = this.getHttpObj();
+  if (this.httpObj) {
+    var _self = this;
+    return (function (query, callback, dsl) {
+      if (_self.origin) {
+        var key = MurmurHash.rule(_self.origin, 31);
+        webCpu.crossItem = webCpu.crossItem || {};
+        if(webCpu.crossItem[key]) {
+          webCpu.crossItem[key].request(_self.url, query, _self.type, callback)
+        }
+        else {
+          var proxy = _self.origin + "/proxy.html";
+          webCpu.crossItem[key] = new CrossDomainService(proxy, function () {
+            webCpu.crossItem[key].request(_self.url, query, _self.type, callback);
+          })
+        }
+      } else {
+        _self.sendData(query, callback, dsl);
+      }
     });
   }
 }
@@ -358,7 +427,7 @@ ViewControl.prototype.updateFromRemote = function (task) {
   var _self = this;
   task.query = task.query || {};
   task.query._t = (new Date()).getTime();
-  WebAdapter.request(task.url, task.requestType || "jsonp", task.query, function (data) {
+  var callback = function (data) {
     if (task.dataType === "json") {
       var tData = data;
       try {
@@ -375,31 +444,23 @@ ViewControl.prototype.updateFromRemote = function (task) {
     }
     task.data = data;
     _self.update(task);
-  }, task.dsl);
-
+  };
+  if (task.iframeProxy && webCpu && webCpu.crossItem) {
+    var rType = task.requestType || "get";
+    var crossItem = webCpu.crossItem[task.iframeProxy] || webCpu.crossItem;
+    if (typeof (crossItem.request) === "function") {
+      crossItem.request(task.url, task.query, rType, callback);
+    }
+  } else {
+    var rType = task.requestType || "jsonp";
+    WebAdapter.request(task.url, rType, task.query, callback, task.dsl);
+  }
 }
 
 ViewControl.prototype.update = function (task) {
   if (this.isReady()) {
     var t = task.container;
-    // if (task.cardName && webCpu.CardItem && webCpu.CardItem.checkData) {
-    //   var checkData = webCpu.CardItem.checkData;
-    //   if (task.promise && typeof (task.promise.checkData) === "function") {
-    //     checkData = task.promise.checkData;
-    //   }
-    //   if (typeof (checkData) === "function" && webCpu.cards[task.cardName] && webCpu.cards[task.cardName].task.url) {
-    //     var ret = checkData(task.data)
-    //     if (!ret && webCpu && webCpu.cards && webCpu.cards[task.cardName]) {
-    //       webCpu["CardItem"].switchState(webCpu.cards[task.cardName], "empty");
-    //       if (!webCpu.layout || (webCpu.layout && webCpu.layout.mode !== "edit")) {
-    //         webCpu["CardItem"].dismissMask(webCpu.cards[task.cardName]);
-    //       }
-    //       return false;
-    //     }
-    //   }
-    // }
 
-    // try {
     if (task.promise && typeof (task.promise.beforeRender) === "function") {
       if (task.cardName) {
         console.log("start beforeRender of task[%1]".replace("%1", task.cardName));
@@ -419,34 +480,6 @@ ViewControl.prototype.update = function (task) {
     }
     this.updateView(task, tData);
 
-
-    // } catch (e) {
-    //   if (task.cardName) {
-    //     console.log("error of task[%1]: ".replace("%1", task.cardName) + e.message);
-    //     if (webCpu && webCpu.CardItem && webCpu.cards && webCpu.cards[task.cardName]) {
-    //       webCpu.CardItem.switchMask(webCpu.cards[task.cardName], "error", e.message);
-    //     }
-    //   } else {
-    //     console.log("error: " + e);
-    //     webCpu.CardItem.switchMask(webCpu.cards["transweb"], "html", e.message);
-    //   }
-    // }
-
-    if (window.webCpu && webCpu.CardItem && task.cardName) {
-      for (var k in task.busOut) {
-        webCpu.CardItem.message = webCpu.CardItem.message || {};
-        webCpu.CardItem.message[k] = webCpu.CardItem.message[k] || {};
-
-        webCpu.CardItem.message[k][task.cardName] = task.busOut[k](task.container, task.data, task);
-        if (webCpu.cards[k]) {
-          webCpu["CardItem"].fresh(webCpu.cards[k]);
-        }
-      }
-      webCpu.CardItem.message[task.cardName] = {};
-    }
-
-
-    delete task.outerData;
   } else {
     this.mission.push(task);
   }
@@ -480,7 +513,7 @@ ViewControl.prototype.createDom = function (container, json, data) {
     } else {
       container.prepend(label);
       label.prepend(elem);
-      if(tag === "textarea" && json.props) {
+      if (tag === "textarea" && json.props) {
         elem.innerHTML = json.props.value || ""
       }
     }
@@ -543,7 +576,7 @@ ViewControl.prototype.updateView = function (task, tData) {
     }
   }
 
-  if (task.option && task.footArea && webCpu.CardItem && webCpu.CardItem.Pagination && task.option.page) {
+  if (task.option && task.footArea && webCpu && webCpu.CardItem && webCpu.CardItem.Pagination && task.option.page) {
     var page = task.option.page;
     if (typeof (task.option.pageFilter) === "function") {
       page = task.option.pageFilter(page);
@@ -556,10 +589,11 @@ ViewControl.prototype.updateView = function (task, tData) {
       webCpu.render("DataTable", this);
     }
 
-    if (page && page.total) {
+    if (page) {
       task.pagination = new webCpu.CardItem.Pagination(task.footArea, page.total, page.size, page.current, function (n, size) {
+        webCpu.CardItem.switchState(task, "loading");
         task.pageCallback(n, size);
-      });
+      }, page.flag);
     }
   }
 
@@ -1169,12 +1203,43 @@ var WebCpu = function (container, url, config) {
   }
 }
 
+WebCpu.prototype.initWithProxy = function (container, app) {
+  if (this.iframeProxy && typeof (this.iframeProxy) === "object") {
+    var count = 0;
+    this.crossItem = {};
+    var _self = this;
+    for (var k in this.iframeProxy) {
+      var url = this.iframeProxy[k];
+      if (url) {
+        this.crossItem[k] = new CrossDomainService(url, function () {
+          count--;
+          if (count < 1) {
+            _self.initWebApp(container, app);
+          }
+        })
+      }
+      count++;
+    }
+    if (count < 1) {
+      _self.initWebApp(container, app);
+    }
+  } else {
+    var url = this.iframeProxy;
+    this.crossItem = new CrossDomainService(url, function () {
+      _self.initWebApp(container, app);
+    })
+  }
+}
+
 WebCpu.prototype.exec = function (container, app, config) {
   this.cards = {};
   if (config) {
     config.path = config.path || this.componentPath;
     this.initModule(config, "main");
     var task = config;
+    if (typeof (config.interface) === "string") {
+      config.interface = webCpu.interface[config.interface];
+    }
     if (config.interface) {
       for (var k in config.interface) {
         task[k] = config.interface[k];
@@ -1194,22 +1259,30 @@ WebCpu.prototype.exec = function (container, app, config) {
   }
 }
 
+WebCpu.prototype.initAdapter = function (config) {
+  var t = {};
+  for (var k in config) {
+    var adapter = config[k];
+    if (adapter.flag) {
+      var type = adapter.type || adapter.requestType || adapter.method;
+      t[k] = new WebRequest(adapter.url, type, adapter.dataType, adapter.contentType, adapter.origin);
+    }
+  }
+  return t;
+}
+
+
 WebCpu.prototype.startApp = function (elem, config) {
-  webCpu.componentPath = config.components || "transweb/components";
-  webCpu.exec(elem, config.main, config.dependency);
+  this.componentPath = config.components || "transweb/components";
+  this.exec(elem, config.main, config.dependency);
 }
 
 WebCpu.prototype.initModule = function (config, name, path) {
   var _self = this;
   var callback = function (container, data, task) {
-    _self.adapter = {};
-    for (var k in webCpu.interface) {
-      var adapter = webCpu.interface[k];
-      if (adapter.flag) {
-        var type = adapter.type || adapter.requestType;
-        _self.adapter[k] = new WebRequest(adapter.url, type, adapter.dataType);
-      }
-    }
+    _self.adapter = _self.initAdapter(_self.interface);
+
+
     if (typeof (config.callback) === "function") {
       config.callback(container, data, task);
     }
@@ -1319,7 +1392,7 @@ WebCpu.prototype.addCardItem = function (container, cardData, options, callback)
   } else {}
   var task = this.transferCardData(container, cardData, options, callback);
   if (task) {
-    this.render("CardItem", task, cardData.path || options.components || webCpu.componentPath);
+    this.render("CardItem", task, cardData.path || options.components || this.componentPath);
   }
 }
 
@@ -1662,7 +1735,7 @@ WebCpu.prototype.initProject = function (elem, routerOption, titleData, flag) {
       },
       promise: {
         beforeRender: function (container, data, task) {
-          task.current = location.pathname.replace(/^\//, "");
+          task.current = location.hash.replace("#", "");
           _self.router = task.option.router;
         },
         afterRender: function (container, data, task) {
@@ -1753,7 +1826,7 @@ WebCpu.prototype.initProject = function (elem, routerOption, titleData, flag) {
 }
 
 window.webCpu = new WebCpu();
-webCpu.componentPath = "components";
+webCpu.componentPath = "/transweb/components";
 
 
 var CrossDomainService = function (interfaceData, callback, cardList, dataAdapter) {
@@ -1926,11 +1999,15 @@ WebTool.attachParams = function (url, params) {
     flag = 1;
   }
   for (var k in params) {
+    var v = params[k];
+    if (typeof (v) != "string") {
+      v = JSON.stringify(v);
+    }
     if (flag == 0) {
-      url += "?" + k + "=" + encodeURIComponent(params[k]);
+      url += "?" + k + "=" + encodeURIComponent(v);
       flag = 1;
     } else {
-      url += "&" + k + "=" + encodeURIComponent(params[k]);
+      url += "&" + k + "=" + encodeURIComponent(v);
     }
   }
   return url;

@@ -117,6 +117,11 @@
 	text-align: center;
 }
 
+.CardItem_title>.navbar-nav>li>a {
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
 
 
 .CardItem_eventArea .CardItem_adjust {
@@ -267,86 +272,3 @@ input.CardItem_mark {
 	max-width: 100%;
 	height: 100%;	
 }
-
-.CardItem_loadingTips {
-	opacity: 1;
-    visibility: visible;
-    left: 50%;
-    top: 50%;
-    position: absolute;
-    padding: 3px 5px;
-    font-size: 14px;
-    z-index: 9999;
-    margin-left: -30px;
-    text-align: center;
-    width: auto;
-	color: #e4e4e4;
-    background-color: #373737;
-	animation: bar-stripes 2s linear infinite;
-    border-color: #797979;
-	cursor: default;
-	border: 1px solid transparent;
-    border-radius: 4px;
-    font-family: Verdana;
-	background-image: linear-gradient(45deg, rgba(255, 255, 255, .15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%, transparent 75%, transparent);
-	background-size: 40px 40px;
-	box-shadow: inset 0 -1px 0 rgba(0, 0, 0, .15);	
-	display: block;
-}
-
-
-
-/**********************/
-.pswp__preloader__icn {
-  vertical-align: middle;
-  margin-top: 30px;
-  display: inline-block;
-  opacity:0.75;
-  width: 24px;
-  height: 24px;
-  -webkit-animation: clockwise 500ms linear infinite;
-  animation: clockwise 500ms linear infinite;
-}
- 
-/* The idea of animating inner circle is based on Polymer loading indicator by Keanu Lee https://blog.keanulee.com/2014/10/20/the-tale-of-three-spinners.html */
-.pswp__preloader__cut {
-  position: relative;
-  width: 12px;
-  height: 24px;
-  overflow: hidden;
-  top: 0;
-  left: 0;
-}
- 
-.pswp__preloader__donut {
-  box-sizing: border-box;
-  width: 24px;
-  height: 24px;
-  border: 2px solid #fff;
-  border-radius: 50%;
-  border-left-color: transparent;
-  border-bottom-color: transparent;
-  position: absolute;
-  top: 0;
-  left: 0;
-  background: none;
-  margin:0;
-   -webkit-animation: donut-rotate 1000ms cubic-bezier(.4,0,.22,1) infinite;
-  animation: donut-rotate 1000ms cubic-bezier(.4,0,.22,1) infinite;
-} 
-
-@keyframes clockwise {
-  0% { transform: rotate(0deg) }
-  100% { transform: rotate(360deg) }
-}
-@-webkit-keyframes donut-rotate {
-  0% { -webkit-transform: rotate(0) }
-  50% { -webkit-transform: rotate(-140deg) }
-  100% { -webkit-transform: rotate(0) }
-}
-@keyframes donut-rotate {
-  0% { transform: rotate(0) }
-  50% { transform: rotate(-140deg) }
-  100% { transform: rotate(0) }
-}
-

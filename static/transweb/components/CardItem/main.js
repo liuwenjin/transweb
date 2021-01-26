@@ -525,6 +525,9 @@
   }
 
   webCpu.CardItem.updateCardLayout = function (data) {
+    if(!(data && data.task && data.task.container)) {
+      return false;
+    }
     var container = data.task.container.parentNode.parentNode;
     if (!data.title && !data.titleMenu && !data.titleMenu && !data.titleData && !data.breadcrumb && !data.dialogData) {
       $(container).children(".CardItem_titleArea").hide();
@@ -644,6 +647,10 @@
         }
         titleSelector.html(temp);
         titleSelector.find(".titleInfoArea").html(data.dialogData.title);
+        if (data.dialogData.titleStyle) {
+          titleSelector.find(".titleInfoArea").css(data.dialogData.titleStyle);
+        }
+
         data.dialogData.closeType = data.dialogData.closeType || "";
 
         var leftSelector = titleSelector.find(".leftEmptyArea");
@@ -844,19 +851,15 @@
         template: html,
         promise: {
           afterRender: function (c, d, t) {
-            if (typeof (param.callback) === "function") {
-              param.callback(c);
-            }
+            // if (typeof (param.callback) === "function") {
+            //   param.callback(c, d, t);
+            // }
           }
         }
       }
     }
-    this.renderCardDialog(mCard, card, {
-      title: title,
-      closeType: "right",
-      titlePosition: "left",
-      closeCallback: param.closeCallback
-    }, style);
+    param.title = title;
+    this.renderCardDialog(mCard, card, param, style);
   }
 
 
@@ -872,9 +875,6 @@
     }
     webCpu.renderCard(task.mask, option, function (c, d, t) {
       var tempCard = {
-        // titleStyle: {
-        //   "box-shadow": "0px -1px 0px inset #fff"
-        // },
         titleHeight: 50,
         dialogData: params,
         style: style,
@@ -883,14 +883,20 @@
           promise: {
             afterRender: function (c1, d1, t1) {
               webCpu.addCardItem(c1, d1);
+              if (typeof (params.callback) === "function") {
+                params.callback(c1, d1, t1);
+              }
             }
           }
         }
       }
+      if (params.foot) {
+        tempCard.foot = params.foot;
+      }
+
       t.data = tempCard;
       mCard.task.childCard = tempCard;
     });
-
   }
 
   webCpu.CardItem.moduleDialog = function (mCard, name, params) {
@@ -917,6 +923,33 @@
       }
       t.data = tempCard;
       mCard.task.childCard = tempCard;
+    });
+  }
+
+  webCpu.CardItem.confirmRequest = function (adapterItem, query, card, tips, callback) {
+    webCpu.CardItem.htmlDialog(card, "提示", "<div style='padding: 20px; font-size: 20px;'>" + tips + "</div>", {
+      foot: '<div><input class="btn btn-primary btn-sm" type="button" value="确认">\
+                  <input class="btn btn-default btn-sm" type="button" value="取消"></div>',
+      callback: function (c, d, t) {
+        $(t.footArea).find(".btn-primary").on("click", function () {
+          adapterItem(query, function (ret) {
+            callback(ret);
+          });
+        });
+        $(t.footArea).find(".btn").on("click", function () {
+          webCpu.CardItem.dismissMask(card);
+        });
+      },
+      titlePosition: "left",
+      titleStyle: {
+        "padding-left": "20px"
+      }
+    }, {
+      border: "solid 1px #ddd",
+      "border-radius": "5px",
+      "background-color": "#fefefe",
+      width: "450px",
+      height: "200px"
     });
   }
 
@@ -951,6 +984,167 @@
     data.task.container.innerHTML = "";
     data.task.query = query || data.task.query;
     webCpu.render(data.className || "TemplateItem", data.task, data.componentPath || this.config.path);
+  }
+
+  webCpu.CardItem.Pagination = function (container, total, number, current, callback, flag) {
+    this.container = container;
+    this.total = total || 0;
+    if (flag) {
+      this.total = 100000000;
+    }
+    this.size = number || 10;
+    this.flag = flag;
+    this.count = Math.ceil(this.total / (this.size));
+    this.current = current || 1;
+    this.container.innerHTML = "";
+    this.callback = callback;
+    var nav = document.createElement("nav");
+    this.container.appendChild(nav);
+
+    $(nav).css({
+      "line-height": "40px",
+      "padding-left": "10px"
+    })
+    this.ul = document.createElement("ul");
+    this.ul.setAttribute("class", "pagination pagination-sm");
+    var label = document.createElement("div");
+    if (this.count < 1000) {
+      label.innerHTML = '<label class="goToPageItem" style="float: left; margin-right: 5px; margin-bottom: 0px;"><span>前往</span>\
+                        <select value=' + current + ' class="pageNumber form-control input-sm" style="width: auto;display: inline-block; color: #999; padding: 0px 5px;"></select>页</label> \
+                        <label style="margin-bottom: 0px;"><span>每页</span><select value=' + number + ' class="pageSize form-control input-sm" style="width: auto;display: inline-block; color: #999; padding: 0px 5px;"></select>条</label> \
+                        <label class="totalItemInfo" style="margin-bottom: 0px;"> 总条数: <span class="countValue">' + total + '</span>条</label>'
+
+    } else {
+      label.innerHTML = '<label class="goToPageItem" style="float: left; margin-right: 5px;"><span>前往</span>\
+                        <input value=' + (this.current) + ' class="pageNumber form-control input-sm" style="width: auto;display: inline-block; color: #999; padding: 0px 5px; width: 60px;"/>页 \
+                        <button style="margin: 0 10px;" class="confirmJumpBtn btn btn-primary">跳转</button></label> \
+                        <label><span>每页</span><select value=' + number + ' class="pageSize form-control input-sm" style="width: auto;display: inline-block; color: #999; padding: 0px 5px;"></select>条</label> \
+                        <label class="totalItemInfo" > 总条数: <span class="countValue">' + total + '</span>条</label>'
+    }
+
+    label.setAttribute("class", "DataTable_goBtnArea");
+    label.style.display = "inline-block";
+    label.style.verticalAlign = "middle";
+    this.ul.style.display = "inline-block";
+    this.ul.style.margin = "0px";
+    this.ul.style.verticalAlign = "middle";
+    nav.appendChild(this.ul);
+    nav.appendChild(label);
+    this.goBtnArea = label;
+    var select = $(label).find("select.pageSize");
+    var sizes = [10, 20, 50, 100];
+    for (var i = 0; i < sizes.length; i++) {
+      $("<option value=" + Number(sizes[i]) + ">" + sizes[i] + "</option>").appendTo(select);
+    }
+    if (!this.flag) {
+      if (this.current > this.count) {
+        this.current = this.count;
+      }
+      if (this.count < 1000) {
+        var select = $(label).find("select.pageNumber");
+        for (var i = 0; i < this.count; i++) {
+          // $("<option value=" + (i + 1) + ">" + (i + 1) + "</option>").appendTo(select);
+          $("<option>" + (i + 1) + "</option>").appendTo(select);
+        }
+      }
+    } else {
+      $(label).find(".goToPageItem").hide();
+      $(label).find(".totalItemInfo").hide();
+    }
+
+    this.updatePages(this.current, this.size, this.flag);
+  }
+
+  webCpu.CardItem.Pagination.prototype.updatePages = function (n, size, flag) {
+    n = Number(n) || 0;
+    if (n < this.count + 1) {
+      this.ul.innerHTML = "";
+      this.current = n;
+
+
+      if (!flag) {
+        if (this.current < 5) {
+          $(this.ul).append("<li  class='active'><a>" + (this.current) + "</a></li>");
+          for (var i = 1; i < this.current; i++) {
+            $(this.ul).prepend("<li><a>" + (this.current - i) + "</a></li>");
+          }
+          if (this.current !== 1) {
+            $(this.ul).prepend("<li><a>上一页</a></li>");
+          }
+        } else {
+          $(this.ul).prepend("<li><a>" + (this.current - 1) + "</a></li>");
+          $(this.ul).prepend("<li><a>" + (this.current - 2) + "</a></li>");
+
+          $(this.ul).prepend("<li><a>...</a></li>");
+
+          $(this.ul).prepend("<li><a>1</a></li>");
+          $(this.ul).prepend("<li><a>上一页</a></li>");
+        }
+
+        if (this.count - this.current < 4) {
+          for (var i = 1; i < this.count - this.current + 1; i++) {
+            $(this.ul).append("<li><a>" + (this.current + i) + "</a></li>");
+          }
+          if (this.current !== this.count) {
+            $(this.ul).append("<li><a>下一页</a></li>");
+          }
+        } else {
+          $(this.ul).append("<li><a>" + (this.current + 1) + "</a></li>");
+          $(this.ul).append("<li><a>" + (this.current + 2) + "</a></li>");
+          $(this.ul).append("<li><a>...</a></li>");
+          $(this.ul).append("<li><a>" + this.count + "</a></li>");
+          $(this.ul).append("<li><a>下一页</a></li>");
+        }
+      } else {
+        $(this.ul).prepend("<li><a>上一页</a></li>");
+        $(this.ul).append("<li><a>下一页</a></li>");
+      }
+
+
+      var _self = this;
+      $(this.container).find("li>a").click(function () {
+        var p = Number(this.innerHTML);
+        if (this.innerHTML == "下一页") {
+          p = _self.current + 1;
+        } else if (this.innerHTML == "上一页") {
+          p = _self.current - 1;
+        } else if (this.innerHTML == "...") {
+          p = (Number(this.parentNode.previousSibling.innerText) || 0) + 1;
+        } else {}
+
+        if (typeof (_self.callback) === "function") {
+          var size = Number($(_self.container).find("select.pageSize").val()) || 10;
+          _self.callback(p, size);
+        }
+
+      });
+
+      $(this.container).find("select.pageNumber").val(n + "");
+
+      $(this.container).find("select.pageNumber").on("change", function () {
+        var value = Number($(this).val());
+        var size = Number($(_self.container).find("select.pageSize").val()) || 10;
+        if (value !== NaN && value < _self.count + 1 && value > 0) {
+          _self.callback(value, size);
+        }
+      });
+
+      $(this.container).find("input.pageNumber").on("change", function () {
+        var value = Number($(this).val());
+        var size = Number($(_self.container).find("select.pageSize").val()) || 10;
+        if (value !== NaN && value < _self.count + 1 && value > 0) {
+          _self.callback(value, size);
+        }
+      });
+
+      $(this.container).find("select.pageSize").val(Number(size));
+      $(this.container).find("select.pageSize").on("change", function () {
+        var value = Number($(this).val());
+        _self.callback(1, value);
+      });
+
+
+    }
   }
 
 })();

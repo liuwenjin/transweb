@@ -9,58 +9,238 @@
   <meta HTTP-EQUIV="Cache-Control" CONTENT="no-store, must-revalidate">
   <meta HTTP-EQUIV="expires" CONTENT="Wed, 26 Feb 1997 08:21:57 GMT">
   <meta HTTP-EQUIV="expires" CONTENT="0">
-  <link rel='stylesheet' type='text/css' href="libs/bootstrap/css/bootstrap.min.css" />
+  <link rel='stylesheet' type='text/css' href="/libs/bootstrap/css/bootstrap.min.css" />
   <title>Demo</title>
   <style>
     html,
     body {
+      width: 100%;
       height: 100%;
     }
 
-    * {
-      box-sizing: border-box;
-      -moz-box-sizing: border-box;
-      -webkit-box-sizing: border-box;
+    .box {
+      display: inline-block;
+      width: 100%;
+      height: 100%;
+      border-radius: 3px;
+      font-size: 30px;
+      padding: 1em;
+      background-color: #f2f2f2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      -webkit-transition: .3s color, .3s border;
+      transition: .3s color, .3s border;
+    }
+
+    [class*="loader-"] {
+      display: inline-block;
+      width: 1em;
+      height: 1em;
+      color: inherit;
+      vertical-align: middle;
+      pointer-events: none;
+    }
+
+    .loader-16 {
+      -webkit-transform: rotateZ(45deg);
+      transform: rotateZ(45deg);
+      -webkit-perspective: 1000px;
+      perspective: 1000px;
+      border-radius: 50%;
+    }
+
+    .loader-16:before,
+    .loader-16:after {
+      content: '';
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: inherit;
+      height: inherit;
+      border-radius: 50%;
+      -webkit-animation: 1s spin linear infinite;
+      animation: 1s spin linear infinite;
+    }
+
+    .loader-16:before {
+      -webkit-transform: rotateX(70deg);
+      transform: rotateX(70deg);
+    }
+
+    .loader-16:after {
+      -webkit-transform: rotateY(70deg);
+      transform: rotateY(70deg);
+      -webkit-animation-delay: .4s;
+      animation-delay: .4s;
+    }
+
+    @-webkit-keyframes rotate {
+      0% {
+        -webkit-transform: translate(-50%, -50%) rotateZ(0deg);
+        transform: translate(-50%, -50%) rotateZ(0deg);
+      }
+
+      100% {
+        -webkit-transform: translate(-50%, -50%) rotateZ(360deg);
+        transform: translate(-50%, -50%) rotateZ(360deg);
+      }
+    }
+
+    @keyframes rotate {
+      0% {
+        -webkit-transform: translate(-50%, -50%) rotateZ(0deg);
+        transform: translate(-50%, -50%) rotateZ(0deg);
+      }
+
+      100% {
+        -webkit-transform: translate(-50%, -50%) rotateZ(360deg);
+        transform: translate(-50%, -50%) rotateZ(360deg);
+      }
+    }
+
+    @-webkit-keyframes rotateccw {
+      0% {
+        -webkit-transform: translate(-50%, -50%) rotate(0deg);
+        transform: translate(-50%, -50%) rotate(0deg);
+      }
+
+      100% {
+        -webkit-transform: translate(-50%, -50%) rotate(-360deg);
+        transform: translate(-50%, -50%) rotate(-360deg);
+      }
+    }
+
+    @keyframes rotateccw {
+      0% {
+        -webkit-transform: translate(-50%, -50%) rotate(0deg);
+        transform: translate(-50%, -50%) rotate(0deg);
+      }
+
+      100% {
+        -webkit-transform: translate(-50%, -50%) rotate(-360deg);
+        transform: translate(-50%, -50%) rotate(-360deg);
+      }
+    }
+
+    @-webkit-keyframes spin {
+
+      0%,
+      100% {
+        box-shadow: .2em 0px 0 0px currentcolor;
+      }
+
+      12% {
+        box-shadow: .2em .2em 0 0 currentcolor;
+      }
+
+      25% {
+        box-shadow: 0 .2em 0 0px currentcolor;
+      }
+
+      37% {
+        box-shadow: -.2em .2em 0 0 currentcolor;
+      }
+
+      50% {
+        box-shadow: -.2em 0 0 0 currentcolor;
+      }
+
+      62% {
+        box-shadow: -.2em -.2em 0 0 currentcolor;
+      }
+
+      75% {
+        box-shadow: 0px -.2em 0 0 currentcolor;
+      }
+
+      87% {
+        box-shadow: .2em -.2em 0 0 currentcolor;
+      }
+    }
+
+    @keyframes spin {
+
+      0%,
+      100% {
+        box-shadow: .2em 0px 0 0px currentcolor;
+      }
+
+      12% {
+        box-shadow: .2em .2em 0 0 currentcolor;
+      }
+
+      25% {
+        box-shadow: 0 .2em 0 0px currentcolor;
+      }
+
+      37% {
+        box-shadow: -.2em .2em 0 0 currentcolor;
+      }
+
+      50% {
+        box-shadow: -.2em 0 0 0 currentcolor;
+      }
+
+      62% {
+        box-shadow: -.2em -.2em 0 0 currentcolor;
+      }
+
+      75% {
+        box-shadow: 0px -.2em 0 0 currentcolor;
+      }
+
+      87% {
+        box-shadow: .2em -.2em 0 0 currentcolor;
+      }
     }
   </style>
 </head>
 
 <body style="width: 100%; height: 100%; position: relative;">
-
+  <div class="box">
+    <div class="loader-16"></div>
+    <span style="position: absolute; font-size: 12px; margin-top: 70px;">请稍后...</span>
+  </div>
 </body>
-<script src="libs/jquery.min.js"></script>
-<script src="libs/bootstrap/js/bootstrap.min.js"></script>
-<script src="transweb/webCpu.js"></script>
+<script src="/libs/jquery.min.js"></script>
+<script src="/libs/bootstrap/js/bootstrap.min.js"></script>
+<script src="/transweb/webCpu.js"></script>
 <script>
-  var appConfig = {
-    components: "transweb/components",
-    dependency: {
-      script: {
-        common: "common.js",
-        config: "config.js",
-        dict: "dict.js"
-      },
-      css: {
-        index: "index.css",
-      },
-      url: "config/find",
-      query: {
-        object: "menuData",
-        prefix: "bookData/liuwenjin"
-      },
-      requestType: "get",
-      dataType: "json",
-    },
-    main: {
-      url: "index.js",
-      callback: function (d) {
-        var tData = webCpu.cards._main.task.data;
-        d.routerOption.index.menuData = tData.data;
+  var url = WebTool.urlQuery(location.href, "url");
+  var key = WebTool.urlQuery(location.href, "key") || 'transweb_cn';
+  var flag = WebTool.urlQuery(location.href, "flag");
+  if (url) {
+    url = decodeURIComponent(url);
+  }
+  if (key) {
+    key = decodeURIComponent(key);
+  }
+  var elem = document.body;
+  if (url && key) {
+    WebAdapter.loadCardData(url, key, function (d) {
+      if (d.main) {
+        webCpu.startApp(elem, d);
+      } else if (d.task) {
+        webCpu.addCardItem(elem, d);
+      } else {
+        webCpu.initProject(elem, d.routerOption, d.titleData, d.flag);
       }
-    }
+    });
+  } else {
+
   }
 
-  webCpu.startApp(document.body, appConfig);
+  var adapter = webCpu.initAdapter({
+    test: {
+      "flag": 1,
+      "origin": "http://localhost:8080",
+      "url": "/interface",
+      "method": "get",
+      "dataType": "json"
+    }
+  });
 </script>
 
 </html>
