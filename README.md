@@ -23,7 +23,9 @@
 1. 下载并安装nodejs。
 
 2. 下载或clone项目代码。
+
 下载地址: https://github.com/liuwenjin/transweb/archive/master.zip (下载后需解压)
+
 或使用clone地址: https://github.com/liuwenjin/transweb.git
 
 3. 在控制台打开代码目录，运行node webServer.js 命令。
