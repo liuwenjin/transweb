@@ -47,17 +47,17 @@ transweb_cn({
 
 ## JS小程序开发说明目录
 
-1. JS小程序的代码结构
+1. [JS小程序的代码结构](https://github.com/liuwenjin/transweb/wiki/JS%E5%B0%8F%E7%A8%8B%E5%BA%8F%E7%9A%84%E4%BB%A3%E7%A0%81%E7%BB%93%E6%9E%84)
 
-2. JS小程序的组合方式
+2. [JS小程序的组合方式](https://github.com/liuwenjin/transweb/wiki/JS%E5%B0%8F%E7%A8%8B%E5%BA%8F%E7%9A%84%E7%BB%84%E5%90%88%E6%96%B9%E5%BC%8F)
 
-3. JS小程序的数据接口
+3. [JS小程序的数据接口](https://github.com/liuwenjin/transweb/wiki/JS%E5%B0%8F%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%8E%A5%E5%8F%A3%E8%B0%83%E7%94%A8)
 
-4. JS小程序的接口调用
+4. [JS小程序的接口调用](https://github.com/liuwenjin/transweb/wiki/JS%E5%B0%8F%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%95%B0%E6%8D%AE%E6%8E%A5%E5%8F%A3)
 
-5. JS小程序的注意事项
+5. [JS小程序的注意事项](https://github.com/liuwenjin/transweb/wiki/JS%E5%B0%8F%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9)
 
-6. JS小程序的公用api
+6. [JS小程序的公用api](https://github.com/liuwenjin/transweb/wiki/JS%E5%B0%8F%E7%A8%8B%E5%BA%8F%E7%9A%84%E5%85%AC%E7%94%A8api)
 
 
 
