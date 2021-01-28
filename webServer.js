@@ -18,7 +18,7 @@ app.use(bodyParser.json());
 
 app.use(express.static("static", {}));
 //初始化Web服务
-const port = 8888;
+const port = 8686;
 var urlPrefix = `http://localhost:${port}`;
 var server = app.listen(port, function(a, b, c) {
     const host = "localhost";
