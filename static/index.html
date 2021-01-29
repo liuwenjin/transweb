@@ -43,12 +43,15 @@
         webCpu.startApp(elem, d);
       } else if (d.task) {
         webCpu.addCardItem(elem, d);
-      } else {
+      } else if(d.routerOption) {
         webCpu.initProject(elem, d.routerOption, d.titleData, d.flag);
+      }
+      else {
+        $(".loadingBox").html("暂不支持此类JS程序。");
       }
     });
   } else {
-
+    $(".loadingBox").html("缺少JS程序的url参数。");
   }
 
   var adapter = webCpu.initAdapter({
