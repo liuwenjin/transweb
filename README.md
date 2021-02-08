@@ -28,7 +28,7 @@
 
 或使用clone地址: https://github.com/liuwenjin/transweb.git
 
-3. 在控制台打开代码目录，运行node webServer.js 命令。
+3. 在控制台打开项目文件目录，运行node webServer.js 命令。
 
 ## JS小程序入门
 
@@ -46,6 +46,55 @@ transweb_cn({
 })
 ```
 这个小程序可以在浏览器地址栏输入localhost:8686?url=view/helloword.js，再按回车运行。
+
+## 数据接口生成
+
+通过配置项目文件目录interface下到index.js并重启webServer，就能自动生成对所配置数据库(当下支持mongodb)记录的增删改查的数据接口。
+
+如下所示为配置interface目录下index.js的代码示例。
+
+```
+const config = {
+    mongodb: {
+        test: {
+            host: "localhost",
+            port: "27017",
+            type: "mongo",
+            dbName: "test"
+        },
+        abc: {
+            host: "localhost",
+            port: "27017",
+            type: "mongo",
+            dbName: "abc"
+        }
+    },
+    apiFiles: {
+        customTest: "test.js",
+        customAbc: "abc.js"
+    }
+}
+module.exports = config;
+
+```
+
+
+根据上面示例配置代码可以生成对两个mongo数据库的任意集合进行增删改查。
+
+接口地址分别为"/test/xxxx"和"/abc/xxxx"。
+
+test和abc是示例中mongodb配置项属性名称，xxxx为对应数据库的集合名称
+
+test配置项为例简单说明这个配置项生成对test数据库名下的集合进行增删改查的数据接口。
+
+| 数据库操作名称 | 数据接口请求方式    | 数据接口请求参数  | 接口请求参数示例  |
+|-------|:---:|-------:|-----------|
+| 查询记录文档  | GET | condition     | { name: "zhangshan"} |
+| 新增记录文档 | PUT | data      | { name: "zhangshan", age: 24, position: "teacher" } |
+| 更新记录文档  | POST   | set, condition | { name: "zhangshan" }, { id: "23423423242"}    |
+| 删除记录文档  | DELETE   | condition | { id: "23423423242"} |
+
+
 
 ## JS小程序开发说明目录
 
