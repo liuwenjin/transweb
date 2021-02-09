@@ -97,7 +97,7 @@ test和abc是示例中mongodb配置项属性名称，xxxx为对应数据库的�
 
 
 | 操作接口名称 | 请求方式    | 请求参数  | 参数示例  |
-|-------|:---:|-------:|-----------|
+|-------|:---:|:-------:|:-----------|
 | 查询记录文档  | GET | condition     | { name: "zhangshan"} |
 | 新增记录文档 | PUT | data      | { name: "zhangshan", age: 24, position: "teacher" } |
 | 更新记录文档  | POST   | set, condition | { name: "zhangshan" }, { id: "23423423242"}    |
@@ -111,13 +111,11 @@ test和abc是示例中mongodb配置项属性名称，xxxx为对应数据库的�
 
 2. [JS小程序的组合方式](https://github.com/liuwenjin/transweb/wiki/JS%E5%B0%8F%E7%A8%8B%E5%BA%8F%E7%9A%84%E7%BB%84%E5%90%88%E6%96%B9%E5%BC%8F)
 
-3. [JS小程序的数据接口](https://github.com/liuwenjin/transweb/wiki/JS%E5%B0%8F%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%8E%A5%E5%8F%A3%E8%B0%83%E7%94%A8)
+3. [JS小程序的接口调用](https://github.com/liuwenjin/transweb/wiki/JS%E5%B0%8F%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%95%B0%E6%8D%AE%E6%8E%A5%E5%8F%A3)
 
-4. [JS小程序的接口调用](https://github.com/liuwenjin/transweb/wiki/JS%E5%B0%8F%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%95%B0%E6%8D%AE%E6%8E%A5%E5%8F%A3)
+4. [JS小程序的注意事项](https://github.com/liuwenjin/transweb/wiki/JS%E5%B0%8F%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9)
 
-5. [JS小程序的注意事项](https://github.com/liuwenjin/transweb/wiki/JS%E5%B0%8F%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9)
-
-6. [JS小程序的公用api](https://github.com/liuwenjin/transweb/wiki/JS%E5%B0%8F%E7%A8%8B%E5%BA%8F%E7%9A%84%E5%85%AC%E7%94%A8api)
+5. [JS小程序的公用api](https://github.com/liuwenjin/transweb/wiki/JS%E5%B0%8F%E7%A8%8B%E5%BA%8F%E7%9A%84%E5%85%AC%E7%94%A8api)
 
 
 
