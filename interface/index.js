@@ -18,6 +18,4 @@ const config = {
         customAbc: "abc.js"
     }
 }
-
-
 module.exports = config;
