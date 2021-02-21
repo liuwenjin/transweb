@@ -1713,7 +1713,13 @@ WebCpu.prototype.initWebApp = function (elem, app, flag) {
     if (typeof (app.callback) === "function") {
       app.callback(data);
     }
-    _self.initProject(elem, data.routerOption, data.titleData, flag);
+    if(data.routerOption) {
+      _self.initProject(elem, data.routerOption, data.titleData, flag);
+    }
+    else {
+      _self.addCardItem(elem, data);
+    }
+    
   });
 }
 
