@@ -15,6 +15,10 @@ webCpu.regComponent("TemplateItem", {}, function (container, data, task) {
 
   }
 
+  if(task.config) {
+    task.adapter = webCpu.initAdapter(task.config);
+  }
+
   if ((task.template && -1 != task.template.search("<")) || !task.template || !task.remote) {
     container.innerHTML = task.template.bindData(data);
     webCpu.excuteTasks(container, task.cards, webCpu.TemplateItem.config.path);
@@ -26,9 +30,6 @@ webCpu.regComponent("TemplateItem", {}, function (container, data, task) {
       var afterRender = task.promise.afterRender;
       task.promise.afterRender = null;
     }
-
-    
-
     var htmlFetch = new WebRequest(task.template, "GET");
     htmlFetch({}, function (str) {
       container.innerHTML = str.bindData(data);
