@@ -26,6 +26,10 @@
       $(container).children(".CardItem_contentArea").children(".CardItem_content").children(".__CardItem_componentArea").children(".CardItem_componentArea").css("overflow", data.overflow);
     }
 
+    if (task.config) {
+      task.adapter = webCpu.initAdapter(task.config);
+    }
+
     if (!task.unit || ($(container.parentNode).attr("flag") === "activeArea")) {
       $(container).css("width", "100%");
       $(container).css("height", "100%");
@@ -202,26 +206,11 @@
       return false;
     }
     var task = data.task || data;
-    if (task.cardBody) {
+    if (task.mask) {
       var tipsArea = $(task.mask);
       tipsArea.hide();
     }
   }
-
-  webCpu.CardItem.checkData = function (data) {
-    var ret = true;
-    if (!data) {
-      ret = false;
-    } else if (data.constructor.name === "Array" && data.length === 0) {
-      ret = false;
-    } else if (data.data && data.data.length === 0) {
-      ret = false;
-    } else if (data.records && data.records.length === 0) {
-      ret = false;
-    } else {}
-    return ret;
-  }
-
 
   webCpu.CardItem.switchState = function (data, state) {
     if (!data) {
@@ -241,18 +230,6 @@
     var tipsArea = $(t.container);
     tipsArea.html(str);
     tipsArea.find(".CardItem_stateTips").html(tips);
-  }
-
-
-  //check the card can be executed.
-  function checkCardItem(cardData) {
-    var ret = true;
-    for (var k in cardData.task.busIn) {
-      if (cardData.task.busIn[k]) {
-        ret = webCpu.CardItem.message[cardData.cardName][k];
-      }
-    }
-    return ret;
   }
 
   webCpu.CardItem.leftCardDialog = function (card, objectCard, title, w, style, callback1, callback2) {
@@ -466,17 +443,8 @@
 
     webCpu.CardItem.switchState(t, "loading");
 
-    if (checkCardItem(data) || !flag) {
-      for (var k in t.busIn) {
-        var msg = webCpu.CardItem.message[data.cardName][k];
-        t.outerData = t.outerData || {};
-        for (var m in msg) {
-          t.outerData[m] = msg[m];
-        }
-      }
+    webCpu.render(data.className || "TemplateItem", t, data.componentPath || this.config.path);
 
-      webCpu.render(data.className || "TemplateItem", t, data.componentPath || this.config.path);
-    }
   }
 
 
@@ -525,7 +493,7 @@
   }
 
   webCpu.CardItem.updateCardLayout = function (data) {
-    if(!(data && data.task && data.task.container)) {
+    if (!(data && data.task && data.task.container)) {
       return false;
     }
     var container = data.task.container.parentNode.parentNode;

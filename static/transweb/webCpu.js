@@ -1203,33 +1203,33 @@ var WebCpu = function (container, url, config) {
   }
 }
 
-WebCpu.prototype.initWithProxy = function (container, app) {
-  if (this.iframeProxy && typeof (this.iframeProxy) === "object") {
-    var count = 0;
-    this.crossItem = {};
-    var _self = this;
-    for (var k in this.iframeProxy) {
-      var url = this.iframeProxy[k];
-      if (url) {
-        this.crossItem[k] = new CrossDomainService(url, function () {
-          count--;
-          if (count < 1) {
-            _self.initWebApp(container, app);
-          }
-        })
-      }
-      count++;
-    }
-    if (count < 1) {
-      _self.initWebApp(container, app);
-    }
-  } else {
-    var url = this.iframeProxy;
-    this.crossItem = new CrossDomainService(url, function () {
-      _self.initWebApp(container, app);
-    })
-  }
-}
+// WebCpu.prototype.initWithProxy = function (container, app) {
+//   if (this.iframeProxy && typeof (this.iframeProxy) === "object") {
+//     var count = 0;
+//     this.crossItem = {};
+//     var _self = this;
+//     for (var k in this.iframeProxy) {
+//       var url = this.iframeProxy[k];
+//       if (url) {
+//         this.crossItem[k] = new CrossDomainService(url, function () {
+//           count--;
+//           if (count < 1) {
+//             _self.initWebApp(container, app);
+//           }
+//         })
+//       }
+//       count++;
+//     }
+//     if (count < 1) {
+//       _self.initWebApp(container, app);
+//     }
+//   } else {
+//     var url = this.iframeProxy;
+//     this.crossItem = new CrossDomainService(url, function () {
+//       _self.initWebApp(container, app);
+//     })
+//   }
+// }
 
 WebCpu.prototype.exec = function (container, app, config) {
   this.cards = {};
@@ -1286,11 +1286,9 @@ WebCpu.prototype.initModule = function (config, name, path) {
     if (typeof (config.callback) === "function") {
       config.callback(container, data, task);
     }
-    if (_self.iframeProxy) {
-      _self.initWithProxy(container, task.app);
-    } else {
-      _self.initWebApp(container, task.app);
-    }
+
+    _self.initWebApp(container, task.app);
+
     console.log("Execed successfully");
   }
   config.path = path || config.path;

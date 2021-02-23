@@ -15,9 +15,7 @@ webCpu.regComponent("TemplateItem", {}, function (container, data, task) {
 
   }
 
-  if(task.config) {
-    task.adapter = webCpu.initAdapter(task.config);
-  }
+  
 
   if ((task.template && -1 != task.template.search("<")) || !task.template || !task.remote) {
     container.innerHTML = task.template.bindData(data);
