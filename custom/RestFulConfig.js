@@ -2,11 +2,16 @@ var WebTool = require("./WebTool.js");
 var ConnectDB = require("./ConnectDB.js");
 var ConfigObject = require("./ConfigObject.js");
 var DbQuery = require("./DbQuery.js");
+var path = require('path');
 
-var RestFulConfig = function(data, expendApi, prefix, flag) {
+var RestFulConfig = function(data, expendApi, prefix, config) {
     this.path = "interface";
-    if (flag) {
-        this.path = prefix || "interface";
+    this.config = {};
+    if (config) {
+        for (var k in config) {
+            var tPath = path.resolve(__dirname, `../interface/${config[k]}`);
+            this.config[k] = new ConfigObject(tPath);
+        }
     }
     this.expendApi = expendApi || {};
     this.prefix = prefix;
@@ -54,9 +59,6 @@ var RestFulConfig = function(data, expendApi, prefix, flag) {
             }
         }
     }
-
-    // console.log(this.data);
-
 }
 
 RestFulConfig.prototype.addCardData = function(url, dbQuery, method, d) {
@@ -66,6 +68,7 @@ RestFulConfig.prototype.addCardData = function(url, dbQuery, method, d) {
         cardName: k,
         url: url,
         method: method,
+        config: this.config,
         dbQuery: dbQuery,
         callback: function(req, res, task) {
             var dbInfo = JSON.parse(JSON.stringify(d)) || {};
@@ -88,8 +91,5 @@ RestFulConfig.prototype.addCardData = function(url, dbQuery, method, d) {
     }
     this.data.cardData.push(task);
 }
-
-
-
 
 module.exports = RestFulConfig;
