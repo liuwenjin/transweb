@@ -1,18 +1,18 @@
-# transweb
+# JS小程序引擎——Transweb
 
 ## 介绍
 
-一个JS小程序引擎。
+Transweb是一个JS小程序引擎。
 
 这个引擎主要有3个目的。
 
 1. 帮助开发人员直接用javascript语言(简称JS)编写能运行在浏览器上的小程序。
 
-2. 让这样的小程序可以自由组合成为新复合程序。
+2. 让这样的小程序可以自由组合成为功能复杂的程序。
 
 3. 为这些小程序快速生成数据持久化层的数据接口。
 
-为了这三个目的，该小程序引擎具备两类功能： 
+为了这三个目的，该小程序引擎具备两个方面的功能： 
 
 1) JS程序控制器功能，负责渲染JS小程序和组合JS小程序；
 
@@ -26,7 +26,7 @@
 
 下载地址: https://github.com/liuwenjin/transweb/archive/master.zip (下载后需解压)
 
-或使用clone地址: https://github.com/liuwenjin/transweb.git
+或使用clone地址: liuwenjin/transweb
 
 3. 在控制台打开项目文件目录，运行node webServer.js 命令。
 
@@ -68,10 +68,6 @@ const config = {
             type: "mongo",
             dbName: "abc"
         }
-    },
-    apiFiles: {
-        customTest: "test.js",
-        customAbc: "abc.js"
     }
 }
 module.exports = config;
@@ -91,11 +87,6 @@ test和abc是示例中mongodb配置项属性名称，xxxx为对应数据库的�
 
 对某个集合的增删改查使用同样的url，四种http请求方式分别对应了某个集合的增删改查操作。(实际请求时会根据具体操作需要传递相应的操作参数)
 
-当对某个数据库的集合进行操作时，该数据库和集合不需要提前创建。
-
-操作某个数据库的集合时，若没有数据库或集合，新增文档记录操作会自动创建它们。
-
-
 | 操作接口名称 | 请求方式    | 请求参数  | 参数示例  |
 |-------|:---:|:-------:|:-----------|
 | 查询记录文档  | GET | condition     | { name: "zhangshan"} |
@@ -103,20 +94,18 @@ test和abc是示例中mongodb配置项属性名称，xxxx为对应数据库的�
 | 更新记录文档  | POST   | set, condition | { name: "zhangshan" }, { id: "23423423242"}    |
 | 删除记录文档  | DELETE   | condition | { id: "23423423242"} |
 
+当对某个数据库的集合进行操作时，该数据库和集合不需要提前创建。
 
+操作某个数据库的集合时，若没有数据库或集合，新增文档记录操作会自动创建它们。
 
 ## JS小程序开发说明目录
 
-1. [JS小程序的代码结构](https://github.com/liuwenjin/transweb/wiki/JS%E5%B0%8F%E7%A8%8B%E5%BA%8F%E7%9A%84%E4%BB%A3%E7%A0%81%E7%BB%93%E6%9E%84)
+1. [JS小程序的代码结构](liuwenjin/transweb)
 
 2. [JS小程序的组合方式](https://github.com/liuwenjin/transweb/wiki/JS%E5%B0%8F%E7%A8%8B%E5%BA%8F%E7%9A%84%E7%BB%84%E5%90%88%E6%96%B9%E5%BC%8F)
 
 3. [JS小程序的生命周期](https://github.com/liuwenjin/transweb/wiki/JS%E5%B0%8F%E7%A8%8B%E5%BA%8F%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F)
 
-4. [JS小程序的接口调用](https://github.com/liuwenjin/transweb/wiki/JS%E5%B0%8F%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%8E%A5%E5%8F%A3%E8%B0%83%E7%94%A8)
+4. [JS小程序的接口调用](liuwenjin/transweb)
 
-5. [JS小程序的公用api](https://github.com/liuwenjin/transweb/wiki/JS%E5%B0%8F%E7%A8%8B%E5%BA%8F%E7%9A%84%E5%85%AC%E7%94%A8api)
-
-
-
-
+5. [JS小程序的公用api](liuwenjin/transweb)
