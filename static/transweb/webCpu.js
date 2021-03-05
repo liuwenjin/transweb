@@ -1,4 +1,4 @@
-/*! webCpu.js 2017-11-26 20:19:15 */
+/*! webCpu.js 2021-03-05 17:19:15 */
 var WebAdapter = {};
 WebAdapter.load = function(url, callback) {
     var script = document.createElement('script');
@@ -243,9 +243,10 @@ AjaxInterface.prototype.sendData = function(query, callback, dsl) {
         url = WebTool.attachParams(url, query);
     } else if (query.constructor.name === "FormData") {
         data = query;
-    } else if (type.toLocaleUpperCase() === "PUT") {
+    } else if (type.toLocaleUpperCase() === "PUT" || type.toLocaleUpperCase() === "POST") {
         data = query;
         dsl = dsl || "application/x-www-form-urlencoded; charset=UTF-8";
+        // dsl = dsl || "application/json; charset=UTF-8";
     } else {
         data = WebTool.attachParams("", query).split("?")[1];
     }
