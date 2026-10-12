@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>修复 setOnLoad 错误</title>
+    <script src="https://www.geogebra.org/apps/deployggb.js"></script>
+</head>
+<body>
+    <div id="ggb-container" style="width:800px; height:600px"></div>
+
+    <script>
+        var params = {
+            "appName": "geometry",
+            "width": 800,
+            "height": 600,
+            "showToolbar": false,
+            "appletOnLoad": function(api) {  // 推荐方式：直接使用 onLoad 回调
+                api.evalCommand("A = (1, 2)");
+                api.evalCommand("Segment(A, (4,5))");
+                api.setValue("a", 10);
+            }
+        };
+
+        window.addEventListener("load", function() {
+            var ggbApp = new GGBApplet(params, true);
+            ggbApp.inject("ggb-container");
+
+            // // 备选方式：通过事件监听
+            // ggbApp.addEventListener("appletOnLoad", function() {
+            //     ggbApp.evalCommand("B = (0, 0)");
+            // });
+        });
+    </script>
+</body>
+</html>

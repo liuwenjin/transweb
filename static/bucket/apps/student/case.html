@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>典型案例 - 数形实验台</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      prefix: 'tw-',
+      theme: {
+        extend: {
+          colors: {
+            academic: {
+              dark: '#1e293b',
+              primary: '#2563eb',
+              soft: '#f8fafc',
+              gold: '#f59e0b'     // 强调金
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .math-item case-item {
+      transition: opacity 0.4s ease, transform 0.4s ease;
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .math-item case-item.is-hidden {
+      display: none;
+      opacity: 0;
+      transform: scale(0.95);
+    }
+  </style>
+  <!-- ===== 站点图标 ===== -->
+  <link rel="icon" href="logo.png" type="image/png" />
+ <script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "xejk2rx33f");
+</script>
+</head>
+
+<body class="tw-bg-academic-soft tw-text-academic-dark tw-font-sans">
+
+  <nav class="tw-sticky tw-top-0 tw-z-50 tw-bg-white/80 tw-backdrop-blur-md tw-border-b tw-border-slate-200"
+    id="main-nav">
+    <div class="tw-max-w-7xl tw-mx-auto tw-px-6 tw-h-16 tw-flex tw-items-center tw-justify-between">
+      <div class="tw-flex tw-items-center tw-gap-2">
+        <a href="index.html" class="tw-flex tw-items-center tw-gap-2 tw-group">
+          <div
+            class="tw-w-8 tw-h-8 tw-bg-academic-gold tw-rounded-lg tw-flex tw-items-center tw-justify-center tw-transition-transform group-hover:tw-scale-110">
+            <span class="tw-text-white tw-font-bold">∑</span>
+          </div>
+          <span class="tw-text-xl tw-font-bold tw-tracking-tight">数形实验台</span>
+        </a>
+      </div>
+
+      <div class="tw-hidden md:tw-flex tw-items-center tw-gap-8 tw-text-sm tw-font-medium tw-text-slate-600">
+        <a href="index.html" class="hover:tw-text-academic-primary tw-transition-colors">首页</a>
+        <a href="case.html" class="tw-text-academic-primary">典型案例</a>
+        <a href="scene.html" class="hover:tw-text-academic-primary tw-transition-colors">教学场景</a>
+        <a href="#" onclick="downloadFile('geogebra.html', '数形实验台.html')"
+          class="hover:tw-text-academic-primary tw-transition-colors">下载客户端</a>
+        <a href="geogebra.html">
+          <button
+            class="tw-bg-academic-primary tw-text-white tw-px-5 tw-py-2 tw-rounded-full tw-text-sm tw-font-bold hover:tw-bg-blue-700 tw-shadow-sm hover:tw-shadow-md tw-transition-all">
+            免费试用
+          </button>
+        </a>
+      </div>
+
+      <div class="md:tw-hidden tw-flex tw-items-center">
+        <button id="mobile-menu-button" class="tw-text-slate-600 hover:tw-text-academic-primary tw-focus:outline-none">
+          <svg class="tw-w-6 tw-h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path id="menu-icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div id="mobile-menu"
+      class="tw-hidden md:tw-hidden tw-bg-white tw-border-b tw-border-slate-200 tw-transition-all tw-duration-300">
+      <div class="tw-px-6 tw-py-4 tw-flex tw-flex-col tw-gap-4 tw-text-base tw-font-medium tw-text-slate-600">
+        <a href="index.html" class="hover:tw-text-academic-primary tw-py-2">首页</a>
+        <a href="case.html" class="tw-text-academic-primary tw-py-2">典型案例</a>
+        <a href="scene.html" class="hover:tw-text-academic-primary tw-py-2">教学场景</a>
+        <a href="#" onclick="downloadFile('geogebra.html', '数形实验台.html')"
+          class="hover:tw-text-academic-primary tw-py-2">下载客户端</a>
+        <hr class="tw-border-slate-100">
+        <a href="geogebra.html"
+          class="tw-bg-academic-primary tw-text-white tw-py-3 tw-rounded-xl tw-text-center tw-font-bold">
+          免费试用
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="tw-py-16 tw-bg-white">
+    <div class="tw-max-w-7xl tw-mx-auto tw-px-6 tw-text-center">
+      <h1 class="tw-text-4xl tw-font-extrabold tw-mb-4">优秀教学案例库</h1>
+      <p class="tw-text-slate-500 tw-max-w-2xl tw-mx-auto">汇集全国名师生成的动态教学模型，支持一句话二次修改。</p>
+    </div>
+  </header>
+
+  <section
+    class="tw-sticky tw-top-16 tw-z-40 tw-bg-white/50 tw-backdrop-blur-sm tw-border-b tw-border-slate-100 tw-py-4">
+    <div id="filter-container" class="tw-max-w-7xl tw-mx-auto tw-px-6 tw-flex tw-flex-wrap tw-gap-3">
+      <button data-filter="all"
+        class="filter-btn active tw-px-4 tw-py-1.5 tw-rounded-full tw-bg-academic-primary tw-text-white tw-text-sm tw-font-medium">全部案例</button>
+      <button data-filter="junior"
+        class="filter-btn tw-px-4 tw-py-1.5 tw-rounded-full tw-bg-white tw-border tw-border-slate-200 tw-text-slate-600 tw-text-sm hover:tw-text-white hover:tw-bg-academic-primary">初中数学</button>
+      <button data-filter="senior"
+        class="filter-btn tw-px-4 tw-py-1.5 tw-rounded-full tw-bg-white tw-border tw-border-slate-200 tw-text-slate-600 tw-text-sm hover:tw-text-white hover:tw-bg-academic-primary">高中数学</button>
+      <button data-filter="geometry"
+        class="filter-btn tw-px-4 tw-py-1.5 tw-rounded-full tw-bg-white tw-border tw-border-slate-200 tw-text-slate-600 tw-text-sm hover:tw-text-white hover:tw-bg-academic-primary">解析几何</button>
+      <button data-filter="solid"
+        class="filter-btn tw-px-4 tw-py-1.5 tw-rounded-full tw-bg-white tw-border tw-border-slate-200 tw-text-slate-600 tw-text-sm hover:tw-text-white hover:tw-bg-academic-primary">立体几何</button>
+    </div>
+  </section>
+
+  <main class="tw-py-12">
+    <div class="tw-max-w-7xl tw-mx-auto tw-px-6">
+      <div id="case-grid" class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3 tw-gap-8">
+
+        <div
+          class="math-item case-item tw-group tw-bg-white tw-rounded-2xl tw-overflow-hidden tw-shadow-sm hover:tw-shadow-xl tw-border tw-border-slate-100 tw-transition-all tw-duration-300"
+          data-category="senior">
+          <div
+            class="tw-aspect-video tw-bg-slate-50 tw-relative tw-flex tw-items-center tw-justify-center tw-overflow-hidden">
+            <svg viewBox="0 0 120 80" class="tw-w-3/4 tw-h-auto" xmlns="http://www.w3.org/2000/svg">
+              <line x1="10" y1="65" x2="110" y2="65" stroke="#e2e8f0" stroke-width="1.5" marker-end="url(#arrow)" />
+              <line x1="60" y1="75" x2="60" y2="15" stroke="#e2e8f0" stroke-width="1.5" marker-end="url(#arrow)" />
+
+              <defs>
+                <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4"
+                  orient="auto-start-reverse">
+                  <path d="M 0 0 L 10 5 L 0 10 z" fill="#cbd5e1" />
+                </marker>
+              </defs>
+
+              <line x1="45" y1="70" x2="45" y2="20" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3,2"
+                class="tw-opacity-60" />
+
+              <path d="M 20 25 Q 45 85 70 25" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round"
+                class="tw-drop-shadow-sm" />
+
+              <circle cx="45" cy="55" r="2" fill="#ef4444" />
+
+              <text x="75" y="35" font-size="5" fill="#94a3b8" font-style="italic" font-family="serif">y = ax² + bx +
+                c</text>
+            </svg>
+
+            <span
+              class="tw-absolute tw-top-4 tw-left-4 tw-bg-blue-50 tw-text-blue-700 tw-text-xs tw-font-bold tw-px-2.5 tw-py-1 tw-rounded-lg tw-border tw-border-blue-100">
+              高中数学 / 函数
+            </span>
+          </div>
+
+          <div class="tw-p-6">
+            <h3
+              class="tw-font-bold tw-text-xl tw-text-slate-800 tw-mb-2 group-hover:tw-text-blue-600 tw-transition-colors">
+              二次函数图像性质探究
+            </h3>
+            <p class="tw-text-sm tw-leading-relaxed tw-text-slate-500 tw-mb-6">
+              交互式拆解系数 a, b, c。直观观察抛物线开口、对称轴位移及顶点演变，建立完整的数形结合思维体系。
+            </p>
+
+            <div class="tw-pt-4 tw-border-t tw-border-slate-50">
+              <a href="https://transweb.cn/bucket/apps/mathLabs/geogebra.html?caseUrl=/bucket/assets/ggb/Quadratic_Function.html"
+                target="_blank"
+                class="tw-flex tw-items-center tw-justify-center tw-gap-2 tw-text-sm tw-font-bold tw-text-blue-600 hover:tw-text-blue-800">
+                进入实验室
+                <svg xmlns="http://www.w3.org/2000/svg" class="tw-w-4 tw-h-4" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="math-item case-item tw-group tw-bg-white tw-rounded-2xl tw-overflow-hidden tw-shadow-sm hover:tw-shadow-xl tw-border tw-border-slate-100 tw-transition-all tw-duration-300"
+          data-category="senior geometry">
+          <div
+            class="tw-aspect-video tw-bg-slate-50 tw-relative tw-flex tw-items-center tw-justify-center tw-overflow-hidden">
+            <svg viewBox="0 0 120 80" class="tw-w-3/4 tw-h-auto" xmlns="http://www.w3.org/2000/svg">
+              <line x1="10" y1="40" x2="110" y2="40" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="2" />
+              <line x1="60" y1="10" x2="60" y2="70" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="2" />
+
+              <ellipse cx="60" cy="40" rx="45" ry="35" fill="none" stroke="#f1f5f9" stroke-width="1" />
+
+              <ellipse cx="60" cy="40" rx="45" ry="22" fill="none" stroke="#10b981" stroke-width="2.5"
+                class="tw-drop-shadow-sm" />
+
+              <circle cx="35" cy="40" r="1.5" fill="#f59e0b" />
+              <circle cx="85" cy="40" r="1.5" fill="#f59e0b" />
+
+              <text x="90" y="25" font-size="6" fill="#94a3b8" font-family="sans-serif">e = c/a</text>
+            </svg>
+
+            <span
+              class="tw-absolute tw-top-4 tw-left-4 tw-bg-emerald-50 tw-text-emerald-700 tw-text-xs tw-font-bold tw-px-2.5 tw-py-1 tw-rounded-lg tw-border tw-border-emerald-100">
+              高中数学 / 椭圆
+            </span>
+          </div>
+
+          <div class="tw-p-6">
+            <h3
+              class="tw-font-bold tw-text-xl tw-text-slate-800 tw-mb-2 group-hover:tw-text-emerald-600 tw-transition-colors">
+              椭圆离心率动态实验室
+            </h3>
+            <p class="tw-text-sm tw-leading-relaxed tw-text-slate-500 tw-mb-6">
+              通过实时拖动焦距，观察椭圆从“圆”到“扁”的演变过程，深度解析离心率 e 对曲线形态的影响。
+            </p>
+
+            <div class="tw-pt-4 tw-border-t tw-border-slate-50">
+              <a href="https://transweb.cn/bucket/apps/mathLabs/geogebra.html?caseUrl=/bucket/assets/ggb/Ellipse_Eccentricity.html"
+                target="_blank"
+                class="tw-flex tw-items-center tw-justify-center tw-gap-2 tw-text-sm tw-font-bold tw-text-emerald-600 hover:tw-text-emerald-700">
+                开启交互实验
+                <svg xmlns="http://www.w3.org/2000/svg" class="tw-w-4 tw-h-4" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="math-item case-item tw-group tw-bg-white tw-rounded-2xl tw-overflow-hidden tw-shadow-sm hover:tw-shadow-xl tw-border tw-border-slate-100 tw-transition-all tw-duration-300"
+          data-category="junior">
+          <div
+            class="tw-aspect-video tw-bg-slate-50 tw-relative tw-flex tw-items-center tw-justify-center tw-overflow-hidden">
+            <svg viewBox="0 0 120 80" class="tw-w-3/4 tw-h-auto" xmlns="http://www.w3.org/2000/svg">
+              <line x1="10" y1="25" x2="110" y2="25" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4,3" />
+              <line x1="10" y1="65" x2="110" y2="65" stroke="#94a3b8" stroke-width="1.5" />
+
+              <path d="M 30 65 L 50 25 L 70 65" fill="none" stroke="#10b981" stroke-width="1" class="tw-opacity-30"
+                stroke-dasharray="2,2" />
+
+              <path d="M 30 65 L 85 25 L 70 65 Z" fill="rgba(16, 185, 129, 0.1)" stroke="#10b981" stroke-width="2.5"
+                stroke-linejoin="round" />
+
+              <line x1="85" y1="25" x2="85" y2="65" stroke="#f59e0b" stroke-width="1" stroke-dasharray="2,2" />
+              <text x="88" y="48" font-size="6" fill="#f59e0b" font-weight="bold">h</text>
+
+              <circle cx="85" cy="25" r="3" fill="#10b981" class="tw-animate-pulse" />
+              <path d="M 80 20 L 75 25 L 80 30 M 90 20 L 95 25 L 90 30" fill="none" stroke="#10b981" stroke-width="1" />
+            </svg>
+
+            <span
+              class="tw-absolute tw-top-4 tw-left-4 tw-bg-emerald-50 tw-text-emerald-700 tw-text-xs tw-font-bold tw-px-2.5 tw-py-1 tw-rounded-lg tw-border tw-border-emerald-100">
+              初中数学 / 几何
+            </span>
+          </div>
+
+          <div class="tw-p-6">
+            <h3
+              class="tw-font-bold tw-text-xl tw-text-slate-800 tw-mb-2 group-hover:tw-text-emerald-600 tw-transition-colors">
+              等底等高面积守恒实验
+            </h3>
+            <p class="tw-text-sm tw-leading-relaxed tw-text-slate-500 tw-mb-6">
+              拖动顶点在平行线上任意滑动，实时观察三角形形状与面积数值的变化，深刻理解“同底等高”的几何本质。
+            </p>
+
+            <div class="tw-pt-4 tw-border-t tw-border-slate-50">
+              <a href="https://transweb.cn/bucket/apps/mathLabs/geogebra.html?caseUrl=/bucket/assets/ggb/Equal_Base_Height_Area.html"
+                target="_blank"
+                class="tw-flex tw-items-center tw-justify-center tw-gap-2 tw-text-sm tw-font-bold tw-text-emerald-600 hover:tw-text-emerald-700">
+                开始探索
+                <svg xmlns="http://www.w3.org/2000/svg" class="tw-w-4 tw-h-4" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="math-item case-item tw-group tw-bg-white tw-rounded-2xl tw-overflow-hidden tw-shadow-sm hover:tw-shadow-2xl tw-border tw-border-slate-100 hover:tw-border-indigo-200 tw-transition-all tw-duration-500 hover:-tw-translate-y-1"
+          data-category="senior solid">
+          <div
+            class="tw-aspect-video tw-relative tw-flex tw-items-center tw-justify-center tw-overflow-hidden tw-bg-gradient-to-br tw-from-slate-50 tw-via-white tw-to-indigo-50/40">
+
+            <!-- 装饰性网格背景 -->
+            <div class="tw-absolute tw-inset-0 tw-opacity-[0.04]"
+              style="background-image: linear-gradient(#6366f1 1px, transparent 1px), linear-gradient(90deg, #6366f1 1px, transparent 1px); background-size: 20px 20px;">
+            </div>
+
+            <svg viewBox="0 0 120 90"
+              class="tw-w-3/4 tw-h-auto tw-relative tw-z-10 tw-transition-transform tw-duration-500 group-hover:tw-scale-105"
+              xmlns="http://www.w3.org/2000/svg">
+              <!--
+    ============ 几何参数（严格遵循斜二测投影规范）============
+    立方体边长 L = 50
+    深度方向单位向量 d = (18, -18)（约 45°，长度 ≈ 0.51L，符合斜二测"深度减半"）
+    
+    顶点 3D→2D 投影（A 为原点）：
+      A(0,0,0) → (25, 82)   [前-左-下]
+      B(1,0,0) → (75, 82)   [前-右-下]   ❌ 注：此处坐标系 z 向上转 SVG y 向下
+    
+    实际采用（SVG 坐标，y 向下为正）：
+      前面 A(25,32) B(75,32) C(75,82) D(25,82)   （顶/上 → 底/下）
+      后面 E(43,14) F(93,14) G(93,64) H(43,64)
+      其中 (E-A) = (B-A 方向的深度偏移) = (18, -18)
+    
+    ============ 截面：过立方体中心的正六边形（最经典截面）============
+    3D 平面方程：x + y + z = 1.5L（L=50, 即 x+y+z = 75，单位为立方体局部坐标）
+    六个交点均位于对应棱的中点：
+      P1 = AD棱中点  3D(0, 0, 0.5)   → 2D(25, 57)
+      P2 = DC棱中点  3D(0.5, 0, 1)   → 2D(50, 82)
+      P3 = CG棱中点  3D(1, 0.5, 1)   → 2D(84, 73)
+      P4 = GF棱中点  3D(1, 1, 0.5)   → 2D(93, 39)
+      P5 = FE棱中点  3D(0.5, 1, 0)   → 2D(68, 14)
+      P6 = EA棱中点  3D(0, 0.5, 0)   → 2D(34, 23)
+    
+    ✅ 6 点严格共面（都满足 x+y+z = 1.5）
+    ✅ 对边严格平行：P1P2∥P4P5, P2P3∥P5P6, P3P4∥P6P1
+    
+    ============ 可见性分析（视角：前-左-上方俯视）============
+    可见面：前面(ABCD)、右面(BFGC)、顶面(ABFE)
+    遮挡面：后面(EFGH)、左面(ADHE)、底面(DCGH)
+    
+    截面六边形分段：
+      P6→P1 段在【左面 ADHE】 → 左面被遮挡 → 虚线
+      P1→P2 段在【底面 DCGH】 → 底面被遮挡 → 虚线  
+      P2→P3 段在【前面 ABCD】 → 可见 → 实线
+      P3→P4 段在【右面 BFGC】 → 可见 → 实线
+      P4→P5 段在【后面 EFGH】 → 后面被遮挡 → 虚线
+      P5→P6 段在【顶面 ABFE】 → 可见 → 实线
+  -->
+
+              <defs>
+                <linearGradient id="sectionGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#fbbf24" stop-opacity="0.28" />
+                  <stop offset="100%" stop-color="#f59e0b" stop-opacity="0.14" />
+                </linearGradient>
+                <filter id="sectionGlow" x="-20%" y="-20%" width="140%" height="140%">
+                  <feGaussianBlur stdDeviation="1.2" result="blur" />
+                  <feMerge>
+                    <feMergeNode in="blur" />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
+              </defs>
+
+              <!-- ① 不可见棱（虚线，灰色）：从顶点 H 引出的三条棱 -->
+              <!-- 视角下，H(43,64) 是被完全遮挡的后-左-下顶点 -->
+              <g stroke="#94a3b8" stroke-width="1.1" stroke-dasharray="3,2.5" fill="none" stroke-linecap="round">
+                <path d="M 43 64 L 93 64" /> <!-- HG 棱（底-后） -->
+                <path d="M 43 64 L 43 14" /> <!-- HE 棱（左-后） -->
+                <path d="M 43 64 L 25 82" /> <!-- HD 棱（深度方向） -->
+              </g>
+
+              <!-- ② 可见棱（实线，靛蓝色） -->
+              <g stroke="#6366f1" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <!-- 前面 ABCD -->
+                <path d="M 25 32 L 75 32 L 75 82 L 25 82 Z" />
+                <!-- 顶面可见棱 AE、BF、EF -->
+                <path d="M 25 32 L 43 14" />
+                <path d="M 75 32 L 93 14" />
+                <path d="M 43 14 L 93 14" />
+                <!-- 右面可见棱 FG、CG -->
+                <path d="M 93 14 L 93 64" />
+                <path d="M 75 82 L 93 64" />
+              </g>
+
+              <!-- ③ 截面六边形 -->
+              <!-- 3.1 截面填充 -->
+              <path d="M 25 57 L 50 82 L 84 73 L 93 39 L 68 14 L 34 23 Z" fill="url(#sectionGradient)" stroke="none" />
+
+              <!-- 3.2 截面可见边（实线）：分布在 前面、右面、顶面 上 -->
+              <!-- P2→P3：前面段 -->
+              <path d="M 25 57 L 50 82" fill="none" stroke="#f59e0b" stroke-width="1.8" stroke-linejoin="round"
+                stroke-linecap="round" filter="url(#sectionGlow)" />
+              <!--  -->
+
+
+              <!-- P3→P4：右面段 -->
+              <path d="M 84 73 L 93 39" fill="none" stroke="#f59e0b" stroke-width="1.8" stroke-linejoin="round"
+                stroke-linecap="round" filter="url(#sectionGlow)" />
+              <!-- P5→P6：顶面段 -->
+              <path d="M 68 14 L 34 23" fill="none" stroke="#f59e0b" stroke-width="1.8" stroke-linejoin="round"
+                stroke-linecap="round" filter="url(#sectionGlow)" />
+
+              <!-- 3.3 截面不可见边（虚线）：分布在 左面、底面、后面 上 -->
+              <g fill="none" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="3.5,2.5" stroke-linejoin="round"
+                stroke-linecap="round" opacity="0.85">
+                <!-- P6→P1：左面段（被左面遮挡） -->
+                <path d="M 34 23 L 25 57" />
+
+                <!-- P4→P5：后面段（被后面遮挡） -->
+                <path d="M 93 39 L 68 14" />
+
+                <path d="M 50 82 L 84 73" />
+              </g>
+
+              <!-- ④ 截面与棱的交点高亮 -->
+              <g fill="#f59e0b" stroke="#fff" stroke-width="0.7">
+                <circle cx="25" cy="57" r="1.9" /> <!-- P1 in AD -->
+                <circle cx="50" cy="82" r="1.9" /> <!-- P2 in DC -->
+                <circle cx="84" cy="73" r="1.9" /> <!-- P3 in CG -->
+                <circle cx="93" cy="39" r="1.9" /> <!-- P4 in GF -->
+                <circle cx="68" cy="14" r="1.9" /> <!-- P5 in FE -->
+                <circle cx="34" cy="23" r="1.9" /> <!-- P6 in EA -->
+              </g>
+            </svg>
+
+
+
+            <!-- 学科标签 -->
+            <span
+              class="tw-absolute tw-top-4 tw-left-4 tw-bg-white/90 tw-backdrop-blur-sm tw-text-indigo-700 tw-text-xs tw-font-bold tw-px-2.5 tw-py-1 tw-rounded-lg tw-border tw-border-indigo-100 tw-shadow-sm">
+              高中数学 / 立体几何
+            </span>
+
+            <!-- 图例说明 -->
+            <div
+              class="tw-absolute tw-bottom-3 tw-right-4 tw-flex tw-items-center tw-gap-3 tw-text-[10px] tw-text-slate-500 tw-bg-white/70 tw-backdrop-blur-sm tw-px-2 tw-py-1 tw-rounded-md tw-border tw-border-slate-100">
+              <span class="tw-flex tw-items-center tw-gap-1">
+                <svg width="14" height="4">
+                  <line x1="0" y1="2" x2="14" y2="2" stroke="#f59e0b" stroke-width="1.8" />
+                </svg>
+                可见
+              </span>
+              <span class="tw-flex tw-items-center tw-gap-1">
+                <svg width="14" height="4">
+                  <line x1="0" y1="2" x2="14" y2="2" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="3,2" />
+                </svg>
+                遮挡
+              </span>
+            </div>
+          </div>
+
+          <div class="tw-p-6">
+            <h3
+              class="tw-font-bold tw-text-xl tw-text-slate-800 tw-mb-2 group-hover:tw-text-indigo-600 tw-transition-colors tw-duration-300">
+              正方体截面形态演变
+            </h3>
+            <p class="tw-text-sm tw-leading-relaxed tw-text-slate-500 tw-mb-6">
+              自由切割空间几何体，实时观察截面在三角形、四边形直至六边形间的动态转换，突破空间想象力瓶颈。
+            </p>
+
+            <div class="tw-pt-4 tw-border-t tw-border-slate-100">
+              <a href="https://transweb.cn/bucket/apps/mathLabs/geogebra.html?caseUrl=/bucket/assets/ggb/Cube_Section.html"
+                target="_blank"
+                class="tw-flex tw-items-center tw-justify-center tw-gap-2 tw-text-sm tw-font-bold tw-text-indigo-600 hover:tw-text-indigo-800 tw-transition-all tw-duration-300 tw-group/btn">
+                <span>开启空间切割</span>
+                <svg xmlns="http://www.w3.org/2000/svg"
+                  class="tw-w-4 tw-h-4 tw-transition-transform tw-duration-300 group-hover/btn:tw-translate-x-1"
+                  fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+
+
+
+        <div
+          class="math-item case-item tw-group tw-bg-white tw-rounded-2xl tw-overflow-hidden tw-shadow-sm hover:tw-shadow-xl tw-border tw-border-slate-100 tw-transition-all tw-duration-300"
+          data-category="senior">
+          <div
+            class="tw-aspect-video tw-bg-slate-50 tw-relative tw-flex tw-items-center tw-justify-center tw-overflow-hidden">
+            <svg viewBox="0 0 120 80" class="tw-w-3/4 tw-h-auto" xmlns="http://www.w3.org/2000/svg">
+              <line x1="10" y1="40" x2="110" y2="40" stroke="#e2e8f0" stroke-width="1.5" />
+              <line x1="20" y1="15" x2="20" y2="65" stroke="#e2e8f0" stroke-width="1.5" />
+
+              <path d="M 20 20 C 35 20 45 60 60 60 C 75 60 85 20 100 20" fill="none" stroke="#cbd5e1" stroke-width="1"
+                stroke-dasharray="3,2" />
+
+              <path d="M 10 35 C 20 15 35 15 50 40 C 65 65 80 65 95 40 C 105 20 115 20 120 30" fill="none"
+                stroke="#0ea5e9" stroke-width="2.5" stroke-linecap="round"
+                class="tw-drop-shadow-[0_0_3px_rgba(14,165,233,0.3)]" />
+
+              <path d="M 35 25 L 50 25" fill="none" stroke="#f59e0b" stroke-width="1" marker-end="url(#arrow-phi)" />
+              <defs>
+                <marker id="arrow-phi" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4"
+                  orient="auto">
+                  <path d="M 0 0 L 10 5 L 0 10 z" fill="#f59e0b" />
+                </marker>
+              </defs>
+              <text x="38" y="22" font-size="5" fill="#f59e0b" font-weight="bold">φ</text>
+            </svg>
+
+            <span
+              class="tw-absolute tw-top-4 tw-left-4 tw-bg-cyan-50 tw-text-cyan-700 tw-text-xs tw-font-bold tw-px-2.5 tw-py-1 tw-rounded-lg tw-border tw-border-cyan-100">
+              高中数学 / 三角函数
+            </span>
+          </div>
+
+          <div class="tw-p-6">
+            <h3
+              class="tw-font-bold tw-text-xl tw-text-slate-800 tw-mb-2 group-hover:tw-text-cyan-600 tw-transition-colors">
+              三角函数相位变换实验
+            </h3>
+            <p class="tw-text-sm tw-leading-relaxed tw-text-slate-500 tw-mb-6">
+              平滑拖动相位参数 φ，直观捕捉波形在坐标轴上的左右位移，深度解析“左加右减”背后的几何逻辑。
+            </p>
+
+            <div class="tw-pt-4 tw-border-t tw-border-slate-50">
+              <a href="https://transweb.cn/bucket/apps/mathLabs/geogebra.html?caseUrl=/bucket/assets/ggb/Trigonometric_Wave.html"
+                target="_blank"
+                class="tw-flex tw-items-center tw-justify-center tw-gap-2 tw-text-sm tw-font-bold tw-text-cyan-600 hover:tw-text-cyan-800">
+                观测波形动态
+                <svg xmlns="http://www.w3.org/2000/svg" class="tw-w-4 tw-h-4" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="math-item case-item tw-group tw-bg-white tw-rounded-2xl tw-overflow-hidden tw-shadow-sm hover:tw-shadow-xl tw-border tw-border-slate-100 tw-transition-all tw-duration-300"
+          data-category="senior geometry">
+          <div
+            class="tw-aspect-video tw-bg-slate-50 tw-relative tw-flex tw-items-center tw-justify-center tw-overflow-hidden">
+            <svg viewBox="0 0 120 80" class="tw-w-3/4 tw-h-auto" xmlns="http://www.w3.org/2000/svg">
+              <line x1="20" y1="15" x2="100" y2="65" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="2,2" />
+              <line x1="20" y1="65" x2="100" y2="15" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="2,2" />
+
+              <circle cx="35" cy="40" r="1.5" fill="#f97316" />
+              <circle cx="85" cy="40" r="1.5" fill="#f97316" />
+              <text x="32" y="36" font-size="5" fill="#94a3b8">F₁</text>
+              <text x="82" y="36" font-size="5" fill="#94a3b8">F₂</text>
+
+              <path d="M 25 15 Q 50 40 25 65" fill="none" stroke="#f97316" stroke-width="2.5" stroke-linecap="round"
+                class="tw-drop-shadow-sm" />
+              <path d="M 95 15 Q 70 40 95 65" fill="none" stroke="#f97316" stroke-width="2.5" stroke-linecap="round"
+                class="tw-drop-shadow-sm" />
+
+              <circle cx="30" cy="25" r="2" fill="#ef4444" class="tw-animate-pulse" />
+              <line x1="30" y1="25" x2="35" y2="40" stroke="#f97316" stroke-width="1" stroke-opacity="0.4" />
+              <line x1="30" y1="25" x2="85" y2="40" stroke="#f97316" stroke-width="1" stroke-opacity="0.4" />
+
+              <text x="15" y="75" font-size="5" fill="#94a3b8" font-family="serif">||PF₁| - |PF₂|| = 2a</text>
+            </svg>
+
+            <span
+              class="tw-absolute tw-top-4 tw-left-4 tw-bg-orange-50 tw-text-orange-700 tw-text-xs tw-font-bold tw-px-2.5 tw-py-1 tw-rounded-lg tw-border tw-border-orange-100">
+              高中数学 / 圆锥曲线
+            </span>
+          </div>
+
+          <div class="tw-p-6">
+            <h3
+              class="tw-font-bold tw-text-xl tw-text-slate-800 tw-mb-2 group-hover:tw-text-orange-600 tw-transition-colors">
+              双曲线轨迹定义实验室
+            </h3>
+            <p class="tw-text-sm tw-leading-relaxed tw-text-slate-500 tw-mb-6">
+              通过追踪动点 P 的实时路径，验证距离之差的绝对值为常数的几何约束，深度解析双曲线的形成原理。
+            </p>
+
+            <div class="tw-pt-4 tw-border-t tw-border-slate-50">
+              <a href="https://transweb.cn/bucket/apps/mathLabs/geogebra.html?caseUrl=/bucket/assets/ggb/Hyperbola_Locus.html"
+                target="_blank"
+                class="tw-flex tw-items-center tw-justify-center tw-gap-2 tw-text-sm tw-font-bold tw-text-orange-600 hover:tw-text-orange-800">
+                探索定义轨迹
+                <svg xmlns="http://www.w3.org/2000/svg" class="tw-w-4 tw-h-4" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="math-item case-item tw-group tw-bg-white tw-rounded-2xl tw-overflow-hidden tw-shadow-sm hover:tw-shadow-xl tw-border tw-border-slate-100 tw-transition-all tw-duration-300"
+          data-category="senior geometry">
+          <div
+            class="tw-aspect-video tw-bg-slate-50 tw-relative tw-flex tw-items-center tw-justify-center tw-overflow-hidden">
+            <svg viewBox="0 0 120 80" class="tw-w-3/4 tw-h-auto" xmlns="http://www.w3.org/2000/svg">
+              <line x1="25" y1="10" x2="25" y2="70" stroke="#94a3b8" stroke-width="2" stroke-dasharray="4,2" />
+              <text x="12" y="42" font-size="5" fill="#94a3b8" font-family="serif">l</text>
+
+              <path d="M 95 10 Q 35 40 95 70" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round"
+                class="tw-drop-shadow-sm" />
+
+              <circle cx="55" cy="40" r="2" fill="#2563eb" />
+              <text x="53" y="36" font-size="5" fill="#2563eb" font-weight="bold">F</text>
+
+              <g>
+                <circle cx="60" cy="22" r="2" fill="#ef4444" class="tw-animate-bounce"
+                  style="animation-duration: 2s;" />
+                <line x1="60" y1="22" x2="55" y2="40" stroke="#ef4444" stroke-width="1" />
+                <line x1="60" y1="22" x2="25" y2="22" stroke="#ef4444" stroke-width="1" stroke-dasharray="2,1" />
+
+                <line x1="56" y1="30" x2="59" y2="32" stroke="#ef4444" stroke-width="0.8" />
+                <line x1="41" y1="20" x2="41" y2="24" stroke="#ef4444" stroke-width="0.8" />
+              </g>
+
+              <text x="65" y="70" font-size="5" fill="#94a3b8" font-style="italic">PF = d(P, l)</text>
+            </svg>
+
+            <span
+              class="tw-absolute tw-top-4 tw-left-4 tw-bg-blue-50 tw-text-blue-700 tw-text-xs tw-font-bold tw-px-2.5 tw-py-1 tw-rounded-lg tw-border tw-border-blue-100">
+              高中数学 / 圆锥曲线
+            </span>
+          </div>
+
+          <div class="tw-p-6">
+            <h3
+              class="tw-font-bold tw-text-xl tw-text-slate-800 tw-mb-2 group-hover:tw-text-blue-600 tw-transition-colors">
+              抛物线定义轨迹实验室
+            </h3>
+            <p class="tw-text-sm tw-leading-relaxed tw-text-slate-500 tw-mb-6">
+              实时追踪动点 P，动态验证其到焦点与准线距离相等的几何本原，构建对抛物线开口与焦准距 p 的直观认知。
+            </p>
+
+            <div class="tw-pt-4 tw-border-t tw-border-slate-50">
+              <a href="https://transweb.cn/bucket/apps/mathLabs/geogebra.html?caseUrl=/bucket/assets/ggb/Parabola.html"
+                target="_blank"
+                class="tw-flex tw-items-center tw-justify-center tw-gap-2 tw-text-sm tw-font-bold tw-text-blue-600 hover:tw-text-blue-800">
+                进入探究模式
+                <svg xmlns="http://www.w3.org/2000/svg" class="tw-w-4 tw-h-4" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="math-item case-item tw-group tw-bg-white tw-rounded-2xl tw-overflow-hidden tw-shadow-sm hover:tw-shadow-xl tw-border tw-border-slate-100 tw-transition-all tw-duration-300"
+          data-category="senior solid">
+          <div
+            class="tw-aspect-video tw-bg-slate-50 tw-relative tw-flex tw-items-center tw-justify-center tw-overflow-hidden">
+            <svg viewBox="0 0 120 80" class="tw-w-3/4 tw-h-auto" xmlns="http://www.w3.org/2000/svg">
+              <g stroke="#e2e8f0" stroke-width="1">
+                <line x1="60" y1="40" x2="60" y2="15" />
+                <line x1="60" y1="40" x2="100" y2="40" />
+                <line x1="60" y1="40" x2="35" y2="65" />
+              </g>
+
+              <defs>
+                <marker id="vec-a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="3" markerHeight="3" orient="auto">
+                  <path d="M 0 0 L 10 5 L 0 10 z" fill="#8b5cf6" />
+                </marker>
+                <marker id="vec-b" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="3" markerHeight="3" orient="auto">
+                  <path d="M 0 0 L 10 5 L 0 10 z" fill="#ec4899" />
+                </marker>
+              </defs>
+
+              <line x1="60" y1="40" x2="90" y2="25" stroke="#8b5cf6" stroke-width="2.5" marker-end="url(#vec-a)" />
+              <text x="92" y="22" font-size="6" fill="#8b5cf6" font-weight="bold">a</text>
+
+              <line x1="60" y1="40" x2="45" y2="25" stroke="#ec4899" stroke-width="2.5" marker-end="url(#vec-b)" />
+              <text x="38" y="22" font-size="6" fill="#ec4899" font-weight="bold">b</text>
+
+              <path d="M 70 35 Q 65 30 55 35" fill="none" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="2,1" />
+              <text x="58" y="28" font-size="5" fill="#f59e0b" font-weight="bold">θ</text>
+
+              <text x="10" y="70" font-size="5" fill="#94a3b8" font-family="serif">a·b = |a||b|cosθ</text>
+            </svg>
+
+            <span
+              class="tw-absolute tw-top-4 tw-left-4 tw-bg-violet-50 tw-text-violet-700 tw-text-xs tw-font-bold tw-px-2.5 tw-py-1 tw-rounded-lg tw-border tw-border-violet-100">
+              高中数学 / 空间向量
+            </span>
+          </div>
+
+          <div class="tw-p-6">
+            <h3
+              class="tw-font-bold tw-text-xl tw-text-slate-800 tw-mb-2 group-hover:tw-text-violet-600 tw-transition-colors">
+              空间向量数量积实验室
+            </h3>
+            <p class="tw-text-sm tw-leading-relaxed tw-text-slate-500 tw-mb-6">
+              自由旋转空间向量方向，实时解构夹角 $\theta$ 对点积 $\vec{a} \cdot \vec{b}$ 的动态映射，直观理解投影与度量性质。
+            </p>
+
+            <div class="tw-pt-4 tw-border-t tw-border-slate-50">
+              <a href="https://transweb.cn/bucket/apps/mathLabs/geogebra.html?caseUrl=/bucket/assets/ggb/Space_Vector.html"
+                target="_blank"
+                class="tw-flex tw-items-center tw-justify-center tw-gap-2 tw-text-sm tw-font-bold tw-text-violet-600 hover:tw-text-violet-800">
+                分析向量夹角
+                <svg xmlns="http://www.w3.org/2000/svg" class="tw-w-4 tw-h-4" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="math-item case-item tw-group tw-bg-white tw-rounded-2xl tw-overflow-hidden tw-shadow-sm hover:tw-shadow-xl tw-border tw-border-slate-100 tw-transition-all tw-duration-300"
+          data-category="senior solid">
+          <div
+            class="tw-aspect-video tw-bg-slate-50 tw-relative tw-flex tw-items-center tw-justify-center tw-overflow-hidden">
+            <svg viewBox="0 0 120 90" class="tw-w-3/4 tw-h-auto" xmlns="http://www.w3.org/2000/svg">
+              <ellipse cx="60" cy="70" rx="30" ry="8" fill="none" stroke="#e2e8f0" stroke-width="1" />
+              <line x1="30" y1="20" x2="30" y2="70" stroke="#e2e8f0" stroke-width="1.5" stroke-dasharray="3,2" />
+              <line x1="90" y1="20" x2="90" y2="70" stroke="#e2e8f0" stroke-width="1.5" stroke-dasharray="3,2" />
+
+              <ellipse cx="60" cy="70" rx="30" ry="8" fill="rgba(99, 102, 241, 0.1)" stroke="none" />
+
+              <path d="M 30 70 A 30 8 0 0 1 90 70" fill="none" stroke="#6366f1" stroke-width="2"
+                stroke-dasharray="4,3" />
+
+              <path d="M 90 70 A 30 8 0 0 1 30 70" fill="none" stroke="#6366f1" stroke-width="2" />
+
+              <path d="M 30 70 L 60 20 L 90 70" fill="none" stroke="#6366f1" stroke-width="2" stroke-linejoin="round" />
+
+              <line x1="60" y1="20" x2="60" y2="70" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="4,2" />
+              <circle cx="60" cy="20" r="1.5" fill="#f59e0b" />
+
+              <path d="M 45 45 Q 60 50 75 45 L 90 70 Q 60 78 30 70 Z" fill="#6366f1" class="tw-opacity-20" />
+
+              <text x="75" y="35" font-size="6" fill="#94a3b8" font-weight="bold" font-family="Arial, sans-serif">V =
+                1/3 Sh</text>
+            </svg>
+
+
+            <span
+              class="tw-absolute tw-top-4 tw-left-4 tw-bg-indigo-50 tw-text-indigo-700 tw-text-xs tw-font-bold tw-px-2.5 tw-py-1 tw-rounded-lg tw-border tw-border-indigo-100">
+              高中数学 / 立体几何
+            </span>
+          </div>
+
+          <div class="tw-p-6">
+            <h3
+              class="tw-font-bold tw-text-xl tw-text-slate-800 tw-mb-2 group-hover:tw-text-indigo-600 tw-transition-colors">
+              圆锥体积推导实验
+            </h3>
+            <p class="tw-text-sm tw-leading-relaxed tw-text-slate-500 tw-mb-6">
+              通过等底等高的圆柱注水对比，直观见证“三倍关系”的几何奇迹，攻克体积计算公式的理解难点。
+            </p>
+
+            <div class="tw-pt-4 tw-border-t tw-border-slate-50">
+              <a href="https://transweb.cn/bucket/apps/mathLabs/geogebra.html?caseUrl=/bucket/assets/ggb/Cone_Volume_Derivation.html"
+                target="_blank"
+                class="tw-flex tw-items-center tw-justify-center tw-gap-2 tw-text-sm tw-font-bold tw-text-indigo-600 hover:tw-text-indigo-800">
+                模拟推导过程
+                <svg xmlns="http://www.w3.org/2000/svg" class="tw-w-4 tw-h-4" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <section class="tw-py-20 tw-bg-academic-dark tw-text-white">
+    <div class="tw-max-w-4xl tw-mx-auto tw-px-6 tw-text-center">
+      <h2 class="tw-text-3xl tw-font-bold tw-mb-6">看到喜欢的模型了？</h2>
+      <p class="tw-text-slate-400 tw-mb-10">只需一句话，你也可以生成属于自己的教学实验。</p>
+      <a href="geogebra.html"
+        class="tw-bg-academic-primary tw-text-white tw-text-lg tw-font-bold tw-px-10 tw-py-4 tw-rounded-xl hover:tw-bg-blue-700 tw-transition-all">立即去生成</a>
+    </div>
+  </section>
+
+  <footer class="tw-py-12 tw-bg-white tw-border-t tw-text-slate-400 tw-text-xs tw-text-center">
+    © 2026 北京津度科技有限责任公司 · 数形实验台
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const filterBtns = document.querySelectorAll('.filter-btn');
+      const caseItems = document.querySelectorAll('.math-item case-item');
+
+      filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const filter = btn.getAttribute('data-filter');
+
+          filterBtns.forEach(b => {
+            b.classList.remove('tw-bg-academic-primary', 'tw-text-slate-600', 'active', "tw-text-white");
+            b.classList.add('tw-bg-white', 'tw-border-slate-200');
+          });
+          btn.classList.remove('tw-bg-white', 'tw-border-slate-200');
+          btn.classList.add('tw-bg-academic-primary', 'active', "tw-text-white", 'tw-text-slate-600');
+
+          caseItems.forEach(item => {
+            const cats = item.getAttribute('data-category').split(' ');
+            if (filter === 'all' || cats.includes(filter)) {
+              item.classList.remove('is-hidden');
+              setTimeout(() => { item.style.opacity = '1'; item.style.transform = 'scale(1)'; }, 10);
+            } else {
+              item.style.opacity = '0';
+              item.style.transform = 'scale(0.95)';
+              setTimeout(() => { if (item.style.opacity === '0') item.classList.add('is-hidden'); }, 400);
+            }
+          });
+        });
+      });
+
+      const menuButton = document.getElementById('mobile-menu-button');
+      const mobileMenu = document.getElementById('mobile-menu');
+      const menuIcon = document.getElementById('menu-icon');
+
+      menuButton.addEventListener('click', () => {
+        const isHidden = mobileMenu.classList.contains('tw-hidden');
+
+        if (isHidden) {
+          // 展开菜单
+          mobileMenu.classList.remove('tw-hidden');
+          // 切换为 "X" 图标 (SVG path)
+          menuIcon.setAttribute('d', 'M6 18L18 6M6 6l12 12');
+        } else {
+          // 收起菜单
+          mobileMenu.classList.add('tw-hidden');
+          // 切换回汉堡图标
+          menuIcon.setAttribute('d', 'M4 6h16M4 12h16M4 18h16');
+        }
+      });
+
+      // 点击菜单项后自动关闭（可选，适用于单页应用）
+      mobileMenu.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          mobileMenu.classList.add('tw-hidden');
+          menuIcon.setAttribute('d', 'M4 6h16M4 12h16M4 18h16');
+        });
+      });
+
+    });
+
+    async function downloadFile(url, fileName) {
+      try {
+        const response = await fetch(url);
+        const blob = await response.blob(); // 将响应转为二进制对象
+        const link = document.createElement('a');
+
+        // 创建一个指向该 Blob 的临时 URL
+        link.href = window.URL.createObjectURL(blob);
+        link.download = fileName;
+
+        document.body.appendChild(link);
+        link.click(); // 模拟点击
+
+        // 清理内存
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(link.href);
+      } catch (error) {
+        console.error('下载失败:', error);
+      }
+    }
+  </script>
+  <script async src="https://transweb.cn/common/mathjax/tex-chtml.js"></script>
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [
+          ["$", "$"],
+          ["\\(", "\\)"],
+        ],
+        displayMath: [
+          ["$$", "$$"],
+          ["\\[", "\\]"],
+        ],
+      },
+      svg: { fontCache: "global" },
+    };
+  </script>
+</body>
+
+</html>

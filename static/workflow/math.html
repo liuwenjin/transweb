@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=yes, viewport-fit=cover">
+  <title>Trans-Workflow | 智效教研：名师一人配置，全教研组零门槛享用的数学 AI 助教流水线</title>
+  <meta name="description"
+    content="Trans-Workflow 是一款专为中小学及培训机构打造的免运维数学 AI 数字教研流水线。名师或教研组长一人学会配置，全组老师无门槛享用。将分层教学、变式题库生成工作流压缩至单个 HTML 文件分发，免去绝大多数教师的学习门槛与时间成本，为教学交付标准化的规模化人效红利。">
+  <meta name="keywords" content="免运维AI,数学教研流水线,Trans-Workflow,零学习门槛,全员复用,单文件应用,因材施教,精准反馈,分层施教">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="Liu Wenjin">
+  <link rel="canonical" href="https://transweb.cn/workflow/math.html">
+
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://transweb.cn/workflow/math.html">
+  <meta property="og:title" content="Trans-Workflow | 一人配置教研逻辑，全员零门槛复用的 AI 交互数学教学资产">
+  <meta property="og:description"
+    content="拒绝全员高昂的培训成本！一个骨干配置流程，一键打包成静态 HTML，全组教师双击即用。将名师的教学与教研经验固化为网页资产，确保全员无门槛产出高质量教案与分层练习。">
+  <meta property="og:image" content="https://transweb.cn/assets/logo.png">
+  <meta property="og:site_name" content="TransWeb">
+  <meta property="og:locale" content="zh_CN">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Trans-Workflow | 免运维、零培训的学校级 AI 数学智能教研流水线">
+  <meta name="twitter:description"
+    content="零运维成本、零全员培训。将 AI 数学工作流打包成单个 HTML 网页，分发给一线教师、助教或实习生直接双击使用，免去全员学习门槛。将精英名师的教学法固化为网页资产，确保全员无门槛产出高标准教学内容。">
+  <meta name="twitter:image" content="https://transweb.cn/assets/logo.png">
+  <script type="text/javascript">
+    (function (c, l, a, r, i, t, y) {
+      c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+      t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+      y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+    })(window, document, "clarity", "script", "xejk2rx33f");
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Trans-Workflow",
+    "operatingSystem": "Platform-Independent (Browser-based)",
+    "applicationCategory": "EducationalApplication",
+    "browserRequirements": "Requires HTML5 compatible browser.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "CNY"
+    },
+    "description": "一人学会配置，全教研组无依赖复用。将 AI 数学工作流转化为可无门槛分发的单文件 HTML 工具，击穿全员培训的时间成本。将名师的教学方法论固化为网页资产，确保全员无门槛产出高标准的数学教案与题库。",
+    "softwareVersion": "1.0.0",
+    "downloadUrl": "https://transweb.cn/workflow/math.html",
+    "applicationSubCategory": "Educational AI Workflow Builder",
+    "license": "https://github.com/liuwenjin/trans-workflow",
+    "author": {
+      "@type": "Person",
+      "name": "Liu Wenjin"
+    }
+  }
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind = {
+      config: {
+        prefix: 'tw-',
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                deep: '#0B0F19',
+                accent: '#4F46E5',
+                accentHover: '#4338CA',
+                quantum: '#10B981'
+              }
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    html,
+    body {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      scroll-behavior: smooth;
+      background-color: #FAFAFC;
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #F1F3F9;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #CBD5E1;
+      border-radius: 9999px;
+    }
+
+    .table-scroll-x {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .starburst-icon {
+      clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+    }
+
+    /* 高级 SaaS 拟态卡片与边框 */
+    .physical-asset-card {
+      border: 1px solid rgba(226, 232, 240, 0.8);
+      box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.03), 0 2px 6px -1px rgba(15, 23, 42, 0.02);
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(16px);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .physical-asset-card:hover {
+      transform: translateY(-4px) scale(1.005);
+      border-color: rgba(99, 102, 241, 0.25);
+      box-shadow: 0 20px 32px -8px rgba(79, 70, 229, 0.08), 0 8px 16px -4px rgba(15, 23, 42, 0.03);
+      background: rgba(255, 255, 255, 0.95);
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(226, 232, 240, 0.7);
+    }
+
+    @keyframes flow-line {
+      0% {
+        background-position: 0% 50%;
+      }
+      100% {
+        background-position: 200% 50%;
+      }
+    }
+
+    .data-flow-bridge {
+      background: linear-gradient(90deg, #E2E8F0 0%, #6366F1 50%, #E2E8F0 100%);
+      background-size: 200% 100%;
+      animation: flow-line 3s linear infinite;
+    }
+
+    .smooth-transition {
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes dash-move {
+      to {
+        stroke-dashoffset: -20;
+      }
+    }
+
+    .flow-dash {
+      stroke-dasharray: 5, 5;
+      animation: dash-move 1.2s linear infinite;
+    }
+
+    @keyframes pulse-ring {
+      0% {
+        transform: scale(0.85);
+        opacity: 0.8;
+      }
+      100% {
+        transform: scale(1.8);
+        opacity: 0;
+      }
+    }
+
+    .pulse-ring {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: pulse-ring 2.4s ease-out infinite;
+    }
+
+    @keyframes float-bob {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-5px);
+      }
+    }
+
+    .float-bob {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: float-bob 4s ease-in-out infinite;
+    }
+  </style>
+</head>
+
+<body class="tw-bg-[#FAFAFC] tw-font-sans tw-antialiased tw-text-slate-800 tw-selection:tw-bg-indigo-500/10 tw-selection:tw-text-indigo-600">
+
+  <!-- 顶部导航栏 -->
+  <header
+    class="tw-sticky tw-top-0 tw-z-50 tw-w-full tw-backdrop-blur-xl tw-bg-[#0B0F19]/85 tw-border-b tw-border-slate-800/60 tw-shadow-sm">
+    <div class="tw-max-w-7xl tw-mx-auto tw-px-6 lg:tw-px-10">
+      <div class="tw-flex tw-items-center tw-justify-between tw-h-20">
+        <div class="tw-flex tw-items-center tw-gap-3.5">
+          <div class="tw-w-9 tw-h-9 tw-rounded-xl tw-flex tw-items-center tw-justify-center tw-overflow-hidden tw-bg-white/5 tw-p-1 tw-border tw-border-white/10">
+            <img class="tw-w-full tw-h-full tw-object-contain" src="https://transweb.cn/assets/logo.png" alt="Logo">
+          </div>
+          <div class="tw-font-bold tw-text-xl tw-tracking-tight tw-text-white">
+            <span>Trans</span><span class="tw-text-indigo-400">Workflow</span>
+          </div>
+          <div
+            class="tw-hidden lg:tw-flex tw-items-center tw-gap-2 tw-bg-white/[0.06] tw-px-3 tw-py-1 tw-rounded-full tw-border tw-border-white/10 tw-ml-2">
+            <div class="tw-w-1.5 tw-h-1.5 tw-bg-emerald-400 tw-rounded-full tw-animate-pulse"></div>
+            <span class="tw-text-xs tw-font-mono tw-text-slate-300 tw-tracking-wide">名师一人配置 · 零门槛全组裂变复用</span>
+          </div>
+        </div>
+
+        <div class="tw-hidden md:tw-flex tw-items-center tw-gap-8">
+          <a href="#exampleWorkflow"
+            class="tw-text-sm tw-font-medium tw-text-slate-300 hover:tw-text-white smooth-transition">教学全员复用模式</a>
+          <a href="#coreAppeals"
+            class="tw-text-sm tw-font-medium tw-text-slate-300 hover:tw-text-white smooth-transition">校长/组长算账逻辑</a>
+          <a href="#coreFeatures"
+            class="tw-text-sm tw-font-medium tw-text-slate-300 hover:tw-text-white smooth-transition">教研核心红利</a>
+          <a href="#comparisonTable"
+            class="tw-text-sm tw-font-medium tw-text-slate-300 hover:tw-text-white smooth-transition">ROI 选型面板</a>
+          <a href="https://transweb.cn/math" target="_blank">
+            <button
+              class="tw-bg-indigo-600 hover:tw-bg-indigo-500 tw-text-white tw-px-5 tw-py-2.5 tw-rounded-xl tw-text-sm tw-font-semibold tw-shadow-lg tw-shadow-indigo-600/20 smooth-transition tw-flex tw-items-center tw-gap-2 active:tw-scale-[0.98]">
+              🏭 进入数学 AI 工作流 <span class="tw-text-xs tw-opacity-70">→</span>
+            </button>
+          </a>
+        </div>
+
+        <div class="tw-flex md:tw-hidden tw-items-center tw-gap-3">
+          <a href="https://transweb.cn/math" target="_blank">
+            <button
+              class="tw-bg-indigo-600 tw-text-white tw-px-4 tw-py-2 tw-rounded-xl tw-text-xs tw-font-semibold">立即部署</button>
+          </a>
+          <button id="mobileMenuBtn" class="tw-p-2 tw-rounded-xl tw-bg-white/10 tw-text-slate-300">
+            <svg class="tw-w-5 tw-h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div id="mobileNavPanel"
+        class="tw-hidden tw-px-6 tw-py-5 tw-border-b tw-border-slate-800 tw-bg-[#0B0F19]/98 tw-backdrop-blur-xl">
+        <div class="tw-flex tw-flex-col tw-gap-2">
+          <a href="#exampleWorkflow"
+            class="tw-flex tw-items-center tw-text-sm tw-text-slate-300 hover:tw-text-white hover:tw-bg-white/5 tw-px-4 tw-py-3 tw-rounded-xl tw-transition-colors">
+            教学全员复用模式
+          </a>
+
+          <a href="#coreAppeals"
+            class="tw-flex tw-items-center tw-text-sm tw-text-slate-300 hover:tw-text-white hover:tw-bg-white/5 tw-px-4 tw-py-3 tw-rounded-xl tw-transition-colors">
+            校长/组长算账逻辑
+          </a>
+
+          <a href="#coreFeatures"
+            class="tw-flex tw-items-center tw-text-sm tw-text-slate-300 hover:tw-text-white hover:tw-bg-white/5 tw-px-4 tw-py-3 tw-rounded-xl tw-transition-colors">
+            教研核心红利
+          </a>
+
+          <a href="#comparisonTable"
+            class="tw-flex tw-items-center tw-text-sm tw-text-slate-300 hover:tw-text-white hover:tw-bg-white/5 tw-px-4 tw-py-3 tw-rounded-xl tw-transition-colors tw-mb-2">
+            ROI 选型面板
+          </a>
+
+          <div class="tw-h-[1px] tw-bg-slate-800 tw-my-2"></div>
+
+          <button onclick="triggerPackDownload(this, 'mathFlow.html')"
+            class="tw-flex tw-items-center tw-justify-center tw-gap-2 tw-bg-indigo-600 active:tw-scale-[0.98] tw-text-white tw-px-4 tw-py-3.5 tw-rounded-xl tw-text-sm tw-font-semibold tw-w-full tw-text-center tw-shadow-lg tw-shadow-indigo-600/25 tw-transition-all">
+            <span>📦</span>
+            <span>打包分发无门槛教研组件</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero 区块 -->
+  <section class="tw-relative tw-overflow-hidden tw-pt-24 tw-pb-32 lg:tw-pt-36 lg:tw-pb-40">
+    <!-- 背景柔和渐变光斑与细网格 -->
+    <div class="tw-absolute tw-top-0 tw-left-1/2 tw--translate-x-1/2 tw-w-full tw-max-w-7xl tw-h-[600px] tw-pointer-events-none tw-opacity-60">
+      <div class="tw-absolute tw-top-[-100px] tw-left-1/2 tw--translate-x-1/2 tw-w-[800px] tw-h-[400px] tw-bg-gradient-to-tr tw-from-indigo-500/20 tw-via-purple-500/10 tw-to-transparent tw-blur-[120px] tw-rounded-full"></div>
+    </div>
+    <div
+      class="tw-absolute tw-inset-0 tw-bg-[radial-gradient(#CBD5E1_1px,transparent_1px)] [background-size:32px_32px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] tw-opacity-40 tw-pointer-events-none">
+    </div>
+
+    <div class="tw-max-w-7xl tw-mx-auto tw-px-6 lg:tw-px-10 tw-relative tw-z-10">
+
+      <div class="tw-text-center tw-mb-10">
+        <div
+          class="tw-inline-flex tw-items-center tw-gap-2.5 tw-px-4 tw-py-2 tw-rounded-full tw-bg-white tw-text-slate-600 tw-text-xs sm:tw-text-sm tw-font-medium tw-border tw-border-slate-200/80 tw-shadow-sm tw-backdrop-blur-md">
+          <div class="tw-w-2.5 tw-h-2.5 tw-bg-indigo-600 starburst-icon"></div>
+          <span>务实型教育机构 AI 资产化选型：告别漫长教研系统开发与常驻续费账单</span>
+        </div>
+      </div>
+
+      <!-- Hero 标题 (64px–80px, 两行以内) -->
+      <div class="tw-text-center tw-max-w-5xl tw-mx-auto tw-mb-10">
+        <h1
+          class="tw-text-5xl sm:tw-text-6xl md:tw-text-7xl tw-font-extrabold tw-tracking-tight tw-leading-[1.1] tw-text-slate-900">
+          名师一人配置教研流程，<br class="tw-hidden sm:tw-block">
+          <span
+            class="tw-text-transparent tw-bg-clip-text tw-bg-gradient-to-r tw-from-indigo-600 tw-via-indigo-500 tw-to-purple-600">全教研组无门槛双击复用</span>
+        </h1>
+      </div>
+
+      <!-- Hero SVG: 一人配置 → 单文件 → 全组复用 流程插画 -->
+      <div class="tw-mx-auto tw-max-w-3xl tw-mb-12 tw-p-6 tw-rounded-3xl glass-card tw-shadow-xl tw-shadow-slate-200/50">
+        <svg viewBox="0 0 660 170" fill="none" xmlns="http://www.w3.org/2000/svg" class="tw-w-full tw-h-auto">
+          <defs>
+            <linearGradient id="heroFileGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#1E293B" />
+              <stop offset="100%" stop-color="#0B0F19" />
+            </linearGradient>
+            <radialGradient id="heroGlow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#6366F1" stop-opacity="0.25" />
+              <stop offset="100%" stop-color="#6366F1" stop-opacity="0" />
+            </radialGradient>
+          </defs>
+          <!-- 左侧：名师 -->
+          <g transform="translate(0, 15)">
+            <circle cx="55" cy="42" r="40" fill="url(#heroGlow)" />
+            <circle cx="55" cy="42" r="19" stroke="#4F46E5" stroke-width="2.5" fill="#fff" />
+            <path d="M36 82 Q55 64 74 82" stroke="#4F46E5" stroke-width="2.5" fill="none" stroke-linecap="round" />
+            <rect x="39" y="25" width="32" height="16" rx="4" fill="#4F46E5" opacity="0.12" />
+            <text x="55" y="120" text-anchor="middle" fill="#0F172A" font-size="14" font-weight="bold">1 位骨干名师</text>
+            <text x="55" y="140" text-anchor="middle" fill="#64748B" font-size="11">配置教研流程</text>
+          </g>
+          <!-- 箭头 1 -->
+          <g transform="translate(140, 67)">
+            <line x1="0" y1="0" x2="95" y2="0" stroke="#6366F1" stroke-width="2" stroke-dasharray="6,4"
+              class="flow-dash" />
+            <polygon points="95,-6 108,0 95,6" fill="#6366F1" />
+          </g>
+          <!-- 中间：单文件 -->
+          <g transform="translate(255, 8)">
+            <rect x="0" y="0" width="62" height="84" rx="10" fill="url(#heroFileGrad)" stroke="#6366F1"
+              stroke-width="2" />
+            <rect x="6" y="7" width="50" height="13" rx="4" fill="#4F46E5" />
+            <rect x="13" y="26" width="36" height="3" rx="1.5" fill="#334155" />
+            <rect x="13" y="34" width="30" height="3" rx="1.5" fill="#334155" />
+            <rect x="13" y="42" width="36" height="3" rx="1.5" fill="#334155" />
+            <circle cx="31" cy="60" r="11" fill="#10B981" opacity="0.2" />
+            <path d="M27 60 L30 63 L35 57" stroke="#10B981" stroke-width="2.2" stroke-linecap="round"
+              stroke-linejoin="round" />
+            <text x="31" y="113" text-anchor="middle" fill="#0F172A" font-size="13" font-weight="bold">单文件网页</text>
+            <text x="31" y="131" text-anchor="middle" fill="#64748B" font-size="11">零依赖资产</text>
+          </g>
+          <!-- 箭头 2 -->
+          <g transform="translate(337, 67)">
+            <line x1="0" y1="0" x2="95" y2="0" stroke="#6366F1" stroke-width="2" stroke-dasharray="6,4"
+              class="flow-dash" />
+            <polygon points="95,-6 108,0 95,6" fill="#6366F1" />
+          </g>
+          <!-- 右侧：全员 -->
+          <g transform="translate(452, 15)">
+            <circle cx="42" cy="40" r="16" stroke="#64748B" stroke-width="2" fill="#fff" />
+            <path d="M26 78 Q42 64 58 78" stroke="#64748B" stroke-width="2" fill="none" stroke-linecap="round" />
+            <circle cx="92" cy="40" r="16" stroke="#64748B" stroke-width="2" fill="#fff" />
+            <path d="M76 78 Q92 64 108 78" stroke="#64748B" stroke-width="2" fill="none" stroke-linecap="round" />
+            <circle cx="142" cy="40" r="16" stroke="#64748B" stroke-width="2" fill="#fff" />
+            <path d="M126 78 Q142 64 158 78" stroke="#64748B" stroke-width="2" fill="none" stroke-linecap="round" />
+            <g transform="translate(170, 24)">
+              <circle r="13" fill="#4F46E5" />
+              <text x="0" y="5" text-anchor="middle" font-size="14" font-weight="800" fill="#fff"
+                font-family="ui-monospace,monospace">N</text>
+            </g>
+            <text x="92" y="120" text-anchor="middle" fill="#0F172A" font-size="14" font-weight="bold">全组教师</text>
+            <text x="92" y="140" text-anchor="middle" fill="#64748B" font-size="11">双击即用 · 零培训</text>
+          </g>
+        </svg>
+      </div>
+
+      <!-- 正文描述 (18–20px) -->
+      <div class="tw-text-center tw-max-w-3xl tw-mx-auto tw-mb-12">
+        <p class="tw-text-lg sm:tw-text-xl tw-text-slate-600 tw-leading-relaxed tw-font-normal">
+          学校推 AI 最怕老师学不会。<b>1 位骨干教师</b>封装教学方法与出题流程，一键打包为<b>单个网页资产</b>，全组双击即用，无需任何培训。
+        </p>
+      </div>
+
+      <div class="tw-mx-auto tw-text-center tw-mb-20">
+        <div class="tw-flex tw-flex-col sm:tw-flex-row tw-justify-center tw-gap-4">
+          <a href="https://transweb.cn/math" target="_blank" class="tw-w-full sm:tw-w-auto">
+            <button
+              class="tw-w-full tw-bg-indigo-600 hover:tw-bg-indigo-500 tw-text-white tw-px-8 tw-py-4 tw-rounded-2xl tw-text-base tw-font-semibold tw-shadow-xl tw-shadow-indigo-600/20 smooth-transition tw-flex tw-items-center tw-justify-center tw-gap-2 active:tw-scale-[0.98]">
+              🏭 进入 AI 数学工作流 <span class="tw-font-mono tw-opacity-70">→</span>
+            </button>
+          </a>
+          <button onclick="triggerPackDownload(this, 'mathFlow.html')"
+            class="tw-w-full sm:tw-w-auto tw-border tw-border-slate-200/90 hover:tw-border-indigo-300 tw-bg-white/80 hover:tw-bg-white tw-text-slate-700 tw-px-8 tw-py-4 tw-rounded-2xl tw-text-base tw-font-semibold tw-shadow-sm smooth-transition tw-flex tw-items-center tw-justify-center tw-gap-2 active:tw-scale-[0.98]">
+            <span>📦 导出 AI 数学工作流网页</span>
+          </button>
+        </div>
+
+        <div
+          class="tw-flex tw-flex-wrap tw-items-center tw-justify-center tw-gap-6 tw-mt-6 tw-text-xs sm:tw-text-sm tw-text-slate-500 tw-font-medium">
+          <span class="tw-flex tw-items-center tw-gap-1.5">
+            <svg class="tw-w-4 tw-h-4 tw-text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+            纯静态单文件应用
+          </span>
+          <span class="tw-flex tw-items-center tw-gap-1.5">
+            <svg class="tw-w-4 tw-h-4 tw-text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            </svg>
+            教学数据私有化隔离
+          </span>
+          <span class="tw-flex tw-items-center tw-gap-1.5">
+            <svg class="tw-w-4 tw-h-4 tw-text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+            零常驻学校云端开销
+          </span>
+        </div>
+      </div>
+
+      <!-- 数据指标 -->
+      <div
+        class="tw-grid tw-grid-cols-2 md:tw-grid-cols-3 tw-gap-6 tw-max-w-4xl tw-mx-auto tw-mb-24 tw-p-8 tw-rounded-3xl glass-card tw-shadow-sm">
+        <div class="tw-text-center md:tw-border-r tw-border-slate-200/60 tw-pr-4">
+          <div class="tw-text-3xl sm:tw-text-4xl tw-font-extrabold tw-text-slate-900 tw-font-mono tw-tracking-tight">0 元/月
+          </div>
+          <div class="tw-text-xs sm:tw-text-sm tw-text-slate-500 tw-mt-1.5">学校 ECS 独立运维账单</div>
+        </div>
+        <div class="tw-text-center md:tw-border-r tw-border-slate-200/60 tw-pr-4">
+          <div class="tw-text-3xl sm:tw-text-4xl tw-font-extrabold tw-text-indigo-600 tw-font-mono tw-tracking-tight">100%
+          </div>
+          <div class="tw-text-xs sm:tw-text-sm tw-text-slate-500 tw-mt-1.5">静态代码，本地浏览器即开即用</div>
+        </div>
+        <div class="tw-text-center tw-col-span-2 md:tw-col-span-1">
+          <div class="tw-text-3xl sm:tw-text-4xl tw-font-extrabold tw-text-slate-900 tw-font-mono tw-tracking-tight">1.2 Min
+          </div>
+          <div class="tw-text-xs sm:tw-text-sm tw-text-slate-500 tw-mt-1.5">新入职教师上手到产出标准题目的平均用时</div>
+        </div>
+      </div>
+
+      <!-- 工作流示例 Section -->
+      <div id="exampleWorkflow" class="tw-w-full tw-max-w-5xl tw-mx-auto tw-mb-36 tw-scroll-mt-28">
+
+        <div class="tw-text-center tw-mb-12">
+          <h3 class="tw-text-xs tw-font-mono tw-font-bold tw-text-indigo-600 tw-tracking-widest tw-uppercase tw-mb-2">
+            一次封装，全组复用</h3>
+          <p class="tw-text-xl sm:tw-text-2xl tw-font-bold tw-text-slate-900">年轻老师、助教到手就能用，教学质量与题目水平不走样。</p>
+        </div>
+
+        <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-4 tw-gap-5 tw-mb-10 tw-relative">
+          <div
+            class="physical-asset-card tw-p-6 tw-rounded-2xl tw-relative hover:tw-border-indigo-300 tw-flex tw-flex-col">
+            <div class="tw-text-[11px] tw-font-mono tw-font-semibold tw-text-indigo-500 tw-mb-3">01 / ARCHITECTURE</div>
+            <svg viewBox="0 0 200 64" class="tw-w-full tw-h-14 tw-mb-4" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="34" cy="30" r="14" fill="#0B0F19" />
+              <path d="M18 54 Q34 38 50 54 Z" fill="#0B0F19" />
+              <path d="M52 30 H92" stroke="#6366F1" stroke-width="2" stroke-dasharray="4,3" />
+              <g transform="translate(98,8)">
+                <rect x="0" y="0" width="44" height="44" rx="10" fill="#4F46E5" />
+                <path d="M22 12 V32 M12 22 H32" stroke="#fff" stroke-width="3" stroke-linecap="round" />
+                <circle cx="22" cy="22" r="5.5" fill="none" stroke="#fff" stroke-width="2" />
+                <circle cx="34" cy="12" r="2.5" fill="#10B981" />
+              </g>
+            </svg>
+            <div class="tw-text-base tw-font-bold tw-text-slate-900">1 人配置最佳数学教研 “流程”</div>
+            <p class="tw-text-slate-600 tw-text-xs tw-mt-2 tw-leading-relaxed">资深教师在后台调通出题 「提示词」、难度分层与拦截规则。</p>
+            <div
+              class="tw-hidden md:tw-block tw-absolute tw-top-1/2 tw-right-[-14px] tw-w-7 tw-h-[1px] tw-data-flow-bridge tw-z-10">
+            </div>
+          </div>
+          <div
+            class="physical-asset-card tw-p-6 tw-rounded-2xl tw-relative hover:tw-border-indigo-300 tw-flex tw-flex-col">
+            <div class="tw-text-[11px] tw-font-mono tw-font-semibold tw-text-indigo-500 tw-mb-3">02 / COMPRESSION</div>
+            <svg viewBox="0 0 200 64" class="tw-w-full tw-h-14 tw-mb-4" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <marker id="wf2" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto">
+                  <path d="M0 0 L6 3 L0 6 Z" fill="#6366F1" />
+                </marker>
+              </defs>
+              <g transform="translate(12,16)">
+                <rect x="0" y="0" width="20" height="26" rx="3" fill="#CBD5E1" />
+                <rect x="7" y="0" width="20" height="26" rx="3" fill="#94A3B8" />
+                <rect x="14" y="0" width="20" height="26" rx="3" fill="#64748B" />
+              </g>
+              <path d="M62 29 H86" stroke="#6366F1" stroke-width="2" marker-end="url(#wf2)" />
+              <g transform="translate(96,12)">
+                <rect x="0" y="0" width="40" height="40" rx="8" fill="#0B0F19" stroke="#6366F1" stroke-width="2" />
+                <text x="20" y="25" text-anchor="middle" font-size="11" font-weight="800" fill="#10B981"
+                  font-family="ui-monospace,monospace">.html</text>
+              </g>
+            </svg>
+            <div class="tw-text-base tw-font-bold tw-text-slate-900">一键数学逻辑硬编码压缩</div>
+            <p class="tw-text-slate-600 tw-text-xs tw-mt-2 tw-leading-relaxed">出题模型、题干和逻辑节点固化压缩为单个独立 HTML 网页。</p>
+            <div
+              class="tw-hidden md:tw-block tw-absolute tw-top-1/2 tw-right-[-14px] tw-w-7 tw-h-[1px] tw-data-flow-bridge tw-z-10">
+            </div>
+          </div>
+          <div
+            class="physical-asset-card tw-p-6 tw-rounded-2xl tw-relative hover:tw-border-indigo-300 tw-flex tw-flex-col">
+            <div class="tw-text-[11px] tw-font-mono tw-font-semibold tw-text-indigo-500 tw-mb-3">03 / FREE DELIVERY</div>
+            <svg viewBox="0 0 200 64" class="tw-w-full tw-h-14 tw-mb-4" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <g transform="translate(14,17)">
+                <rect x="0" y="0" width="22" height="28" rx="4" fill="#0B0F19" stroke="#6366F1" stroke-width="1.5" />
+                <text x="11" y="18" text-anchor="middle" font-size="7" font-weight="800" fill="#10B981"
+                  font-family="ui-monospace,monospace">.html</text>
+              </g>
+              <path d="M44 31 H66" stroke="#6366F1" stroke-width="2" stroke-dasharray="4,3" />
+              <path d="M48 22 Q92 -2 144 12" stroke="#6366F1" stroke-width="1.5" fill="none" stroke-dasharray="3,3"
+                opacity="0.55" />
+              <path d="M48 40 Q92 62 144 38" stroke="#6366F1" stroke-width="1.5" fill="none" stroke-dasharray="3,3"
+                opacity="0.55" />
+              <g transform="translate(146,17)">
+                <circle cx="6" cy="14" r="4" fill="#94A3B8" />
+                <path d="M0 28 Q6 20 12 28 Z" fill="#94A3B8" />
+                <circle cx="24" cy="14" r="4" fill="#94A3B8" />
+                <path d="M18 28 Q24 20 30 28 Z" fill="#94A3B8" />
+              </g>
+            </svg>
+            <div class="tw-text-base tw-font-bold tw-text-slate-900">零依赖文件轻量分发</div>
+            <p class="tw-text-slate-600 tw-text-xs tw-mt-2 tw-leading-relaxed">像发课件一样发到教师群或教研网盘，全组随要随拿。</p>
+            <div
+              class="tw-hidden md:tw-block tw-absolute tw-top-1/2 tw-right-[-14px] tw-w-7 tw-h-[1px] tw-data-flow-bridge tw-z-10">
+            </div>
+          </div>
+          <div class="tw-bg-[#0B0F19] tw-p-6 tw-rounded-2xl tw-relative tw-flex tw-flex-col tw-shadow-xl">
+            <div class="tw-text-[11px] tw-font-mono tw-font-semibold tw-text-emerald-400 tw-mb-3">04 / PRODUCTION</div>
+            <svg viewBox="0 0 200 64" class="tw-w-full tw-h-14 tw-mb-4" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <g transform="translate(20,12)">
+                <rect x="0" y="0" width="46" height="36" rx="6" fill="#1E293B" stroke="#10B981" stroke-width="2" />
+                <text x="23" y="22" text-anchor="middle" font-size="10" font-weight="800" fill="#10B981"
+                  font-family="ui-monospace,monospace">.html</text>
+              </g>
+              <circle cx="43" cy="30" r="7" fill="none" stroke="#10B981" stroke-width="1.5" class="pulse-ring" />
+              <path d="M78 30 H104" stroke="#10B981" stroke-width="2" stroke-dasharray="4,3" />
+              <g transform="translate(110,18)">
+                <rect x="0" y="0" width="20" height="5" rx="1.5" fill="#10B981" opacity="0.85" />
+                <rect x="0" y="9" width="15" height="5" rx="1.5" fill="#10B981" opacity="0.5" />
+                <rect x="0" y="18" width="20" height="5" rx="1.5" fill="#10B981" opacity="0.85" />
+              </g>
+            </svg>
+            <div class="tw-text-base tw-font-bold tw-text-white">全员双击开箱高效备课</div>
+            <p class="tw-text-slate-400 tw-text-xs tw-mt-2 tw-leading-relaxed">双击浏览器打开，填入知识点批量获取高质量变式题，省去全员培训成本。</p>
+          </div>
+        </div>
+
+        <!-- 演示沙盒容器 -->
+        <div class="tw-w-full tw-bg-[#0B0F19] tw-rounded-3xl tw-p-5 sm:tw-p-7 tw-shadow-2xl tw-border tw-border-slate-800">
+          <div
+            class="tw-flex tw-items-center tw-justify-between tw-pb-4 tw-mb-6 tw-border-b tw-border-slate-800/80 tw-px-1">
+            <div class="tw-flex tw-items-center tw-gap-2.5">
+              <span class="tw-w-2.5 tw-h-2.5 tw-bg-emerald-400 tw-rounded-full tw-animate-pulse"></span>
+              <span class="tw-text-xs tw-font-mono tw-text-slate-300">MATH_SANDBOX: ACTIVE (智能数学教研沙盒演示)</span>
+            </div>
+            <div class="tw-text-[11px] tw-font-mono tw-text-slate-500">
+              浏览器本地学情与算力隔离保护中
+            </div>
+          </div>
+
+          <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-3 tw-gap-4 tw-mb-6">
+
+            <button
+              onclick="switchScenario('https://transweb.cn/workflow/docs/examples/ggb-agent.html', '📊 当前业务：GGB 智能数学题目快速配图流水线', this)"
+              class="scenario-tab active tw-text-left tw-p-5 tw-rounded-2xl tw-border tw-transition-all tw-duration-300 tw-relative tw-overflow-hidden tw-group tw-flex tw-flex-col tw-justify-between active:tw-scale-[0.98]
+           tw-bg-indigo-500/10 tw-border-indigo-500/40 tw-shadow-[0_0_24px_rgba(79,70,229,0.1)]">
+
+              <div
+                class="tw-absolute tw-top-0 tw-right-0 tw-w-24 tw-h-24 tw-bg-indigo-500/10 tw-blur-2xl tw-rounded-full tw-pointer-events-none">
+              </div>
+
+              <div class="tw-relative tw-z-10 tw-w-full">
+                <div class="tw-flex tw-items-center tw-justify-between tw-gap-2 tw-mb-3">
+                  <span
+                    class="tw-text-[10px] tw-font-mono tw-font-semibold tw-text-emerald-400 tw-bg-emerald-500/10 tw-px-2.5 tw-py-1 tw-rounded-lg tw-border tw-border-emerald-500/20">
+                    🎨 GGB Agent
+                  </span>
+                  <span class="tw-text-[10px] tw-font-mono tw-text-slate-400">
+                    案例 01
+                  </span>
+                </div>
+                <div class="tw-text-base tw-font-bold tw-text-white tw-leading-snug tw-flex tw-items-center tw-gap-1.5">
+                  <span class="tw-text-emerald-400">①</span> 数学题目快速配图
+                </div>
+                <p
+                  class="tw-text-xs tw-text-slate-300 tw-mt-3 tw-leading-relaxed tw-flex tw-flex-wrap tw-items-center tw-gap-x-1.5 tw-gap-y-1">
+                  <span>数学构图专家编写提示词</span>
+                  <span class="tw-text-slate-600 tw-font-light">&rarr;</span>
+                  <span>一线老师输入题目</span>
+                  <span class="tw-text-slate-600 tw-font-light">&rarr;</span>
+                  <span class="tw-text-emerald-400 tw-font-medium">1分钟生成GGB图</span>
+                </p>
+              </div>
+            </button>
+
+            <button
+              onclick="switchScenario('https://transweb.cn/workflow/docs/examples/tiered-Lesson.html', '🚀 当前业务：多级难度「分层教案」流水线', this)"
+              class="scenario-tab tw-text-left tw-p-5 tw-rounded-2xl tw-border tw-transition-all tw-duration-300 tw-relative tw-overflow-hidden tw-group tw-flex tw-flex-col tw-justify-between active:tw-scale-[0.98]
+           tw-bg-slate-900/50 tw-border-slate-800 hover:tw-border-indigo-500/30 hover:tw-bg-slate-800/40">
+
+              <div class="tw-relative tw-z-10 tw-w-full">
+                <div class="tw-flex tw-items-center tw-justify-between tw-gap-2 tw-mb-3">
+                  <span
+                    class="tw-text-[10px] tw-font-mono tw-font-semibold tw-text-indigo-400 tw-bg-indigo-500/10 tw-px-2.5 tw-py-1 tw-rounded-lg tw-border tw-border-indigo-500/20">
+                    📝 Tiered Lesson
+                  </span>
+                  <span
+                    class="tw-text-[10px] tw-font-mono tw-text-slate-500 group-hover:tw-text-indigo-400/80 tw-transition-colors">
+                    案例 02
+                  </span>
+                </div>
+                <div
+                  class="tw-text-base tw-font-bold tw-text-slate-300 group-hover:tw-text-white tw-transition-colors tw-leading-snug tw-flex tw-items-center tw-gap-1.5">
+                  <span class="tw-text-indigo-400">②</span> 精准分层教案
+                </div>
+                <p
+                  class="tw-text-xs tw-text-slate-400 group-hover:tw-text-slate-300 tw-transition-colors tw-mt-3 tw-leading-relaxed tw-flex tw-flex-wrap tw-items-center tw-gap-x-1.5 tw-gap-y-1">
+                  <span>名师锁定制题标准</span>
+                  <span class="tw-text-slate-600 tw-font-light">&rarr;</span>
+                  <span>一线教师输入概念</span>
+                  <span class="tw-text-slate-600 tw-font-light">&rarr;</span>
+                  <span class="tw-text-indigo-400 tw-font-medium">1分钟生成三层教案</span>
+                </p>
+              </div>
+            </button>
+
+            <button
+              onclick="switchScenario('https://transweb.cn/workflow/docs/examples/micro-lecture.html', '🎯 当前业务：多Agent协同·分级课程教研流水线', this)"
+              class="scenario-tab tw-text-left tw-p-5 tw-rounded-2xl tw-border tw-transition-all tw-duration-300 tw-relative tw-overflow-hidden tw-group tw-flex tw-flex-col tw-justify-between active:tw-scale-[0.98]
+           tw-bg-slate-900/50 tw-border-slate-800 hover:tw-border-indigo-500/30 hover:tw-bg-slate-800/40">
+
+              <div class="tw-relative tw-z-10 tw-w-full">
+                <div class="tw-flex tw-items-center tw-justify-between tw-gap-2 tw-mb-3">
+                  <span
+                    class="tw-text-[10px] tw-font-mono tw-font-semibold tw-text-purple-400 tw-bg-purple-500/10 tw-px-2.5 tw-py-1 tw-rounded-lg tw-border tw-border-purple-500/20">
+                    🤖 Multi-Agent
+                  </span>
+                  <span
+                    class="tw-text-[10px] tw-font-mono tw-text-slate-500 group-hover:tw-text-purple-400/80 tw-transition-colors">
+                    案例 03
+                  </span>
+                </div>
+                <div
+                  class="tw-text-base tw-font-bold tw-text-slate-300 group-hover:tw-text-white tw-transition-colors tw-leading-snug tw-flex tw-items-center tw-gap-1.5">
+                  <span class="tw-text-purple-400">③</span> 探究微课多 Agent 协同
+                </div>
+                <p
+                  class="tw-text-xs tw-text-slate-400 group-hover:tw-text-slate-300 tw-transition-colors tw-mt-3 tw-leading-relaxed tw-flex tw-flex-wrap tw-items-center tw-gap-x-1.5 tw-gap-y-1">
+                  <span>教师定主题</span>
+                  <span class="tw-text-slate-600 tw-font-light">&rarr;</span>
+                  <span>历史检索/建模/设计 3个 Agent 协同输出</span>
+                </p>
+              </div>
+            </button>
+
+          </div>
+
+          <div id="iframeWrapper" class="tw-bg-white tw-rounded-2xl tw-overflow-hidden tw-relative tw-w-full tw-shadow-inner"
+            style="height: 520px;">
+            <iframe id="workflowIframe" src="https://transweb.cn/workflow/docs/examples/ggb-agent.html"
+              class="tw-absolute tw-inset-0 tw-border-0 tw-w-full tw-h-full" title="Trans-Workflow">
+            </iframe>
+          </div>
+        </div>
+      </div>
+
+      <!-- 核心诉求 Section -->
+      <div id="coreAppeals" class="tw-mb-36 tw-scroll-mt-28">
+        <div class="tw-text-center tw-mb-16">
+          <span
+            class="tw-text-xs tw-font-mono tw-font-semibold tw-text-indigo-600 tw-bg-indigo-50 tw-px-3.5 tw-py-1.5 tw-rounded-full tw-border tw-border-indigo-100">精明校长与教研组长必看</span>
+          <h2 class="tw-text-3xl sm:tw-text-5xl tw-font-bold tw-text-slate-900 tw-mt-5 tw-tracking-tight">为什么 80% 的学校推行 AI 辅助教学，最终都流于表面？
+          </h2>
+          <p class="tw-text-slate-600 tw-mt-4 tw-max-w-3xl tw-mx-auto tw-text-base sm:tw-text-lg tw-leading-relaxed">
+            逼全组老师学晦涩提示词、买独立账号、搭服务器——高昂时间成本与隐性开销让 AI 落地沦为空谈。务实策略：<b>少数名师精密配置，多数老师直接双击享用</b>。
+          </p>
+        </div>
+
+        <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-3 tw-gap-8">
+          <div class="physical-asset-card tw-rounded-2xl tw-p-8">
+            <!-- SVG: 击穿学习门槛 -->
+            <svg viewBox="0 0 48 48" class="tw-w-12 tw-h-12 tw-mb-5" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="2" y="2" width="44" height="44" rx="14" fill="#EEF2FF" />
+              <rect x="14" y="12" width="16" height="26" rx="3" fill="#4F46E5" />
+              <path d="M14 14 L30 12 L30 36 L14 34 Z" fill="#10B981" opacity="0.6" />
+              <line x1="14" y1="19" x2="14" y2="29" stroke="#fff" stroke-width="1.5" opacity="0.6" />
+              <circle cx="14" cy="24" r="1.8" fill="#fff" />
+            </svg>
+            <h3 class="tw-text-xl tw-font-bold tw-text-slate-900 tw-mb-3">击穿一线教师 AI 学习门槛</h3>
+            <p class="tw-text-slate-600 tw-text-sm tw-leading-relaxed">无需学 「提示词」 语法，双击填表直接拿成品教案与题组。</p>
+          </div>
+          <div class="physical-asset-card tw-rounded-2xl tw-p-8">
+            <!-- SVG: 节省工时 -->
+            <svg viewBox="0 0 48 48" class="tw-w-12 tw-h-12 tw-mb-5" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="2" y="2" width="44" height="44" rx="14" fill="#EEF2FF" />
+              <circle cx="21" cy="21" r="13" stroke="#4F46E5" stroke-width="2.2" fill="#fff" />
+              <line x1="21" y1="21" x2="21" y2="12" stroke="#4F46E5" stroke-width="2" stroke-linecap="round" />
+              <line x1="21" y1="21" x2="28" y2="25" stroke="#4F46E5" stroke-width="2" stroke-linecap="round" />
+              <g transform="translate(30,29)">
+                <circle r="8" fill="#10B981" />
+                <path d="M-3 -1 L-1 2 L3 -3" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </g>
+            </svg>
+            <h3 class="tw-text-xl tw-font-bold tw-text-slate-900 tw-mb-3">收回被浪费的备课工时成本</h3>
+            <p class="tw-text-slate-600 tw-text-sm tw-leading-relaxed">免去全组注册、绑通道、买额度，备课精力回归教学本身。</p>
+          </div>
+          <div class="physical-asset-card tw-rounded-2xl tw-p-8">
+            <!-- SVG: 运维归零 -->
+            <svg viewBox="0 0 48 48" class="tw-w-12 tw-h-12 tw-mb-5" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="2" y="2" width="44" height="44" rx="14" fill="#EEF2FF" />
+              <rect x="13" y="11" width="22" height="26" rx="3" stroke="#4F46E5" stroke-width="2" fill="#fff" />
+              <line x1="17" y1="17" x2="31" y2="17" stroke="#4F46E5" stroke-width="2" />
+              <line x1="17" y1="22" x2="31" y2="22" stroke="#94A3B8" stroke-width="2" />
+              <circle cx="24" cy="29" r="2" fill="#10B981" />
+              <line x1="14" y1="10" x2="34" y2="38" stroke="#EF4444" stroke-width="2.5" stroke-linecap="round" />
+            </svg>
+            <h3 class="tw-text-xl tw-font-bold tw-text-slate-900 tw-mb-3">学校 IT 运维费用直接归零</h3>
+            <p class="tw-text-slate-600 tw-text-sm tw-leading-relaxed">纯静态单文件，浏览器本地运行，无 ECS 云端账单。</p>
+          </div>
+          <div class="physical-asset-card tw-rounded-2xl tw-p-8">
+            <!-- SVG: 隐私保护 -->
+            <svg viewBox="0 0 48 48" class="tw-w-12 tw-h-12 tw-mb-5" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="2" y="2" width="44" height="44" rx="14" fill="#EEF2FF" />
+              <path d="M24 10 L36 15 V25 C36 32 24 37 24 37 C24 37 12 32 12 25 V15 Z" stroke="#4F46E5"
+                stroke-width="2.2" fill="#fff" />
+              <rect x="19" y="22" width="10" height="8" rx="1.5" fill="#4F46E5" />
+              <path d="M21 22 V19 Q21 16 24 16 Q27 16 27 19 V22" stroke="#4F46E5" stroke-width="2" fill="none" />
+              <circle cx="24" cy="26" r="1.4" fill="#10B981" />
+            </svg>
+            <h3 class="tw-text-xl tw-font-bold tw-text-slate-900 tw-mb-3">100% 物理级保护教研数据</h3>
+            <p class="tw-text-slate-600 tw-text-sm tw-leading-relaxed">出题 「提示词」 硬编码封装在离线 HTML 内，数据不出校。</p>
+          </div>
+          <div class="physical-asset-card tw-rounded-2xl tw-p-8">
+            <!-- SVG: 消灭幻觉 -->
+            <svg viewBox="0 0 48 48" class="tw-w-12 tw-h-12 tw-mb-5" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="2" y="2" width="44" height="44" rx="14" fill="#EEF2FF" />
+              <circle cx="16" cy="15" r="5" stroke="#4F46E5" stroke-width="2" fill="#fff" />
+              <circle cx="33" cy="15" r="5" stroke="#4F46E5" stroke-width="2" fill="#fff" />
+              <circle cx="24" cy="33" r="5" stroke="#4F46E5" stroke-width="2" fill="#fff" />
+              <line x1="20" y1="18" x2="22" y2="29" stroke="#4F46E5" stroke-width="1.8" />
+              <line x1="29" y1="18" x2="27" y2="29" stroke="#4F46E5" stroke-width="1.8" />
+              <line x1="21" y1="15" x2="28" y2="15" stroke="#4F46E5" stroke-width="1.8" />
+              <path d="M21 33 L23 35 L27 30" stroke="#10B981" stroke-width="2" fill="none" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+            <h3 class="tw-text-xl tw-font-bold tw-text-slate-900 tw-mb-3">刚性结构消灭数学幻觉</h3>
+            <p class="tw-text-slate-600 tw-text-sm tw-leading-relaxed">刚性拓扑质检节点拦截，关键步骤人工挂起干预，降低废题率。</p>
+          </div>
+          <div class="physical-asset-card tw-rounded-2xl tw-p-8">
+            <!-- SVG: ROI 透明 -->
+            <svg viewBox="0 0 48 48" class="tw-w-12 tw-h-12 tw-mb-5" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="2" y="2" width="44" height="44" rx="14" fill="#EEF2FF" />
+              <line x1="11" y1="36" x2="38" y2="36" stroke="#94A3B8" stroke-width="2" stroke-linecap="round" />
+              <rect x="13" y="26" width="6" height="10" rx="1.5" fill="#4F46E5" opacity="0.4" />
+              <rect x="22" y="20" width="6" height="16" rx="1.5" fill="#4F46E5" opacity="0.7" />
+              <rect x="31" y="13" width="6" height="23" rx="1.5" fill="#10B981" />
+              <path d="M13 24 L37 11" stroke="#0B0F19" stroke-width="2" fill="none" stroke-linecap="round" />
+              <path d="M31 11 L39 11 L39 19" stroke="#0B0F19" stroke-width="2" fill="none" stroke-linecap="round" />
+            </svg>
+            <h3 class="tw-text-xl tw-font-bold tw-text-slate-900 tw-mb-3">教研 ROI 透明，部署当天见效</h3>
+            <p class="tw-text-slate-600 tw-text-sm tw-leading-relaxed">1 位名师 10 分钟搭流，当晚全群分发，ROI 即刻可算。</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 核心红利 Section -->
+      <div id="coreFeatures" class="tw-mb-36 tw-scroll-mt-28">
+        <div class="tw-text-center tw-mb-16">
+          <span
+            class="tw-text-xs tw-font-mono tw-font-semibold tw-text-indigo-600 tw-bg-indigo-50 tw-px-3.5 tw-py-1.5 tw-rounded-full tw-border tw-border-indigo-100">极致轻量
+            · 网页资产化</span>
+          <h2 class="tw-text-3xl sm:tw-text-5xl tw-font-bold tw-text-slate-900 tw-mt-5 tw-tracking-tight">把名师的数学教学 "流程" 封装为长效复用的"可控资产"
+          </h2>
+          <p class="tw-text-slate-600 tw-mt-4 tw-max-w-2xl tw-mx-auto tw-text-base sm:tw-text-lg tw-leading-relaxed">摆脱 SaaS 账号绑定与权限限制，让优质教研方案在组内轻量流动。
+          </p>
+        </div>
+
+        <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-3 tw-gap-8">
+          <div class="physical-asset-card tw-rounded-2xl tw-p-8">
+            <!-- SVG: 1→N 多分支 -->
+            <svg viewBox="0 0 56 56" class="tw-w-14 tw-h-14 tw-mb-5" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="2" y="2" width="52" height="52" rx="16" fill="#EEF2FF" />
+              <circle cx="16" cy="15" r="6" fill="#4F46E5" />
+              <line x1="16" y1="21" x2="16" y2="27" stroke="#4F46E5" stroke-width="2" />
+              <line x1="16" y1="27" x2="28" y2="38" stroke="#4F46E5" stroke-width="2" />
+              <line x1="16" y1="27" x2="40" y2="38" stroke="#4F46E5" stroke-width="2" />
+              <line x1="16" y1="27" x2="16" y2="38" stroke="#4F46E5" stroke-width="2" />
+              <circle cx="28" cy="42" r="5" fill="#10B981" opacity="0.6" />
+              <circle cx="40" cy="42" r="5" fill="#10B981" opacity="0.6" />
+              <circle cx="16" cy="42" r="5" fill="#10B981" opacity="0.6" />
+            </svg>
+            <div class="tw-text-indigo-600 tw-font-bold tw-text-xs tw-font-mono tw-mb-2">[ 1→N 与 N→1 复合多分支 ]</div>
+            <h3 class="tw-text-lg tw-font-bold tw-text-slate-900 tw-mb-3">名师调配工业级多级连线</h3>
+            <p class="tw-text-slate-600 tw-text-sm tw-leading-relaxed">
+              复杂教学任务分布式加工、多源学情并行拆解。顶尖名师经验转化为刚性拓扑，榨干大模型处理高难度数学符号的潜力。</p>
+          </div>
+          <div class="physical-asset-card tw-rounded-2xl tw-p-8">
+            <!-- SVG: 零依赖应用 -->
+            <svg viewBox="0 0 56 56" class="tw-w-14 tw-h-14 tw-mb-5" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="2" y="2" width="52" height="52" rx="16" fill="#EEF2FF" />
+              <rect x="16" y="9" width="24" height="34" rx="5" fill="#0B0F19" stroke="#4F46E5" stroke-width="2" />
+              <rect x="20" y="14" width="16" height="3" rx="1.5" fill="#4F46E5" />
+              <line x1="21" y1="21" x2="35" y2="21" stroke="#64748B" stroke-width="1.5" />
+              <line x1="21" y1="26" x2="35" y2="26" stroke="#64748B" stroke-width="1.5" />
+              <line x1="21" y1="31" x2="29" y2="31" stroke="#64748B" stroke-width="1.5" />
+              <circle cx="40" cy="41" r="8" fill="#10B981" opacity="0.25" />
+              <path d="M37 41 L39 43 L43 39" stroke="#10B981" stroke-width="2" fill="none" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+            <div class="tw-text-indigo-600 tw-font-bold tw-text-xs tw-font-mono tw-mb-2">[ 零依赖应用 · 随用随走 ]</div>
+            <h3 class="tw-text-lg tw-font-bold tw-text-slate-900 tw-mb-3">单文件独立演进，无备课认知过载</h3>
+            <p class="tw-text-slate-600 tw-text-sm tw-leading-relaxed">
+              无需开账号、改权限。一键导出单文件可独立保留给任何人，消除一线教师对新工具的心理抗拒。</p>
+          </div>
+          <div class="physical-asset-card tw-rounded-2xl tw-p-8">
+            <!-- SVG: 半自动质检 -->
+            <svg viewBox="0 0 56 56" class="tw-w-14 tw-h-14 tw-mb-5" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="2" y="2" width="52" height="52" rx="16" fill="#EEF2FF" />
+              <path d="M28 8 L44 16 V32 L28 40 L12 32 V16 Z" stroke="#4F46E5" stroke-width="2" fill="#fff" />
+              <line x1="28" y1="14" x2="28" y2="30" stroke="#4F46E5" stroke-width="1.8" />
+              <line x1="18" y1="22" x2="38" y2="22" stroke="#4F46E5" stroke-width="1.8" />
+              <path d="M24 32 L28 36 L33 29" stroke="#10B981" stroke-width="2.2" fill="none" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+            <div class="tw-text-indigo-600 tw-font-bold tw-text-xs tw-font-mono tw-mb-2">[ 半自动精准教研风控机制 ]</div>
+            <h3 class="tw-text-lg tw-font-bold tw-text-slate-900 tw-mb-3">核心教学环节人工干预拦截</h3>
+            <p class="tw-text-slate-600 tw-text-sm tw-leading-relaxed">
+              不搞不可控黑盒。流水线在敏感解题验证节点挂起，由教研组长调校后放行到排版节点。</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ROI 对比表格 Section -->
+      <div id="comparisonTable" class="tw-mb-36 tw-scroll-mt-28">
+        <div class="tw-bg-white tw-rounded-3xl tw-border tw-border-slate-200/80 tw-p-6 sm:tw-p-10 tw-shadow-xl tw-shadow-slate-200/40 tw-relative">
+          <div class="tw-text-center tw-mb-10">
+            <div class="tw-text-xs tw-font-mono tw-font-bold tw-text-indigo-600 tw-tracking-widest tw-uppercase tw-mb-2">
+              评估面板</div>
+            <h2 class="tw-text-2xl sm:tw-text-3xl tw-font-bold tw-text-slate-900">深度评估：教师工时与长期信息化隐性开销</h2>
+          </div>
+
+          <div class="table-scroll-x">
+            <table class="tw-min-w-[760px] md:tw-w-full tw-text-left tw-border-collapse">
+              <thead>
+                <tr class="tw-bg-[#0B0F19] tw-text-slate-200">
+                  <th style="width: 200px;" class="tw-p-5 tw-text-xs tw-font-mono tw-font-bold tw-rounded-l-2xl">学校教研高频考核主维度
+                  </th>
+                  <th class="tw-p-5 tw-text-xs tw-font-mono tw-font-bold tw-text-emerald-400 tw-bg-slate-900">
+                    Trans-Workflow</th>
+                  <th class="tw-p-5 tw-text-xs tw-font-mono tw-font-bold tw-text-slate-400">常规云端黑盒工作流 (如 Dify 等)</th>
+                  <th class="tw-p-5 tw-text-xs tw-font-mono tw-font-bold tw-text-slate-400 tw-rounded-r-2xl">传统定制化教学/题库系统
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="tw-text-slate-600 tw-text-xs sm:tw-text-sm">
+                <tr class="tw-border-b tw-border-slate-100 hover:tw-bg-slate-50/80 tw-transition-colors">
+                  <td class="tw-p-5 tw-font-bold tw-text-slate-900">⏱️ 全员上手与培训工时</td>
+                  <td class="tw-p-5 tw-bg-emerald-50/50 tw-text-slate-900">
+                    <span
+                      class="tw-font-mono tw-text-xs tw-font-bold tw-bg-emerald-500/10 tw-text-emerald-700 tw-px-2 tw-py-0.5 tw-rounded-md">【近乎
+                      0 门槛】</span><br>
+                    <span class="tw-text-xs tw-text-slate-600 tw-mt-1.5 tw-block"><b>1人配置，全组裂变。</b>教师无需钻研 LaTex 或提示词，双击直接填表领题。</span>
+                  </td>
+                  <td class="tw-p-5 tw-text-slate-500 tw-text-xs">各年级老师逐个申请培训，易引发反弹和隐性时间浪费。</td>
+                  <td class="tw-p-5 tw-text-slate-500 tw-text-xs">需学复杂教务管理菜单。大纲调整时全员推倒重来，耗时巨大。</td>
+                </tr>
+                <tr class="tw-border-b tw-border-slate-100 hover:tw-bg-slate-50/80 tw-transition-colors">
+                  <td class="tw-p-5 tw-font-bold tw-text-slate-900">💳 云硬件与日常运维账</td>
+                  <td class="tw-p-5 tw-bg-emerald-50/50 tw-text-slate-900">
+                    <span
+                      class="tw-font-mono tw-text-xs tw-font-bold tw-bg-emerald-500/10 tw-text-emerald-700 tw-px-2 tw-py-0.5 tw-rounded-md">【￥
+                      0 / 月】</span><br>
+                    <span class="tw-text-xs tw-text-slate-600 tw-mt-1.5 tw-block">纯静态浏览器本地调度，不占学校 ECS 硬件资源。</span>
+                  </td>
+                  <td class="tw-p-5 tw-text-slate-500 tw-text-xs">强制绑定云服务器等高成本硬件，教研未见效固资先扣。</td>
+                  <td class="tw-p-5 tw-text-slate-500 tw-text-xs">随年级并发上升，长期带宽账单如滚雪球。</td>
+                </tr>
+                <tr class="tw-border-b tw-border-slate-100 hover:tw-bg-slate-50/80 tw-transition-colors">
+                  <td class="tw-p-5 tw-font-bold tw-text-slate-900">📦 长期隐性技术债务</td>
+                  <td class="tw-p-5 tw-bg-emerald-50/50 tw-text-slate-900">
+                    <span
+                      class="tw-font-mono tw-text-xs tw-font-bold tw-bg-emerald-500/10 tw-text-emerald-700 tw-px-2 tw-py-0.5 tw-rounded-md">【持久轻量
+                      · 0 债务】</span><br>
+                    <span class="tw-text-xs tw-text-slate-600 tw-mt-1.5 tw-block">单 HTML 干净利落。升级仅需名师重新生成覆盖。</span>
+                  </td>
+                  <td class="tw-p-5 tw-text-slate-500 tw-text-xs">依赖 Docker 容器和母系统演进，开源库变更易引发崩溃。</td>
+                  <td class="tw-p-5 tw-text-slate-500 tw-text-xs">大模型 API 迭代快，自研代码腐化迅速，长期维护需专项预算。</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- 编译构建技术面板 -->
+      <div
+        class="tw-bg-[#0B0F19] tw-rounded-3xl tw-p-8 sm:tw-p-10 md:tw-p-14 tw-mb-20 md:tw-mb-36 tw-text-white tw-relative tw-overflow-hidden tw-shadow-2xl">
+
+        <div
+          class="tw-absolute tw-right-0 tw-bottom-0 tw-w-96 tw-h-96 tw-bg-indigo-600/15 tw-blur-[120px] tw-pointer-events-none">
+        </div>
+        <div
+          class="tw-absolute tw-left-1/3 tw-top-0 tw-w-64 tw-h-64 tw-bg-emerald-500/10 tw-blur-[100px] tw-pointer-events-none">
+        </div>
+
+        <div
+          class="tw-grid tw-grid-cols-1 lg:tw-grid-cols-12 tw-gap-8 lg:tw-gap-12 tw-items-stretch tw-relative tw-z-10">
+
+          <div class="lg:tw-col-span-5 tw-flex tw-flex-col tw-justify-center">
+            <div class="tw-mb-auto lg:tw-mb-0">
+              <span
+                class="tw-inline-flex tw-items-center tw-gap-2 tw-px-3.5 tw-py-1.5 tw-rounded-full tw-bg-indigo-500/10 tw-border tw-border-indigo-500/20 tw-text-indigo-400 tw-text-xs tw-font-mono tw-mb-6">
+                <span class="tw-w-1.5 tw-h-1.5 tw-bg-indigo-400 tw-rounded-full tw-animate-ping"></span>
+                智能加速器 (轻量化)
+              </span>
+              <h2
+                class="tw-text-2xl sm:tw-text-3xl md:tw-text-4xl tw-font-bold tw-mb-5 tw-leading-snug tw-bg-gradient-to-r tw-from-white tw-to-slate-300 tw-bg-clip-text tw-text-transparent">
+                将骨干名师的教研 "流程"<br class="tw-hidden sm:tw-block" />固化为学校永续留存的数字资产
+              </h2>
+              <p class="tw-text-slate-400 tw-text-sm sm:tw-text-base tw-leading-relaxed">
+                与其让全组老师盲目摸索 AI 工具、付出沉重试错成本，不如让少数精英名师在可视化沙盒中搭好流程，一键打包出零培训即可复用的独立教学工具。
+              </p>
+            </div>
+          </div>
+
+          <div
+            class="lg:tw-col-span-7 tw-bg-[#141C2F]/90 tw-backdrop-blur-md tw-rounded-2xl tw-border tw-border-slate-800 tw-p-6 sm:tw-p-8">
+
+            <div class="tw-flex tw-items-center tw-justify-between tw-mb-6 tw-border-b tw-border-slate-800/80 tw-pb-4">
+              <div class="tw-flex tw-items-center tw-gap-2">
+                <span class="tw-w-3 tw-h-3 tw-rounded-full tw-bg-red-500/40"></span>
+                <span class="tw-w-3 tw-h-3 tw-rounded-full tw-bg-yellow-500/40"></span>
+                <span class="tw-w-3 tw-h-3 tw-rounded-full tw-bg-green-500/40"></span>
+              </div>
+              <div class="tw-text-xs tw-font-mono tw-text-slate-400">Visual Sandbox & Compiler v1.2</div>
+            </div>
+
+            <div class="tw-flex tw-flex-col sm:tw-flex-row tw-items-center tw-justify-around tw-gap-8 tw-py-4">
+
+              <svg viewBox="0 0 380 180" class="tw-w-full tw-h-auto tw-max-w-md" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <linearGradient id="flowGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#4F46E5" />
+                    <stop offset="50%" stop-color="#8B5CF6" />
+                    <stop offset="100%" stop-color="#10B981" />
+                  </linearGradient>
+
+                  <linearGradient id="cubeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#34D399" />
+                    <stop offset="100%" stop-color="#059669" />
+                  </linearGradient>
+
+                  <linearGradient id="gridGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stop-color="#1E293B" stop-opacity="0.8" />
+                    <stop offset="100%" stop-color="#0F172A" stop-opacity="0.3" />
+                  </linearGradient>
+
+                  <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feGaussianBlur stdDeviation="6" result="blur" />
+                    <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                  </filter>
+                </defs>
+
+                <rect x="10" y="10" width="360" height="160" rx="12" fill="url(#gridGrad)" stroke="#1E293B"
+                  stroke-dasharray="4 4" />
+
+                <g transform="translate(10, 0)">
+                  <path d="M 50 60 L 50 120" stroke="#334155" stroke-width="2" />
+                  <path d="M 50 90 L 110 90" stroke="#6366F1" stroke-width="2" stroke-dasharray="3 3" />
+
+                  <circle cx="50" cy="60" r="16" fill="#1E293B" stroke="#6366F1" stroke-width="2" />
+                  <path d="M 45 60 L 55 60 M 50 55 L 50 65" stroke="#6366F1" stroke-width="1.5"
+                    stroke-linecap="round" />
+                  <text x="50" y="36" fill="#94A3B8" font-size="9" text-anchor="middle"
+                    font-family="sans-serif">名师教研输入</text>
+
+                  <rect x="34" y="104" width="32" height="32" rx="6" fill="#1E293B" stroke="#6366F1" stroke-width="2" />
+                  <path d="M 42 114 h16 M 42 120 h10 M 42 126 h14" stroke="#6366F1" stroke-width="1.5"
+                    stroke-linecap="round" />
+                  <text x="50" y="152" fill="#94A3B8" font-size="9" text-anchor="middle"
+                    font-family="sans-serif">逻辑沙盒</text>
+
+                  <circle cx="110" cy="90" r="20" fill="#1E293B" stroke="#60A5FA" stroke-width="2" />
+                  <path d="M 104 90 A 6 6 0 0 1 114 84 M 116 90 A 6 6 0 0 1 106 96" stroke="#60A5FA" stroke-width="1.5"
+                    stroke-linecap="round" fill="none" />
+                  <path d="M 114 82 l 2 2 l -2 2 M 106 94 l -2 2 l 2 2" stroke="#60A5FA" stroke-width="1.5"
+                    stroke-linecap="round" />
+                </g>
+
+                <path d="M 140 90 L 250 90" stroke="url(#flowGrad)" stroke-width="4" stroke-linecap="round"
+                  filter="url(#glow)">
+                  <animate attributeName="stroke-dasharray" values="15 150; 150 150; 150 15" dur="3s"
+                    repeatCount="indefinite" />
+                </path>
+
+                <circle cx="0" cy="0" r="4" fill="#60A5FA" filter="url(#glow)">
+                  <animateMotion path="M 140 90 L 250 90" dur="1.5s" repeatCount="indefinite" />
+                </circle>
+                <circle cx="0" cy="0" r="3" fill="#34D399" filter="url(#glow)">
+                  <animateMotion path="M 140 90 L 250 90" dur="1.5s" begin="0.75s" repeatCount="indefinite" />
+                </circle>
+
+                <text x="195" y="75" fill="#60A5FA" font-size="10" font-family="monospace" text-anchor="middle"
+                  letter-spacing="1">
+                  COMPILING...
+                </text>
+
+                <g transform="translate(255, 40)">
+                  <rect x="0" y="0" width="100" height="100" rx="16" fill="#141C2F" stroke="#10B981" stroke-width="2"
+                    stroke-dasharray="4 2" />
+
+                  <g transform="translate(50, 46)">
+                    <path d="M 0 -24 L 24 -12 L 0 0 L -24 -12 Z" fill="#34D399" fill-opacity="0.8" />
+                    <path d="M -24 -12 L 0 0 L 0 24 L -24 12 Z" fill="#059669" />
+                    <path d="M 0 0 L 24 -12 L 24 12 L 0 24 Z" fill="#065F46" />
+
+                    <path d="M 0 -24 L 24 -12 L 0 0 L -24 -12 Z" fill="#A7F3D0" fill-opacity="0.4" filter="url(#glow)">
+                      <animate attributeName="fill-opacity" values="0.2; 0.7; 0.2" dur="2s" repeatCount="indefinite" />
+                    </path>
+                  </g>
+
+                  <text x="50" y="90" fill="#34D399" font-size="9" text-anchor="middle" font-family="sans-serif"
+                    font-weight="bold" letter-spacing="0.5">
+                    可复用教学工具
+                  </text>
+                </g>
+
+              </svg>
+
+            </div>
+
+            <div class="tw-grid tw-grid-cols-3 tw-gap-2 tw-mt-2 tw-text-center">
+              <div class="tw-text-xs tw-text-slate-400">1. 名师流程化</div>
+              <div class="tw-text-xs tw-text-indigo-400 tw-animate-pulse">2. 一键打包/固化</div>
+              <div class="tw-text-xs tw-text-emerald-400">3. 独立工具复用</div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- 底部行动呼吁 CTA Banner -->
+      <div
+        class="tw-bg-[#0B0F19] tw-rounded-3xl tw-p-8 sm:tw-p-12 md:tw-p-16 tw-mb-16 md:tw-mb-28 tw-text-center tw-border tw-border-slate-800 tw-relative tw-overflow-hidden tw-shadow-2xl">
+        <div
+          class="tw-absolute tw-inset-x-0 tw-top-0 tw-h-[1px] tw-bg-gradient-to-r tw-from-transparent tw-via-indigo-500/50 tw-to-transparent">
+        </div>
+
+        <h2 class="tw-text-3xl sm:tw-text-5xl tw-font-extrabold tw-text-white tw-mb-5 tw-tracking-tight tw-leading-tight">
+          用轻量安全的交互网页工具，<br class="tw-sm:hidden">实现高标准全组因材施教
+        </h2>
+        <p class="tw-text-slate-300 tw-max-w-2xl tw-mx-auto tw-text-sm sm:tw-text-base tw-mb-10 tw-font-mono">
+          名师精密配置 · 全教研组零系统依赖 · 开箱即用网页资产 · 完美砍掉隐性教学软件周期
+        </p>
+
+        <div class="tw-flex tw-flex-wrap tw-justify-center tw-gap-5 tw-mb-12">
+          <a href="https://transweb.cn/math" target="_blank" class="tw-w-full sm:tw-w-auto">
+            <button
+              class="tw-w-full tw-bg-indigo-600 hover:tw-bg-indigo-500 tw-text-white tw-px-9 tw-py-4 tw-rounded-2xl tw-text-base tw-font-semibold tw-shadow-xl tw-shadow-indigo-600/30 smooth-transition active:tw-scale-[0.98]">
+              进入 AI 数学工作流 ➔
+            </button>
+          </a>
+          <button onclick="triggerPackDownload(this, 'mathFlow.html')"
+            class="tw-w-full sm:tw-w-auto tw-bg-white/10 hover:tw-bg-white/15 tw-border tw-border-white/10 tw-text-slate-200 tw-px-9 tw-py-4 tw-rounded-2xl tw-text-base tw-font-semibold smooth-transition active:tw-scale-[0.98]">
+            📦 下载 AI 数学工作流网页
+          </button>
+        </div>
+
+        <div
+          class="tw-max-w-2xl tw-mx-auto tw-bg-white/5 tw-border tw-border-white/10 tw-rounded-2xl tw-p-6 tw-text-left tw-backdrop-blur-md">
+          <div class="tw-flex tw-items-center tw-gap-2 tw-text-slate-200 tw-text-xs tw-font-bold tw-mb-2">
+            <svg class="tw-w-4 tw-h-4 tw-text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            </svg>
+            校园级数据隐私与物理合规声明
+          </div>
+          <p class="tw-text-slate-400 tw-text-xs tw-leading-relaxed">
+            Trans-Workflow 生成的所有静态工作流文件采用 MIT
+            开源合规认证协议。所有节点的交互请求均直接由一线教师客户端浏览器向目标大模型服务商端到端发送，没有任何中间云端中转服务器驻留，我们无法、也绝不收集您的任何核心教学核心
+            「提示词」、考题秘密及学生输入的任何学情资产数据。
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 悬浮微信二维码 -->
+  <div class="tw-fixed tw-right-6 tw-bottom-6 tw-z-50">
+    <div class="tw-relative tw-group">
+      <div
+        class="tw-absolute tw-right-full tw-bottom-0 tw-mr-3 tw-w-36 tw-h-36 tw-bg-white tw-border tw-border-slate-200 tw-rounded-2xl tw-shadow-2xl tw-opacity-0 tw-invisible group-hover:tw-opacity-100 group-hover:tw-visible smooth-transition tw-flex tw-items-center tw-justify-center tw-p-2">
+        <img src="https://transweb.cn/assets/qrcode.png" alt="微信二维码" class="tw-w-full tw-h-full tw-object-cover tw-rounded-xl">
+        <div
+          class="tw-absolute tw-right-[-6px] tw-bottom-5 tw-w-3 tw-h-3 tw-bg-white tw-border-r tw-border-b tw-border-slate-200 tw-transform tw--rotate-45">
+        </div>
+      </div>
+      <button
+        class="tw-w-12 tw-h-12 tw-bg-[#0B0F19] tw-text-white tw-rounded-2xl tw-shadow-xl hover:tw-bg-indigo-600 smooth-transition tw-flex tw-items-center tw-justify-center active:tw-scale-95">
+        <svg class="tw-w-5 tw-h-5" fill="currentColor" viewBox="0 0 22 22">
+          <path
+            d="M8.5 13.5c-.8 0-1.5-.7-1.5-1.5s.7-1.5 1.5-1.5 1.5.7 1.5 1.5-.7 1.5-1.5 1.5zm6.5 0c-.8 0-1.5-.7-1.5-1.5s.7-1.5 1.5-1.5 1.5.7 1.5 1.5-.7 1.5-1.5 1.5zm3.5-3.5c0-3.3-3.1-6-7-6s-7 2.7-7 6c0 1.8.9 3.5 2.4 4.6l-.8 2.4 2.8-1.4c.8.3 1.7.4 2.6.4 3.9 0 7-2.7 7-6z" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <script>
+
+  </script>
+  <script defer src="https://transweb.cn/index.js"></script>
+  <script defer src="https://transweb.cn/workflow/index.js"></script>
+</body>
+
+</html>

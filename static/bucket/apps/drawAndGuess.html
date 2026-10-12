@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>你比划我猜 - 欢乐聚会神器</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=Noto+Sans+SC:wght@400;700;900&display=swap');
+        .font-game {
+            font-family: 'ZCOOL KuaiLe', 'Noto Sans SC', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 min-h-screen text-white font-sans flex flex-col justify-between">
+
+    <header class="p-4 text-center border-b border-white/10 backdrop-blur-sm bg-black/10">
+        <h1 class="text-3xl md:text-4xl font-black tracking-wider font-game text-yellow-300 drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]">
+            <i class="fa-solid fa-face-laugh-squint mr-2"></i>你比划我猜
+        </h1>
+        <p class="text-xs md:text-sm text-purple-200 mt-1">派对游戏 · 聚会必备 · 欢乐无限</p>
+    </header>
+
+    <main class="flex-grow flex flex-col items-center justify-center p-4 max-w-lg mx-auto w-full">
+        
+        <div class="bg-white/15 backdrop-blur-md rounded-3xl p-6 md:p-8 w-full border border-white/20 shadow-2xl text-center relative overflow-hidden">
+            
+            <div id="setup-view" class="space-y-6">
+                <h2 class="text-xl font-bold text-yellow-200">🎯 请选择游戏分类</h2>
+                <div class="grid grid-cols-2 gap-3" id="categories-grid">
+                    </div>
+                <div class="pt-4 border-t border-white/10">
+                    <button onclick="selectCategory('all')" class="w-full py-3 bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-slate-900 font-extrabold rounded-2xl shadow-lg transform active:scale-95 transition text-lg font-game">
+                        <i class="fa-solid fa-star mr-2"></i>全套题库混抽 (78 题)
+                    </button>
+                </div>
+            </div>
+
+            <div id="game-view" class="hidden space-y-6">
+                <div class="flex justify-between items-center text-sm bg-black/20 px-4 py-2 rounded-full text-purple-100">
+                    <span id="game-category-tag"><i class="fa-solid fa-tags mr-1"></i>经典梗</span>
+                    <span id="game-progress-tag"><i class="fa-solid fa-list-ol mr-1"></i>1 / 10</span>
+                </div>
+
+                <div class="py-12 px-4 bg-gradient-to-b from-black/20 to-black/40 rounded-2xl border border-white/10 min-h-[180px] flex flex-col justify-center items-center relative">
+                    <div id="timer-badge" class="absolute -top-3 right-4 bg-red-500 text-white font-bold px-3 py-1 rounded-full text-xs shadow-md hidden flex items-center gap-1">
+                        <i class="fa-solid fa-clock animate-pulse"></i> <span id="timer-sec">60</span>s
+                    </div>
+
+                    <p class="text-xs text-purple-200/70 tracking-widest uppercase mb-4">请用肢体动作表演，不能说话哦</p>
+                    <h3 id="word-display" class="text-4xl md:text-5xl font-black font-game text-yellow-300 tracking-wide drop-shadow-lg animate-bounce">
+                        干饭人
+                    </h3>
+                </div>
+
+                <div class="flex gap-2 justify-center items-center">
+                    <button id="btn-timer" onclick="toggleTimer()" class="px-4 py-2 bg-slate-800/80 hover:bg-slate-700/80 rounded-xl text-xs font-bold transition flex items-center gap-2 border border-white/10">
+                        <i id="timer-icon" class="fa-solid fa-stopwatch"></i> <span id="timer-btn-text">开启倒计时(60s)</span>
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 pt-2">
+                    <button onclick="nextWord()" class="py-4 bg-gradient-to-r from-emerald-400 to-teal-500 hover:from-emerald-500 hover:to-teal-600 font-extrabold rounded-2xl shadow-lg shadow-emerald-950/20 transform active:scale-95 transition text-lg font-game">
+                        <i class="fa-solid fa-forward mr-1"></i> 下一题
+                    </button>
+                    <button onclick="quitToMenu()" class="py-4 bg-slate-700/80 hover:bg-slate-600/80 font-bold rounded-2xl transform active:scale-95 transition text-sm">
+                        <i class="fa-solid fa-house mr-1"></i> 返回主页
+                    </button>
+                </div>
+            </div>
+
+            <div id="end-view" class="hidden space-y-6 py-6">
+                <div class="text-6xl text-yellow-300 animate-bounce">🎉</div>
+                <h3 class="text-2xl font-black font-game text-yellow-300">本轮词库已全部挑战完毕！</h3>
+                <p class="text-sm text-purple-200">玩得开心！下次再来挑战新题目吧~</p>
+                
+                <div class="space-y-3 pt-4">
+                    <button onclick="restartCategory()" class="w-full py-4 bg-gradient-to-r from-yellow-400 to-orange-500 text-slate-900 font-extrabold rounded-2xl shadow-lg transform active:scale-95 transition text-lg font-game">
+                        <i class="fa-solid fa-arrows-rotate mr-1"></i> 再来一轮
+                    </button>
+                    <button onclick="quitToMenu()" class="w-full py-3 bg-white/10 hover:bg-white/20 font-bold rounded-2xl transform active:scale-95 transition text-sm">
+                        <i class="fa-solid fa-list mr-1"></i> 选择其他分类
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="p-4 text-center text-xs text-purple-200/50">
+        © 2026 你比划我猜派对版 · 祝您玩得开心！
+    </footer>
+
+    <script>
+        // 1. 从 PPT 中提取的完整题库数据 
+        const db = {
+            "classic": {
+                name: "经典梗", // [cite: 6]
+                icon: "fa-fire",
+                color: "from-pink-500 to-rose-500",
+                words: ["干饭人", "摆烂躺平", "公主抱", "比心", "撸猫", "自拍", "喝奶茶", "奥特曼", "社恐", "冲浪"] // [cite: 11, 15, 19, 23, 27, 31, 35, 39, 43, 47]
+            },
+            "animals": {
+                name: "动物类", // [cite: 50]
+                icon: "fa-paw",
+                color: "from-green-400 to-emerald-600",
+                words: ["小兔子", "大猩猩", "企鹅", "小猫", "大象", "青蛙", "长颈鹿", "螃蟹", "袋鼠", "孔雀", "小狗摇尾巴", "蜗牛", "蜜蜂", "海豚", "啄木鸟"] // [cite: 55, 59, 63, 67, 71, 75, 79, 83, 87, 91, 95, 99, 103, 107, 111]
+            },
+            "daily": {
+                name: "日常行为", // [cite: 114]
+                icon: "fa-user-astronaut",
+                color: "from-blue-400 to-indigo-600",
+                words: ["刷牙", "跳广场舞", "打喷嚏", "跑步", "拍照", "打呼噜", "穿高跟鞋", "游泳", "扫地", "哭鼻子", "唱歌跑调", "系鞋带", "打羽毛球", "抠脚", "戴口罩"] // [cite: 119, 123, 127, 131, 135, 139, 143, 147, 151, 155, 159, 163, 167, 171, 175]
+            },
+            "food": {
+                name: "美食小吃", // [cite: 178]
+                icon: "fa-utensils",
+                color: "from-amber-400 to-orange-600",
+                words: ["火锅", "冰淇淋", "羊肉串", "奶茶", "汉堡", "西瓜", "爆米花", "螺蛳粉", "包子", "烤红薯", "小龙虾", "棒棒糖", "饺子", "辣条", "蛋糕"] // [cite: 183, 187, 191, 195, 199, 203, 207, 211, 215, 219, 223, 227, 231, 235, 239]
+            },
+            "anime": {
+                name: "影视动漫", // [cite: 242]
+                icon: "fa-film",
+                color: "from-purple-400 to-fuchsia-600",
+                words: ["孙悟空", "猪八戒", "唐僧", "一休哥", "樱桃小丸子", "蜡笔小新", "哆啦A梦"] // [cite: 247, 251, 255, 259, 263, 267, 271]
+            },
+            "jobs": {
+                name: "职业&用品", // [cite: 274]
+                icon: "fa-briefcase",
+                color: "from-cyan-400 to-blue-600",
+                words: ["厨师", "护士打针", "老师讲课", "消防员", "司机", "理发师", "警察", "宇航员", "雨伞", "吹风机", "吉他", "行李箱", "口红", "望远镜", "拖鞋", "电风扇"] // [cite: 279, 283, 287, 291, 295, 299, 303, 307, 311, 315, 319, 323, 327, 331, 335, 339]
+            }
+        };
+
+        // 2. 运行时游戏状态
+        let currentCategoryKey = "";
+        let currentPool = [];
+        let currentIndex = 0;
+        
+        // 倒计时相关变量
+        let timerEnabled = false;
+        let timerInterval = null;
+        let timeLeft = 60;
+
+        // 3. 页面初始化
+        window.onload = function() {
+            renderCategoryMenu();
+        };
+
+        // 生成分类选择菜单
+        function renderCategoryMenu() {
+            const grid = document.getElementById("categories-grid");
+            grid.innerHTML = "";
+            
+            for (let key in db) {
+                const cat = db[key];
+                const btn = document.createElement("button");
+                btn.className = `p-4 bg-gradient-to-br ${cat.color} hover:brightness-110 active:scale-95 transition rounded-2xl flex flex-col items-center justify-center gap-2 shadow-lg text-white`;
+                btn.onclick = () => selectCategory(key);
+                btn.innerHTML = `
+                    <i class="fa-solid ${cat.icon} text-2xl drop-shadow-md"></i>
+                    <span class="font-bold text-sm tracking-wide">${cat.name}</span>
+                    <span class="text-[10px] bg-black/20 px-2 py-0.5 rounded-full font-normal">${cat.words.length} 题</span>
+                `;
+                grid.appendChild(btn);
+            }
+        }
+
+        // 4. 选择分类并打乱题目顺序（洗牌算法）
+        function selectCategory(categoryKey) {
+            currentCategoryKey = categoryKey;
+            
+            if (categoryKey === "all") {
+                // 合并所有题目
+                currentPool = [];
+                for (let key in db) {
+                    currentPool = currentPool.concat(db[key].words);
+                }
+                document.getElementById("game-category-tag").innerHTML = `<i class="fa-solid fa-star mr-1"></i>混合全套`;
+            } else {
+                currentPool = [...db[categoryKey].words];
+                document.getElementById("game-category-tag").innerHTML = `<i class="fa-solid ${db[categoryKey].icon} mr-1"></i>${db[categoryKey].name}`;
+            }
+
+            // 洗牌（乱序）
+            shuffle(currentPool);
+            currentIndex = 0;
+
+            // 显示游戏界面
+            document.getElementById("setup-view").classList.add("hidden");
+            document.getElementById("end-view").classList.add("hidden");
+            document.getElementById("game-view").classList.remove("hidden");
+
+            showWord();
+        }
+
+        // 洗牌算法
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        // 5. 展示当前词语
+        function showWord() {
+            if (currentIndex >= currentPool.length) {
+                // 当前分类答完
+                showEndScreen();
+                return;
+            }
+
+            // 更新进度
+            document.getElementById("game-progress-tag").innerHTML = `<i class="fa-solid fa-list-ol mr-1"></i>${currentIndex + 1} / ${currentPool.length}`;
+            
+            // 更新词汇
+            const wordDisplay = document.getElementById("word-display");
+            wordDisplay.classList.remove("animate-bounce");
+            // 简单重置动画
+            void wordDisplay.offsetWidth; 
+            wordDisplay.classList.add("animate-bounce");
+            wordDisplay.innerText = currentPool[currentIndex];
+
+            // 倒计时逻辑
+            if (timerEnabled) {
+                resetAndStartTimer();
+            }
+        }
+
+        // 6. 下一个词
+        function nextWord() {
+            currentIndex++;
+            showWord();
+        }
+
+        // 7. 倒计时开关与计时逻辑
+        function toggleTimer() {
+            timerEnabled = !timerEnabled;
+            const badge = document.getElementById("timer-badge");
+            const btnText = document.getElementById("timer-btn-text");
+            const icon = document.getElementById("timer-icon");
+
+            if (timerEnabled) {
+                badge.classList.remove("hidden");
+                btnText.innerText = "关闭倒计时";
+                icon.className = "fa-solid fa-toggle-on text-yellow-300";
+                resetAndStartTimer();
+            } else {
+                badge.classList.add("hidden");
+                btnText.innerText = "开启倒计时(60s)";
+                icon.className = "fa-solid fa-stopwatch";
+                clearInterval(timerInterval);
+            }
+        }
+
+        function resetAndStartTimer() {
+            clearInterval(timerInterval);
+            timeLeft = 60;
+            document.getElementById("timer-sec").innerText = timeLeft;
+            
+            const badge = document.getElementById("timer-badge");
+            badge.className = "absolute -top-3 right-4 bg-red-500 text-white font-bold px-3 py-1 rounded-full text-xs shadow-md flex items-center gap-1";
+
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                document.getElementById("timer-sec").innerText = timeLeft;
+
+                if (timeLeft <= 10) {
+                    // 最后十秒闪烁变红
+                    badge.classList.add("animate-ping");
+                    setTimeout(() => badge.classList.remove("animate-ping"), 500);
+                }
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    // 时间到提示 (可使用设备振动或提示音)
+                    if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+                    alert("⏰ 时间到啦！可以换下一个人继续比划或跳过噢~");
+                }
+            }, 1000);
+        }
+
+        // 8. 游戏结束
+        function showEndScreen() {
+            clearInterval(timerInterval);
+            document.getElementById("game-view").classList.add("hidden");
+            document.getElementById("end-view").classList.remove("hidden");
+        }
+
+        function restartCategory() {
+            selectCategory(currentCategoryKey);
+        }
+
+        function quitToMenu() {
+            clearInterval(timerInterval);
+            document.getElementById("game-view").classList.add("hidden");
+            document.getElementById("end-view").classList.add("hidden");
+            document.getElementById("setup-view").classList.remove("hidden");
+        }
+    </script>
+</body>
+</html>

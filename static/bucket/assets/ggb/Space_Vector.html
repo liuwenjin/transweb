@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+  <meta http-equiv="Cache-Control" content="no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>Space_Vector_Dot_Product_Lab</title>
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      font-family: "Nunito", "Noto Sans", sans-serif;
+      overflow: hidden;
+      box-sizing: border-box;
+    }
+
+    .contentItemArea {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      text-align: center;
+    }
+
+
+    @keyframes hueShift {
+      0% {
+        filter: hue-rotate(0deg);
+      }
+
+      100% {
+        filter: hue-rotate(360deg);
+      }
+    }
+
+    .fade-out {
+      opacity: 0;
+      transition: opacity 0.8s ease;
+    }
+
+    .loadingTips {
+      text-align: center;
+      font-size: 12px;
+      color: #ccc;
+      padding: 20px 0;
+    }
+
+    .waiting {
+      width: 60px;
+      height: 60px;
+      background-color: #67cf22;
+      margin: 100px auto;
+      animation: rotateplane 1.2s infinite ease-in-out;
+    }
+
+    @keyframes rotateplane {
+      0% {
+        transform: perspective(120px) rotateX(0deg) rotateY(0deg);
+      }
+
+      50% {
+        transform: perspective(120px) rotateX(-180deg) rotateY(0deg);
+      }
+
+      100% {
+        transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
+      }
+    }
+
+    .__exporting__,
+    .__exporting * {
+      animation: none !important;
+      transition: none !important;
+    }
+
+    .__exporting {
+      background: #ffffff !important;
+    }
+
+    .__export-mask {
+      position: fixed;
+      inset: 0;
+      z-index: 2147483647;
+      background: rgba(250, 250, 250, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .__export-mask__panel {
+      background: rgba(0, 0, 0, 0.7);
+      color: #fff;
+      padding: 16px 22px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+    }
+
+    .__export-mask__spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="contentItemArea">
+    <div class="loadingTips">加载中...</div>
+    <div class="waiting"></div>
+  </div>
+  <script defer src="https://transweb.cn/index.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      let app = {
+        className: "GeogebraCase",
+        task: {
+          data: {
+            name: "Space_Vector_Dot_Product_Lab",
+            mode: "3D",
+            appName: "3d",
+            perspective: "3d",
+            language: "zh-CN",
+            version: 5.0,
+            script: {
+              value: `SetCoordSystem(-8, 8, -8, 8, -8, 8)
+ShowGrid(false)
+ShowAxes(true)
+Theta_a = Slider(0, 2 * pi, pi / 180, 1, 150)
+SetCaption(Theta_a, "$\\text{向量 } \\vec{a} \\text{ 水平角 } \\theta_a$")
+SetLabelMode(Theta_a, 3)
+ShowLabel(Theta_a, true)
+Phi_a = Slider(0.1, pi, pi / 180, 1, 150)
+SetCaption(Phi_a, "$\\text{向量 } \\vec{a} \\text{ 仰角 } \\phi_a$")
+SetLabelMode(Phi_a, 3)
+ShowLabel(Phi_a, true)
+Theta_b = Slider(0.2, 2 * pi, pi / 180, 1, 150)
+SetCaption(Theta_b, "$\\text{向量 } \\vec{b} \\text{ 水平角 } \\theta_b$")
+SetLabelMode(Theta_b, 3)
+ShowLabel(Theta_b, true)
+Phi_b = Slider(0.3, pi, pi / 180, 1, 150)
+SetCaption(Phi_b, "$\\text{向量 } \\vec{b} \\text{ 仰角 } \\phi_b$")
+SetLabelMode(Phi_b, 3)
+ShowLabel(Phi_b, true)
+O = (0, 0, 0)
+SetPointSize(O, 4)
+SetColor(O, "#333333")
+SetCaption(O, "$O$")
+SetLabelMode(O, 3)
+ShowLabel(O, true)
+Len_r = 5
+A = (Len_r * sin(Phi_a) * cos(Theta_a), Len_r * sin(Phi_a) * sin(Theta_a), Len_r * cos(Phi_a))
+SetPointSize(A, 5)
+SetColor(A, "#E74C3C")
+SetCaption(A, "$A$")
+SetLabelMode(A, 3)
+ShowLabel(A, true)
+B = (Len_r * sin(Phi_b) * cos(Theta_b), Len_r * sin(Phi_b) * sin(Theta_b), Len_r * cos(Phi_b))
+SetPointSize(B, 5)
+SetColor(B, "#2980B9")
+SetCaption(B, "$B$")
+SetLabelMode(B, 3)
+ShowLabel(B, true)
+Vec_a = Vector(O, A)
+SetColor(Vec_a, "#E74C3C")
+SetLineThickness(Vec_a, 4)
+SetCaption(Vec_a, "$\\vec{a}$")
+SetLabelMode(Vec_a, 3)
+ShowLabel(Vec_a, true)
+Vec_b = Vector(O, B)
+SetColor(Vec_b, "#2980B9")
+SetLineThickness(Vec_b, 4)
+SetCaption(Vec_b, "$\\vec{b}$")
+SetLabelMode(Vec_b, 3)
+ShowLabel(Vec_b, true)
+Aux_a = Angle(A, O, B)
+Dot_v = x(A) * x(B) + y(A) * y(B) + z(A) * z(B)
+Proj_s = Dot_v / Len_r
+Aux_p = (Proj_s / Len_r) * x(B) / (sin(Phi_b) * cos(Theta_b) + 0.0001)
+P = (Dot_v / (Len_r * Len_r)) * B
+SetPointSize(P, 4)
+SetColor(P, "#8E44AD")
+SetCaption(P, "$\\text{Proj}_{\\vec{b}}\\vec{a}$")
+SetLabelMode(P, 3)
+ShowLabel(P, true)
+Vec_p = Vector(O, P)
+SetColor(Vec_p, "#8E44AD")
+SetLineThickness(Vec_p, 3)
+SetCaption(Vec_p, "$\\text{投影向量}$")
+SetLabelMode(Vec_p, 3)
+ShowLabel(Vec_p, false)
+Seg_d = Segment(A, P)
+SetColor(Seg_d, "#95A5A6")
+SetLineThickness(Seg_d, 2)
+SetLineStyle(Seg_d, 2)
+ShowLabel(Seg_d, false)
+Arc_c = Angle(A, O, B)
+SetColor(Arc_c, "#F39C12")
+SetLineThickness(Arc_c, 2)
+SetFilling(Arc_c, 0.15)
+ShowLabel(Arc_c, false)
+Info_d = Text("$\\vec{a} \\cdot \\vec{b} = $ " + FormatNumber(Dot_v, 2) + " $\\cos\\gamma = $ " + FormatNumber(Dot_v / (Len_r * Len_r), 4) + " $\\gamma = $ " + FormatNumber(Aux_a * 180 / pi, 1) + "°", (0.5, 0.9), true, true)
+SetColor(Info_d, "#2C3E50")
+ShowObject(Aux_a, false)
+ShowLabel(Aux_a, false)
+ShowObject(Aux_p, false)
+ShowLabel(O, true)
+ShowLabel(Seg_d, false)`,
+            }
+          }
+        }
+      };
+      let elem = document.querySelector(".contentItemArea");
+      webCpu.updateView(elem, app);
+    });
+  </script>
+</body>
+
+</html>

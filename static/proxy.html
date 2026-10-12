@@ -1,0 +1,361 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0, user-scalable=no" />
+	<meta http-equiv="Access-Control-Allow-Origin" content="*">
+	<meta HTTP-EQUIV="pragma" CONTENT="no-cache">
+	<meta HTTP-EQUIV="Cache-Control" CONTENT="no-store, must-revalidate">
+	<meta HTTP-EQUIV="expires" CONTENT="Wed, 26 Feb 1997 08:21:57 GMT">
+	<meta HTTP-EQUIV="expires" CONTENT="0">
+	<title>proxy</title>
+</head>
+
+<body style="width: 100%; height: 100%; display: flex; flex-wrap: wrap; justify-content:center; align-items:center;">
+	<div class="contentArea" style="width: 100%; height: 100%; max-width: 1200px;">代理跨域请求...</div>
+</body>
+<script>
+	window.AllowPrefixList = ["*"];
+	window.AllowOrigin = "*";
+
+	let WebAdapter = {};
+
+	WebAdapter.urlCheck = function (url) {
+		if (!url) {
+			return false;
+		}
+		if (AllowPrefixList.indexOf("*") !== -1) {
+			return true;
+		}
+		for (var i = 0; i < AllowPrefixList.length; i++) {
+			if (url.indexOf(AllowPrefixList[i]) === 0) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	WebAdapter.attachParams = function (url, params) {
+		if (url.indexOf("?") === -1) {
+			flag = 0;
+		} else {
+			flag = 1;
+		}
+		for (var k in params) {
+			var v = params[k];
+			if (typeof (v) != "string") {
+				v = JSON.stringify(v);
+			}
+			if (flag == 0) {
+				url += "?" + k + "=" + encodeURIComponent(v);
+				flag = 1;
+			} else {
+				url += "&" + k + "=" + encodeURIComponent(v);
+			}
+		}
+		return url;
+	}
+
+	WebAdapter.bindData = function (str, obj, filter, arr) {
+		var ret = str;
+		if (obj && typeof (obj) === "object") {
+			var re = /{{([^}}]+)?}}/g;
+			if (arr) {
+				re = /\[([^\]]+)?\]/g;
+			}
+			str.filter = filter;
+			var _self = str;
+			var ret = _self.replace(re, function (m, t) {
+				var temp = obj;
+				var ret = (function () {
+					var o = temp;
+					var keys = t.split(".");
+					for (var i = 0; i < keys.length; i++) {
+						o = o[keys[i]];
+						if (o === undefined || o === null) {
+							o = "{{" + keys[i] + "}}";
+							if (arr) {
+								o = "[" + keys[i] + "]";
+							}
+						}
+					}
+					var m = !(_self.filter && typeof (_self.filter[keys[i - 1]]) === "function") ? o : _self.filter[keys[
+						i - 1]](o);
+					return m;
+				})();
+				return ret;
+			});
+		}
+		return ret;
+	}
+
+	WebAdapter.request = function (url, type, query, callback, options, params) {
+		if (!url) {
+			return false;
+		}
+		options = options || {};
+		options.params = params || options.params;
+		if (options.params) {
+			url = WebAdapter.bindData(url, options.params);
+		}
+
+		if (type !== "_jsonp") {
+			if (typeof options === "string") {
+				options = {
+					dataType: options
+				}
+			}
+			var request = new AjaxInterface(url, type, options);
+			if (query._name && query._file) {
+				let file = new File([query._file], query._name, {
+					type: "text/plain;charsst=utf8",
+				});
+				query = new FormData();
+				query.append("file", file);
+			}
+			request(query, function (data) {
+				if (typeof (callback) === "function") {
+					callback(data);
+				}
+			}, params);
+		}
+	}
+
+	WebAdapter.listenMessage = function (callback, origin) {
+		var tCallback = function (message) {
+			if (!origin || origin === message.origin || origin === "*") {
+				callback(message);
+			}
+		};
+		if (window.addEventListener) {
+			window.removeEventListener('message', tCallback);
+			window.addEventListener('message', tCallback, false)
+		} else {
+			window.detachEvent("onmessage", tCallback);
+			window.attachEvent('onmessage', tCallback);
+		}
+	}
+
+	let AjaxInterface = function (url, type, options) {
+		this.url = url;
+		this.contentType = options.contentType;
+		this.type = type;
+		this.dataType = options.dataType;
+		this.header = options.header;
+		this.proxy = options.proxy;
+		this.authorization = options.authorization;
+		if (this.proxy === true) {
+			let arr = this.url.match(/https?:\/\/([^/]+)\//i);
+			if (arr && arr[0]) {
+				this.proxy = arr[0] + "proxy.html";
+				this.url = url.replace(arr[0], "");
+			} else {
+				this.proxy = false;
+			}
+		}
+		return this.init(type, options.dataType);
+	}
+
+	AjaxInterface.prototype.sendData = function (query, callback, params) {
+		var data = query;
+		var url = this.url;
+
+		// 1. URL 动态参数绑定
+		if (params && typeof WebAdapter.bindData === "function") {
+			url = WebAdapter.bindData(url, params);
+		}
+
+		var method = (this.type || "GET").toUpperCase();
+		var dType = this.dataType || "json";
+
+		// Content-Type 映射
+		var cTypeMap = {
+			"json": "application/json; charset=UTF-8",
+			"form-data": "multipart/form-data",
+			"form-urlencoded": "application/x-www-form-urlencoded; charset=UTF-8",
+			"text": "text/plain; charset=UTF-8"
+		};
+		var rawCType = this.contentType || "form-urlencoded";
+		var cType = cTypeMap[rawCType] || rawCType;
+
+		// 类型判断 helper
+		var isFormData = query && typeof FormData !== "undefined" && query instanceof FormData;
+		var isObject = query !== null && typeof query === "object" && !isFormData;
+		var isString = typeof query === "string";
+
+		if (isFormData) {
+			cType = "multipart/form-data";
+		}
+
+		// 2. GET / DELETE 请求（ Query 参数序列化）
+		if (method === "GET" || method === "DELETE") {
+			if (isObject) {
+				var tData = {};
+				for (var k in query) {
+					if (Object.prototype.hasOwnProperty.call(query, k)) {
+						tData[k] = typeof query[k] === "object" ? JSON.stringify(query[k]) : query[k];
+					}
+				}
+				url = WebAdapter.attachParams(url, tData);
+			} else if (isString && query) {
+				url += (url.indexOf("?") === -1 ? "?" : "&") + query.replace(/^\?/, "");
+			}
+			data = null;
+		} else {
+			// 3. POST / PUT / PATCH 等 Body 数据处理
+
+			// 关键改动：如果发送的是纯字符串，强制/自动修正 Content-Type 为 text/plain
+			if (isString) {
+				cType = "text/plain; charset=UTF-8";
+				data = query;
+			} else if (cType.indexOf("application/x-www-form-urlencoded") !== -1) {
+				if (isObject) {
+					var formDataObj = {};
+					for (var key in query) {
+						if (Object.prototype.hasOwnProperty.call(query, key)) {
+							formDataObj[key] = typeof query[key] === "object" ? JSON.stringify(query[key]) : query[key];
+						}
+					}
+					data = WebAdapter.attachParams("", formDataObj).split("?")[1] || "";
+				} else {
+					data = String(query || "");
+				}
+			} else if (cType.indexOf("application/json") !== -1) {
+				data = isObject ? JSON.stringify(query) : query;
+			} else if (cType.indexOf("multipart/form-data") !== -1) {
+				if (isObject) {
+					data = new FormData();
+					for (var prop in query) {
+						if (Object.prototype.hasOwnProperty.call(query, prop)) {
+							data.append(prop, query[prop]);
+						}
+					}
+				}
+				cType = null;
+			}
+		}
+
+		// 4. 创建/获取 XHR 实例
+		var xhr = this.httpObj || new XMLHttpRequest();
+
+		xhr.onreadystatechange = function () {
+			if (xhr.readyState === 4) {
+				if (typeof callback === "function") {
+					var resData = xhr.responseText;
+					if (dType === "json" && resData) {
+						try {
+							resData = JSON.parse(resData);
+						} catch (e) {
+							console.warn("JSON parse error:", e);
+						}
+					}
+
+					if (AjaxInterface.interceptor && typeof AjaxInterface.interceptor.response === "function") {
+						AjaxInterface.interceptor.response(xhr);
+					}
+
+					var isSuccess = (xhr.status >= 200 && xhr.status < 300) || xhr.status === 304;
+					if (isSuccess) {
+						callback(resData, xhr);
+					}
+				}
+			}
+		};
+
+		// 5. 配置请求与设置 Headers
+		xhr.open(method, url, true);
+
+		if (cType) {
+			xhr.setRequestHeader("Content-Type", cType);
+		}
+
+		if (this.authorization) {
+			xhr.setRequestHeader("Authorization", this.authorization);
+		}
+
+		this.header = this.header || {};
+		if (typeof location !== "undefined" && location.pathname.indexOf("/proxy.html") === -1) {
+			this.header["transweb-token"] = localStorage.getItem("transweb-token") || "";
+		}
+
+		for (var hKey in this.header) {
+			if (Object.prototype.hasOwnProperty.call(this.header, hKey)) {
+				xhr.setRequestHeader(hKey, this.header[hKey]);
+			}
+		}
+
+		if (AjaxInterface.interceptor && typeof AjaxInterface.interceptor.request === "function") {
+			AjaxInterface.interceptor.request(xhr);
+		}
+
+		// 6. 发送 Body
+		xhr.send(data);
+	};
+
+	AjaxInterface.prototype.init = function () {
+		this.httpObj = this.getHttpObj();
+		if (this.httpObj) {
+			var _self = this;
+			return (function (query, callback, params) {
+				_self.sendData(query, callback, params);
+			});
+		}
+	}
+
+	AjaxInterface.prototype.getHttpObj = function () {
+		var xmlHttp = null;
+		try {
+			// Firefox, Opera 8.0+, Safari
+			xmlHttp = new XMLHttpRequest();
+		} catch (e) {
+			//Internet Explorer
+			try {
+				xmlHttp = new ActiveXObject("Msxml2.XMLHTTP");
+			} catch (e) {
+				xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+			}
+		}
+		return xmlHttp;
+	}
+
+
+	if (window.parent && window.parent !== window) {
+		window.parent.postMessage({
+			inited: true,
+			url: location.href,
+			message: "iframe inited successfull!"
+		}, AllowOrigin);
+
+		WebAdapter.listenMessage(function (e) {
+			var data = e.data;
+			if (typeof (data) === "string" && data.search('{') !== -1 && data.search('}') !== -1) {
+				data = JSON.parse(data);
+			}
+			var query = data.query;
+			var dType = data.dataType || "json";
+			var cType = data.contentType;
+			var dealFeeback = function (d, q) {
+				var result = {
+					messageId: data.messageId,
+					data: d
+				}
+				window.parent.postMessage(result, AllowOrigin);
+			};
+			if (data.messageId) {
+				var key = data.key;
+				if (data.url && data.requestType && WebAdapter.urlCheck(data.url)) {
+					WebAdapter.request(data.url, data.requestType, query, function (d) {
+						dealFeeback(d, query);
+					}, {
+						dataType: dType,
+						contentType: cType,
+						header: data.header || {}
+					});
+				} else { }
+			}
+		}, AllowOrigin);
+	}
+</script>
+
+</html>

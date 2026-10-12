@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+  <meta http-equiv="Cache-Control" content="no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>反函数的镜像之美</title>
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      font-family: "Nunito", "Noto Sans", sans-serif;
+      overflow: hidden;
+      box-sizing: border-box;
+    }
+
+    .contentItemArea {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      text-align: center;
+    }
+
+
+    @keyframes hueShift {
+      0% {
+        filter: hue-rotate(0deg);
+      }
+
+      100% {
+        filter: hue-rotate(360deg);
+      }
+    }
+
+    .fade-out {
+      opacity: 0;
+      transition: opacity 0.8s ease;
+    }
+
+    .loadingTips {
+      text-align: center;
+      font-size: 12px;
+      color: #ccc;
+      padding: 20px 0;
+    }
+
+    .waiting {
+      width: 60px;
+      height: 60px;
+      background-color: #67cf22;
+      margin: 100px auto;
+      animation: rotateplane 1.2s infinite ease-in-out;
+    }
+
+    @keyframes rotateplane {
+      0% {
+        transform: perspective(120px) rotateX(0deg) rotateY(0deg);
+      }
+
+      50% {
+        transform: perspective(120px) rotateX(-180deg) rotateY(0deg);
+      }
+
+      100% {
+        transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
+      }
+    }
+
+    .__exporting__,
+    .__exporting * {
+      animation: none !important;
+      transition: none !important;
+    }
+
+    .__exporting {
+      background: #ffffff !important;
+    }
+
+    .__export-mask {
+      position: fixed;
+      inset: 0;
+      z-index: 2147483647;
+      background: rgba(250, 250, 250, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .__export-mask__panel {
+      background: rgba(0, 0, 0, 0.7);
+      color: #fff;
+      padding: 16px 22px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+    }
+
+    .__export-mask__spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="contentItemArea">
+    <div class="loadingTips">加载中...</div>
+    <div class="waiting"></div>
+  </div>
+  <script defer src="https://transweb.cn/index.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      let app = {
+        className: "GeogebraCase",
+        task: {
+          data: {
+            name: "反函数的镜像之美",
+            mode: "2D",
+            appName: "suite",
+            perspective: "graphing",
+            language: "zh-CN",
+            version: 5.0,
+            script: {
+              value: `SetCoordSystem(-8, 8, -8, 8)
+ShowGrid(true)
+ShowAxes(true)
+
+# 参数定义
+A_x = Slider(-4, 4, 0.1, 1, 150)
+A_y = Slider(-4, 4, 0.1, 1, 150)
+
+# 原函数定义：立方函数
+f(x) = 0.125 * x^3
+
+# 定义点 A 在函数上
+A = (A_x, f(A_x))
+
+# 反函数定义
+g(x) = 2 * cbrt(x)
+
+# 定义 A 关于 y=x 的对称点 B（在反函数上）
+B = (f(A_x), A_x)
+
+# 对称轴 y=x
+Line_m = Line((0, 0), (1, 1))
+
+# 连接 A 和 B 的线段（垂直于 y=x）
+Seg_AB = Segment(A, B)
+
+# A 到 y=x 的垂足
+M = Midpoint(A, B)
+
+# 原函数曲线
+Curve_f = Function(f, -8, 8)
+
+# 反函数曲线
+Curve_g = Function(g, -8, 8)
+
+# 样式设置
+SetColor(Curve_f, "#2563EB")
+SetLineThickness(Curve_f, 3)
+SetColor(Curve_g, "#DC2626")
+SetLineThickness(Curve_g, 3)
+SetColor(Line_m, "#9CA3AF")
+SetLineThickness(Line_m, 1)
+SetLineStyle(Line_m, 1)
+SetColor(Seg_AB, "#7C3AED")
+SetLineThickness(Seg_AB, 2)
+SetLineStyle(Seg_AB, 2)
+SetPointSize(A, 5)
+SetPointStyle(A, 0)
+SetColor(A, "#2563EB")
+SetPointSize(B, 5)
+SetPointStyle(B, 0)
+SetColor(B, "#DC2626")
+SetPointSize(M, 4)
+SetPointStyle(M, 2)
+SetColor(M, "#7C3AED")
+
+# 标签设置
+SetCaption(A, "A (x, f(x))")
+SetLabelMode(A, 3)
+ShowLabel(A, true)
+SetCaption(B, "B (f(x), x)")
+SetLabelMode(B, 3)
+ShowLabel(B, true)
+SetCaption(M, "中点")
+SetLabelMode(M, 3)
+ShowLabel(M, true)
+SetCaption(A_x, "拖动改变 x")
+SetLabelMode(A_x, 3)
+ShowLabel(A_x, true)
+SetCaption(Line_m, "y = x")
+SetLabelMode(Line_m, 3)
+ShowLabel(Line_m, true)
+
+# 隐藏辅助对象
+ShowLabel(A_y, false)
+ShowLabel(Curve_f, false)
+ShowLabel(Curve_g, false)
+ShowLabel(Seg_AB, false)`,
+            }
+          }
+        }
+      };
+      let elem = document.querySelector(".contentItemArea");
+      webCpu.updateView(elem, app);
+    });
+  </script>
+</body>
+
+</html>

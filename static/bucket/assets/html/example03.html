@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+  <meta http-equiv="Cache-Control" content="no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>《应用程序开发与运营合作协议》综合审核报告</title>
+  <style>
+    :root {
+      --brand-primary: #2563eb;
+      --brand-dark: #1e293b;
+      --brand-soft: #f8fafc;
+      --brand-gold: #f59e0b;
+      --text-muted: #64748b;
+      --border-soft: rgba(15, 23, 42, 0.06);
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      font-family: "Nunito", "Noto Sans", "PingFang SC", "Microsoft YaHei", sans-serif;
+      overflow: hidden;
+      box-sizing: border-box;
+      color: var(--brand-dark);
+      background:
+        radial-gradient(1200px 600px at 0% 0%, rgba(37, 99, 235, 0.05), transparent 60%),
+        radial-gradient(900px 500px at 100% 100%, rgba(245, 158, 11, 0.04), transparent 60%),
+        #ffffff;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    /* ===== 主体布局：内容 + 水印固定底部 ===== */
+    .pageWrapper {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: 100%;
+    }
+
+    .contentItemArea {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      /* 为底部水印预留空间，避免遮挡阅读 */
+      padding-bottom: 44px;
+      box-sizing: border-box;
+    }
+
+    /* ===== Loading ===== */
+    .loadingTips {
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+      letter-spacing: 0.3px;
+      margin-top: 24px;
+    }
+
+    .waiting {
+      position: relative;
+      width: 56px;
+      height: 56px;
+      margin: 0 auto;
+    }
+
+    .waiting::before,
+    .waiting::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 3px solid transparent;
+      box-sizing: border-box;
+    }
+
+    .waiting::before {
+      border-top-color: var(--brand-primary);
+      border-right-color: var(--brand-primary);
+      animation: spin 1s linear infinite;
+    }
+
+    .waiting::after {
+      inset: 8px;
+      border-top-color: var(--brand-gold);
+      border-left-color: var(--brand-gold);
+      animation: spin 1.4s linear infinite reverse;
+      opacity: 0.85;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .fade-out {
+      opacity: 0;
+      transition: opacity 0.8s ease;
+    }
+
+    /* ===== 底部水印（主） ===== */
+    .siteWatermark {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      font-size: 12px;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.72);
+      backdrop-filter: saturate(180%) blur(10px);
+      -webkit-backdrop-filter: saturate(180%) blur(10px);
+      border-top: 1px solid var(--border-soft);
+      z-index: 50;
+      user-select: none;
+      pointer-events: auto;
+      transition: opacity 0.2s ease;
+    }
+
+    .siteWatermark__brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-muted);
+      text-decoration: none;
+    }
+
+    .siteWatermark__dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--brand-primary), var(--brand-gold));
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
+    }
+
+    .siteWatermark__brand strong {
+      color: var(--brand-dark);
+      font-weight: 600;
+      letter-spacing: 0.3px;
+    }
+
+    .siteWatermark__link {
+      color: var(--text-muted);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    .siteWatermark__link:hover {
+      color: var(--brand-primary);
+      background: rgba(37, 99, 235, 0.06);
+    }
+
+    .siteWatermark__link svg {
+      opacity: 0.8;
+    }
+
+    /* ===== 右下角次级角标水印（极淡，不影响阅读） ===== */
+    .cornerWatermark {
+      position: fixed;
+      right: 14px;
+      bottom: 44px;
+      font-size: 10px;
+      color: rgba(30, 41, 59, 0.25);
+      letter-spacing: 0.6px;
+      pointer-events: none;
+      text-align: right;
+      z-index: 40;
+      user-select: none;
+    }
+
+    /* ===== 导出态优化 ===== */
+    .__exporting__,
+    .__exporting * {
+      animation: none !important;
+      transition: none !important;
+    }
+
+    .__exporting {
+      background: #ffffff !important;
+    }
+
+    /* 导出时水印仍然保留 */
+    .__exporting .siteWatermark {
+      background: #ffffff !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+    }
+
+    .__export-mask {
+      position: fixed;
+      inset: 0;
+      z-index: 2147483647;
+      background: rgba(250, 250, 250, 0.85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(2px);
+    }
+
+    .__export-mask__panel {
+      background: rgba(15, 23, 42, 0.78);
+      color: #fff;
+      padding: 14px 22px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      box-shadow: 0 12px 40px rgba(15, 23, 42, 0.18);
+    }
+
+    .__export-mask__spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.35);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    /* ===== 可访问性：尊重系统降低动效偏好 ===== */
+    @media (prefers-reduced-motion: reduce) {
+
+      .waiting::before,
+      .waiting::after,
+      .__export-mask__spinner {
+        animation-duration: 3s;
+      }
+    }
+
+    /* ===== 小屏适配 ===== */
+    @media (max-width: 480px) {
+      .siteWatermark {
+        font-size: 11px;
+        padding: 0 12px;
+      }
+
+      .cornerWatermark {
+        display: none;
+      }
+    }
+  </style>
+
+  <!-- ===== Tailwind CSS ===== -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script>
+    tailwind.config = {
+      prefix: 'tw-',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              bg: '#F7F8FC',
+              panel: '#FFFFFF',
+              border: '#E4E8F4',
+              primary: '#5B6BFF',
+              secondary: '#8B7CF8',
+              text: '#1A1F3C',
+              muted: '#6B7280',
+              success: '#10B981',
+              accent: '#F0F1FF'
+            }
+          },
+          boxShadow: {
+            soft: '0 2px 24px rgba(91,107,255,0.10)',
+            card: '0 1px 4px rgba(26,31,60,0.06), 0 8px 32px rgba(91,107,255,0.08)',
+            glow: '0 0 48px rgba(91,107,255,0.18)'
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body>
+  <div class="pageWrapper">
+    <main class="contentItemArea" role="main">
+      <div class="waiting" aria-hidden="true"></div>
+      <div class="loadingTips">内容加载中，请稍候…</div>
+    </main>
+
+    <!-- 右下角次级角标水印（极淡） -->
+    <div class="cornerWatermark" aria-hidden="true">
+      Agent 应用名称：<strong>结构化审核意见报告</strong><br>
+      应用创作者: 刘文津, 内容编辑导出者: 刘文津</div>
+
+    <!-- 底部主水印条 -->
+    <footer class="siteWatermark" role="contentinfo" aria-label="文档来源水印">
+      <a class="siteWatermark__brand" title="访问 Agent 应用" href="https://transweb.cn?solo=true&id=8f0d2eb8d438dd813440834e9b7394d6" target="_blank"
+        rel="noopener noreferrer">
+        <span class="siteWatermark__dot" aria-hidden="true"></span>
+        <span>由 Agent 应用导出</span>
+      </a>
+      <a class="siteWatermark__link" href="https://transweb.cn" target="_blank" rel="noopener noreferrer"
+        title="访问 TransWeb 官网">
+        <span>TransWeb 驱动</span>
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
+          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M7 17L17 7" />
+          <path d="M8 7h9v9" />
+        </svg>
+      </a>
+    </footer>
+  </div>
+  <script async src="https://transweb.cn/common/mathjax/tex-chtml.js"></script>
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [["$", "$"], ["\\(", "\\)"]], displayMath: [["$$", "$$"], ["\\[", "\\]"]] },
+      svg: { fontCache: "global" }
+    };
+  </script>
+
+  <script defer src="https://transweb.cn/index.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      let app = {
+        className: "ElementVueItem",
+        task: {
+          style: {
+            overflow: "auto"
+          },
+          template: `data:text/plain;charset=utf-8;base64,PHRlbXBsYXRlPgogIDxkaXYgY2xhc3M9InJvb3RDb250YWluZXJJdGVtIHR3LXctZnVsbCB0dy1oLWZ1bGwgdHctcC02IHR3LWJnLXNsYXRlLTUwIHR3LXRleHQtc2xhdGUtODAwIHR3LW92ZXJmbG93LWF1dG8iPgogICAgPGRpdiBjbGFzcz0idHctbWF4LXctNHhsIHR3LW14LWF1dG8gdHctbXktNCB0dy1iZy13aGl0ZSB0dy1ib3JkZXIgdHctYm9yZGVyLXNsYXRlLTIwMC84MCB0dy1yb3VuZGVkLXhsIHR3LXAtOCB0dy1zaGFkb3ctc20gdHctcmVsYXRpdmUgdHctb3ZlcmZsb3ctaGlkZGVuIj4KICAgICAgPCEtLSDlk4HniYzpnZLok53np5HmioDpobbovrnnur8gLS0+CiAgICAgIDxkaXYgY2xhc3M9InR3LWFic29sdXRlIHR3LXRvcC0wIHR3LWxlZnQtMCB0dy1yaWdodC0wIHR3LWgtWzNweF0gdHctYmctZ3JhZGllbnQtdG8tciB0dy1mcm9tLVsjMDBiNGQ4XSB0dy12aWEtWyMwMDc3YjZdIHR3LXRvLVsjMDMwNDVlXSI+PC9kaXY+CgogICAgICA8IS0tIEhlYWRlcjog5qCH6aKY5LiO57O757uf5qCH6K+GIC0tPgogICAgICA8ZGl2IGNsYXNzPSJyZXBvcnQtaGVhZGVyIHR3LW1iLTggdHctYm9yZGVyLWIgdHctYm9yZGVyLXNsYXRlLTEwMCB0dy1wYi02IHR3LWZsZXggdHctanVzdGlmeS1iZXR3ZWVuIHR3LWl0ZW1zLWNlbnRlciI+CiAgICAgICAgPGRpdj4KICAgICAgICAgIDxkaXYgY2xhc3M9InR3LXRleHQtWzExcHhdIHR3LWZvbnQtbW9ubyB0dy10ZXh0LWN5YW4tNzAwIHR3LXRyYWNraW5nLXdpZGVzdCB0dy11cHBlcmNhc2UgdHctbWItMS41IHR3LWZvbnQtc2VtaWJvbGQiPgogICAgICAgICAgICAvLyBTWVNNTCBWMiBNT0RFTCBBVURJVCBTWVNURU0KICAgICAgICAgIDwvZGl2PgogICAgICAgICAgPGgyIGNsYXNzPSJ0dy10ZXh0LTJ4bCB0dy1mb250LWJvbGQgdHctdGV4dC1zbGF0ZS05MDAgdHctbS0wIHR3LXRyYWNraW5nLXRpZ2h0Ij57eyBhY2NvdW50RGF0YS50aXRsZSB9fTwvaDI+CiAgICAgICAgPC9kaXY+CiAgICAgICAgPGVsLXRhZyBlZmZlY3Q9ImxpZ2h0IiBjbGFzcz0idHctYmctY3lhbi01MCB0dy1ib3JkZXItY3lhbi0yMDAgdHctdGV4dC1jeWFuLTgwMCB0dy1mb250LW1vbm8gdHctcm91bmRlZCB0dy1weC0zIHR3LXB5LTEiPgogICAgICAgICAgRXpNb2QgVmVyaWZpZWQKICAgICAgICA8L2VsLXRhZz4KICAgICAgPC9kaXY+CgogICAgICA8IS0tIE1ldGE6IOWuoeaguOWFg+aVsOaNriAtLT4KICAgICAgPGRpdiBjbGFzcz0icmVwb3J0LW1ldGEgdHctbWItOCB0dy1iZy1zbGF0ZS01MC84MCB0dy1ib3JkZXIgdHctYm9yZGVyLXNsYXRlLTIwMC82MCB0dy1wLTUgdHctcm91bmRlZC1sZyI+CiAgICAgICAgPGVsLWRlc2NyaXB0aW9ucyA6Y29sdW1uPSIzIiA6Y29sb249ImZhbHNlIj4KICAgICAgICAgIDxlbC1kZXNjcmlwdGlvbnMtaXRlbT4KICAgICAgICAgICAgPHRlbXBsYXRlICNsYWJlbD48c3BhbiBjbGFzcz0idHctdGV4dC1zbGF0ZS00MDAgdHctdGV4dC1bMTFweF0gdHctZm9udC1tb25vIHR3LWJsb2NrIHR3LW1iLTAuNSI+UkVWSUVXRVI8L3NwYW4+PC90ZW1wbGF0ZT4KICAgICAgICAgICAgPHNwYW4gY2xhc3M9InR3LXRleHQtc2xhdGUtNzAwIHR3LWZvbnQtbWVkaXVtIHR3LXRleHQtc20iPnt7IGFjY291bnREYXRhLm1ldGEucmV2aWV3ZXIgfX08L3NwYW4+CiAgICAgICAgICA8L2VsLWRlc2NyaXB0aW9ucy1pdGVtPgogICAgICAgICAgPGVsLWRlc2NyaXB0aW9ucy1pdGVtPgogICAgICAgICAgICA8dGVtcGxhdGUgI2xhYmVsPjxzcGFuIGNsYXNzPSJ0dy10ZXh0LXNsYXRlLTQwMCB0dy10ZXh0LVsxMXB4XSB0dy1mb250LW1vbm8gdHctYmxvY2sgdHctbWItMC41Ij5USU1FU1RBTVA8L3NwYW4+PC90ZW1wbGF0ZT4KICAgICAgICAgICAgPHNwYW4gY2xhc3M9InR3LXRleHQtc2xhdGUtNzAwIHR3LWZvbnQtbW9ubyB0dy10ZXh0LXNtIj57eyBhY2NvdW50RGF0YS5tZXRhLmRhdGUgfX08L3NwYW4+CiAgICAgICAgICA8L2VsLWRlc2NyaXB0aW9ucy1pdGVtPgogICAgICAgICAgPGVsLWRlc2NyaXB0aW9ucy1pdGVtPgogICAgICAgICAgICA8dGVtcGxhdGUgI2xhYmVsPjxzcGFuIGNsYXNzPSJ0dy10ZXh0LXNsYXRlLTQwMCB0dy10ZXh0LVsxMXB4XSB0dy1mb250LW1vbm8gdHctYmxvY2sgdHctbWItMC41Ij5SRVZJU0lPTjwvc3Bhbj48L3RlbXBsYXRlPgogICAgICAgICAgICA8c3BhbiBjbGFzcz0idHctdGV4dC1jeWFuLTcwMCB0dy1mb250LW1vbm8gdHctZm9udC1zZW1pYm9sZCB0dy10ZXh0LXNtIj52e3sgYWNjb3VudERhdGEubWV0YS52ZXJzaW9uIH19PC9zcGFuPgogICAgICAgICAgPC9lbC1kZXNjcmlwdGlvbnMtaXRlbT4KICAgICAgICA8L2VsLWRlc2NyaXB0aW9ucz4KICAgICAgPC9kaXY+CgogICAgICA8IS0tIFJlc3VsdDog5a6h5qC457uT6K66IC0tPgogICAgICA8ZGl2IGNsYXNzPSJyZXBvcnQtcmVzdWx0IHR3LW1iLTggdHctZmxleCB0dy1pdGVtcy1jZW50ZXIgdHctZ2FwLXgtNCB0dy1iZy1zbGF0ZS01MC81MCB0dy1wLTQgdHctcm91bmRlZC1sZyB0dy1ib3JkZXIgdHctYm9yZGVyLXNsYXRlLTIwMC81MCI+CiAgICAgICAgPHNwYW4gY2xhc3M9InR3LXRleHQtc20gdHctZm9udC1tZWRpdW0gdHctdGV4dC1zbGF0ZS01MDAiPuWIpOWumue7k+aenO+8mjwvc3Bhbj4KICAgICAgICA8ZWwtdGFnCiAgICAgICAgICBzaXplPSJsYXJnZSIKICAgICAgICAgIGVmZmVjdD0icGxhaW4iCiAgICAgICAgICA6Y2xhc3M9ImFjY291bnREYXRhLnJlc3VsdCA9PT0gJ+mAmui/hycgCiAgICAgICAgICAgID8gJ3R3LWJnLWVtZXJhbGQtNTAgdHctdGV4dC1lbWVyYWxkLTcwMCB0dy1ib3JkZXItZW1lcmFsZC0yMDAnIAogICAgICAgICAgICA6ICd0dy1iZy1hbWJlci01MCB0dy10ZXh0LWFtYmVyLTcwMCB0dy1ib3JkZXItYW1iZXItMjAwJyIKICAgICAgICAgIGNsYXNzPSJ0dy1weC00IHR3LXJvdW5kZWQtbWQgdHctZm9udC1zZW1pYm9sZCB0dy10cmFja2luZy13aWRlIgogICAgICAgID4KICAgICAgICAgIOKXjyB7eyBhY2NvdW50RGF0YS5yZXN1bHQgfX0KICAgICAgICA8L2VsLXRhZz4KICAgICAgPC9kaXY+CgogICAgICA8IS0tIFN1bW1hcnk6IOaWueahiOaRmOimgSAtLT4KICAgICAgPGRpdiBjbGFzcz0icmVwb3J0LXN1bW1hcnkgdHctbWItOCI+CiAgICAgICAgPGRpdiBjbGFzcz0idHctZmxleCB0dy1pdGVtcy1jZW50ZXIgdHctZ2FwLTIgdHctbWItMyI+CiAgICAgICAgICA8ZGl2IGNsYXNzPSJ0dy13LTEgdHctaC00IHR3LWJnLWN5YW4tNjAwIHR3LXJvdW5kZWQtZnVsbCI+PC9kaXY+CiAgICAgICAgICA8aDMgY2xhc3M9InR3LXRleHQtYmFzZSB0dy1mb250LWJvbGQgdHctdGV4dC1zbGF0ZS05MDAgdHctbS0wIj7mlrnmoYjmkZjopoE8L2gzPgogICAgICAgIDwvZGl2PgogICAgICAgIDxwIGNsYXNzPSJ0dy10ZXh0LXNsYXRlLTYwMCB0dy10ZXh0LXNtIHR3LWxlYWRpbmctcmVsYXhlZCB0dy1iZy1zbGF0ZS01MC82MCB0dy1ib3JkZXItbC0yIHR3LWJvcmRlci1jeWFuLTYwMCB0dy1wLTQgdHctcm91bmRlZC1yLWxnIHR3LW0tMCI+CiAgICAgICAgICB7eyBhY2NvdW50RGF0YS5zdW1tYXJ5IH19CiAgICAgICAgPC9wPgogICAgICA8L2Rpdj4KCiAgICAgIDwhLS0gSXNzdWVzOiDlvoXlpITnkIbpl67popjmuIXljZUgLS0+CiAgICAgIDxkaXYgY2xhc3M9InJlcG9ydC1pc3N1ZXMgdHctbWItOCI+CiAgICAgICAgPGRpdiBjbGFzcz0idHctZmxleCB0dy1pdGVtcy1jZW50ZXIgdHctZ2FwLTIgdHctbWItNCI+CiAgICAgICAgICA8ZGl2IGNsYXNzPSJ0dy13LTEgdHctaC00IHR3LWJnLWN5YW4tNjAwIHR3LXJvdW5kZWQtZnVsbCI+PC9kaXY+CiAgICAgICAgICA8aDMgY2xhc3M9InR3LXRleHQtYmFzZSB0dy1mb250LWJvbGQgdHctdGV4dC1zbGF0ZS05MDAgdHctbS0wIj7lvoXlpITnkIbpl67popg8L2gzPgogICAgICAgIDwvZGl2PgogICAgICAgIDxlbC10YWJsZSAKICAgICAgICAgIDpkYXRhPSJhY2NvdW50RGF0YS5pc3N1ZXMiIAogICAgICAgICAgY2xhc3M9InR3LXctZnVsbCB0dy1yb3VuZGVkLWxnIHR3LW92ZXJmbG93LWhpZGRlbiBsaWdodC1tb2RlLXRhYmxlIHR3LWJvcmRlciB0dy1ib3JkZXItc2xhdGUtMjAwLzgwIiAKICAgICAgICAgIGhlYWRlci1jZWxsLWNsYXNzLW5hbWU9InRhYmxlLWxpZ2h0LWhlYWRlciIKICAgICAgICA+CiAgICAgICAgICA8ZWwtdGFibGUtY29sdW1uIHByb3A9Im1vZHVsZSIgbGFiZWw9IuaooeWdlyIgd2lkdGg9IjEzMCI+CiAgICAgICAgICAgIDx0ZW1wbGF0ZSAjZGVmYXVsdD0ic2NvcGUiPgogICAgICAgICAgICAgIDxzcGFuIGNsYXNzPSJ0dy1mb250LW1vbm8gdHctdGV4dC14cyB0dy10ZXh0LXNsYXRlLTcwMCB0dy1mb250LW1lZGl1bSI+e3sgc2NvcGUucm93Lm1vZHVsZSB9fTwvc3Bhbj4KICAgICAgICAgICAgPC90ZW1wbGF0ZT4KICAgICAgICAgIDwvZWwtdGFibGUtY29sdW1uPgogICAgICAgICAgPGVsLXRhYmxlLWNvbHVtbiBwcm9wPSJkZXNjcmlwdGlvbiIgbGFiZWw9IuaPj+i/sCIgbWluLXdpZHRoPSIxODAiIC8+CiAgICAgICAgICA8ZWwtdGFibGUtY29sdW1uIHByb3A9InNldmVyaXR5IiBsYWJlbD0i5Lil6YeN56iL5bqmIiB3aWR0aD0iMTIwIj4KICAgICAgICAgICAgPHRlbXBsYXRlICNkZWZhdWx0PSJzY29wZSI+CiAgICAgICAgICAgICAgPHNwYW4gCiAgICAgICAgICAgICAgICA6Y2xhc3M9InNjb3BlLnJvdy5zZXZlcml0eSA9PT0gJ+mrmCcgCiAgICAgICAgICAgICAgICAgID8gJ3R3LWJnLXJvc2UtNTAgdHctdGV4dC1yb3NlLTcwMCB0dy1ib3JkZXItcm9zZS0yMDAnIAogICAgICAgICAgICAgICAgICA6ICd0dy1iZy1hbWJlci01MCB0dy10ZXh0LWFtYmVyLTcwMCB0dy1ib3JkZXItYW1iZXItMjAwJyIKICAgICAgICAgICAgICAgIGNsYXNzPSJ0dy1pbmxpbmUtYmxvY2sgdHctcHgtMiB0dy1weS0wLjUgdHctdGV4dC1bMTFweF0gdHctZm9udC1tb25vIHR3LWZvbnQtc2VtaWJvbGQgdHctcm91bmRlZCB0dy1ib3JkZXIiCiAgICAgICAgICAgICAgPgogICAgICAgICAgICAgICAge3sgc2NvcGUucm93LnNldmVyaXR5ID09PSAn6auYJyA/ICdDUklUSUNBTCcgOiAnV0FSTklORycgfX0KICAgICAgICAgICAgICA8L3NwYW4+CiAgICAgICAgICAgIDwvdGVtcGxhdGU+CiAgICAgICAgICA8L2VsLXRhYmxlLWNvbHVtbj4KICAgICAgICAgIDxlbC10YWJsZS1jb2x1bW4gcHJvcD0ic3VnZ2VzdGlvbiIgbGFiZWw9IuW7uuiuriIgbWluLXdpZHRoPSIyMDAiIC8+CiAgICAgICAgPC9lbC10YWJsZT4KICAgICAgPC9kaXY+CgogICAgICA8IS0tIE5leHQgU3RlcHM6IOWQjue7reaJp+ihjOiuoeWIkiAtLT4KICAgICAgPGRpdiBjbGFzcz0icmVwb3J0LW5leHQtc3RlcHMgdHctYmctY3lhbi01MC80MCB0dy1ib3JkZXIgdHctYm9yZGVyLWN5YW4tMTAwIHR3LXAtNSB0dy1yb3VuZGVkLWxnIj4KICAgICAgICA8ZGl2IGNsYXNzPSJ0dy1mbGV4IHR3LWl0ZW1zLWNlbnRlciB0dy1nYXAtMiB0dy1tYi0zIj4KICAgICAgICAgIDxzcGFuIGNsYXNzPSJ0dy10ZXh0LWN5YW4tODAwIHR3LWZvbnQtbW9ubyB0dy10ZXh0LXhzIHR3LWZvbnQtYm9sZCB0dy10cmFja2luZy13aWRlIj5ORVhUIEFDVElPTjwvc3Bhbj4KICAgICAgICA8L2Rpdj4KICAgICAgICA8ZGl2IGNsYXNzPSJ0dy1ncmlkIHR3LWdyaWQtY29scy0xIG1kOnR3LWdyaWQtY29scy0yIHR3LWdhcC00Ij4KICAgICAgICAgIDxkaXYgY2xhc3M9InR3LWZsZXggdHctZmxleC1jb2wiPgogICAgICAgICAgICA8c3BhbiBjbGFzcz0idHctdGV4dC14cyB0dy10ZXh0LXNsYXRlLTUwMCB0dy1tYi0xIj7miafooYzliqjkvZw8L3NwYW4+CiAgICAgICAgICAgIDxwIGNsYXNzPSJ0dy10ZXh0LXNsYXRlLTgwMCB0dy10ZXh0LXNtIHR3LWZvbnQtbWVkaXVtIHR3LW0tMCI+e3sgYWNjb3VudERhdGEubmV4dF9zdGVwcy5hY3Rpb24gfX08L3A+CiAgICAgICAgICA8L2Rpdj4KICAgICAgICAgIDxkaXYgY2xhc3M9InR3LWZsZXggdHctZmxleC1jb2wiPgogICAgICAgICAgICA8c3BhbiBjbGFzcz0idHctdGV4dC14cyB0dy10ZXh0LXNsYXRlLTUwMCB0dy1tYi0xIj7miKrmraLml7bpl7Q8L3NwYW4+CiAgICAgICAgICAgIDxwIGNsYXNzPSJ0dy10ZXh0LWN5YW4tODAwIHR3LWZvbnQtbW9ubyB0dy10ZXh0LXNtIHR3LWZvbnQtc2VtaWJvbGQgdHctbS0wIj57eyBhY2NvdW50RGF0YS5uZXh0X3N0ZXBzLmRlYWRsaW5lIH19PC9wPgogICAgICAgICAgPC9kaXY+CiAgICAgICAgPC9kaXY+CiAgICAgIDwvZGl2PgogICAgPC9kaXY+CiAgPC9kaXY+CjwvdGVtcGxhdGU+Cgo8c2NyaXB0PgpleHBvcnQgZGVmYXVsdCB7CiAgbmFtZTogIkF1ZGl0UmVwb3J0VmlldyIsCiAgZGF0YTogZnVuY3Rpb24oKSB7CiAgICByZXR1cm4gewogICAgICBhY2NvdW50RGF0YTogewogICAgICAgIHRpdGxlOiAiMjAyNOW5tOW6pumhueebruaWueahiOWuoeaguOaKpeWRiiIsCiAgICAgICAgbWV0YTogeyByZXZpZXdlcjogIuW8oOS4iSIsIGRhdGU6ICIyMDI0LTA1LTIwIiwgdmVyc2lvbjogIjEuMiIgfSwKICAgICAgICByZXN1bHQ6ICLmlbTmlLkiLAogICAgICAgIHN1bW1hcnk6ICLmlrnmoYjmlbTkvZPmnoTmgJ3muIXmmbDvvIzkvYbpg6jliIbmioDmnK/nu4boioLlrZjlnKjlkIjop4TmgKfpo47pmanvvIzpnIDpkojlr7nmgKfkvJjljJbjgIIiLAogICAgICAgIGlzc3VlczogWwogICAgICAgICAgeyBtb2R1bGU6ICLmlbDmja7lronlhagiLCBkZXNjcmlwdGlvbjogIue8uuWwkeS4quS6uuaVj+aEn+S/oeaBr+iEseaVj+WkhOeQhua1geeoiyIsIHNldmVyaXR5OiAi6auYIiwgc3VnZ2VzdGlvbjogIuihpeWFheaVsOaNruWKoOWvhuS4juiEseaVj+aWueahiOivtOaYjiIgfSwKICAgICAgICAgIHsgbW9kdWxlOiAi5Lqk5LqS5rWB56iLIiwgZGVzY3JpcHRpb246ICLms6jlhozot6/lvoTov4fplb8iLCBzZXZlcml0eTogIuS4rSIsIHN1Z2dlc3Rpb246ICLnsr7nroDkuLrkuInmraXpqozor4HmtYHnqIsiIH0KICAgICAgICBdLAogICAgICAgIG5leHRfc3RlcHM6IHsgYWN0aW9uOiAi5o+Q5Lqk5L+u6K6i54mI5pa55qGIIiwgZGVhZGxpbmU6ICIyMDI0LTA1LTI1IiB9CiAgICAgIH0KICAgIH07CiAgfQp9Owo8L3NjcmlwdD4KCjxzdHlsZSBzY29wZWQ+Ci8qIOS6ruiJsuW3peS4mue6py9NQlNF6L2v5Lu26aOO5qC855qEIEVsZW1lbnQgUGx1cyDpgILphY0gKi8KLmVsLWRlc2NyaXB0aW9uc19fY2VsbCB7CiAgZGlzcGxheTogZmxleDsKICBmbGV4LWRpcmVjdGlvbjogY29sdW1uOwp9CgoubGlnaHQtbW9kZS10YWJsZSB7CiAgLS1lbC10YWJsZS1iZy1jb2xvcjogI2ZmZmZmZjsKICAtLWVsLXRhYmxlLXRyLWJnLWNvbG9yOiAjZmZmZmZmOwogIC0tZWwtdGFibGUtaGVhZGVyLWJnLWNvbG9yOiAjZjhmYWZjOwogIC0tZWwtdGFibGUtYm9yZGVyLWNvbG9yOiAjZTJlOGYwOwogIC0tZWwtdGFibGUtdGV4dC1jb2xvcjogIzMzNDE1NTsKICAtLWVsLXRhYmxlLXJvdy1ob3Zlci1iZy1jb2xvcjogI2YxZjVmOTsKICBmb250LXNpemU6IDEzcHg7Cn0KCi50YWJsZS1saWdodC1oZWFkZXIgewogIGNvbG9yOiAjNjQ3NDhiICFpbXBvcnRhbnQ7CiAgZm9udC13ZWlnaHQ6IDYwMDsKICBmb250LXNpemU6IDExcHg7CiAgdGV4dC10cmFuc2Zvcm06IHVwcGVyY2FzZTsKICBsZXR0ZXItc3BhY2luZzogMC4wNWVtOwp9Cjwvc3R5bGU+`,
+          data: {
+            accountData: {"title":"《应用程序开发与运营合作协议》综合审核报告","meta":{"reviewer":"法务部","date":"2026-02-23","version":"1.0"},"result":"驳回","summary":"本协议在基础信息完整性、商业条款明确性及法律合规性三个维度均存在根本性缺陷。合同缺失核心财务数据、知识产权归属、保密义务等关键条款，且部分既有条款因定义模糊或约定不明而无法执行，构成重大签约风险。","issues":[{"module":"合同基础信息","description":"缺失合同唯一识别编号、签署日期、双方授权代表及统一社会信用代码，导致合同主体身份与生效时间无法确定。","severity":"高","suggestion":"在合同首部或签署页补充合同编号（如 TD-JD-2024001）、签署日期、甲乙双方完整的法定代表人/授权代表姓名、统一社会信用代码及注册地址，并通过国家企业信用信息公示系统交叉验证。"},{"module":"知识产权","description":"未约定合作开发产生的源代码、UI设计、品牌形象等知识产权的归属、使用许可及收益分配，甲方可能丧失核心资产所有权。","severity":"高","suggestion":"新增“知识产权”专章，明确约定本项目产生的所有技术成果与美术成果的知识产权按份共有（如甲方70%，乙方30%）或全部归甲方所有，并规定双方对共有产权的行使规则及后续改进的权属。"},{"module":"财务与支付","description":"项目总预算、推广费上限、技术成本预算、连续亏损金额阈值及月份数、违约金最低赔偿额等所有关键财务指标均使用占位符‘[X]’，导致成本失控、利润结算及风险敞口无法量化。","severity":"高","suggestion":"删除所有占位符，填入具体数值。建议设定项目总预算及各分项预算上限，明确连续亏损超过3个月或累计亏损达200,000元作为解散条件，并将违约金最低赔偿额定为不低于50,000元。"},{"module":"财务与支付","description":"“共同成本”范围定义缺失，未区分外部直接成本与双方各自运营成本；甲方对乙方控制的资金流水与成本真实性缺乏审计权，存在收益被截留或虚增成本的风险。","severity":"高","suggestion":"增加附件《成本分摊明细表》，严格界定可分摊成本仅限推广费、第三方API调用费、服务器租赁费等外部直接成本。同时增加甲方对财务数据的独立审计权条款，至少每季度一次。"},{"module":"违约责任","description":"违约金条款的核心赔偿计算基数‘已投入成本的2倍’定义不清，且‘恶意’等主观状态难以举证，导致条款在当前形态下无法执行。","severity":"高","suggestion":"删除‘恶意’等主观描述，改为客观行为标准。明确‘已投入成本’为截至违约时已实际支付且经双方确认的共同成本，并将违约金修改为固定且具惩罚性的数额（如项目总预算的30%），或约定实际损失的计算方式。"},{"module":"争议解决","description":"争议解决条款仅表述为‘提交人民法院起诉’，未指定具体有管辖权的法院，根据《民事诉讼法》该约定可能因不明确而无效，导致管辖权争议，增加维权成本。","severity":"高","suggestion":"将条款修改为：‘...协商不成的，任何一方均有权向甲方住所地有管辖权的人民法院提起诉讼。’以降低我方维权成本。"},{"module":"权利义务","description":"‘紧急接管权’条款中，‘失联’定义模糊，‘紧急接管权’的内容与边界完全未定义，赋予一方单方面剥夺对方全部项目权利的可能，构成显失公平。","severity":"高","suggestion":"明确‘失联’的客观标准（如连续72小时无法通过至少两种约定联系方式取得有效沟通），并严格界定接管权限于维持运营所必需的技术权限，不得涉及资产转移或知识产权处置，且需在第三方见证下进行。"},{"module":"合同完整性","description":"缺失保密条款、不可抗力条款，且违约责任未包含‘严重技术缺陷导致业务停滞’等其他可能情形，合同风险覆盖不全。","severity":"中","suggestion":"新增保密条款，定义保密范围并约定保密期限为合同终止后3-5年。新增不可抗力条款，列明认定标准及处理机制。在违约责任中补充其他严重违约情形。"},{"module":"合同格式","description":"合同文本未采用标准的条款编号体系，仅为自然段落，逻辑结构不严密，引用不便。","severity":"低","suggestion":"对合同全文进行条款编号（如第1条、1.1、1.2...），确保各条款逻辑清晰，便于引用和后续修订。"}],"next_steps":{"action":"根据以上审核意见全面重拟核心条款，补充所有缺失信息与章节，并重新提交审核。","deadline":"2026-03-02"}}
+          }
+        }
+      };
+    let elem = document.querySelector(".contentItemArea");
+    webCpu.updateView(elem, app);
+    });
+
+    window.addEventListener('message', function (event) {
+      // 收到消息后，判断是不是我们约定的下载指令
+      if (event.data && event.data.action === 'CROSS_DOMAIN_DOWNLOAD') {
+        // 在本地主页面域下安全执行下载，100% 不会报 SecurityError
+        WebTool.downloadString(event.data.blob, event.data.name, event.data.mimeType);
+      }
+    });
+  </script>
+</body>
+
+</html>

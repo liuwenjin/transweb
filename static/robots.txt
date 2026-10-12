@@ -1,0 +1,22 @@
+# 🌐 适用于所有搜索引擎
+User-agent: *
+
+# ✅ 明确允许抓取整个网站（强推荐）
+Allow: /
+
+# 🧩 明确允许访问静态资源（避免误封）
+Allow: /*.css$
+Allow: /*.js$
+Allow: /*.png$
+Allow: /*.jpg$
+Allow: /*.jpeg$
+Allow: /*.svg$
+Allow: /*.webp$
+Allow: /*.gif$
+Allow: /assets/
+Allow: /static/
+Allow: /public/
+
+
+# 🗺️ 指向 Sitemap
+Sitemap: https://transweb.cn/sitemap.xml

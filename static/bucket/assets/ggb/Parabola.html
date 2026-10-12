@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+  <meta http-equiv="Cache-Control" content="no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>Parabola_Lab</title>
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      font-family: "Nunito", "Noto Sans", sans-serif;
+      overflow: hidden;
+      box-sizing: border-box;
+    }
+
+    .contentItemArea {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      text-align: center;
+    }
+
+
+    @keyframes hueShift {
+      0% {
+        filter: hue-rotate(0deg);
+      }
+
+      100% {
+        filter: hue-rotate(360deg);
+      }
+    }
+
+    .fade-out {
+      opacity: 0;
+      transition: opacity 0.8s ease;
+    }
+
+    .loadingTips {
+      text-align: center;
+      font-size: 12px;
+      color: #ccc;
+      padding: 20px 0;
+    }
+
+    .waiting {
+      width: 60px;
+      height: 60px;
+      background-color: #67cf22;
+      margin: 100px auto;
+      animation: rotateplane 1.2s infinite ease-in-out;
+    }
+
+    @keyframes rotateplane {
+      0% {
+        transform: perspective(120px) rotateX(0deg) rotateY(0deg);
+      }
+
+      50% {
+        transform: perspective(120px) rotateX(-180deg) rotateY(0deg);
+      }
+
+      100% {
+        transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
+      }
+    }
+
+    .__exporting__,
+    .__exporting * {
+      animation: none !important;
+      transition: none !important;
+    }
+
+    .__exporting {
+      background: #ffffff !important;
+    }
+
+    .__export-mask {
+      position: fixed;
+      inset: 0;
+      z-index: 2147483647;
+      background: rgba(250, 250, 250, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .__export-mask__panel {
+      background: rgba(0, 0, 0, 0.7);
+      color: #fff;
+      padding: 16px 22px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+    }
+
+    .__export-mask__spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="contentItemArea">
+    <div class="loadingTips">加载中...</div>
+    <div class="waiting"></div>
+  </div>
+  <script defer src="https://transweb.cn/index.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      let app = {
+        className: "GeogebraCase",
+        task: {
+          data: {
+            name: "Parabola_Lab",
+            mode: "2D",
+            appName: "suite",
+            perspective: "graphing",
+            language: "zh-CN",
+            version: 5.0,
+            script: {
+              value: `SetCoordSystem(-8, 8, -6, 10)
+ShowGrid(true)
+ShowAxes(true)
+FocDist_p = Slider(0.5, 4, 0.1, 1, 150)
+SetCaption(FocDist_p, "$\\text{焦准距 } p$")
+SetLabelMode(FocDist_p, 3)
+ShowLabel(FocDist_p, true)
+Drv_t = Slider(-5, 5, 0.01, 1, 150)
+SetCaption(Drv_t, "$\\text{动点参数 } t$")
+SetLabelMode(Drv_t, 3)
+ShowLabel(Drv_t, true)
+Parab_f = Function(x^2 / (4 * FocDist_p), -8, 8)
+SetColor(Parab_f, "#2196F3")
+SetLineThickness(Parab_f, 3)
+ShowLabel(Parab_f, false)
+F_0 = (0, FocDist_p)
+SetPointSize(F_0, 5)
+SetColor(F_0, "#E91E63")
+SetCaption(F_0, "$F\\;(0,\\; p)$")
+SetLabelMode(F_0, 3)
+ShowLabel(F_0, true)
+Dir_l = Line((0, -FocDist_p), (1, -FocDist_p))
+SetColor(Dir_l, "#9C27B0")
+SetLineThickness(Dir_l, 2)
+SetLineStyle(Dir_l, 2)
+SetCaption(Dir_l, "$\\text{准线 } y = -p$")
+SetLabelMode(Dir_l, 3)
+ShowLabel(Dir_l, true)
+P_0 = (Drv_t, Drv_t^2 / (4 * FocDist_p))
+SetPointSize(P_0, 5)
+SetColor(P_0, "#FF9800")
+SetCaption(P_0, "$P$")
+SetLabelMode(P_0, 3)
+ShowLabel(P_0, true)
+Seg_f = Segment(P_0, F_0)
+SetColor(Seg_f, "#E91E63")
+SetLineThickness(Seg_f, 2)
+SetLineStyle(Seg_f, 1)
+ShowLabel(Seg_f, false)
+Aux_H = (Drv_t, -FocDist_p)
+Seg_d = Segment(P_0, Aux_H)
+SetColor(Seg_d, "#9C27B0")
+SetLineThickness(Seg_d, 2)
+SetLineStyle(Seg_d, 2)
+ShowLabel(Seg_d, false)
+SetPointSize(Aux_H, 4)
+SetColor(Aux_H, "#9C27B0")
+SetCaption(Aux_H, "$H$")
+SetLabelMode(Aux_H, 3)
+ShowLabel(Aux_H, true)
+Dist_F = Distance(P_0, F_0)
+Dist_D = Distance(P_0, Aux_H)
+Txt_F = Text("$PF = " + Round(Dist_F * 100) / 100 + "$", (4.5, 8.5))
+SetColor(Txt_F, "#E91E63")
+Txt_D = Text("$PH = " + Round(Dist_D * 100) / 100 + "$", (4.5, 7.5))
+SetColor(Txt_D, "#9C27B0")
+Txt_E = Text("$PF - PH = " + Round((Dist_F - Dist_D) * 1000) / 1000 + "$", (4.5, 6.5))
+SetColor(Txt_E, "#4CAF50")
+ShowLabel(Txt_F, false)
+ShowLabel(Txt_D, false)
+ShowLabel(Txt_E, false)`,
+            }
+          }
+        }
+      };
+      let elem = document.querySelector(".contentItemArea");
+      webCpu.updateView(elem, app);
+    });
+  </script>
+</body>
+
+</html>

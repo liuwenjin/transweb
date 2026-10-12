@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+  <meta http-equiv="Cache-Control" content="no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>Trigonometric_Dance</title>
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      font-family: "Nunito", "Noto Sans", sans-serif;
+      overflow: hidden;
+      box-sizing: border-box;
+    }
+
+    .contentItemArea {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      text-align: center;
+    }
+
+
+    @keyframes hueShift {
+      0% {
+        filter: hue-rotate(0deg);
+      }
+
+      100% {
+        filter: hue-rotate(360deg);
+      }
+    }
+
+    .fade-out {
+      opacity: 0;
+      transition: opacity 0.8s ease;
+    }
+
+    .loadingTips {
+      text-align: center;
+      font-size: 12px;
+      color: #ccc;
+      padding: 20px 0;
+    }
+
+    .waiting {
+      width: 60px;
+      height: 60px;
+      background-color: #67cf22;
+      margin: 100px auto;
+      animation: rotateplane 1.2s infinite ease-in-out;
+    }
+
+    @keyframes rotateplane {
+      0% {
+        transform: perspective(120px) rotateX(0deg) rotateY(0deg);
+      }
+
+      50% {
+        transform: perspective(120px) rotateX(-180deg) rotateY(0deg);
+      }
+
+      100% {
+        transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
+      }
+    }
+
+    .__exporting__,
+    .__exporting * {
+      animation: none !important;
+      transition: none !important;
+    }
+
+    .__exporting {
+      background: #ffffff !important;
+    }
+
+    .__export-mask {
+      position: fixed;
+      inset: 0;
+      z-index: 2147483647;
+      background: rgba(250, 250, 250, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .__export-mask__panel {
+      background: rgba(0, 0, 0, 0.7);
+      color: #fff;
+      padding: 16px 22px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+    }
+
+    .__export-mask__spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="contentItemArea">
+    <div class="loadingTips">加载中...</div>
+    <div class="waiting"></div>
+  </div>
+  <script defer src="https://transweb.cn/index.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      let app = {
+        className: "GeogebraCase",
+        task: {
+          data: {
+            name: "Trigonometric_Dance",
+            mode: "2D",
+            appName: "suite",
+            perspective: "graphing",
+            language: "zh-CN",
+            version: 5.0,
+            script: {
+              value: `SetCoordSystem(-4, 8, -2.5, 2.5)
+ShowGrid(true)
+ShowAxes(true)
+Time_m = Slider(0, 6.28318, 0.01, 1, 150)
+Point_o = (-2, 0)
+Circ_c = Circle(Point_o, 1)
+Point_p = (-2 + cos(Time_m), sin(Time_m))
+Point_b = (-2 + cos(Time_m), 0)
+Line_r = Segment(Point_o, Point_p)
+Line_h = Segment(Point_p, Point_b)
+Point_w = (Time_m, sin(Time_m))
+Wave_s = Curve(a, sin(a), a, 0, Time_m)
+Back_b = Curve(a, sin(a), a, 0, 6.28318)
+Link_k = Segment(Point_p, Point_w)
+SetColor(Circ_c, "#888888")
+SetColor(Point_p, "#FF0000")
+SetPointSize(Point_p, 5)
+SetColor(Line_h, "#0000FF")
+SetLineThickness(Line_h, 3)
+SetColor(Wave_s, "#0000FF")
+SetLineThickness(Wave_s, 5)
+SetColor(Back_b, "#CCCCCC")
+SetLineStyle(Back_b, 2)
+SetColor(Link_k, "#00AA00")
+SetLineStyle(Link_k, 2)
+SetCaption(Time_m, "旋转相位 Phase")
+SetLabelMode(Time_m, 3)
+ShowLabel(Time_m, true)
+ShowObject(Point_o, false)
+ShowObject(Point_b, false)
+ShowObject(Point_w, false)`,
+            }
+          }
+        }
+      };
+      let elem = document.querySelector(".contentItemArea");
+      webCpu.updateView(elem, app);
+    });
+  </script>
+</body>
+
+</html>

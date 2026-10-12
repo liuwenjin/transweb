@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<root>
+    <interface name="testa" method="get">
+        CREATE (a:Person {name: $name}) RETURN a
+    </interface>
+    <interface name="testb" method="get">
+        MATCH (a:Person ) RETURN a.name
+    </interface>
+</root>

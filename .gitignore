@@ -1,0 +1,23 @@
+node_modules
+.env
+*.log
+.DS_Store
+temp_uploads/
+temp/
+tmp/
+
+# ---- 敏感 / 运行时数据（勿提交）----
+# HTTPS 证书与私钥
+ca/
+# 用户个人空间数据
+personal/
+# 微信支付流水日志
+wxPayLog/
+# 用户文档等个人数据
+static/bucket/personal/
+# 登录会话（含真实用户 PII）
+interface/config/logined.js
+# 访客会话数据
+interface/config/guest.js
+# 备份文件
+interface/config/appConfig.bak.js

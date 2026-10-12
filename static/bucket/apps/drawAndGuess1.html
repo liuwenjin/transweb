@@ -1,0 +1,344 @@
+'
+<!DOCTYPE html>\n<html lang="zh-CN">\n\n
+
+<head>\n
+    <meta charset="UTF-8" />\n
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />\n
+    <meta http-equiv="Cache-Control" content="no-store, must-revalidate" />\n
+    <meta http-equiv="Pragma" content="no-cache" />\n
+    <meta http-equiv="Expires" content="0" />\n <title>黄金角螺旋星系 —— 数列的宇宙秩序3D可视化演示</title>\n <style>
+        \n :root {
+            \n --brand-primary: #2563eb;
+            \n --brand-dark: #1e293b;
+            \n --brand-soft: #f8fafc;
+            \n --brand-gold: #f59e0b;
+            \n --text-muted: #64748b;
+            \n --border-soft: rgba(15, 23, 42, 0.06);
+            \n
+        }
+
+        \n\n html,
+        \n body {
+            \n margin: 0;
+            \n padding: 0;
+            \n width: 100%;
+            \n height: 100%;
+            \n font-family: "Nunito", "Noto Sans", "PingFang SC", "Microsoft YaHei", sans-serif;
+            \n overflow: hidden;
+            \n box-sizing: border-box;
+            \n color: var(--brand-dark);
+            \n background: \n radial-gradient(1200px 600px at 0% 0%, rgba(37, 99, 235, 0.05), transparent 60%), \n radial-gradient(900px 500px at 100% 100%, rgba(245, 158, 11, 0.04), transparent 60%), \n #ffffff;
+            \n -webkit-font-smoothing: antialiased;
+            \n text-rendering: optimizeLegibility;
+            \n
+        }
+
+        \n\n
+
+        /* ===== 主体布局：内容 + 水印固定底部 ===== */
+        \n .pageWrapper {
+            \n position: relative;
+            \n display: flex;
+            \n flex-direction: column;
+            \n width: 100%;
+            \n height: 100%;
+            \n
+        }
+
+        \n\n .contentItemArea {
+            \n flex: 1 1 auto;
+            \n min-height: 0;
+            \n overflow: auto;
+            \n display: flex;
+            \n flex-direction: column;
+            \n align-items: center;
+            \n justify-content: center;
+            \n text-align: center;
+            \n
+            /* 为底部水印预留空间，避免遮挡阅读 */
+            \n padding-bottom: 44px;
+            \n box-sizing: border-box;
+            \n
+        }
+
+        \n\n
+
+        /* ===== Loading ===== */
+        \n .loadingTips {
+            \n text-align: center;
+            \n font-size: 13px;
+            \n color: var(--text-muted);
+            \n letter-spacing: 0.3px;
+            \n margin-top: 24px;
+            \n
+        }
+
+        \n\n .waiting {
+            \n position: relative;
+            \n width: 56px;
+            \n height: 56px;
+            \n margin: 0 auto;
+            \n
+        }
+
+        \n\n .waiting::before,
+        \n .waiting::after {
+            \n content: "";
+            \n position: absolute;
+            \n inset: 0;
+            \n border-radius: 50%;
+            \n border: 3px solid transparent;
+            \n box-sizing: border-box;
+            \n
+        }
+
+        \n\n .waiting::before {
+            \n border-top-color: var(--brand-primary);
+            \n border-right-color: var(--brand-primary);
+            \n animation: spin 1s linear infinite;
+            \n
+        }
+
+        \n\n .waiting::after {
+            \n inset: 8px;
+            \n border-top-color: var(--brand-gold);
+            \n border-left-color: var(--brand-gold);
+            \n animation: spin 1.4s linear infinite reverse;
+            \n opacity: 0.85;
+            \n
+        }
+
+        \n\n @keyframes spin {
+            \n to {
+                \n transform: rotate(360deg);
+                \n
+            }
+
+            \n
+        }
+
+        \n\n .fade-out {
+            \n opacity: 0;
+            \n transition: opacity 0.8s ease;
+            \n
+        }
+
+        \n\n
+
+        /* ===== 底部水印（主） ===== */
+        \n .siteWatermark {
+            \n position: fixed;
+            \n left: 0;
+            \n right: 0;
+            \n bottom: 0;
+            \n height: 36px;
+            \n display: flex;
+            \n align-items: center;
+            \n justify-content: space-between;
+            \n padding: 0 16px;
+            \n font-size: 12px;
+            \n color: var(--text-muted);
+            \n background: rgba(255, 255, 255, 0.72);
+            \n backdrop-filter: saturate(180%) blur(10px);
+            \n -webkit-backdrop-filter: saturate(180%) blur(10px);
+            \n border-top: 1px solid var(--border-soft);
+            \n z-index: 50;
+            \n user-select: none;
+            \n pointer-events: auto;
+            \n transition: opacity 0.2s ease;
+            \n
+        }
+
+        \n\n .siteWatermark__brand {
+            \n display: inline-flex;
+            \n align-items: center;
+            \n gap: 8px;
+            \n color: var(--text-muted);
+            \n text-decoration: none;
+            \n
+        }
+
+        \n\n .siteWatermark__dot {
+            \n width: 8px;
+            \n height: 8px;
+            \n border-radius: 50%;
+            \n background: linear-gradient(135deg, var(--brand-primary), var(--brand-gold));
+            \n box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
+            \n
+        }
+
+        \n\n .siteWatermark__brand strong {
+            \n color: var(--brand-dark);
+            \n font-weight: 600;
+            \n letter-spacing: 0.3px;
+            \n
+        }
+
+        \n\n .siteWatermark__link {
+            \n color: var(--text-muted);
+            \n text-decoration: none;
+            \n display: inline-flex;
+            \n align-items: center;
+            \n gap: 6px;
+            \n padding: 4px 8px;
+            \n border-radius: 999px;
+            \n transition: background-color 0.2s ease, color 0.2s ease;
+            \n
+        }
+
+        \n\n .siteWatermark__link:hover {
+            \n color: var(--brand-primary);
+            \n background: rgba(37, 99, 235, 0.06);
+            \n
+        }
+
+        \n\n .siteWatermark__link svg {
+            \n opacity: 0.8;
+            \n
+        }
+
+        \n\n
+
+        /* ===== 右下角次级角标水印（极淡，不影响阅读） ===== */
+        \n .cornerWatermark {
+            \n position: fixed;
+            \n right: 14px;
+            \n bottom: 44px;
+            \n font-size: 10px;
+            \n color: rgba(30, 41, 59, 0.25);
+            \n letter-spacing: 0.6px;
+            \n pointer-events: none;
+            \n text-align: right;
+            \n z-index: 40;
+            \n user-select: none;
+            \n
+        }
+
+        \n\n
+
+        /* ===== 导出态优化 ===== */
+        \n .__exporting__,
+        \n .__exporting * {
+            \n animation: none !important;
+            \n transition: none !important;
+            \n
+        }
+
+        \n\n .__exporting {
+            \n background: #ffffff !important;
+            \n
+        }
+
+        \n\n
+
+        /* 导出时水印仍然保留 */
+        \n .__exporting .siteWatermark {
+            \n background: #ffffff !important;
+            \n backdrop-filter: none !important;
+            \n -webkit-backdrop-filter: none !important;
+            \n
+        }
+
+        \n\n .__export-mask {
+            \n position: fixed;
+            \n inset: 0;
+            \n z-index: 2147483647;
+            \n background: rgba(250, 250, 250, 0.85);
+            \n display: flex;
+            \n align-items: center;
+            \n justify-content: center;
+            \n backdrop-filter: blur(2px);
+            \n
+        }
+
+        \n\n .__export-mask__panel {
+            \n background: rgba(15, 23, 42, 0.78);
+            \n color: #fff;
+            \n padding: 14px 22px;
+            \n border-radius: 12px;
+            \n display: flex;
+            \n align-items: center;
+            \n gap: 10px;
+            \n font-size: 14px;
+            \n box-shadow: 0 12px 40px rgba(15, 23, 42, 0.18);
+            \n
+        }
+
+        \n\n .__export-mask__spinner {
+            \n width: 16px;
+            \n height: 16px;
+            \n border: 2px solid rgba(255, 255, 255, 0.35);
+            \n border-top-color: #fff;
+            \n border-radius: 50%;
+            \n animation: spin 0.8s linear infinite;
+            \n
+        }
+
+        \n\n
+        /* ===== 可访问性：尊重系统降低动效偏好 ===== */
+        \n @media (prefers-reduced-motion: reduce) {
+
+            \n\n .waiting::before,
+            \n .waiting::after,
+            \n .__export-mask__spinner {
+                \n animation-duration: 3s;
+                \n
+            }
+
+            \n
+        }
+
+        \n\n
+        /* ===== 小屏适配 ===== */
+        \n @media (max-width: 480px) {
+            \n .siteWatermark {
+                \n font-size: 11px;
+                \n padding: 0 12px;
+                \n
+            }
+
+            \n\n .cornerWatermark {
+                \n display: none;
+                \n
+            }
+
+            \n
+        }
+
+        \n
+    </style>\n\n \x3C!-- ===== Tailwind CSS ===== -->\n \x3Cscript src="https://cdn.tailwindcss.com">\x3C/script>\n\n
+    \x3Cscript>\n tailwind.config = {\n prefix: \'tw-\',\n theme: {\n extend: {\n colors: {\n brand: {\n bg:
+    \'#F7F8FC\',\n panel: \'#FFFFFF\',\n border: \'#E4E8F4\',\n primary: \'#5B6BFF\',\n secondary: \'#8B7CF8\',\n text:
+    \'#1A1F3C\',\n muted: \'#6B7280\',\n success: \'#10B981\',\n accent: \'#F0F1FF\'\n }\n },\n boxShadow: {\n soft: \'0
+    2px 24px rgba(91,107,255,0.10)\',\n card: \'0 1px 4px rgba(26,31,60,0.06), 0 8px 32px rgba(91,107,255,0.08)\',\n
+    glow: \'0 0 48px rgba(91,107,255,0.18)\'\n }\n }\n }\n }\n \x3C/script>\n
+</head>\n\n
+
+<body>\n <div class="pageWrapper">\n <main class="contentItemArea" role="main">\n <div class="waiting"
+                aria-hidden="true"></div>\n <div class="loadingTips">内容加载中，请稍候…</div>\n </main>\n\n \x3C!--
+        右下角次级角标水印（极淡） -->\n <div class="cornerWatermark" aria-hidden="true">\n Agent
+            应用名称：<strong>三维空间动态可视化</strong><br>\n 应用创作者: 刘文津, 内容编辑导出者: 刘文津</div>\n\n \x3C!-- 底部主水印条 -->\n <footer
+            class="siteWatermark" role="contentinfo" aria-label="文档来源水印">\n <a class="siteWatermark__brand"
+                title="访问 Agent 应用" href="https://transweb.cn?solo=true&id=f6167b69f4939a6f35d162cd80d9fee5"
+                target="_blank" \n rel="noopener noreferrer">\n <span class="siteWatermark__dot"
+                    aria-hidden="true"></span>\n <span>由 Agent 应用导出</span>\n </a>\n <a class="siteWatermark__link"
+                href="https://transweb.cn" target="_blank" rel="noopener noreferrer" \n title="访问 TransWeb 官网">\n
+                <span>TransWeb 驱动</span>\n <svg width="11" height="11" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2.4" \n stroke-linecap="round" stroke-linejoin="round"
+                    aria-hidden="true">\n
+                    <path d="M7 17L17 7" />\n
+                    <path d="M8 7h9v9" />\n
+                </svg>\n </a>\n </footer>\n </div>\n \x3Cscript async
+    src="https://transweb.cn/common/mathjax/tex-chtml.js">\x3C/script>\n \x3Cscript>\n window.MathJax = {\n tex: {
+    inlineMath: [["$", "$"], ["\\\\(", "\\\\)"]], displayMath: [["$$", "$$"], ["\\\\[", "\\\\]"]] },\n svg: { fontCache:
+    "global" }\n };\n \x3C/script>\n\n \x3Cscript defer src="https://transweb.cn/index.js">\x3C/script>\n \x3Cscript>\n
+    document.addEventListener(\'DOMContentLoaded\', function () {\n let app = {\n className: "ElementVueItem",\n task:
+    {\n style: {\n overflow: "auto"\n },\n template:
+    `data:text/plain;charset=utf-8;base64,PHRlbXBsYXRlPgogIDxkaXYgcmVmPSJyb290Q29udGFpbmVySXRlbSIgY2xhc3M9InJvb3RDb250YWluZXJJdGVtIHR3LXctZnVsbCB0dy1oLWZ1bGwgdHctcC00IHR3LW92ZXJmbG93LWF1dG8iPgoKICA8L2Rpdj4KPC90ZW1wbGF0ZT4KPHNjcmlwdD4KICBleHBvcnQgZGVmYXVsdCB7CiAgICAibmFtZSI6ICItIiwKICAgICJkYXRhIjogZnVuY3Rpb24oKSB7CiAgICAgIHJldHVybiB7CiAgICAgICAgYWNjb3VudERhdGE6IHsKICAgICAgICB9CiAgICAgIH0KICAgIH0sCiAgICBtb3VudGVkKCkgewogICAgICB0aGlzLiRuZXh0VGljaygoKSA9PiB7CiAgICAgICAgdGhpcy51cGRhdGVNYXRoQm94KCk7CiAgICAgIH0pOwogICAgfSwKICAgIG1ldGhvZHM6IHsKICAgICAgdXBkYXRlTWF0aEJveCgpIHsKICAgICAgICBsZXQgZWxlbSA9IHRoaXMuJHJlZnMucm9vdENvbnRhaW5lckl0ZW07CiAgICAgICAgbGV0IGFwcCA9IHsKICAgICAgICAgIGNsYXNzTmFtZTogIk1hdGhCb3giLAogICAgICAgICAgZHNsOiB7CiAgICAgICAgICAgIGRhdGE6IHRoaXMuYWNjb3VudERhdGEKICAgICAgICAgIH0sCiAgICAgICAgfQogICAgICAgIHdlYkNwdS51cGRhdGVWaWV3KGVsZW0sIGFwcCk7CiAgICAgIH0KICAgIH0KICB9Cjwvc2NyaXB0Pgo8c3R5bGU+CiAgLnJlc3VsdFJvb3RDb250YWluZXIgewogICAgYm9yZGVyLXJhZGl1czogMTZweDsKICAgIG92ZXJmbG93OiBoaWRkZW47CiAgfQoKICAucmVzdWx0Um9vdENvbnRhaW5lciAuZWwtY2FyZF9faGVhZGVyIHsKICAgIHBhZGRpbmc6IDA7CiAgICBib3JkZXItYm90dG9tOiBub25lOwogIH0KCiAgLnJlc3VsdFJvb3RDb250YWluZXIgLmVsLWNhcmRfX2JvZHkgewogICAgcGFkZGluZzogMDsKICB9CgogIC8qIOiHquWumuS5iea7muWKqOadoSAqLwogIC5lbGVtZW50cy1jb250YWluZXI6Oi13ZWJraXQtc2Nyb2xsYmFyIHsKICAgIHdpZHRoOiA2cHg7CiAgfQoKICAuZWxlbWVudHMtY29udGFpbmVyOjotd2Via2l0LXNjcm9sbGJhci10cmFjayB7CiAgICBiYWNrZ3JvdW5kOiAjZjFmNWY5OwogICAgYm9yZGVyLXJhZGl1czogM3B4OwogIH0KCiAgLmVsZW1lbnRzLWNvbnRhaW5lcjo6LXdlYmtpdC1zY3JvbGxiYXItdGh1bWIgewogICAgYmFja2dyb3VuZDogI2NiZDVlMTsKICAgIGJvcmRlci1yYWRpdXM6IDNweDsKICB9CgogIC5lbGVtZW50cy1jb250YWluZXI6Oi13ZWJraXQtc2Nyb2xsYmFyLXRodW1iOmhvdmVyIHsKICAgIGJhY2tncm91bmQ6ICM5NGEzYjg7CiAgfQoKICAvKiDmuJDlj5jog4zmma/liqjnlLsgKi8KICBAa2V5ZnJhbWVzIGdyYWRpZW50U2hpZnQgewogICAgMCUgewogICAgICBiYWNrZ3JvdW5kLXBvc2l0aW9uOiAwJSA1MCU7CiAgICB9CgogICAgNTAlIHsKICAgICAgYmFja2dyb3VuZC1wb3NpdGlvbjogMTAwJSA1MCU7CiAgICB9CgogICAgMTAwJSB7CiAgICAgIGJhY2tncm91bmQtcG9zaXRpb246IDAlIDUwJTsKICAgIH0KICB9CgogIC50dy1iZy1ncmFkaWVudC10by1iciB7CiAgICBiYWNrZ3JvdW5kLXNpemU6IDIwMCUgMjAwJTsKICAgIGFuaW1hdGlvbjogZ3JhZGllbnRTaGlmdCA4cyBlYXNlIGluZmluaXRlOwogIH0KCiAgLyog5pWw5a2m6KGo6L6+5byP5Luj56CB5Z2XICovCiAgLnN1cmZhY2UtZXhwciBjb2RlIHsKICAgIGxldHRlci1zcGFjaW5nOiAwLjAyNWVtOwogICAgbGluZS1oZWlnaHQ6IDEuNjsKICB9CgogIC8qIOaVo+eCueagh+etvuaCrOWBnOaViOaenCAqLwogIC5zY2F0dGVyLXBvaW50OmhvdmVyIC5lbC10YWcgewogICAgdHJhbnNmb3JtOiBzY2FsZSgxLjA1KTsKICAgIGJveC1zaGFkb3c6IDAgMnB4IDhweCByZ2JhKDk5LCAxMDIsIDI0MSwgMC4yKTsKICB9CgogIC8qIOWTjeW6lOW8j+S8mOWMliAqLwogIEBtZWRpYSAobWF4LXdpZHRoOiA3NjhweCkgewogICAgLnR3LWdyaWQtY29scy0yIHsKICAgICAgZ3JpZC10ZW1wbGF0ZS1jb2x1bW5zOiByZXBlYXQoMiwgbWlubWF4KDAsIDFmcikpOwogICAgfQoKICAgIC50dy1ncmlkLWNvbHMtMyB7CiAgICAgIGdyaWQtdGVtcGxhdGUtY29sdW1uczogcmVwZWF0KDMsIG1pbm1heCgwLCAxZnIpKTsKICAgIH0KICB9Cjwvc3R5bGU+`,\n
+    data: {\n accountData: {{ content }\n }\n }\n }\n };\n let elem = document.querySelector(".contentItemArea");\n
+    webCpu.updateView(elem, app);\n });\n\n window.addEventListener(\'message\', function (event) {\n //
+    收到消息后，判断是不是我们约定的下载指令\n if (event.data && event.data.action === \'CROSS_DOMAIN_DOWNLOAD\') {\n // 在本地主页面域下安全执行下载，100%
+    不会报 SecurityError\n WebTool.downloadString(event.data.blob, event.data.name, event.data.mimeType);\n }\n });\n
+    \x3C/script>\n</body>\n\n
+
+</html>'

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+  <meta http-equiv="Cache-Control" content="no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>Hyperbola_Locus_Lab</title>
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      font-family: "Nunito", "Noto Sans", sans-serif;
+      overflow: hidden;
+      box-sizing: border-box;
+    }
+
+    .contentItemArea {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      text-align: center;
+    }
+
+
+    @keyframes hueShift {
+      0% {
+        filter: hue-rotate(0deg);
+      }
+
+      100% {
+        filter: hue-rotate(360deg);
+      }
+    }
+
+    .fade-out {
+      opacity: 0;
+      transition: opacity 0.8s ease;
+    }
+
+    .loadingTips {
+      text-align: center;
+      font-size: 12px;
+      color: #ccc;
+      padding: 20px 0;
+    }
+
+    .waiting {
+      width: 60px;
+      height: 60px;
+      background-color: #67cf22;
+      margin: 100px auto;
+      animation: rotateplane 1.2s infinite ease-in-out;
+    }
+
+    @keyframes rotateplane {
+      0% {
+        transform: perspective(120px) rotateX(0deg) rotateY(0deg);
+      }
+
+      50% {
+        transform: perspective(120px) rotateX(-180deg) rotateY(0deg);
+      }
+
+      100% {
+        transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
+      }
+    }
+
+    .__exporting__,
+    .__exporting * {
+      animation: none !important;
+      transition: none !important;
+    }
+
+    .__exporting {
+      background: #ffffff !important;
+    }
+
+    .__export-mask {
+      position: fixed;
+      inset: 0;
+      z-index: 2147483647;
+      background: rgba(250, 250, 250, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .__export-mask__panel {
+      background: rgba(0, 0, 0, 0.7);
+      color: #fff;
+      padding: 16px 22px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+    }
+
+    .__export-mask__spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="contentItemArea">
+    <div class="loadingTips">加载中...</div>
+    <div class="waiting"></div>
+  </div>
+  <script defer src="https://transweb.cn/index.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      let app = {
+        className: "GeogebraCase",
+        task: {
+          data: {
+            name: "Hyperbola_Locus_Lab",
+            mode: "2D",
+            appName: "suite",
+            perspective: "graphing",
+            language: "zh-CN",
+            version: 5.0,
+            script: {
+              value: `SetCoordSystem(-8, 8, -6, 6)
+ShowGrid(true)
+ShowAxes(true)
+Dist_a = Slider(0.5, 4, 0.1, 1, 150)
+SetCaption(Dist_a, "$\\text{半实轴 } a$")
+SetLabelMode(Dist_a, 3)
+ShowLabel(Dist_a, true)
+Focal_c = Slider(1, 5, 0.1, 1, 150)
+SetCaption(Focal_c, "$\\text{半焦距 } c$")
+SetLabelMode(Focal_c, 3)
+ShowLabel(Focal_c, true)
+Param_t = Slider(0, 2 * pi, 0.01, 1, 150)
+SetCaption(Param_t, "$\\text{动点参数 } t$")
+SetLabelMode(Param_t, 3)
+ShowLabel(Param_t, true)
+F_1 = (-Focal_c, 0)
+SetPointSize(F_1, 5)
+SetColor(F_1, "#E74C3C")
+SetCaption(F_1, "$F_1$")
+SetLabelMode(F_1, 3)
+ShowLabel(F_1, true)
+F_2 = (Focal_c, 0)
+SetPointSize(F_2, 5)
+SetColor(F_2, "#E74C3C")
+SetCaption(F_2, "$F_2$")
+SetLabelMode(F_2, 3)
+ShowLabel(F_2, true)
+Aux_b = sqrt(abs(Focal_c^2 - Dist_a^2) + 0.001)
+Hyp_r = Curve(Dist_a * cosh(s), Aux_b * sinh(s), s, -2, 2)
+SetColor(Hyp_r, "#2980B9")
+SetLineThickness(Hyp_r, 3)
+ShowLabel(Hyp_r, false)
+Hyp_l = Curve(-Dist_a * cosh(s), Aux_b * sinh(s), s, -2, 2)
+SetColor(Hyp_l, "#2980B9")
+SetLineThickness(Hyp_l, 3)
+ShowLabel(Hyp_l, false)
+P_0 = (Dist_a * cosh(tan(Param_t - pi)), Aux_b * sinh(tan(Param_t - pi)))
+SetPointSize(P_0, 6)
+SetColor(P_0, "#F39C12")
+SetCaption(P_0, "$P$")
+SetLabelMode(P_0, 3)
+ShowLabel(P_0, true)
+Seg_1 = Segment(F_1, P_0)
+SetColor(Seg_1, "#E74C3C")
+SetLineThickness(Seg_1, 2)
+SetLineStyle(Seg_1, 1)
+ShowLabel(Seg_1, false)
+Seg_2 = Segment(F_2, P_0)
+SetColor(Seg_2, "#27AE60")
+SetLineThickness(Seg_2, 2)
+SetLineStyle(Seg_2, 1)
+ShowLabel(Seg_2, false)
+Dist_1 = Distance(F_1, P_0)
+Dist_2 = Distance(F_2, P_0)
+Diff_d = abs(Dist_1 - Dist_2)
+Txt_1 = Text("$|PF_1| = " + Round(Dist_1 * 100) / 100 + "$", (-7, 5))
+SetColor(Txt_1, "#E74C3C")
+ShowLabel(Txt_1, false)
+Txt_2 = Text("$|PF_2| = " + Round(Dist_2 * 100) / 100 + "$", (-7, 4.2))
+SetColor(Txt_2, "#27AE60")
+ShowLabel(Txt_2, false)
+Txt_3 = Text("$||PF_1| - |PF_2|| = " + Round(Diff_d * 100) / 100 + "$", (-7, 3.4))
+SetColor(Txt_3, "#8E44AD")
+ShowLabel(Txt_3, false)
+Txt_4 = Text("$2a = " + Round(2 * Dist_a * 100) / 100 + "$", (-7, 2.6))
+SetColor(Txt_4, "#2980B9")
+ShowLabel(Txt_4, false)
+ShowObject(Aux_b, false)
+ShowObject(Dist_1, false)
+ShowObject(Dist_2, false)
+ShowObject(Diff_d, false)`,
+            }
+          }
+        }
+      };
+      let elem = document.querySelector(".contentItemArea");
+      webCpu.updateView(elem, app);
+    });
+  </script>
+</body>
+
+</html>

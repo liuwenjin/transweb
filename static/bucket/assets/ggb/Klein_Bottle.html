@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+  <meta http-equiv="Cache-Control" content="no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>Klein_Bottle_Exploration</title>
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      font-family: "Nunito", "Noto Sans", sans-serif;
+      overflow: hidden;
+      box-sizing: border-box;
+    }
+
+    .contentItemArea {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      text-align: center;
+    }
+
+
+    @keyframes hueShift {
+      0% {
+        filter: hue-rotate(0deg);
+      }
+
+      100% {
+        filter: hue-rotate(360deg);
+      }
+    }
+
+    .fade-out {
+      opacity: 0;
+      transition: opacity 0.8s ease;
+    }
+
+    .loadingTips {
+      text-align: center;
+      font-size: 12px;
+      color: #ccc;
+      padding: 20px 0;
+    }
+
+    .waiting {
+      width: 60px;
+      height: 60px;
+      background-color: #67cf22;
+      margin: 100px auto;
+      animation: rotateplane 1.2s infinite ease-in-out;
+    }
+
+    @keyframes rotateplane {
+      0% {
+        transform: perspective(120px) rotateX(0deg) rotateY(0deg);
+      }
+
+      50% {
+        transform: perspective(120px) rotateX(-180deg) rotateY(0deg);
+      }
+
+      100% {
+        transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
+      }
+    }
+
+    .__exporting__,
+    .__exporting * {
+      animation: none !important;
+      transition: none !important;
+    }
+
+    .__exporting {
+      background: #ffffff !important;
+    }
+
+    .__export-mask {
+      position: fixed;
+      inset: 0;
+      z-index: 2147483647;
+      background: rgba(250, 250, 250, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .__export-mask__panel {
+      background: rgba(0, 0, 0, 0.7);
+      color: #fff;
+      padding: 16px 22px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+    }
+
+    .__export-mask__spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="contentItemArea">
+    <div class="loadingTips">加载中...</div>
+    <div class="waiting"></div>
+  </div>
+  <script defer src="https://transweb.cn/index.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      let app = {
+        className: "GeogebraCase",
+        task: {
+          data: {
+            name: "Klein_Bottle_Exploration",
+            mode: "3D",
+            appName: "3d",
+            perspective: "3d",
+            language: "zh-CN",
+            version: 5.0,
+            script: {
+              value: `SetCoordSystem(-8,8,-8,8,-8,8)
+ShowAxes(true)
+ShowGrid(false)
+Scale_r = Slider(0.3, 1.2, 0.01, 1, 180)
+SetCaption(Scale_r, "$\\text{整体缩放 } s$")
+SetLabelMode(Scale_r, 3)
+ShowLabel(Scale_r, true)
+Twist_k = Slider(0, 1, 0.01, 1, 180)
+SetCaption(Twist_k, "$\\text{扭转程度 } k$")
+SetLabelMode(Twist_k, 3)
+ShowLabel(Twist_k, true)
+Cut_v = Slider(0, 2*pi, pi/180, 1, 180)
+SetCaption(Cut_v, "$\\text{剖切角 } v_{max}$")
+SetLabelMode(Cut_v, 3)
+ShowLabel(Cut_v, true)
+Surf_k = Surface(Scale_r*(-2/15)*cos(u)*(3*cos(v) - 30*sin(u) + 90*cos(u)^4*sin(u) - 60*cos(u)^6*sin(u) + 5*Twist_k*cos(u)*cos(v)*sin(u)), Scale_r*(-1/15)*sin(u)*(3*cos(v) - 3*cos(u)^2*cos(v) - 48*cos(u)^4*cos(v) + 48*cos(u)^6*cos(v) - 60*sin(u) + 5*Twist_k*cos(u)*cos(v)*sin(u) - 5*Twist_k*cos(u)^3*cos(v)*sin(u) - 80*Twist_k*cos(u)^5*cos(v)*sin(u) + 80*Twist_k*cos(u)^7*cos(v)*sin(u)), Scale_r*(2/15)*(3 + 5*Twist_k*cos(u)*sin(u))*sin(v), u, 0, pi, v, 0, Cut_v)
+SetColor(Surf_k, "#6A5ACD")
+SetFilling(Surf_k, 0.5)
+SetLineThickness(Surf_k, 0)
+SetCaption(Surf_k, "$\\text{Klein Bottle}$")
+SetLabelMode(Surf_k, 3)
+ShowLabel(Surf_k, true)
+Curve_e = Curve(Scale_r*(-2/15)*cos(u)*(3 - 30*sin(u) + 90*cos(u)^4*sin(u) - 60*cos(u)^6*sin(u) + 5*Twist_k*cos(u)*sin(u)), Scale_r*(-1/15)*sin(u)*(3 - 3*cos(u)^2 - 48*cos(u)^4 + 48*cos(u)^6 - 60*sin(u) + 5*Twist_k*cos(u)*sin(u) - 5*Twist_k*cos(u)^3*sin(u) - 80*Twist_k*cos(u)^5*sin(u) + 80*Twist_k*cos(u)^7*sin(u)), 0, u, 0, pi)
+SetColor(Curve_e, "#FF4500")
+SetLineThickness(Curve_e, 4)
+ShowLabel(Curve_e, false)`,
+            }
+          }
+        }
+      };
+      let elem = document.querySelector(".contentItemArea");
+      webCpu.updateView(elem, app);
+    });
+  </script>
+</body>
+
+</html>

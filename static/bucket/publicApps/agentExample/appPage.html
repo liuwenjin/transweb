@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+  <meta http-equiv="Cache-Control" content="no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>ChatBox</title>
+  <meta name="description" content="功能描述" />
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      font-family: "Nunito", "Noto Sans", sans-serif;
+      overflow: hidden;
+      box-sizing: border-box;
+    }
+
+    .contentItemArea {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      text-align: center;
+    }
+
+    .bottomInfo {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      /* 移除 line-height，改用 flex */
+      display: none;
+      align-items: center;
+      /* 垂直居中核心 */
+      justify-content: center;
+      /* 水平居中核心 */
+
+      height: 44px;
+      /* 固定一个舒适的高度 */
+      padding: 0 20px;
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(5px);
+      border-top: 1px solid #eaeaea;
+      font-size: 12px;
+      color: #888;
+      z-index: 1000;
+      box-sizing: border-box;
+    }
+
+    /* 2. 修正菜单挂载区域 */
+    .agentMenuArea {
+      /* 移除 inline-block，移除固定宽高 */
+      display: flex;
+      align-items: center;
+      margin-left: 12px;
+      height: 40px;
+      line-height: 40px;
+      width: 500px;
+      /* 撑满父容器高度以便内部对齐 */
+      white-space: nowrap;
+      /* 杜绝截图 1 中的文字换行 */
+    }
+
+    /* 3. 统一 ID 区域样式 */
+    .documentId-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .documentId {
+      color: #666;
+      text-decoration: none;
+      font-family: monospace;
+    }
+
+    .documentId:hover {
+      color: #000;
+    }
+
+
+    @keyframes hueShift {
+      0% {
+        filter: hue-rotate(0deg);
+      }
+
+      100% {
+        filter: hue-rotate(360deg);
+      }
+    }
+
+    .fade-out {
+      opacity: 0;
+      transition: opacity 0.8s ease;
+    }
+
+    .loadingTips {
+      text-align: center;
+      font-size: 12px;
+      color: #ccc;
+      padding: 20px 0;
+    }
+
+    .waiting {
+      width: 60px;
+      height: 60px;
+      background-color: #67cf22;
+      margin: 100px auto;
+      animation: rotateplane 1.2s infinite ease-in-out;
+    }
+
+    @keyframes rotateplane {
+      0% {
+        transform: perspective(120px) rotateX(0deg) rotateY(0deg);
+      }
+
+      50% {
+        transform: perspective(120px) rotateX(-180deg) rotateY(0deg);
+      }
+
+      100% {
+        transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
+      }
+    }
+
+    .__exporting__,
+    .__exporting * {
+      animation: none !important;
+      transition: none !important;
+    }
+
+    .__exporting {
+      background: #ffffff !important;
+    }
+
+    .__export-mask {
+      position: fixed;
+      inset: 0;
+      z-index: 2147483647;
+      background: rgba(250, 250, 250, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .__export-mask__panel {
+      background: rgba(0, 0, 0, 0.7);
+      color: #fff;
+      padding: 16px 22px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+    }
+
+    .__export-mask__spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+  <!-- ===== Tailwind CSS ===== -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script type="text/javascript">
+    (function (c, l, a, r, i, t, y) {
+      c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+      t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+      y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+    })(window, document, "clarity", "script", "xejk2rx33f");
+  </script>
+  <script async src="https://transweb.cn/common/mathjax/tex-chtml.js"></script>
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [["$", "$"], ["\\(", "\\)"]], displayMath: [["$$", "$$"], ["\\[", "\\]"]] },
+      svg: { fontCache: "global" }
+    };
+  </script>
+  <script>
+    tailwind.config = {
+      prefix: 'tw-',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              bg: '#F7F8FC',
+              panel: '#FFFFFF',
+              border: '#E4E8F4',
+              primary: '#5B6BFF',
+              secondary: '#8B7CF8',
+              text: '#1A1F3C',
+              muted: '#6B7280',
+              success: '#10B981',
+              accent: '#F0F1FF'
+            }
+          },
+          boxShadow: {
+            soft: '0 2px 24px rgba(91,107,255,0.10)',
+            card: '0 1px 4px rgba(26,31,60,0.06), 0 8px 32px rgba(91,107,255,0.08)',
+            glow: '0 0 48px rgba(91,107,255,0.18)'
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body>
+  <div class="contentItemArea">
+    <div class="loadingTips">加载中...</div>
+    <div class="waiting"></div>
+  </div>
+  <div class="bottomInfo">
+    <div class="agentMenuArea"></div>
+    <template class="documentId">7572ab23b32a33aaf57bdd1efdc0f287</template>
+  </div>
+  <script defer src="https://transweb.cn/index.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      let tRadio = Number(WebTool.urlQuery(location.href, "transformRadio"));
+      if (tRadio !== 1) {
+        WebTool.adjustStyle(480);
+      } else {
+        window.transformRadio = tRadio;
+      }
+      webCpu.isContainerUpdated = "false";
+      let tElem = document.querySelector(".documentId");
+      let readOnly = WebTool.urlQuery(location.href, "readOnly") === "true";
+      if (readOnly) {
+        document.querySelector(".bottomInfo").style.display = "none";
+        document.querySelector(".contentItemArea").style.paddingBottom = "0";
+      }
+      let documentId = tElem.innerHTML.trim();
+      window.lang = "zh";
+      let updateDocumentApp = function (appItem, callback) {
+        let content = appItem.content.constructor.name !== "Array" ? [{ content: appItem.content }] : appItem.content;
+        content[0].content.isSolo = true;
+        window.aigcRequest = function (query, callback, errCallback, macros) {
+          query.rootAccount = appItem.documentMeta.rootAccount;
+          aigcInterface.request(query, callback, errCallback, macros);
+        };
+        appItem.documentMeta.documentId = documentId;
+        let mainApp = {
+          url: webCpu.documentPrefix + "/webApps/document/agent.vue",
+          cardName: "documentEditor",
+          dsl: {
+            data: {
+              topHeaderHidden: true,
+              breadcrumbsHidden: true,
+              currentContent: content,
+              currentApp: appItem.app,
+              documentMeta: appItem.documentMeta
+            }
+          }
+        }
+
+        let elem = document.querySelector(".contentItemArea");
+        webCpu.updateView(elem, mainApp, callback);
+      }
+
+      let updateMenuItem = function (appId) {
+        let app = {
+          url: webCpu.documentPrefix + "/components/menu.vue",
+          cardName: "documentAgentMenu",
+          dsl: {
+            data: {
+              appId: appId
+            }
+          }
+        };
+        let elem = document.querySelector(".agentMenuArea");
+        webCpu.updateView(elem, app);
+      }
+
+      webCpu.getDocumentApp(
+        documentId,
+        (app, content, rData) => {
+          updateDocumentApp(rData, () => {
+            rData.documentMeta = rData.documentMeta || {};
+            if (localStorage.folderName === rData.documentMeta.folderName) {
+              updateMenuItem(documentId);
+              document.querySelector(".bottomInfo").style.display = "flex";
+              document.querySelector(".contentItemArea").style.paddingBottom = "44px";
+            }
+            else {
+              document.querySelector(".bottomInfo").style.display = "none";
+              document.querySelector(".contentItemArea").style.paddingBottom = "0";
+            }
+          });
+        },
+        (err) => {
+          console.error("加载文档失败", err);
+          let elem = document.querySelector(".contentItemArea");
+          elem.innerHTML =
+            '<div style="color:#f56c6c;">加载文档失败，请稍后重试。</div>';
+        }
+      );
+    });
+
+    window.addEventListener('message', function (event) {
+      // 收到消息后，判断是不是我们约定的下载指令
+      if (event.data && event.data.action === 'CROSS_DOMAIN_DOWNLOAD') {
+        // 在本地主页面域下安全执行下载，100% 不会报 SecurityError
+        WebTool.downloadString(event.data.blob, event.data.name, event.data.mimeType);
+      }
+    });
+  </script>
+</body>
+
+</html>

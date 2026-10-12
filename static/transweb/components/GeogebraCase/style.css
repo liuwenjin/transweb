@@ -1,0 +1,19 @@
+.ggb-mobile-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background-color: #ffffff;
+  touch-action: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+@supports (height: 100dvh) {
+  .ggb-mobile-container {
+    height: 100dvh; /* 支持 iOS Safari 动态视口 */
+  }
+}

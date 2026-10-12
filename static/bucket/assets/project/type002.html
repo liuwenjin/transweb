@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>以租代购平台 - 完整项目公示与评估方案</title>
+    <style>
+        :root {
+            --primary: #1e293b;
+            --accent: #2563eb;
+            --success: #059669;
+            --warning: #d97706;
+            --danger: #dc2626;
+            --info: #0891b2;
+            --bg: #f8fafc;
+            --card-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: "Inter", "Microsoft YaHei", sans-serif; background: var(--bg); color: #334155; line-height: 1.6; padding-bottom: 60px; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+        /* Header */
+        header { background: var(--primary); color: white; padding: 50px 0; text-align: center; margin-bottom: 40px; border-bottom: 4px solid var(--accent); }
+        header h1 { font-size: 32px; font-weight: 800; letter-spacing: -0.5px; }
+        header p { margin-top: 10px; opacity: 0.8; font-size: 16px; }
+
+        /* Section Titles */
+        .section-header { display: flex; align-items: center; margin: 40px 0 20px; padding-bottom: 10px; border-bottom: 2px solid #e2e8f0; }
+        .section-header h2 { font-size: 22px; color: var(--primary); display: flex; align-items: center; }
+        .section-header h2::before { content: ""; display: inline-block; width: 12px; height: 12px; background: var(--accent); margin-right: 12px; border-radius: 2px; }
+
+        /* Grid Layout */
+        .module-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 24px; }
+
+        /* Card Styles */
+        .card { background: white; border-radius: 12px; padding: 24px; box-shadow: var(--card-shadow); border: 1px solid #f1f5f9; position: relative; overflow: hidden; }
+        .card::after { content: ""; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--accent); }
+        .card.customer::after { background: var(--success); }
+        .card.admin::after { background: var(--warning); }
+        .card.system::after { background: var(--info); }
+
+        .card h3 { font-size: 18px; margin-bottom: 18px; color: #1e293b; display: flex; justify-content: space-between; align-items: center; }
+        .badge { font-size: 11px; padding: 3px 8px; border-radius: 12px; font-weight: 600; text-transform: uppercase; }
+        .badge-blue { background: #eff6ff; color: #1d4ed8; }
+        .badge-green { background: #ecfdf5; color: #047857; }
+        .badge-orange { background: #fff7ed; color: #c2410c; }
+        .badge-cyan { background: #ecfeff; color: #0e7490; }
+
+        .module-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
+        .module-item:last-child { border-bottom: none; }
+        .module-item .name { font-weight: 500; display: flex; align-items: center; }
+        .module-item .name i { color: #94a3b8; font-size: 12px; margin-left: 5px; font-style: normal; }
+        .module-item .tag { color: #64748b; font-family: monospace; font-weight: bold; }
+
+        /* Table Styles */
+        .table-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: var(--card-shadow); margin-bottom: 30px; }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th { background: #f8fafc; padding: 16px; font-size: 14px; font-weight: 600; color: #475569; border-bottom: 2px solid #e2e8f0; }
+        td { padding: 16px; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
+        .price-text { font-weight: 700; color: var(--danger); font-size: 16px; }
+        .total-row { background: #f1f5f9; font-weight: 800; }
+
+        /* Footer */
+        footer { text-align: center; margin-top: 60px; padding: 40px; color: #94a3b8; font-size: 13px; background: white; border-top: 1px solid #e2e8f0; }
+
+        @media (max-width: 768px) { .module-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="container">
+        <h1>以租代购平台数字化建设方案</h1>
+        <p>资产管理 ·  财务闭环 · 权限体系</p>
+    </div>
+</header>
+
+<div class="container">
+
+    <div class="section-header">
+        <h2>系统模块划分公示</h2>
+    </div>
+
+    <div class="module-grid">
+        <div class="card customer">
+            <h3>顾客/客户端 <span class="badge badge-green">前端门户</span></h3>
+            <div class="module-item"><span class="name">信息录入表单模块</span><span class="tag">1 人天</span></div>
+            <div class="module-item"><span class="name">拍照信息录入模块</span><span class="tag">1 人天</span></div>
+            <div class="module-item"><span class="name">天狼星征信查询及展示</span><span class="tag">1 人天</span></div>
+            <div class="module-item"><span class="name">个人订单信息预览</span><span class="tag">1 人天</span></div>
+            <div class="module-item"><span class="name">在线支付/还款模块 <i>(微信)</i></span><span class="tag">3 人天</span></div>
+            <div class="module-item"><span class="name">电子合同签署 <i>(法大大/上予)</i></span><span class="tag">3 人天</span></div>
+            <div class="module-item"><span class="name">微信信誉分查询 <i>(待定)</i></span><span class="tag">3 人天</span></div>
+        </div>
+
+        <div class="card">
+            <h3>业务员专区 <span class="badge badge-blue">业务执行</span></h3>
+            <div class="module-item"><span class="name">订单审核与提交模块</span><span class="tag">1 人天</span></div>
+            <div class="module-item"><span class="name">个人业绩看板展示</span><span class="tag">1 人天</span></div>
+            <div class="module-item"><span class="name">交车确认 <i>(照片/验车单)</i></span><span class="tag">1 人天</span></div>
+            <div class="module-item"><span class="name">订单状态维护 <i>(关联财务收据)</i></span><span class="tag">1 人天</span></div>
+            <div class="module-item"><span class="name">所属顾客订单查询</span><span class="tag">1 人天</span></div>
+            <div class="module-item"><span class="name">业绩查询与统计 <i>(个人维度)</i></span><span class="tag">1 人天</span></div>
+        </div>
+
+        <div class="card admin">
+            <h3>管理员/网点负责人 <span class="badge badge-orange">中台管控</span></h3>
+            <div class="module-item"><span class="name">车辆/资产库管理 <i>(档案/库存)</i></span><span class="tag">1 人天</span></div>
+            <div class="module-item"><span class="name">业绩统计概览 <i>(整体/指定人)</i></span><span class="tag">1 人天</span></div>
+            <div class="module-item"><span class="name">网点人员管理 <i>(增删改查)</i></span><span class="tag">1 人天</span></div>
+            <div class="module-item"><span class="name">订单状态跟踪及业务员切换</span><span class="tag">1 人天</span></div>
+        </div>
+
+        <div class="card system">
+            <h3>系统底层 <span class="badge badge-cyan">安全架构</span></h3>
+            <div class="module-item"><span class="name">权限与角色管理 <i>(RBAC体系)</i></span><span class="tag">1 人天</span></div>
+            <div class="module-item"><span class="name">登录与安全模块 <i>(短信/日志)</i></span><span class="tag">1 人天</span></div>
+            <div class="module-item"><span class="name">网点负责人设置与转移</span><span class="tag">1 人天</span></div>
+            <div class="module-item"><span class="name">全平台人员信息维护</span><span class="tag">1 人天</span></div>
+        </div>
+    </div>
+
+    <div class="section-header">
+        <h2>工时评估明细</h2>
+    </div>
+    <div class="table-card">
+        <table>
+            <thead>
+                <tr>
+                    <th>阶段</th>
+                    <th>包含内容</th>
+                    <th>评估工时</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>开发阶段</td>
+                    <td>界面UI、前端开发、数据接口调试、支付/合同接口集成</td>
+                    <td>27 人天</td>
+                </tr>
+                <tr>
+                    <td>架构设计</td>
+                    <td>RBAC模型、数据库表设计、安全加固、接口规范生成</td>
+                    <td>5 人天</td>
+                </tr>
+                <tr>
+                    <td>交付阶段</td>
+                    <td>部署上线、系统集成测试、压力测试、Bug修复</td>
+                    <td>8 人天</td>
+                </tr>
+                <tr class="total-row">
+                    <td colspan="2" style="text-align: right;">累计总计：</td>
+                    <td>40 人天</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="section-header">
+        <h2>经费预算评估信息公示</h2>
+    </div>
+    <div class="table-card">
+        <table>
+            <thead>
+                <tr>
+                    <th>预算科目</th>
+                    <th>计算逻辑与说明</th>
+                    <th>预估金额</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><b>项目开发经费</b></td>
+                    <td>人工费 (40人天 * 1500) + Token/技术底座费 (30 * 100)</td>
+                    <td class="price-text">¥ 63,000</td>
+                </tr>
+                <tr>
+                    <td>项目运维经费</td>
+                    <td>云服务器、CDN、云数据库 (预估年费)</td>
+                    <td>¥ 5,000 /年</td>
+                </tr>
+                <tr>
+                    <td>征信查询服务</td>
+                    <td>天狼星/信誉分查询调用 (按次结算)</td>
+                    <td>约 ¥ 0.5 /次</td>
+                </tr>
+                <tr>
+                    <td>小程序认证费</td>
+                    <td>腾讯官方认证年费</td>
+                    <td>¥ 300 /年</td>
+                </tr>
+                <tr>
+                    <td>第三方接口(新增)</td>
+                    <td>法大大合同/短信验证码费</td>
+                    <td>按量计费 (实支实付)</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<footer>
+    <div class="container">
+        <p>© 2026 以租代购平台数字化管理系统项目组</p>
+        <p style="margin-top: 5px; font-size: 11px;">内部技术公示文档 · 密级：内部公开</p>
+    </div>
+</footer>
+
+</body>
+</html>

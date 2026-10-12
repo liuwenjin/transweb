@@ -1,0 +1,56 @@
+{
+  "title": "AI 数学工作流(示例: 题目配图)",
+  "apps": [
+    {
+      "value": "4ed10020f90cb6ba25c539ec888532f3",
+      "label": "题意理解"
+    },
+    {
+      "value": "d1b7835b2d18b59b5c3b8674bfe2a220",
+      "label": "作图规划"
+    },
+    {
+      "value": "28e55cff1a46d1d7cf66c4aa6a898460",
+      "label": "绘图脚本"
+    },
+    {
+      "value": "b8a8a95fb3be9d38e1d82342cb0a9fdf",
+      "label": "概念讲解"
+    },
+    {
+      "value": "74841274da4e0b62e7fea0f60786ebb8",
+      "label": "基础巩固"
+    },
+    {
+      "value": "7721f5290f8dba91aba8438d6963de2b",
+      "label": "能力提升"
+    },
+    {
+      "value": "1c1a53c30bbca10c282baa36b9f04542",
+      "label": "压轴探索"
+    },
+    {
+      "value": "f142b3403ad4d4265c55529fdb6de020",
+      "label": "选题结构化"
+    },
+    {
+      "value": "0d9a4d46f8d99a06b7d92d6b4ea81e26",
+      "label": "背景介绍"
+    },
+    {
+      "value": "e7ace45066e856ffee9d508e4dc708c7",
+      "label": "跨学科建模"
+    },
+    {
+      "value": "a6c17a8cefb2bb1fa39312c804ebb973",
+      "label": "微课设计"
+    }
+  ],
+  "accountData": {
+    "workflow": [
+      "d1b7835b2d18b59b5c3b8674bfe2a220",
+      "28e55cff1a46d1d7cf66c4aa6a898460"
+    ],
+    "appId": "4ed10020f90cb6ba25c539ec888532f3"
+  }
+}

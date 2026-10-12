@@ -1,0 +1,659 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0, user-scalable=no" />
+  <meta http-equiv="Access-Control-Allow-Origin" content="*">
+  <meta HTTP-EQUIV="pragma" CONTENT="no-cache">
+  <meta HTTP-EQUIV="Cache-Control" CONTENT="no-store, must-revalidate">
+  <meta HTTP-EQUIV="expires" CONTENT="Wed, 26 Feb 1997 08:21:57 GMT">
+  <meta HTTP-EQUIV="expires" CONTENT="0">
+  <title>Transweb</title>
+  <link id="tailwindItem" href="assets/tailwind.css" rel="stylesheet">
+  <style>
+    html,
+    body,
+    .previewContainer {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      padding: 0;
+      margin: 0;
+      box-sizing: border-box;
+      overflow: hidden !important;
+      background-color: #f8f8f8;
+    }
+
+    video::-webkit-media-controls-fullscreen-button {
+      display: none;
+    }
+
+    .previewContainer>.CardItem {
+      border-top: solid 1px #f2f2f2;
+    }
+
+    .el-checkbox {
+      margin-bottom: 0px !important;
+    }
+
+    .animate-fade-in-up {
+      animation: fadeInUp 1s ease-out forwards;
+      opacity: 0;
+    }
+
+    .animate-fade-in {
+      animation: fadeIn 1.5s ease-out forwards;
+      opacity: 0;
+      animation-delay: 0.5s;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+
+
+    @keyframes huerotate {
+      0% {
+        filter: hue-rotate(0deg);
+      }
+
+      100% {
+        filter: hue-rotate(360deg);
+      }
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+        box-shadow: 0 5px 15px rgba(255, 111, 0, 0.4);
+      }
+
+      50% {
+        transform: scale(1.01);
+        box-shadow: 0 8px 20px rgba(255, 111, 0, 0.5);
+      }
+
+      100% {
+        transform: scale(1);
+        box-shadow: 0 5px 15px rgba(255, 111, 0, 0.4);
+      }
+    }
+
+    @keyframes wave {
+      0% {
+        d: path('M 40 30 Q 140 0 200 30');
+      }
+
+      25% {
+        d: path('M 40 30 Q 140 60 200 30');
+      }
+
+      50% {
+        d: path('M 40 30 Q 140 0 200 30');
+      }
+
+      75% {
+        d: path('M 240 30 Q 340 60 400 30');
+      }
+
+      100% {
+        d: path('M 240 30 Q 340 0 400 30');
+      }
+    }
+
+    .waiting {
+      width: 60px;
+      height: 60px;
+      background-color: #67CF22;
+
+      margin: 100px auto;
+      -webkit-animation: rotateplane 1.2s infinite ease-in-out;
+      animation: rotateplane 1.2s infinite ease-in-out;
+    }
+
+    @-webkit-keyframes rotateplane {
+      0% {
+        -webkit-transform: perspective(120px)
+      }
+
+      50% {
+        -webkit-transform: perspective(120px) rotateY(180deg)
+      }
+
+      100% {
+        -webkit-transform: perspective(120px) rotateY(180deg) rotateX(180deg)
+      }
+    }
+
+    @keyframes rotateplane {
+      0% {
+        transform: perspective(120px) rotateX(0deg) rotateY(0deg);
+        -webkit-transform: perspective(120px) rotateX(0deg) rotateY(0deg)
+      }
+
+      50% {
+        transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg);
+        -webkit-transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg)
+      }
+
+      100% {
+        transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
+        -webkit-transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
+      }
+    }
+
+    .TemplateItem[flag=module] div[editable=true]::before {
+      position: absolute;
+      display: none;
+      content: attr(contentIndex);
+      width: 20px;
+      height: 20px;
+      font-size: 12px;
+      border-radius: 100%;
+      text-align: center;
+      border: solid 1px #333;
+      color: #fff;
+      background-color: rgba(20, 20, 20, 0.6);
+    }
+
+    .emptyCardContainer {
+      width: 100%;
+      height: 100%;
+      box-shadow: 2px 2px 1px inset #333;
+      border-radius: 5px;
+      border-right: 1px solid #666;
+      border-bottom: 1px solid #f8f8f8;
+      padding: 10px;
+      text-align: center;
+      color: #999;
+      background: #ddd;
+    }
+  </style>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script>
+    tailwind.config = {
+      prefix: 'tw-',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              bg: '#F7F8FC',
+              panel: '#FFFFFF',
+              border: '#E4E8F4',
+              primary: '#5B6BFF',
+              secondary: '#8B7CF8',
+              text: '#1A1F3C',
+              muted: '#6B7280',
+              success: '#10B981',
+              accent: '#F0F1FF'
+            }
+          },
+          boxShadow: {
+            soft: '0 2px 24px rgba(91,107,255,0.10)',
+            card: '0 1px 4px rgba(26,31,60,0.06), 0 8px 32px rgba(91,107,255,0.08)',
+            glow: '0 0 48px rgba(91,107,255,0.18)'
+          }
+        }
+      }
+    }
+  </script>
+  <script defer src="index.js"></script>
+</head>
+
+<body>
+  <div class="previewContainer">
+    <div class="waiting"></div>
+  </div>
+</body>
+<script src="index.js"></script>
+<script src="/common/language.js"></script>
+<script>
+  var containerStyle = {
+    background: "#f8f8f8",
+    padding: "0px"
+  };
+  var _size = {
+    width: document.body.clientWidth,
+    height: document.body.clientHeight
+  };
+  var size = {
+    width: decodeURIComponent(WebTool.urlQuery(location.href, "width")),
+    height: decodeURIComponent(WebTool.urlQuery(location.href, "height"))
+  }
+  var styleMap = {
+    mobile: {
+      width: Number(size.width) || size.width || 500,
+      height: Number(size.height) || size.height || 800,
+      "overflow-y": "auto",
+      margin: "auto",
+      border: "solid 0px #ddd",
+      background: "#fff",
+      boxSizing: "border",
+      borderRadius: "5px"
+    },
+    pc: {
+      width: Number(size.width) || size.width || 1920,
+      height: Number(size.height) || size.height || 1080,
+      border: "solid 1px #999",
+      background: "#fff",
+      borderRadius: "5px",
+      "overflow-y": "auto"
+    }
+  }
+
+  window.lang = WebTool.urlQuery(location.href, "lang") || localStorage.lang || langMap[location.host] || 'en';
+
+  localStorage.setItem("lang", window.lang);
+
+  var mode = WebTool.urlQuery(location.href, "mode");
+  var appUrl = WebTool.urlQuery(location.href, "appUrl");
+  var appKey = WebTool.urlQuery(location.href, "appKey");
+
+  let openLoginDialog = function (card, callback, style) {
+    style = style || {
+      width: "95%",
+      height: "95%",
+      maxWidth: WebTool.adjustSize(["500px", "500px", "800px"]),
+      maxHeight: "400px",
+      position: "relative",
+      margin: "auto",
+      background: "#fff",
+      "border-radius": "5px",
+      overflow: "hidden",
+      border: "solid 1px #ddd"
+    };
+    let app = {
+      style: {
+        paddingTop: "10px",
+      },
+      url: "/mainApp/app/loginReg.js",
+      key: "transweb_loginReg",
+    };
+    app.callback = function (cc, dd, tt) {
+      dd.task.confirmCallback = function (query) {
+        let _that = this;
+        _that.vueItem.isLogining = true;
+        webCpu.adapter.login(query, function (dd) {
+          _that.vueItem.isLogining = false;
+          let _self = _that.vueItem;
+          if (dd.data && (dd.data.folderName || dd.data.account)) {
+            localStorage.logined = true;
+            localStorage.folderName = dd.data.folderName;
+            localStorage.setItem("userName", dd.data['name_' + lang] || dd.data.name || "");
+            webCpu.transwebToken = dd.data.token;
+            localStorage.setItem("transweb-token", dd.data.token);
+            webCpu.CardItem.dismissMask(card);
+            if (typeof callback === "function") {
+              callback(dd.data);
+            }
+          } else {
+            _self.$message({
+              type: "warning",
+              message: dd.message
+            })
+          }
+        }, "json");
+      }
+    }
+
+    webCpu.CardItem.renderCardDialog(card, app, {
+      dialogName: "regLoginDialog",
+      title: webCpu.messages[lang].loginTitle.replace("{host}", location.host),
+      closeType: "back",
+      titleStyle: {
+        background: "var(--el-color-primary-light-9)",
+        color: "var(--el-color-primary)"
+      }
+    }, style, {
+      padding: "20px 30px 40px 30px"
+    });
+  }
+
+
+  var initWebApp = function (container, data) {
+    if (data && data.moduleMap && data.routeData) {
+      var style = data.style || {};
+      mode = mode || data.mode;
+      var renderStyle = styleMap[mode] || {};
+      if (_size.width < 800) {
+        renderStyle.width = "100%";
+        renderStyle.height = "100%";
+      }
+
+      // containerStyle.padding = "0px";
+      containerStyle.boxShadow = "none";
+
+      style.renderStyle = style.renderStyle || {};
+      webCpu.attachAttribute(renderStyle, style.renderStyle);
+      style.containerStyle = style.containerStyle || {};
+      webCpu.attachAttribute(containerStyle, style.containerStyle);
+      style.contentStyle = decodeURIComponent(style.contentStyle);
+      delete webCpu.CardItem;
+      webCpu.componentPath = "transweb/components";
+      webCpu.initProject(container, data);
+    } else {
+      console.log("app data error!");
+    }
+  }
+  var initAppItem = function (container, app, tType) {
+    if (!app) {
+      return false;
+    }
+    app.style = containerStyle;
+    app.dsl = app.dsl || {};
+    app.dsl.style = app.dsl.style || {};
+    var renderStyle = styleMap[mode || 'mobile'];
+    var w = app.dsl.style.width || 800;
+    var h = app.dsl.style.height || 600;
+    if (mode) {
+      webCpu.attachAttribute(renderStyle, app.dsl.style);
+    }
+
+    delete webCpu.CardItem;
+    webCpu.componentPath = "transweb/components";
+    container.setAttribute("type", type);
+    let url = app.url;
+    if (url && url.search(/^http/) === -1 && app.tProxy) {
+      app.tProxy = false;
+    }
+
+    let wApp = WebTool.stringToObject(localStorage.currentWebApp);
+    webCpu.initAppItem(container, app, wApp, function (c, d, t) {
+      type = tType || type;
+      if (type && webCpu.util && webCpu.util.callbackMap && typeof webCpu.util.callbackMap[type] === "function") {
+        webCpu.util.callbackMap[type](c, d, t);
+      }
+    });
+  }
+
+  window.openLoginDialog = function (card, callback, style) {
+    style = style || {
+      width: "95%",
+      height: "95%",
+      maxWidth: WebTool.adjustSize(["500px", "500px", "800px"]),
+      maxHeight: "400px",
+      position: "relative",
+      margin: "auto",
+      background: "linear-gradient(to bottom right, #6951FF, #10EDC5)",
+      "border-radius": "5px",
+      overflow: "hidden",
+      border: "solid 1px #ddd"
+    };
+    let app = {
+      style: {
+        paddingTop: "10px",
+      },
+      url: "/mainApp/app/loginReg.js",
+      key: "transweb_loginReg",
+    };
+    app.callback = function (cc, dd, tt) {
+      dd.task.confirmCallback = function (query) {
+        let _that = this;
+        _that.vueItem.isLogining = true;
+        webCpu.adapter.login(query, function (dd) {
+          _that.vueItem.isLogining = false;
+          let _self = _that.vueItem;
+          if (dd.data && (dd.data.folderName || dd.data.account)) {
+            localStorage.logined = true;
+            localStorage.folderName = dd.data.folderName;
+            localStorage.setItem("userName", dd.data['name_' + lang] || dd.data.name || "");
+            webCpu.transwebToken = dd.data.token;
+            localStorage.setItem("transweb-token", dd.data.token);
+            webCpu.CardItem.dismissMask(card);
+            if (typeof callback === "function") {
+              callback(dd.data);
+            }
+            if (webCpu.cards.loginRegItem) {
+              webCpu.fresh(webCpu.cards.loginRegItem);
+            }
+          } else {
+            _self.$message({
+              type: "warning",
+              message: dd.message
+            })
+          }
+        }, "json");
+      }
+    }
+
+    let title = webCpu.messages[lang].loginTitle.replace("{host}", "");
+    if (window.parent !== window) {
+      title = webCpu.messages[lang].loginTitle.replace("{host}", location.host);
+    }
+    webCpu.CardItem.renderCardDialog(card, app, {
+      dialogName: "regLoginDialog",
+      title: title,
+      closeType: "back",
+      titleStyle: {
+        background: "var(--el-color-primary-light-9)",
+        color: "var(--el-color-primary)"
+      }
+    }, style, {
+      padding: "20px 30px 40px 30px"
+    });
+  }
+
+  window.dialogMap = {
+    openLoginDialog: openLoginDialog,
+    newAppDialog() {
+      let app = {
+        url: "/mainApp/app/personalInfo.js",
+        key: "transweb_personalInfo",
+        dsl: {
+          about: {
+            dsl: {
+              mountedCallback: function (vueItem) {
+                webCpu.CardItem.dismissMask(document.body);
+                vueItem.handleClickButton(null, {
+                  label: webCpu.messages[lang].newAgentItem
+                });
+                // console.log(this, vueItem);
+              }
+            }
+          }
+        }
+      };
+      let menu = [
+        {
+          label: webCpu.messages[lang]["previewAppsHome"],
+          action: function () {
+            let url = location.origin + location.pathname;
+            url = WebTool.attachParams(url, {
+              agent: localStorage.folderName,
+            });
+            window.open(url, "_blank");
+          },
+        },
+      ];
+      this.openAppDialog(app, webCpu.messages[lang]["newAgentItem"], "", menu);
+    },
+    openAppDialog: function (app, params, style) {
+      let card = document.body;
+      style = style || {
+        background: "#fff",
+        maxWidth: "1000px",
+        width: "95%",
+        maxHeight: "95%",
+        boxShadow: "2px 2px 2px #999",
+        borderRadius: "5px",
+        borderTop: "solid 1px #ddd",
+        borderLeft: "solid 1px #ddd",
+        overflow: "hidden",
+      };
+      if (typeof params === "string") {
+        params = {
+          title: params
+        }
+      }
+      style.background = "#fff";
+      let flag = WebTool.adjustSize([false, false, true]);
+      let tStyle = {};
+      if (
+        params.title === webCpu.messages[lang]["myPpt"] ||
+        params.title === webCpu.messages[lang]["mySubscriptions"] ||
+        params.title === webCpu.messages[lang]["newAgentItem"]
+      ) {
+        style.maxWidth = "1200px";
+        style.width = "100%";
+      } else if (params.title === webCpu.messages[lang]["myModule"]) {
+        style.width = "100%";
+        style.height = "100%";
+        style.maxWidth = "100%";
+        style.maxHeight = "100%";
+        style.borderRadius = "0px";
+      }
+
+      if (flag && params.title !== webCpu.messages[lang]["myModule"]) {
+        tStyle.width = 600;
+        tStyle.height =
+          (tStyle.width * (document.body.clientHeight - 0)) /
+          document.body.clientWidth;
+        tStyle.maxWidth = "";
+        tStyle.maxHeight = "";
+        style.height = "100%";
+        style.maxHeight = "";
+      }
+
+      webCpu.CardItem.renderCardDialog(
+        card,
+        app,
+        {
+          dialogName: "menuItemDialog",
+          title: params.title,
+          titleStyle: {
+            background: "var(--el-color-primary-light-9)",
+            color: "var(--el-color-primary)",
+          },
+          closeType: params.closeType || "back",
+          closeCallback: params.closeCallback,
+          renderMode: params.mode,
+          menu: params.menu,
+          headerHidden: params.headerHidden
+        },
+        style,
+        tStyle
+      );
+    },
+    openDocumentApp: function (id, dsl, params, style, type) {
+      dsl = dsl || {};
+      params = params || {};
+      webCpu.getDocumentApp(id, (app, content) => {
+        debugger
+        webCpu.attachAttribute(dsl, app.dsl);
+        content = content || {};
+        params.title = params.title || content.title || dsl.dialogTitle || "test";
+        this.openAppDialog(app, params, style);
+      }, type);
+    }
+  }
+  webCpu.dialogMap = window.dialogMap;
+
+  window.aigcRequest = function (query, callback, errCallback, macros) {
+    alert("预览模式下，暂时无法发送 aigc 请求。");
+  };
+
+  var type = WebTool.urlQuery(location.href, "type");
+  var appName = WebTool.urlQuery(location.href, "appName");
+
+  var initView = function (appUrl, appKey, appName, type) {
+    var container = document.querySelector(".previewContainer");
+    if (appUrl && appKey) {
+      WebAdapter.loadCardData(appUrl, appKey || "transweb_cn", function (data) {
+        appName = decodeURIComponent(appName);
+        if (appName && data && data.appMap && data.appMap[appName]) {
+          document.title = appName;
+          initAppItem(container, data.appMap[appName], type)
+        } else {
+          var name = WebTool.urlQuery(location.href, "name");
+          document.title = name;
+          initWebApp(container, data, type);
+        }
+      });
+    } else {
+      previewItem(container, type);
+    }
+  }
+
+  var previewItem = function (container, type, data) {
+    if (type === "WebApp") {
+      data = data || localStorage.getItem("currentWebApp");
+      data = eval('(' + data + ')');
+      initWebApp(container, data);
+    } else {
+      var app = data || localStorage.getItem("currentAppData");
+      if (typeof app === "string") {
+        app = eval('(' + app + ')');
+      }
+      initAppItem(container, app, type);
+    }
+  }
+  var from = WebTool.urlQuery(location.href, "from");
+  if (from === "appViewer") {
+    setTimeout(function () {
+      initView(appUrl, appKey, appName, type);
+    }, 500);
+  }
+  var iFrameId = WebTool.urlQuery(location.href, "iFrameId");
+  window.parent.postMessage({
+    type: "inited",
+    value: "previewIframe",
+    iFrameId: iFrameId
+  }, "*");
+  WebTool.listenMessage(function (tData) {
+    if (!tData.data || (iFrameId && tData.data.iFrameId !== iFrameId)) {
+      return false;
+    }
+    if (tData.data && tData.data.data && tData.data.type === "opMessage") {
+      var elem = $(
+        "body>.previewContainer>.CardItem>.CardItem_contentArea>.CardItem_content>.__CardItem_componentArea>.CardItem_componentArea>._task_container"
+      )[0];
+      var name = tData.data.data.name;
+      webCpu.util.transformImage(elem, name + ".png", "transparent");
+    } else if (tData.data && tData.data.data && tData.data.type === "viewAppData") {
+      if (typeof tData.data === 'string') {
+        tData.data = WebTool.objectToString(tData.data);
+      }
+      var appType = tData.data.appType || "WebApp";
+      var container = document.querySelector(".previewContainer");
+      previewItem(container, appType, tData.data.data);
+    } else { }
+  })
+</script>
+<script>
+  MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']]
+    },
+    startup: {
+      ready: () => {
+        MathJax.startup.defaultReady();
+        console.log('MathJax 已加载');
+      }
+    }
+  };
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+</html>

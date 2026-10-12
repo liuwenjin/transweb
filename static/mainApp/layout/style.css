@@ -1,0 +1,115 @@
+
+.CardItem .leftEmptyArea {
+  color: hsla(215, 52%, 39%, 1) !important;
+}
+
+.CardItem .rightEmptyArea:hover,
+.CardItem .leftEmptyArea:hover {
+  color: hsla(215, 52%, 39%, 1);
+}
+
+.CardItem[cardName=configInterfaceItem] .rightEmptyArea {
+  right: 5px !important;
+  top: 0px !important;
+}
+
+.main._task_container[name=home]::before {
+  position: absolute;
+  left: 0px; 
+  top: 0px;
+  content: "";
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  background: #f8f8f8
+  opacity: 0.2;
+}
+
+.menuItemsArea .el-menu {
+  background: transparent !important;
+}
+
+.MarkdownArticle._task_container p>img {
+  text-align: left !important;
+  max-width: 800px !important;
+}
+
+
+.cardListArea span[prop=fileName]>div {
+  cursor: pointer;
+  color: #666;
+}
+.cardListArea span[prop=fileName]>div:hover {
+  color: #000;
+}
+
+
+.el-carousel__arrow i {
+  vertical-align: middle;
+}
+
+
+.myContentArea span[prop='buttonGroup'] .el-button {
+  border: none;
+}
+.myContentArea span[prop='buttonGroup'] .el-button:nth-child(2) {
+  --el-button-text-color: var(--el-color-warning);
+}
+.myContentArea span[prop='buttonGroup'] {
+  margin-right: -15px;
+}
+
+
+
+
+
+.ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: inline-block;
+  vertical-align: middle;
+  max-width: 100%;
+}
+
+
+
+.ellipsis_2 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.ellipsis_3 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}
+
+.ellipsis_4 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  overflow: hidden;
+}
+
+
+.el-dropdown:focus-visible,
+.el-dropdown-link:focus-visible {
+  outline: 0px dashed darkorange !important;
+}
+
+.emptyCardContainer {
+  width: 100%; 
+  height: 100%; 
+  box-shadow: 2px 2px 1px inset #333; 
+  border-radius: 5px; 
+  border-right: 1px solid #666; 
+  border-bottom: 1px solid #f8f8f8; 
+  padding: 10px; 
+  text-align: center;
+  background: #ddd;
+  color: #999;
+} 

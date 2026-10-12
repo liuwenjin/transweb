@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>数形实验台 - 让数学真正被看见</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      prefix: 'tw-',
+      theme: {
+        extend: {
+          colors: {
+            academic: {
+              dark: '#1e293b',    // 深色专业蓝
+              primary: '#2563eb', // 活力蓝
+              soft: '#f8fafc',    // 背景灰
+              gold: '#f59e0b'     // 强调金
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="tw-bg-academic-soft tw-text-academic-dark tw-font-sans">
+  <nav class="tw-sticky tw-top-0 tw-z-50 tw-bg-white/80 tw-backdrop-blur-md tw-border-b tw-border-slate-200"
+    id="main-nav">
+    <div class="tw-max-w-7xl tw-mx-auto tw-px-6 tw-h-16 tw-flex tw-items-center tw-justify-between">
+      <div class="tw-flex tw-items-center tw-gap-2">
+        <a href="index.html" class="tw-flex tw-items-center tw-gap-2 tw-group">
+          <div
+            class="tw-w-8 tw-h-8 tw-bg-academic-gold tw-rounded-lg tw-flex tw-items-center tw-justify-center tw-transition-transform group-hover:tw-scale-110">
+            <span class="tw-text-white tw-font-bold">∑</span>
+          </div>
+          <span class="tw-text-xl tw-font-bold tw-tracking-tight">数形实验台</span>
+        </a>
+      </div>
+
+      <div class="tw-hidden md:tw-flex tw-items-center tw-gap-8 tw-text-sm tw-font-medium tw-text-slate-600">
+        <a href="index.html" class="tw-text-academic-primary">首页</a>
+        <a href="case.html" class="hover:tw-text-academic-primary">典型案例</a>
+        <a href="scene.html" class="hover:tw-text-academic-primary tw-transition-colors">教学场景</a>
+        <a href="#" onclick="downloadFile('geogebra.html', '数形实验台.html')"
+          class="hover:tw-text-academic-primary tw-transition-colors">下载客户端</a>
+        <a href="geogebra.html">
+          <button
+            class="tw-bg-academic-primary tw-text-white tw-px-5 tw-py-2 tw-rounded-full tw-text-sm tw-font-bold hover:tw-bg-blue-700 tw-shadow-sm hover:tw-shadow-md tw-transition-all">
+            免费试用
+          </button>
+        </a>
+      </div>
+
+      <div class="md:tw-hidden tw-flex tw-items-center">
+        <button id="mobile-menu-button" class="tw-text-slate-600 hover:tw-text-academic-primary tw-focus:outline-none">
+          <svg class="tw-w-6 tw-h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path id="menu-icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div id="mobile-menu"
+      class="tw-hidden md:tw-hidden tw-bg-white tw-border-b tw-border-slate-200 tw-transition-all tw-duration-300">
+      <div class="tw-px-6 tw-py-4 tw-flex tw-flex-col tw-gap-4 tw-text-base tw-font-medium tw-text-slate-600">
+        <a href="index.html" class="tw-text-academic-primary tw-py-2">首页</a>
+        <a href="case.html" class="hover:tw-text-academic-primary tw-py-2">典型案例</a>
+        <a href="scene.html" class="hover:tw-text-academic-primary tw-py-2">教学场景</a>
+        <a href="#" onclick="downloadFile('geogebra.html', '数形实验台.html')"
+          class="hover:tw-text-academic-primary tw-py-2">下载客户端</a>
+        <hr class="tw-border-slate-100">
+        <a href="geogebra.html"
+          class="tw-bg-academic-primary tw-text-white tw-py-3 tw-rounded-xl tw-text-center tw-font-bold">
+          免费试用
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <section class="tw-relative tw-py-20 tw-overflow-hidden">
+    <div class="tw-max-w-7xl tw-mx-auto tw-px-6">
+      <div class="tw-flex tw-flex-col lg:tw-flex-row tw-items-center tw-gap-12">
+        <div class="tw-flex-1 tw-text-center lg:tw-text-left">
+          <h1 class="tw-text-3xl lg:tw-text-5xl tw-font-extrabold tw-leading-tight tw-mb-6">
+            把抽象数学，变成学生<br />
+            <span class="tw-text-academic-primary">“看得见的变化”</span>
+          </h1>
+          <p class="tw-text-lg tw-text-slate-600 tw-mb-8 tw-max-w-2xl">
+            面向初中 / 高中数学老师的动态数形教学实验平台<br />
+            一句话生成可直接用于课堂的函数与几何可视化课件
+          </p>
+          <a href="geogebra.html">
+            <button
+              class="tw-group tw-relative tw-inline-flex tw-items-center tw-gap-2 tw-bg-academic-primary tw-text-white tw-text-lg tw-font-bold tw-px-8 tw-py-4 tw-rounded-xl tw-shadow-xl hover:tw-shadow-2xl hover:-tw-translate-y-1 tw-transition-all">
+              👉 开始生成课堂演示
+            </button>
+          </a>
+          <div class="tw-mt-10 tw-grid tw-grid-cols-1 sm:tw-grid-cols-3 tw-gap-4 tw-text-sm tw-text-slate-500">
+            <div class="tw-flex tw-items-center tw-gap-2 tw-justify-center lg:tw-justify-start">
+              <span class="tw-text-green-500">✔</span> 函数/几何/立体/概率
+            </div>
+            <div class="tw-flex tw-items-center tw-gap-2 tw-justify-center lg:tw-justify-start">
+              <span class="tw-text-green-500">✔</span> 可导出网页版交互课件
+            </div>
+            <!-- <div class="tw-flex tw-items-center tw-gap-2 tw-justify-center lg:tw-justify-start">
+              <span class="tw-text-green-500">✔</span> 已用于公开课与教研
+            </div> -->
+          </div>
+        </div>
+
+        <div class="tw-flex-1 tw-w-full lg:tw-w-auto tw-group">
+          <div
+            class="tw-relative tw-bg-white tw-rounded-3xl tw-shadow-[0_20px_50px_rgba(8,_112,_184,_0.07)] tw-border tw-border-slate-100 tw-p-4 tw-transition-all tw-duration-500 hover:-tw-translate-y-2 hover:tw-shadow-[0_40px_80px_rgba(8,_112,_184,_0.1)]">
+
+            <div
+              class="tw-bg-slate-50 tw-rounded-2xl tw-aspect-video tw-flex tw-items-center tw-justify-center tw-overflow-hidden tw-relative tw-border tw-border-slate-100">
+              <div
+                class="tw-absolute tw-inset-0 tw-opacity-[0.03] tw-bg-[radial-gradient(#2563eb_1px,transparent_1px)] [background-size:16px_16px]">
+              </div>
+
+              <div class="tw-w-full tw-h-full tw-relative">
+                <svg id="trigCanvas" class="tw-w-full tw-h-full" viewBox="0 0 400 200"
+                  xmlns="http://www.w3.org/2000/svg">
+                  <line x1="20" y1="100" x2="380" y2="100" stroke="#cbd5e1" stroke-width="1.5" />
+                  <line x1="70" y1="20" x2="70" y2="180" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="2,2" />
+
+                  <g transform="translate(70, 100)">
+                    <circle r="40" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3" />
+                    <path id="angleArc" fill="rgba(245, 158, 11, 0.1)" stroke="none" />
+                    <line id="unitVector" x1="0" y1="0" x2="40" y2="0" stroke="#f59e0b" stroke-width="2" />
+                    <line id="sinProjection" x1="0" y1="0" x2="0" y2="0" stroke="#10b981" stroke-width="2"
+                      stroke-linecap="round" />
+                    <circle id="unitPoint" cx="40" cy="0" r="4" fill="#f59e0b" />
+                  </g>
+
+                  <path id="sinePath" d="" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round"
+                    class="tw-drop-shadow-[0_0_5px_rgba(37,99,235,0.2)]" />
+
+                  <line id="syncLine" x1="70" y1="100" x2="110" y2="100" stroke="#f59e0b" stroke-width="1"
+                    stroke-dasharray="4,4" opacity="0.6" />
+
+                  <circle id="tracePoint" r="5" fill="#f59e0b" class="tw-drop-shadow-[0_0_8px_rgba(245,158,11,0.5)]" />
+
+                  <g transform="translate(260, 20)">
+                    <rect width="120" height="40" rx="8" fill="white" fill-opacity="0.9" />
+                    <text id="formulaText" x="10" y="25" font-size="12" font-family="monospace" fill="#2563eb"
+                      font-weight="bold">
+                      y = sin(1.52x)
+                    </text>
+                  </g>
+                </svg>
+              </div>
+            </div>
+
+            <div class="tw-mt-5 tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-6">
+              <div class="tw-space-y-2">
+                <div class="tw-flex tw-justify-between">
+                  <label class="tw-text-xs tw-font-bold tw-text-slate-500 tw-uppercase">频率 Frequency (k)</label>
+                  <span id="freqVal" class="tw-text-xs tw-font-mono tw-text-blue-600 tw-font-bold">1.52</span>
+                </div>
+                <input type="range" id="freqSlider" min="0.5" max="4" step="0.01" value="1.52"
+                  class="tw-w-full tw-h-1.5 tw-bg-slate-200 tw-rounded-lg tw-appearance-none tw-cursor-pointer accent-blue-600">
+              </div>
+
+              <div class="tw-space-y-2">
+                <div class="tw-flex tw-justify-between">
+                  <label class="tw-text-xs tw-font-bold tw-text-slate-500 tw-uppercase">相位 Phase (x)</label>
+                  <span id="posVal" class="tw-text-xs tw-font-mono tw-text-amber-500 tw-font-bold">90</span>
+                </div>
+                <input type="range" id="posSlider" min="0" max="280" step="1" value="90"
+                  class="tw-w-full tw-h-1.5 tw-bg-slate-200 tw-rounded-lg tw-appearance-none tw-cursor-pointer accent-amber-500">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <script>
+            (function () {
+              const sinePath = document.getElementById('sinePath');
+              const tracePoint = document.getElementById('tracePoint');
+              const syncLine = document.getElementById('syncLine');
+              const unitVector = document.getElementById('unitVector');
+              const unitPoint = document.getElementById('unitPoint');
+              const sinProjection = document.getElementById('sinProjection');
+              const angleArc = document.getElementById('angleArc');
+
+              const freqSlider = document.getElementById('freqSlider');
+              const posSlider = document.getElementById('posSlider');
+              const freqVal = document.getElementById('freqVal');
+              const posVal = document.getElementById('posVal');
+              const formulaText = document.getElementById('formulaText');
+
+              const originCircle = { x: 70, y: 100 };
+              const originSine = { x: 70, y: 100 };
+              const R = 40; // 半径与振幅统一
+
+              function update() {
+                const k = parseFloat(freqSlider.value);
+                const xInput = parseFloat(posSlider.value);
+
+                // 1. 绘制正弦波
+                let points = [];
+                for (let x = 0; x <= 300; x += 1) {
+                  // 映射逻辑：将x轴像素转换为弧度，k控制缩放
+                  const angle = k * (x / 30);
+                  const y = R * Math.sin(angle);
+                  points.push(`${x === 0 ? 'M' : 'L'} ${originSine.x + x} ${originSine.y - y}`);
+                }
+                sinePath.setAttribute('d', points.join(' '));
+
+                // 2. 计算当前交互点的参数
+                const currentAngle = k * (xInput / 30);
+                const currentY = R * Math.sin(currentAngle);
+                const targetX = originSine.x + xInput;
+                const targetY = originSine.y - currentY;
+
+                // 3. 更新同步点和水平辅助线
+                tracePoint.setAttribute('cx', targetX);
+                tracePoint.setAttribute('cy', targetY);
+
+                syncLine.setAttribute('x1', originCircle.x + R * Math.cos(currentAngle));
+                syncLine.setAttribute('y1', targetY);
+                syncLine.setAttribute('x2', targetX);
+                syncLine.setAttribute('y2', targetY);
+
+                // 4. 更新单位圆动点与投影线
+                const ux = R * Math.cos(currentAngle);
+                const uy = -currentY; // SVG坐标系y向上为负
+                unitVector.setAttribute('x2', ux);
+                unitVector.setAttribute('y2', uy);
+                unitPoint.setAttribute('cx', ux);
+                unitPoint.setAttribute('cy', uy);
+
+                // 绿色线段展示 sin 值的几何意义 (纵投影)
+                sinProjection.setAttribute('x1', ux);
+                sinProjection.setAttribute('y1', 0);
+                sinProjection.setAttribute('x2', ux);
+                sinProjection.setAttribute('y2', uy);
+
+                // 5. 更新弧度填充 (Arc)
+                const largeArc = (currentAngle % (Math.PI * 2)) > Math.PI ? 1 : 0;
+                const sweep = 0; // 逆时针绘制
+                const arcPath = `M 0 0 L ${R / 2} 0 A ${R / 2} ${R / 2} 0 ${largeArc} ${sweep} ${R / 2 * Math.cos(currentAngle)} ${-R / 2 * Math.sin(currentAngle)} Z`;
+                angleArc.setAttribute('d', arcPath);
+
+                // 6. 更新数值文本
+                freqVal.textContent = k.toFixed(2);
+                posVal.textContent = xInput.toFixed(0);
+                formulaText.innerHTML = `y = sin(<tspan fill="#f59e0b">${k.toFixed(2)}</tspan>x)`;
+              }
+
+              freqSlider.addEventListener('input', update);
+              posSlider.addEventListener('input', update);
+              update();
+            })();
+        </script>
+
+        <style>
+          input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 14px;
+            width: 14px;
+            border-radius: 99px;
+            background: white;
+            border: 2px solid currentColor;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          }
+        </style>
+      </div>
+    </div>
+  </section>
+
+  <section class="tw-py-20 tw-bg-white">
+    <div class="tw-max-w-7xl tw-mx-auto tw-px-6">
+      <h2 class="tw-text-3xl tw-font-bold tw-text-center tw-mb-12">你今天想解决哪种课堂问题？</h2>
+      <div class="tw-grid tw-grid-cols-2 lg:tw-grid-cols-4 tw-gap-4">
+        <div
+          class="tw-group tw-p-6 tw-bg-slate-50 tw-rounded-2xl tw-border tw-border-transparent hover:tw-border-academic-primary hover:tw-bg-white hover:tw-shadow-xl tw-transition-all tw-cursor-pointer">
+          <div class="tw-text-3xl tw-mb-4">📘</div>
+          <h3 class="tw-font-bold tw-mb-2">备课</h3>
+          <p class="tw-text-xs tw-text-slate-500">快速生成可讲解的数学动态演示</p>
+        </div>
+        <div
+          class="tw-group tw-p-6 tw-bg-slate-50 tw-rounded-2xl tw-border tw-border-transparent hover:tw-border-academic-primary hover:tw-bg-white hover:tw-shadow-xl tw-transition-all tw-cursor-pointer">
+          <div class="tw-text-3xl tw-mb-4">🧑‍🏫</div>
+          <h3 class="tw-font-bold tw-mb-2">课堂讲解</h3>
+          <p class="tw-text-xs tw-text-slate-500">让学生“看见变化过程”</p>
+        </div>
+        <div
+          class="tw-group tw-p-6 tw-bg-slate-50 tw-rounded-2xl tw-border tw-border-transparent hover:tw-border-academic-primary hover:tw-bg-white hover:tw-shadow-xl tw-transition-all tw-cursor-pointer">
+          <div class="tw-text-3xl tw-mb-4">🧪</div>
+          <h3 class="tw-font-bold tw-mb-2">探究实验</h3>
+          <p class="tw-text-xs tw-text-slate-500">引导学生发现数学规律</p>
+        </div>
+        <div
+          class="tw-group tw-p-6 tw-bg-slate-50 tw-rounded-2xl tw-border tw-border-transparent hover:tw-border-academic-primary hover:tw-bg-white hover:tw-shadow-xl tw-transition-all tw-cursor-pointer">
+          <div class="tw-text-3xl tw-mb-4">🎯</div>
+          <h3 class="tw-font-bold tw-mb-2">公开课</h3>
+          <p class="tw-text-xs tw-text-slate-500">生成高表现力动态演示案例</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="tw-py-20 tw-bg-academic-soft">
+    <style>
+      /* 模拟数学坐标纸背景 */
+      .math-grid-bg {
+        background-color: #f8fafc;
+        background-image: linear-gradient(#e2e8f0 1px, transparent 1px), linear-gradient(90deg, #e2e8f0 1px, transparent 1px);
+        background-size: 20px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .math-grid-bg::after {
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 1px;
+        background: #cbd5e1;
+        /* X轴 */
+        top: 50%;
+      }
+
+      .math-grid-bg::before {
+        content: "";
+        position: absolute;
+        height: 100%;
+        width: 1px;
+        background: #cbd5e1;
+        /* Y轴 */
+        left: 50%;
+      }
+    </style>
+
+    <div class="tw-max-w-7xl tw-mx-auto tw-px-6">
+      <h2 class="tw-text-3xl tw-font-bold tw-text-center tw-mb-12">这些内容，老师已经在课堂上用了</h2>
+
+      <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-4 tw-gap-6">
+
+        <div
+          class="tw-bg-white tw-rounded-xl tw-overflow-hidden tw-shadow-sm hover:tw-shadow-xl tw-transition-all tw-group">
+          <div class="tw-h-40 math-grid-bg">
+            <svg class="tw-w-24 tw-h-24 tw-text-blue-500 tw-relative tw-z-10" viewBox="0 0 100 100" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <path d="M10 20 Q50 95 90 20" stroke-width="3" />
+              <circle cx="50" cy="57.5" r="3" fill="currentColor" />
+            </svg>
+          </div>
+          <div class="tw-p-5">
+            <span
+              class="tw-text-[10px] tw-bg-blue-100 tw-text-blue-700 tw-px-2 tw-py-1 tw-rounded tw-font-bold">高中/函数</span>
+            <h4 class="tw-font-bold tw-mt-2 tw-text-sm group-hover:tw-text-academic-primary">二次函数顶点最值原理</h4>
+            <p class="tw-text-xs tw-text-slate-500 tw-mt-2">参数控制图像实时平移与伸缩，自动追踪顶点轨迹。</p>
+            <a href="geogebra.html?input=二次函数顶点最值原理，参数控制图像实时平移与伸缩，自动追踪顶点轨迹。">
+              <button
+                class="tw-mt-4 tw-w-full tw-text-xs tw-font-bold tw-text-academic-primary tw-border tw-border-academic-primary tw-py-2 tw-rounded-lg hover:tw-bg-academic-primary hover:tw-text-white tw-transition-all">立即生成</button>
+            </a>
+          </div>
+        </div>
+
+        <div
+          class="tw-bg-white tw-rounded-xl tw-overflow-hidden tw-shadow-sm hover:tw-shadow-xl tw-transition-all tw-group">
+          <div class="tw-h-40 math-grid-bg">
+            <svg class="tw-w-24 tw-h-24 tw-text-purple-500 tw-relative tw-z-10" viewBox="0 0 100 100" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <ellipse cx="50" cy="50" rx="35" ry="20" stroke-width="3" />
+              <line x1="30" y1="50" x2="50" y2="30" stroke="currentColor" stroke-dasharray="2 2" />
+              <line x1="70" y1="50" x2="50" y2="30" stroke="currentColor" stroke-dasharray="2 2" />
+            </svg>
+          </div>
+          <div class="tw-p-5">
+            <span
+              class="tw-text-[10px] tw-bg-purple-100 tw-text-purple-700 tw-px-2 tw-py-1 tw-rounded tw-font-bold">高中/圆锥曲线</span>
+            <h4 class="tw-font-bold tw-mt-2 tw-text-sm group-hover:tw-text-academic-primary">椭圆第一定义实验</h4>
+            <p class="tw-text-xs tw-text-slate-500 tw-mt-2">改变定点距离，拖动动点观察 PF1+PF2 的恒定关系。</p>
+            <a href="geogebra.html?input=椭圆第一定义实验，改变定点距离，拖动动点观察 PF1+PF2 的恒定关系。">
+              <button
+                class="tw-mt-4 tw-w-full tw-text-xs tw-font-bold tw-text-academic-primary tw-border tw-border-academic-primary tw-py-2 tw-rounded-lg hover:tw-bg-academic-primary hover:tw-text-white tw-transition-all">立即生成</button>
+            </a>
+          </div>
+        </div>
+
+        <div
+          class="tw-bg-white tw-rounded-xl tw-overflow-hidden tw-shadow-sm hover:tw-shadow-xl tw-transition-all tw-group">
+          <div class="tw-h-40 math-grid-bg">
+            <svg class="tw-w-20 tw-h-20 tw-text-green-600 tw-relative tw-z-10" viewBox="0 0 100 100" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <path d="M30 70 L70 70 L70 30 Z" fill="currentColor" fill-opacity="0.1" stroke-width="3" />
+              <rect x="30" y="70" width="40" height="40" transform="rotate(-90 30 70)" stroke-dasharray="2 1" />
+            </svg>
+          </div>
+          <div class="tw-p-5">
+            <span
+              class="tw-text-[10px] tw-bg-green-100 tw-text-green-700 tw-px-2 tw-py-1 tw-rounded tw-font-bold">初中/几何</span>
+            <h4 class="tw-font-bold tw-mt-2 tw-text-sm group-hover:tw-text-academic-primary">勾股定理面积验证</h4>
+            <p class="tw-text-xs tw-text-slate-500 tw-mt-2">点击按钮实现三个正方形面积的切割、平移与无缝拼补。</p>
+            <a href="geogebra.html?input=勾股定理面积验证，点击按钮实现三个正方形面积的切割、平移与无缝拼补。">
+              <button
+                class="tw-mt-4 tw-w-full tw-text-xs tw-font-bold tw-text-academic-primary tw-border tw-border-academic-primary tw-py-2 tw-rounded-lg hover:tw-bg-academic-primary hover:tw-text-white tw-transition-all">立即生成</button>
+            </a>
+          </div>
+        </div>
+
+        <div
+          class="tw-bg-white tw-rounded-xl tw-overflow-hidden tw-shadow-sm hover:tw-shadow-xl tw-transition-all tw-group">
+          <div class="tw-h-40 math-grid-bg">
+            <svg class="tw-w-24 tw-h-24 tw-text-blue-600 tw-relative tw-z-10" viewBox="0 0 100 100" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <path d="M0 50 C 20 0, 30 0, 50 50 C 70 100, 80 100, 100 50" stroke-width="3" />
+            </svg>
+          </div>
+          <div class="tw-p-5">
+            <span
+              class="tw-text-[10px] tw-bg-blue-100 tw-text-blue-700 tw-px-2 tw-py-1 tw-rounded tw-font-bold">高中/三角函数</span>
+            <h4 class="tw-font-bold tw-mt-2 tw-text-sm group-hover:tw-text-academic-primary">正弦函数参数变换</h4>
+            <p class="tw-text-xs tw-text-slate-500 tw-mt-2">实时调节 A、ω、φ 值，观察波形左右平移与拉伸过程。</p>
+            <a href="geogebra.html?input=正弦函数参数变换，实时调节 A、ω、φ 值，观察波形左右平移与拉伸过程。">
+              <button
+                class="tw-mt-4 tw-w-full tw-text-xs tw-font-bold tw-text-academic-primary tw-border tw-border-academic-primary tw-py-2 tw-rounded-lg hover:tw-bg-academic-primary hover:tw-text-white tw-transition-all">立即生成</button>
+            </a>
+          </div>
+        </div>
+
+        <div
+          class="tw-bg-white tw-rounded-xl tw-overflow-hidden tw-shadow-sm hover:tw-shadow-xl tw-transition-all tw-group">
+          <div class="tw-h-40 math-grid-bg">
+            <svg class="tw-w-24 tw-h-24 tw-text-indigo-500 tw-relative tw-z-10" viewBox="0 0 100 100" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <line x1="10" y1="80" x2="90" y2="20" stroke-width="3" />
+              <path d="M50 50 L65 50 A 15 15 0 0 0 60 42" stroke="currentColor" stroke-width="1" />
+              <text x="68" y="48" font-size="8" fill="currentColor">α</text>
+            </svg>
+          </div>
+          <div class="tw-p-5">
+            <span
+              class="tw-text-[10px] tw-bg-blue-100 tw-text-blue-700 tw-px-2 tw-py-1 tw-rounded tw-font-bold">初中/函数</span>
+            <h4 class="tw-font-bold tw-mt-2 tw-text-sm group-hover:tw-text-academic-primary">一次函数 k/b 物理意义</h4>
+            <p class="tw-text-xs tw-text-slate-500 tw-mt-2">通过滑块控制斜率与截距，直观感受直线在象限间的运动。</p>
+            <a href="geogebra.html?input=一次函数 k/b 物理意义，通过滑块控制斜率与截距，直观感受直线在象限间的运动。">
+              <button
+                class="tw-mt-4 tw-w-full tw-text-xs tw-font-bold tw-text-academic-primary tw-border tw-border-academic-primary tw-py-2 tw-rounded-lg hover:tw-bg-academic-primary hover:tw-text-white tw-transition-all">立即生成</button>
+            </a>
+          </div>
+        </div>
+
+        <div
+          class="tw-bg-white tw-rounded-xl tw-overflow-hidden tw-shadow-sm hover:tw-shadow-xl tw-transition-all tw-group">
+          <div class="tw-h-40 math-grid-bg">
+            <svg class="tw-w-20 tw-h-20 tw-text-orange-600 tw-relative tw-z-10" viewBox="0 0 100 100" fill="none"
+              xmlns="http://www.w3.org/2000/svg">
+              <path d="M 30 30 L 70 50 L 40 70 Z" fill="currentColor" fill-opacity="0.2" />
+
+              <g stroke="currentColor" stroke-width="1.5" stroke-opacity="0.4" stroke-dasharray="2,2">
+                <path d="M 75 65 L 35 65" />
+                <path d="M 35 65 L 35 25" />
+                <path d="M 25 75 L 35 65" />
+              </g>
+
+              <g stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <path d="M 35 25 L 75 25" />
+                <path d="M 75 25 L 75 65" />
+                <path d="M 25 35 L 65 35" />
+                <path d="M 65 35 L 65 75" />
+                <path d="M 65 75 L 25 75" />
+                <path d="M 25 75 L 25 35" />
+                <path d="M 25 35 L 35 25" />
+                <path d="M 65 35 L 75 25" />
+                <path d="M 65 75 L 75 65" />
+              </g>
+
+              <g stroke="currentColor" stroke-width="1.5" stroke-dasharray="2,2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M 30 30 L 70 50" />
+                <path d="M 70 50 L 40 70" />
+                <path d="M 40 70 L 30 30" />
+              </g>
+            </svg>
+
+          </div>
+          <div class="tw-p-5">
+            <span
+              class="tw-text-[10px] tw-bg-orange-100 tw-text-orange-700 tw-px-2 tw-py-1 tw-rounded tw-font-bold">高中/立体几何</span>
+            <h4 class="tw-font-bold tw-mt-2 tw-text-sm group-hover:tw-text-academic-primary">多面体截面生成实验</h4>
+            <p class="tw-text-xs tw-text-slate-500 tw-mt-2">全方位旋转几何体，动态切除部分体积观察截面形状演变。</p>
+            <a href="geogebra.html?input=多面体截面生成实验，全方位旋转几何体，动态切除部分体积观察截面形状演变。">
+              <button
+                class="tw-mt-4 tw-w-full tw-text-xs tw-font-bold tw-text-academic-primary tw-border tw-border-academic-primary tw-py-2 tw-rounded-lg hover:tw-bg-academic-primary hover:tw-text-white tw-transition-all">立即生成</button>
+            </a>
+          </div>
+        </div>
+
+        <div
+          class="tw-bg-white tw-rounded-xl tw-overflow-hidden tw-shadow-sm hover:tw-shadow-xl tw-transition-all tw-group">
+          <div class="tw-h-40 math-grid-bg">
+            <svg class="tw-w-24 tw-h-24 tw-text-red-500 tw-relative tw-z-10" viewBox="0 0 100 100" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <path d="M20 80 C 40 80, 50 20, 90 20" stroke-width="2" />
+              <line x1="30" y1="85" x2="80" y2="15" stroke="currentColor" stroke-width="2" stroke-dasharray="3 3" />
+              <circle cx="55" cy="50" r="3" fill="currentColor" />
+            </svg>
+          </div>
+          <div class="tw-p-5">
+            <span
+              class="tw-text-[10px] tw-bg-red-100 tw-text-red-700 tw-px-2 tw-py-1 tw-rounded tw-font-bold">高中/导数</span>
+            <h4 class="tw-font-bold tw-mt-2 tw-text-sm group-hover:tw-text-academic-primary">割线趋近切线极限过程</h4>
+            <p class="tw-text-xs tw-text-slate-500 tw-mt-2">动点无限逼近定点，实时计算斜率值，体悟微积分核心思想。</p>
+            <a href="geogebra.html?input=割线趋近切线极限过程，动点无限逼近定点，实时计算斜率值，体悟微积分核心思想。">
+              <button
+                class="tw-mt-4 tw-w-full tw-text-xs tw-font-bold tw-text-academic-primary tw-border tw-border-academic-primary tw-py-2 tw-rounded-lg hover:tw-bg-academic-primary hover:tw-text-white tw-transition-all">立即生成</button>
+            </a>
+          </div>
+        </div>
+
+        <div
+          class="tw-bg-white tw-rounded-xl tw-overflow-hidden tw-shadow-sm hover:tw-shadow-xl tw-transition-all tw-group">
+          <div class="tw-h-40 math-grid-bg">
+            <svg class="tw-w-20 tw-h-20 tw-text-orange-500 tw-relative tw-z-10" viewBox="0 0 100 100" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <path d="M50 20 L80 50 L50 80 L20 50 Z" stroke-width="2" />
+              <path d="M50 20 L80 50 L50 80 L20 50 Z" stroke-width="2" transform="rotate(45 50 50)"
+                stroke-dasharray="4 2" />
+              <circle cx="50" cy="50" r="2" fill="currentColor" />
+            </svg>
+          </div>
+          <div class="tw-p-5">
+            <span
+              class="tw-text-[10px] tw-bg-green-100 tw-text-green-700 tw-px-2 tw-py-1 tw-rounded tw-font-bold">初中/旋转</span>
+            <h4 class="tw-font-bold tw-mt-2 tw-text-sm group-hover:tw-text-academic-primary">图形的旋转与中心对称</h4>
+            <p class="tw-text-xs tw-text-slate-500 tw-mt-2">自定义中心点，演示图形顺/逆时针转动及重合的全过程。</p>
+            <a href="geogebra.html?input=图形的旋转与中心对称，旋转(Polygon((0,0),(1,0),(1,1)), 90, (0,0))">
+              <button
+                class="tw-mt-4 tw-w-full tw-text-xs tw-font-bold tw-text-academic-primary tw-border tw-border-academic-primary tw-py-2 tw-rounded-lg hover:tw-bg-academic-primary hover:tw-text-white tw-transition-all">立即生成</button>
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="tw-py-24 tw-bg-academic-dark tw-text-white">
+    <div class="tw-max-w-7xl tw-mx-auto tw-px-6">
+      <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-3 tw-gap-12">
+        <div class="tw-text-center">
+          <div class="tw-text-4xl tw-mb-6">🧠</div>
+          <h3 class="tw-text-xl tw-font-bold tw-mb-4">数学可视化生成</h3>
+          <p class="tw-text-slate-400 tw-text-sm">输入一句话描述需求，秒级生成精准的动态数学可视化课件</p>
+        </div>
+        <div class="tw-text-center">
+          <div class="tw-text-4xl tw-mb-6">🎮</div>
+          <h3 class="tw-text-xl tw-font-bold tw-mb-4">参数交互实验</h3>
+          <p class="tw-text-slate-400 tw-text-sm">通过拖动滑块实时改变变量，让规律不言自明</p>
+        </div>
+        <div class="tw-text-center">
+          <div class="tw-text-4xl tw-mb-6">📤</div>
+          <h3 class="tw-text-xl tw-font-bold tw-mb-4">教学内容导出</h3>
+          <p class="tw-text-slate-400 tw-text-sm">支持导出为 GeoGebra、网页动态课件</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="tw-py-20 tw-bg-white">
+    <div class="tw-max-w-4xl tw-mx-auto tw-px-6 tw-text-center">
+      <h2 class="tw-text-2xl tw-font-bold tw-mb-10 tw-text-slate-400">来自一线教育者的信任</h2>
+      <div class="tw-bg-slate-50 tw-p-8 tw-rounded-3xl tw-relative">
+        <span class="tw-absolute -tw-top-4 tw-left-8 tw-text-6xl tw-text-blue-200">“</span>
+        <p class="tw-text-lg tw-italic tw-text-slate-700 tw-relative tw-z-10">
+          “以前讲圆锥曲线的离心率，学生很难理解那个动态的过程。现在只要输入一句话，模型就出来了，学生盯着屏幕看一分钟，比我讲十遍都管用。”
+        </p>
+        <div class="tw-mt-6 tw-font-bold tw-text-academic-dark">—— 王老师，某省级重点中学数学组组长</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="tw-py-20">
+    <div class="tw-max-w-7xl tw-mx-auto tw-px-6">
+      <h2 class="tw-text-center tw-text-3xl tw-font-bold tw-mb-16">3 步完成一节动态数学课</h2>
+      <div class="tw-flex tw-flex-col md:tw-flex-row tw-justify-between tw-items-center tw-gap-8">
+        <div class="tw-flex-1 tw-text-center">
+          <div
+            class="tw-w-12 tw-h-12 tw-bg-academic-primary tw-text-white tw-rounded-full tw-flex tw-items-center tw-justify-center tw-mx-auto tw-mb-6 tw-text-xl tw-font-bold shadow-lg">
+            1</div>
+          <h4 class="tw-font-bold tw-mb-2">输入教学问题</h4>
+          <p class="tw-text-sm tw-text-slate-500">“二次函数顶点随 a 值的变化”</p>
+        </div>
+        <div class="tw-hidden md:tw-block tw-text-slate-300">➜</div>
+        <div class="tw-flex-1 tw-text-center">
+          <div
+            class="tw-w-12 tw-h-12 tw-bg-academic-primary tw-text-white tw-rounded-full tw-flex tw-items-center tw-justify-center tw-mx-auto tw-mb-6 tw-text-xl tw-font-bold shadow-lg">
+            2</div>
+          <h4 class="tw-font-bold tw-mb-2">生成可视化实验案例</h4>
+          <p class="tw-text-sm tw-text-slate-500">自动配置图像与交互参数</p>
+        </div>
+        <div class="tw-hidden md:tw-block tw-text-slate-300">➜</div>
+        <div class="tw-flex-1 tw-text-center">
+          <div
+            class="tw-w-12 tw-h-12 tw-bg-academic-primary tw-text-white tw-rounded-full tw-flex tw-items-center tw-justify-center tw-mx-auto tw-mb-6 tw-text-xl tw-font-bold shadow-lg">
+            3</div>
+          <h4 class="tw-font-bold tw-mb-2">直接用于课堂</h4>
+          <p class="tw-text-sm tw-text-slate-500">一键导出分享给学生</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="tw-py-24 tw-bg-academic-primary tw-text-white tw-text-center">
+    <div class="tw-max-w-4xl tw-mx-auto tw-px-6">
+      <h2 class="tw-text-4xl tw-font-extrabold tw-mb-8">开始让数学“看得见”</h2>
+      <p class="tw-text-blue-100 tw-mb-10 tw-text-lg">无需学习复杂的脚本，把时间留给教学，把实现交给实验台。</p>
+      <a href="geogebra.html">
+        <button
+          class="tw-bg-white tw-text-academic-primary tw-text-xl tw-font-bold tw-px-12 tw-py-5 tw-rounded-xl tw-shadow-2xl hover:tw-bg-blue-50 tw-transition-all">
+          立即生成课堂演示
+        </button>
+      </a>
+    </div>
+  </section>
+
+  <footer class="tw-py-12 tw-border-t tw-border-slate-200 tw-text-slate-400 tw-text-xs tw-text-center">
+    © 2026 北京津度科技有限责任公司 · 数形实验台（TransWeb 驱动）
+  </footer>
+  <script>
+
+    const menuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const menuIcon = document.getElementById('menu-icon');
+
+    menuButton.addEventListener('click', () => {
+      const isHidden = mobileMenu.classList.contains('tw-hidden');
+
+      if (isHidden) {
+        // 展开菜单
+        mobileMenu.classList.remove('tw-hidden');
+        // 切换为 "X" 图标 (SVG path)
+        menuIcon.setAttribute('d', 'M6 18L18 6M6 6l12 12');
+      } else {
+        // 收起菜单
+        mobileMenu.classList.add('tw-hidden');
+        // 切换回汉堡图标
+        menuIcon.setAttribute('d', 'M4 6h16M4 12h16M4 18h16');
+      }
+    });
+
+    // 点击菜单项后自动关闭（可选，适用于单页应用）
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.add('tw-hidden');
+        menuIcon.setAttribute('d', 'M4 6h16M4 12h16M4 18h16');
+      });
+    });
+
+    async function downloadFile(url, fileName) {
+      try {
+        const response = await fetch(url);
+        const blob = await response.blob(); // 将响应转为二进制对象
+        const link = document.createElement('a');
+
+        // 创建一个指向该 Blob 的临时 URL
+        link.href = window.URL.createObjectURL(blob);
+        link.download = fileName;
+
+        document.body.appendChild(link);
+        link.click(); // 模拟点击
+
+        // 清理内存
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(link.href);
+      } catch (error) {
+        console.error('下载失败:', error);
+      }
+    }
+  </script>
+
+</body>
+
+</html>

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  
+  <title>收纳吧 - AI 卧室改造与空间整理诊断专家</title>
+  <meta name="description" content="收纳吧是一款专业的 AI 卧室整理诊断工具。只需上传一张卧室照片，即可获得包含空间诊断、五维度优化建议及三档成本改造清单在内的完整美化方案，让你的房间焕然一新。" />
+  <meta name="keywords" content="收纳吧,卧室收纳,房间改造,空间诊断,整理建议,家居美化,AI家装,收纳清单" />
+  <meta name="author" content="Transweb" />
+
+  <meta property="og:title" content="收纳吧 - 1秒开启你的卧室美化方案" />
+  <meta property="og:description" content="上传卧室照，即刻获取专业 AI 收纳方案与改造建议。" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://transweb.cn/logo_storage.png" /> <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+
+  <style>
+    :root {
+      --bg-dark: #333;
+      --accent-green: #67cf22;
+      --glass-bg: rgba(255, 255, 255, 0.9);
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      font-family: "Nunito", "Noto Sans SC", sans-serif;
+      overflow: hidden;
+      background-color: var(--bg-dark) !important;
+      color: #fff;
+      box-sizing: border-box;
+    }
+
+    /* 语义化内容容器 */
+    main.contentItemArea {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      text-align: center;
+      padding-bottom: 44px;
+    }
+
+    .treeEditorArea {
+      background: var(--bg-dark) !important;
+    }
+
+    footer.bottomInfo {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 44px;
+      padding: 0 20px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 12px;
+      color: #888;
+      z-index: 1000;
+      box-sizing: border-box;
+    }
+
+    .agentMenuArea {
+      display: flex;
+      align-items: center;
+      margin-left: 12px;
+      height: 40px;
+      width: 500px;
+      white-space: nowrap;
+    }
+
+    /* 增强加载体验的视觉提示 */
+    .loading-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .loadingTips {
+      font-size: 14px;
+      color: #aaa;
+      letter-spacing: 0.5px;
+    }
+
+    .waiting {
+      width: 50px;
+      height: 50px;
+      background-color: var(--accent-green);
+      margin: 0 auto;
+      border-radius: 8px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+      animation: rotateplane 1.2s infinite ease-in-out;
+    }
+
+    @keyframes rotateplane {
+      0% { transform: perspective(120px) rotateX(0deg) rotateY(0deg); }
+      50% { transform: perspective(120px) rotateX(-180deg) rotateY(0deg); }
+      100% { transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg); }
+    }
+
+    /* 辅助线隐藏，仅供 SEO 爬虫抓取 */
+    .seo-hidden-h1 {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <h1 class="seo-hidden-h1">收纳吧 - 专业卧室收纳诊断与空间改造建议</h1>
+
+  <main class="contentItemArea">
+    <div class="loading-wrapper">
+      <div class="waiting"></div>
+      <div class="loadingTips">收纳专家正在进场...</div>
+    </div>
+  </main>
+
+  <footer class="bottomInfo">
+    <div class="agentMenuArea"></div>
+    <template class="documentId">475953914e5b6c9111435976544b8f15</template>
+  </footer>
+
+  <script defer src="https://transweb.cn/index.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // 初始化 URL 参数
+      const params = new URLSearchParams(window.location.search);
+      let tRadio = Number(params.get("transformRadio"));
+      let readOnly = params.get("readOnly") === "true";
+
+      if (tRadio !== 1) {
+        WebTool.adjustStyle(480);
+      } else {
+        window.transformRadio = tRadio;
+      }
+      
+      webCpu.isContainerUpdated = "false";
+      let tElem = document.querySelector(".documentId");
+      let documentId = tElem.innerHTML.trim();
+      window.lang = "zh";
+
+      // 应用逻辑处理
+      const updateDocumentApp = (appItem, callback) => {
+        let content = Array.isArray(appItem.content) ? appItem.content : [{ content: appItem.content }];
+        content[0].content.isSolo = true;
+        
+        window.aigcRequest = (query, cb, errCb, macros) => {
+          query.rootAccount = appItem.documentMeta.rootAccount;
+          aigcInterface.request(query, cb, errCb, macros);
+        };
+
+        appItem.documentMeta.documentId = documentId;
+        
+        let mainApp = {
+          url: webCpu.documentPrefix + "/webApps/document/agent.vue",
+          cardName: "documentEditor",
+          dsl: {
+            data: {
+              topHeaderHidden: true,
+              breadcrumbsHidden: true,
+              currentContent: content,
+              currentApp: appItem.app,
+              documentMeta: appItem.documentMeta
+            }
+          }
+        };
+
+        let elem = document.querySelector(".contentItemArea");
+        // 响应式处理：大屏下固定移动端比例
+        if(elem.clientWidth > 700) {
+          mainApp.dsl.style = { width: 480, height: 900 };
+        }
+        webCpu.updateView(elem, mainApp, callback);
+      };
+
+      const updateMenuItem = (appId) => {
+        let app = {
+          url: webCpu.documentPrefix + "/components/menu.vue",
+          cardName: "documentAgentMenu",
+          dsl: { data: { appId: appId } }
+        };
+        webCpu.updateView(document.querySelector(".agentMenuArea"), app);
+      };
+
+      // 加载主程序
+      webCpu.getDocumentApp(
+        documentId,
+        (app, content, rData) => {
+          updateDocumentApp(rData, () => {
+            rData.documentMeta = rData.documentMeta || {};
+            // 判断是否显示底部工具栏
+            if (!readOnly && localStorage.folderName === rData.documentMeta.folderName) {
+              document.querySelector(".bottomInfo").style.display = "flex";
+              updateMenuItem(documentId);
+            } else {
+              document.querySelector(".bottomInfo").style.display = "none";
+              document.querySelector(".contentItemArea").style.paddingBottom = "0";
+            }
+          });
+        },
+        (err) => {
+          console.error("加载失败", err);
+          document.querySelector(".contentItemArea").innerHTML =
+            '<div style="color:#f56c6c; padding:20px;">诊断程序启动失败，请检查网络后重试。</div>';
+        }
+      );
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+  <meta http-equiv="Cache-Control" content="no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>二次函数与几何变换综合变式训练</title>
+  <style>
+    :root {
+      --brand-primary: #2563eb;
+      --brand-dark: #1e293b;
+      --brand-soft: #f8fafc;
+      --brand-gold: #f59e0b;
+      --text-muted: #64748b;
+      --border-soft: rgba(15, 23, 42, 0.06);
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      font-family: "Nunito", "Noto Sans", "PingFang SC", "Microsoft YaHei", sans-serif;
+      overflow: hidden;
+      box-sizing: border-box;
+      color: var(--brand-dark);
+      background:
+        radial-gradient(1200px 600px at 0% 0%, rgba(37, 99, 235, 0.05), transparent 60%),
+        radial-gradient(900px 500px at 100% 100%, rgba(245, 158, 11, 0.04), transparent 60%),
+        #ffffff;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    /* ===== 主体布局：内容 + 水印固定底部 ===== */
+    .pageWrapper {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: 100%;
+    }
+
+    .contentItemArea {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      /* 为底部水印预留空间，避免遮挡阅读 */
+      padding-bottom: 44px;
+      box-sizing: border-box;
+    }
+
+    /* ===== Loading ===== */
+    .loadingTips {
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+      letter-spacing: 0.3px;
+      margin-top: 24px;
+    }
+
+    .waiting {
+      position: relative;
+      width: 56px;
+      height: 56px;
+      margin: 0 auto;
+    }
+
+    .waiting::before,
+    .waiting::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 3px solid transparent;
+      box-sizing: border-box;
+    }
+
+    .waiting::before {
+      border-top-color: var(--brand-primary);
+      border-right-color: var(--brand-primary);
+      animation: spin 1s linear infinite;
+    }
+
+    .waiting::after {
+      inset: 8px;
+      border-top-color: var(--brand-gold);
+      border-left-color: var(--brand-gold);
+      animation: spin 1.4s linear infinite reverse;
+      opacity: 0.85;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .fade-out {
+      opacity: 0;
+      transition: opacity 0.8s ease;
+    }
+
+    /* ===== 底部水印（主） ===== */
+    .siteWatermark {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      font-size: 12px;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.72);
+      backdrop-filter: saturate(180%) blur(10px);
+      -webkit-backdrop-filter: saturate(180%) blur(10px);
+      border-top: 1px solid var(--border-soft);
+      z-index: 50;
+      user-select: none;
+      pointer-events: auto;
+      transition: opacity 0.2s ease;
+    }
+
+    .siteWatermark__brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-muted);
+      text-decoration: none;
+    }
+
+    .siteWatermark__dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--brand-primary), var(--brand-gold));
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
+    }
+
+    .siteWatermark__brand strong {
+      color: var(--brand-dark);
+      font-weight: 600;
+      letter-spacing: 0.3px;
+    }
+
+    .siteWatermark__link {
+      color: var(--text-muted);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    .siteWatermark__link:hover {
+      color: var(--brand-primary);
+      background: rgba(37, 99, 235, 0.06);
+    }
+
+    .siteWatermark__link svg {
+      opacity: 0.8;
+    }
+
+    /* ===== 右下角次级角标水印（极淡，不影响阅读） ===== */
+    .cornerWatermark {
+      position: fixed;
+      right: 14px;
+      bottom: 44px;
+      font-size: 10px;
+      color: rgba(30, 41, 59, 0.25);
+      letter-spacing: 0.6px;
+      pointer-events: none;
+      text-align: right;
+      z-index: 40;
+      user-select: none;
+    }
+
+    /* ===== 导出态优化 ===== */
+    .__exporting__,
+    .__exporting * {
+      animation: none !important;
+      transition: none !important;
+    }
+
+    .__exporting {
+      background: #ffffff !important;
+    }
+
+    /* 导出时水印仍然保留 */
+    .__exporting .siteWatermark {
+      background: #ffffff !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+    }
+
+    .__export-mask {
+      position: fixed;
+      inset: 0;
+      z-index: 2147483647;
+      background: rgba(250, 250, 250, 0.85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(2px);
+    }
+
+    .__export-mask__panel {
+      background: rgba(15, 23, 42, 0.78);
+      color: #fff;
+      padding: 14px 22px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      box-shadow: 0 12px 40px rgba(15, 23, 42, 0.18);
+    }
+
+    .__export-mask__spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.35);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    /* ===== 可访问性：尊重系统降低动效偏好 ===== */
+    @media (prefers-reduced-motion: reduce) {
+
+      .waiting::before,
+      .waiting::after,
+      .__export-mask__spinner {
+        animation-duration: 3s;
+      }
+    }
+
+    /* ===== 小屏适配 ===== */
+    @media (max-width: 480px) {
+      .siteWatermark {
+        font-size: 11px;
+        padding: 0 12px;
+      }
+
+      .cornerWatermark {
+        display: none;
+      }
+    }
+  </style>
+
+  <!-- ===== Tailwind CSS ===== -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script>
+    tailwind.config = {
+      prefix: 'tw-',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              bg: '#F7F8FC',
+              panel: '#FFFFFF',
+              border: '#E4E8F4',
+              primary: '#5B6BFF',
+              secondary: '#8B7CF8',
+              text: '#1A1F3C',
+              muted: '#6B7280',
+              success: '#10B981',
+              accent: '#F0F1FF'
+            }
+          },
+          boxShadow: {
+            soft: '0 2px 24px rgba(91,107,255,0.10)',
+            card: '0 1px 4px rgba(26,31,60,0.06), 0 8px 32px rgba(91,107,255,0.08)',
+            glow: '0 0 48px rgba(91,107,255,0.18)'
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body>
+  <div class="pageWrapper">
+    <main class="contentItemArea" role="main">
+      <div class="waiting" aria-hidden="true"></div>
+      <div class="loadingTips">内容加载中，请稍候…</div>
+    </main>
+
+    <!-- 右下角次级角标水印（极淡） -->
+    <div class="cornerWatermark" aria-hidden="true">
+      Agent 应用名称：<strong>数学变式练习题生成</strong><br>
+      应用创作者: 刘文津, 内容编辑导出者: 刘文津</div>
+
+    <!-- 底部主水印条 -->
+    <footer class="siteWatermark" role="contentinfo" aria-label="文档来源水印">
+      <a class="siteWatermark__brand" title="访问 Agent 应用" href="https://transweb.cn?solo=true&id=5eb9bfbc9b49e80491478655dcf9766b" target="_blank"
+        rel="noopener noreferrer">
+        <span class="siteWatermark__dot" aria-hidden="true"></span>
+        <span>由 Agent 应用导出</span>
+      </a>
+      <a class="siteWatermark__link" href="https://transweb.cn" target="_blank" rel="noopener noreferrer"
+        title="访问 TransWeb 官网">
+        <span>TransWeb 驱动</span>
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
+          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M7 17L17 7" />
+          <path d="M8 7h9v9" />
+        </svg>
+      </a>
+    </footer>
+  </div>
+  <script async src="https://transweb.cn/common/mathjax/tex-chtml.js"></script>
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [["$", "$"], ["\\(", "\\)"]], displayMath: [["$$", "$$"], ["\\[", "\\]"]] },
+      svg: { fontCache: "global" }
+    };
+  </script>
+
+  <script defer src="https://transweb.cn/index.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      let app = {
+        className: "ElementVueItem",
+        task: {
+          style: {
+            overflow: "auto"
+          },
+          template: `data:text/plain;charset=utf-8;base64,PHRlbXBsYXRlPgogIDxkaXYgcmVmPSJyb290Q29udGFpbmVySXRlbSIgY2xhc3M9Indvcmtib29rLXJvb3QgdHctcmVsYXRpdmUgdHctcC00Ij4KICAgIDxlbC1jYXJkIGNsYXNzPSJ0dy1tYXgtdy00eGwgdHctbXgtYXV0byB0dy1teS0zIHR3LWJnLXdoaXRlIHR3LXJvdW5kZWQtMnhsIHR3LXNoYWRvdy1tZCB0dy1zaGFkb3ctc2xhdGUtMjAwLzYwIHR3LWJvcmRlciB0dy1ib3JkZXItZ3JheS0xMDAgdHctb3ZlcmZsb3ctaGlkZGVuIiBzaGFkb3c9Im5ldmVyIj4KICAgICAgPCEtLSB0aXRsZTog57uD5Lmg5YaM5qCH6aKYIC0tPgogICAgICA8ZGl2IGNsYXNzPSJ0dy1weS03IHR3LXB4LTQgbWQ6dHctcHgtMTAgdHctYm9yZGVyLWIgdHctYm9yZGVyLWdyYXktMTAwIHR3LWJnLVsjZjBmOWZmXSB0dy10ZXh0LWNlbnRlciI+CiAgICAgICAgPHNwYW4gY2xhc3M9InR3LWlubGluZS1mbGV4IHR3LWl0ZW1zLWNlbnRlciB0dy1nYXAtMiB0dy1weC0zIHR3LXB5LTEgdHctbWItMyB0dy1yb3VuZGVkLWZ1bGwgdHctYmctd2hpdGUgdHctYm9yZGVyIHR3LWJvcmRlci1bI2UwZjJmZV0gdHctdGV4dC1bIzAwNjZDQ10gdHctdGV4dC14cyB0dy1mb250LWJvbGQgdHctdHJhY2tpbmctd2lkZXN0Ij4KICAgICAgICAgIDxzdmcgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJ0dy13LTMuNSB0dy1oLTMuNSI+CiAgICAgICAgICAgIDxwYXRoIGQ9Ik0yIDNoNmE0IDQgMCAwIDEgNCA0djE0YTMgMyAwIDAgMC0zLTNIMnoiIC8+CiAgICAgICAgICAgIDxwYXRoIGQ9Ik0yMiAzaC02YTQgNCAwIDAgMC00IDR2MTRhMyAzIDAgMCAxIDMtM2g3eiIgLz4KICAgICAgICAgIDwvc3ZnPgogICAgICAgICAg57uD5Lmg5YaMIMK3IFdPUktCT09LCiAgICAgICAgPC9zcGFuPgogICAgICAgIDxoMyBjbGFzcz0idHctdGV4dC0yeGwgbWQ6dHctdGV4dC0zeGwgdHctZm9udC1ib2xkIHR3LXRleHQtc2xhdGUtOTAwIHR3LXRleHQtY2VudGVyIHR3LWxlYWRpbmctcmVsYXhlZCB0dy1icmVhay13b3JkcyI+CiAgICAgICAgICB7eyBhY2NvdW50RGF0YS50aXRsZSB9fQogICAgICAgIDwvaDM+CiAgICAgIDwvZGl2PgoKICAgICAgPCEtLSBvcmlnaW5hbF9xdWVzdGlvbjog5Y6f6aKY5bGV56S6IC0tPgogICAgICA8ZGl2IGNsYXNzPSJ0dy1weC00IG1kOnR3LXB4LTEwIHR3LXB5LTUgdHctYmctWyNmNmY5ZjddIHR3LWJvcmRlci1iIHR3LWJvcmRlci1ncmF5LTEwMCI+CiAgICAgICAgPGRpdiBjbGFzcz0idHctZmxleCB0dy1pdGVtcy1zdGFydCB0dy1nYXAtMiB0dy1iZy13aGl0ZSB0dy1ib3JkZXIgdHctYm9yZGVyLWdyYXktMTAwIHR3LWJvcmRlci1sLTQgdHctYm9yZGVyLWwtWyMwMDY2Q0NdIHR3LXJvdW5kZWQtci14bCB0dy1wLTQiPgogICAgICAgICAgPHNwYW4gY2xhc3M9InR3LWZvbnQtYm9sZCB0dy10ZXh0LVsjMDA2NkNDXSB0dy10ZXh0LWJhc2UgdHctZmxleC1zaHJpbmstMCB0dy13LTEwIHR3LXRleHQtcmlnaHQiPuWOn+mimC48L3NwYW4+CiAgICAgICAgICA8cCBjbGFzcz0idHctdGV4dC1zbSBtZDp0dy10ZXh0LWJhc2UgdHctdGV4dC1zbGF0ZS03MDAgdHctbGVhZGluZy1yZWxheGVkIHR3LWJyZWFrLXdvcmRzIHR3LW1iLTAgdHctZmxleC0xIHR3LW1pbi13LTAiPgogICAgICAgICAgICB7eyBhY2NvdW50RGF0YS5vcmlnaW5hbF9xdWVzdGlvbiB9fQogICAgICAgICAgPC9wPgogICAgICAgIDwvZGl2PgogICAgICA8L2Rpdj4KCiAgICAgIDwhLS0gdmFyaWF0aW9uczog5Y+Y5byP6K6t57uD5qih5Z2XIC0tPgogICAgICA8ZGl2IGNsYXNzPSJ0dy1weC00IG1kOnR3LXB4LTEwIHR3LXB5LTYgdHctc3BhY2UteS04Ij4KICAgICAgICA8ZGl2IHYtZm9yPSIodmFyaWFudCwgdmFyaWFudEluZGV4KSBpbiBhY2NvdW50RGF0YS52YXJpYXRpb25zIiA6a2V5PSJ2YXJpYW50SW5kZXgiIGNsYXNzPSJ2YXJpYW50LWJsb2NrIHR3LWJnLXdoaXRlIHR3LXJvdW5kZWQtMnhsIHR3LXAtNCBtZDp0dy1wLTYgdHctYm9yZGVyIHR3LWJvcmRlci1ncmF5LTEwMCB0dy1zaGFkb3ctc20iPgogICAgICAgICAgPCEtLSB2YXJpYW50LnR5cGU6IOWPmOW8j+exu+Wei+agh+etviAtLT4KICAgICAgICAgIDxkaXYgY2xhc3M9InR3LWZsZXggdHctaXRlbXMtY2VudGVyIHR3LWdhcC0yLjUgdHctbWItMCI+CiAgICAgICAgICAgIDxzcGFuIGNsYXNzPSJ0dy13LTEuNSB0dy1oLTYgdHctYmctWyMwMDY2Q0NdIHR3LXJvdW5kZWQtZnVsbCB0dy1pbmxpbmUtYmxvY2sgdHctZmxleC1zaHJpbmstMCI+PC9zcGFuPgogICAgICAgICAgICA8cCBjbGFzcz0idHctbWItMCB0dy10ZXh0LWxnIG1kOnR3LXRleHQteGwgdHctZm9udC1zZW1pYm9sZCB0dy10ZXh0LXNsYXRlLTgwMCB0dy1sZWFkaW5nLXJlbGF4ZWQgdHctYnJlYWstd29yZHMgdHctbWluLXctMCI+CiAgICAgICAgICAgICAg5Y+Y5byPIHt7IHZhcmlhbnQudmFyaWFudF9pZCB9fe+8mnt7IHZhcmlhbnQudHlwZSB9fQogICAgICAgICAgICA8L3A+CiAgICAgICAgICA8L2Rpdj4KCiAgICAgICAgICA8IS0tIHZhcmlhbnQuY29udGVudDog5Y+Y5byP6aKY55uu5YaF5a65IC0tPgogICAgICAgICAgPGRpdiBjbGFzcz0idHctbWwtMyBtZDp0dy1tbC00IHR3LW1iLTQiPgogICAgICAgICAgICA8ZGl2IGNsYXNzPSJ0dy1mbGV4IHR3LWl0ZW1zLXN0YXJ0IHR3LWdhcC0yIHR3LW1iLTMiPgogICAgICAgICAgICAgIDxzcGFuIGNsYXNzPSJ0dy1mb250LWJvbGQgdHctdGV4dC1bIzAwNjZDQ10gdHctdGV4dC1iYXNlIHR3LWZsZXgtc2hyaW5rLTAgdHctdy04IHR3LXRleHQtcmlnaHQiPnt7IHZhcmlhbnQudmFyaWFudF9pZCB9fS48L3NwYW4+CiAgICAgICAgICAgICAgPHAgY2xhc3M9InR3LW1iLTAgdHctdGV4dC1zbGF0ZS04MDAgdHctbGVhZGluZy1yZWxheGVkIHR3LXRleHQtc20gbWQ6dHctdGV4dC1iYXNlIHR3LWJyZWFrLXdvcmRzIHR3LWZsZXgtMSB0dy1taW4tdy0wIj4KICAgICAgICAgICAgICAgIHt7IHZhcmlhbnQuY29udGVudCB9fQogICAgICAgICAgICAgIDwvcD4KICAgICAgICAgICAgPC9kaXY+CgogICAgICAgICAgICA8IS0tIHZhcmlhbnQub3B0aW9uczog6YCJ5oup6aKY6YCJ6aG5ICjlpoLmnpzmnIkpIC0tPgogICAgICAgICAgICA8ZGl2IHYtaWY9InZhcmlhbnQub3B0aW9ucyAmJiB2YXJpYW50Lm9wdGlvbnMubGVuZ3RoIiBjbGFzcz0ib3B0aW9ucy1saXN0IHR3LW1sLTAgbWQ6dHctbWwtOCB0dy1tdC0zIHR3LWdyaWQgdHctZ3JpZC1jb2xzLTEgc206dHctZ3JpZC1jb2xzLTIgdHctZ2FwLTIiPgogICAgICAgICAgICAgIDxkaXYgdi1mb3I9IihvcHRpb24sIG9wdEluZGV4KSBpbiB2YXJpYW50Lm9wdGlvbnMiIDprZXk9Im9wdEluZGV4IiBjbGFzcz0ib3B0aW9uLWl0ZW0gdHctZmxleCB0dy1pdGVtcy1jZW50ZXIgdHctZ2FwLTIgdHctcC0yIHR3LXJvdW5kZWQtbGcgaG92ZXI6dHctYmctWyNmMGY5ZmZdIHR3LXRyYW5zaXRpb24tY29sb3JzIHR3LWR1cmF0aW9uLTE1MCI+CiAgICAgICAgICAgICAgICA8c3BhbiBjbGFzcz0ib3B0aW9uLWtleSB0dy1mb250LXNlbWlib2xkIHR3LXRleHQtWyMwMDY2Q0NdIHR3LXctNiB0dy1oLTYgdHctZmxleCB0dy1pdGVtcy1jZW50ZXIgdHctanVzdGlmeS1jZW50ZXIgdHctcm91bmRlZC1mdWxsIHR3LWJnLVsjZjBmOWZmXSB0dy1ib3JkZXIgdHctYm9yZGVyLVsjZTBmMmZlXSB0dy10ZXh0LXhzIHR3LWZsZXgtc2hyaW5rLTAiPgogICAgICAgICAgICAgICAgICB7eyBvcHRpb24ua2V5IH19CiAgICAgICAgICAgICAgICA8L3NwYW4+CiAgICAgICAgICAgICAgICA8c3BhbiBjbGFzcz0ib3B0aW9uLXZhbHVlIHR3LXRleHQtc2xhdGUtNzAwIHR3LXRleHQtc20gdHctYnJlYWstd29yZHMgdHctbWluLXctMCI+CiAgICAgICAgICAgICAgICAgIHt7IG9wdGlvbi52YWx1ZSB9fQogICAgICAgICAgICAgICAgPC9zcGFuPgogICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICA8L2Rpdj4KCiAgICAgICAgICAgIDwhLS0gdmFyaWFudC5oYXNfc3ZnOiDmmK/lkKbmnInphY3lm74v5o+S55S7IC0tPgogICAgICAgICAgICA8ZGl2IHYtaWY9InZhcmlhbnQuaGFzX3N2ZyIgY2xhc3M9InN2Zy1jb250YWluZXIgdHctbXQtNCB0dy1tbC0wIG1kOnR3LW1sLTggdHctcC00IHR3LWJnLVsjZjBmOWZmXSB0dy1yb3VuZGVkLXhsIHR3LWJvcmRlciB0dy1ib3JkZXItZGFzaGVkIHR3LWJvcmRlci1bI2IzZDFmMF0gdHctdGV4dC1jZW50ZXIgdHctb3ZlcmZsb3ctaGlkZGVuIj4KICAgICAgICAgICAgICA8IS0tIOebtOaOpea4suafkyBTVkcg5o+S55S7IC0tPgogICAgICAgICAgICAgIDxkaXYgdi1pZj0idmFyaWFudC5zdmdfY29kZSIgY2xhc3M9InN2Zy13cmFwcGVyIHR3LWlubGluZS1ibG9jayB0dy13LWZ1bGwgdHctbWF4LXctY3VzdG9tLTM2MHB4IiB2LWh0bWw9InZhcmlhbnQuc3ZnX2NvZGUiPjwvZGl2PgogICAgICAgICAgICAgIDxwIHYtZWxzZSBjbGFzcz0ic3ZnLWRlc2MgdHctdGV4dC14cyB0dy10ZXh0LWdyYXktNTAwIHR3LWl0YWxpYyB0dy1sZWFkaW5nLXJlbGF4ZWQiPgogICAgICAgICAgICAgICAgWyDphY3lm77mj4/ov7DvvJp7eyB2YXJpYW50LnN2Z19kZXNjIH19IF0KICAgICAgICAgICAgICA8L3A+CiAgICAgICAgICAgIDwvZGl2PgoKICAgICAgICAgICAgPCEtLSDmn6XnnIvnrZTmoYjmjInpkq4gLS0+CiAgICAgICAgICAgIDxkaXYgY2xhc3M9InR3LW10LTQgdHctbWwtMCBtZDp0dy1tbC04Ij4KICAgICAgICAgICAgICA8ZWwtYnV0dG9uIHNpemU9InNtYWxsIiBjbGFzcz0idHctcm91bmRlZC1mdWxsIiA6dHlwZT0idmFyaWFudC5zaG93QW5zd2VyID8gJ2luZm8nIDogJ3ByaW1hcnknIiBAY2xpY2s9InRvZ2dsZUFuc3dlcih2YXJpYW50SW5kZXgpIj4KICAgICAgICAgICAgICAgIDxpIDpjbGFzcz0idmFyaWFudC5zaG93QW5zd2VyID8gJ2JpIGJpLWV5ZS1zbGFzaCcgOiAnYmkgYmktZXllJyIgY2xhc3M9InR3LW1yLTEiPjwvaT4KICAgICAgICAgICAgICAgIHt7IHZhcmlhbnQuc2hvd0Fuc3dlciA/ICfpmpDol4/nrZTmoYjkuI7op6PmnpAnIDogJ+afpeeci+etlOahiOS4juino+aekCcgfX0KICAgICAgICAgICAgICA8L2VsLWJ1dHRvbj4KICAgICAgICAgICAgPC9kaXY+CgogICAgICAgICAgICA8IS0tIHZhcmlhbnQuYW5zd2VyICYgdmFyaWFudC5hbmFseXNpczog562U5qGI5LiO6Kej5p6Q77yI5Y+v5oqY5Y+g77yJIC0tPgogICAgICAgICAgICA8ZGl2IHYtaWY9InZhcmlhbnQuc2hvd0Fuc3dlciIgY2xhc3M9InR3LW10LTQgdHctbWwtMCBtZDp0dy1tbC04IHR3LWJnLVsjZjBmOWZmXSB0dy1ib3JkZXIgdHctYm9yZGVyLVsjZTBmMmZlXSB0dy1yb3VuZGVkLXhsIHR3LXAtNCB0dy1zcGFjZS15LTMgdHctb3ZlcmZsb3ctaGlkZGVuIj4KICAgICAgICAgICAgICA8ZGl2IGNsYXNzPSJ0dy1mbGV4IHR3LWl0ZW1zLXN0YXJ0IHR3LWdhcC0yIj4KICAgICAgICAgICAgICAgIDxzcGFuIGNsYXNzPSJ0dy1mb250LWJvbGQgdHctdGV4dC1bIzAwNjZDQ10gdHctdGV4dC1zbSB0dy1mbGV4LXNocmluay0wIHR3LXctMTIiPuetlOahiDwvc3Bhbj4KICAgICAgICAgICAgICAgIDxwIGNsYXNzPSJ0dy10ZXh0LXNsYXRlLTgwMCB0dy1sZWFkaW5nLXJlbGF4ZWQgdHctdGV4dC1zbSB0dy1icmVhay13b3JkcyB0dy1mbGV4LTEgdHctbWluLXctMCI+CiAgICAgICAgICAgICAgICAgIHt7IHZhcmlhbnQuYW5zd2VyIH19CiAgICAgICAgICAgICAgICA8L3A+CiAgICAgICAgICAgICAgPC9kaXY+CgogICAgICAgICAgICAgIDxkaXYgY2xhc3M9InR3LWZsZXggdHctaXRlbXMtc3RhcnQgdHctZ2FwLTIiPgogICAgICAgICAgICAgICAgPHNwYW4gY2xhc3M9InR3LWZvbnQtYm9sZCB0dy10ZXh0LVsjMDA2NkNDXSB0dy10ZXh0LXNtIHR3LWZsZXgtc2hyaW5rLTAgdHctdy0xMiI+6Kej5p6QPC9zcGFuPgogICAgICAgICAgICAgICAgPHAgY2xhc3M9InR3LXRleHQtc2xhdGUtNzAwIHR3LWxlYWRpbmctcmVsYXhlZCB0dy10ZXh0LXNtIHR3LWJyZWFrLXdvcmRzIHR3LWZsZXgtMSB0dy1taW4tdy0wIj4KICAgICAgICAgICAgICAgICAge3sgdmFyaWFudC5hbmFseXNpcyB9fQogICAgICAgICAgICAgICAgPC9wPgogICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICA8L2Rpdj4KCiAgICAgICAgICAgIDwhLS0gdmFyaWFudC5kaWZmaWN1bHR5OiDpmr7luqbmoIfnrb4gLS0+CiAgICAgICAgICAgIDxkaXYgY2xhc3M9InR3LW10LTMgdHctbWwtMCBtZDp0dy1tbC04IHR3LWZsZXggdHctaXRlbXMtY2VudGVyIHR3LWdhcC0yIj4KICAgICAgICAgICAgICA8ZWwtdGFnIGNsYXNzPSJkaWZmaWN1bHR5LXRhZyIgc2l6ZT0ic21hbGwiIDpjbGFzcz0iewogICAgICAgICAgICAgICAgICAndHctYmctZ3JlZW4tMTAwIHR3LXRleHQtZ3JlZW4tNzAwIHR3LWJvcmRlci1ncmVlbi0yMDAnOgogICAgICAgICAgICAgICAgICAgIHZhcmlhbnQuZGlmZmljdWx0eSA9PT0gJ2Vhc3knLAogICAgICAgICAgICAgICAgICAndHctYmcteWVsbG93LTEwMCB0dy10ZXh0LXllbGxvdy03MDAgdHctYm9yZGVyLXllbGxvdy0yMDAnOgogICAgICAgICAgICAgICAgICAgIHZhcmlhbnQuZGlmZmljdWx0eSA9PT0gJ21lZGl1bScsCiAgICAgICAgICAgICAgICAgICd0dy1iZy1yZWQtMTAwIHR3LXRleHQtcmVkLTcwMCB0dy1ib3JkZXItcmVkLTIwMCc6CiAgICAgICAgICAgICAgICAgICAgdmFyaWFudC5kaWZmaWN1bHR5ID09PSAnaGFyZCcsCiAgICAgICAgICAgICAgICB9Ij4KICAgICAgICAgICAgICAgIHt7CiAgICAgICAgICAgICAgICAgIHZhcmlhbnQuZGlmZmljdWx0eSA9PT0gJ2Vhc3knCiAgICAgICAgICAgICAgICAgICAgPyAn5piTJwogICAgICAgICAgICAgICAgICAgIDogdmFyaWFudC5kaWZmaWN1bHR5ID09PSAnbWVkaXVtJwogICAgICAgICAgICAgICAgICAgID8gJ+S4rScKICAgICAgICAgICAgICAgICAgICA6ICfpmr4nCiAgICAgICAgICAgICAgICB9fQogICAgICAgICAgICAgIDwvZWwtdGFnPgogICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgIDwvZGl2PgogICAgICAgIDwvZGl2PgogICAgICA8L2Rpdj4KCiAgICAgIDwhLS0gc3VtbWFyeTog5LiT6aKY5oC757uTIC0tPgogICAgICA8ZGl2IGNsYXNzPSJ0dy1weC00IG1kOnR3LXB4LTEwIHR3LXB5LTUgdHctYmctWyNmNmY5ZjddIHR3LWJvcmRlci10IHR3LWJvcmRlci1ncmF5LTEwMCI+CiAgICAgICAgPHAgY2xhc3M9InR3LXRleHQteHMgdHctdGV4dC1ncmF5LTUwMCB0dy10ZXh0LWNlbnRlciB0dy1sZWFkaW5nLXJlbGF4ZWQgdHctYnJlYWstd29yZHMiPgogICAgICAgICAge3sgYWNjb3VudERhdGEuc3VtbWFyeSB9fQogICAgICAgIDwvcD4KICAgICAgPC9kaXY+CiAgICA8L2VsLWNhcmQ+CiAgPC9kaXY+CjwvdGVtcGxhdGU+CjxzY3JpcHQ+CiAgZXhwb3J0IGRlZmF1bHQgewogICAgbmFtZTogIk1hdGhWYXJpYXRpb25Xb3JrYm9vayIsCiAgICBkYXRhKCkgewogICAgICByZXR1cm4gewogICAgICAgIGFjY291bnREYXRhOiB7CiAgICAgICAgICB0aXRsZTogJ+S6jOasoeWHveaVsOWbvuixoeS4juaAp+i0qOWPmOW8j+S4k+mimOiuree7gycsCiAgICAgICAgICBvcmlnaW5hbF9xdWVzdGlvbjogJ+W3suefpeaKm+eJqee6v3k9eMKyLTJ4LTPkuI546L205Lqk5LqOQeOAgULkuKTngrnvvIzkuI556L205Lqk5LqO54K5Q++8jOaxgumhtueCueWdkOagh+WPiuKWs0FCQ+eahOmdouenr+OAgicsCiAgICAgICAgICB2YXJpYXRpb25zOiBbewogICAgICAgICAgICAgIHZhcmlhbnRfaWQ6IDEsCiAgICAgICAgICAgICAgdHlwZTogJ+WPmOaNouadoeS7tu+8iOmAhuWQkeaAneiAg++8iScsCiAgICAgICAgICAgICAgY29udGVudDogJ+W3suefpeaKm+eJqee6v3k9eMKyK2J4K2PnmoTpobbngrnlnZDmoIfkuLooMSwtNCnvvIzkuJTkuI556L205Lqk5LqO54K5QygwLC0zKe+8jOaxguaKm+eJqee6v+eahOino+aekOW8j+WPiuS4jnjovbTkuqTngrnlvaLmiJDnmoTkuInop5LlvaLpnaLnp6/jgIInLAogICAgICAgICAgICAgIG9wdGlvbnM6IFtdLAogICAgICAgICAgICAgIGFuc3dlcjogJ+ino+aekOW8j+S4unk9eMKyLTJ4LTPvvIzpnaLnp6/kuLo244CCJywKICAgICAgICAgICAgICBhbmFseXNpczogJ+WIqeeUqOmhtueCueW8j+iuvnk9YSh4LTEpwrItNO+8jOS7o+WFpeeCuSgwLC0zKeaxguW+l2E9Me+8jOWNs+WPr+WxleW8gOW+l+ino+aekOW8j+OAguaxguW+l+S4jnjovbTkuqTngrlBKC0xLDApLCBCKDMsMCnvvIzlupXovrlBQj0077yM6auYT0M9M++8jOmdouenr1M9MS8yKjQqMz0244CCJywKICAgICAgICAgICAgICBoYXNfc3ZnOiB0cnVlLAogICAgICAgICAgICAgIHN2Z19jb2RlOiAnPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MDAgNDAwIj48bGluZSB4MT0iMzAiIHkxPSIyMDAiIHgyPSIzNzAiIHkyPSIyMDAiIHN0cm9rZT0iIzAwMCIgc3Ryb2tlLXdpZHRoPSIyIi8+PGxpbmUgeDE9IjE1MCIgeTE9IjMwIiB4Mj0iMTUwIiB5Mj0iMzcwIiBzdHJva2U9IiMwMDAiIHN0cm9rZS13aWR0aD0iMiIvPjxwYXRoIGQ9Ik0gNzAgNTAgUSAyMDAgMzcwIDMzMCA1MCIgc3Ryb2tlPSIjMUU4OEU1IiBmaWxsPSJub25lIiBzdHJva2Utd2lkdGg9IjIuNSIvPjxwb2x5Z29uIHBvaW50cz0iMTEwLDIwMCAyNzAsMjAwIDE1MCwyOTAiIGZpbGw9InJnYmEoMzAsMTM2LDIyOSwwLjE1KSIgc3Ryb2tlPSIjMUU4OEU1IiBzdHJva2UtZGFzaGFycmF5PSI0Ii8+PGNpcmNsZSBjeD0iMjAwIiBjeT0iMzIwIiByPSI0IiBmaWxsPSIjRTUzOTM1Ii8+PHRleHQgeD0iMjEwIiB5PSIzMjUiIGZvbnQtc2l6ZT0iMTIiPumhtueCuSgxLC00KTwvdGV4dD48dGV4dCB4PSI5NSIgeT0iMTkwIiBmb250LXNpemU9IjEyIj5BKC0xLDApPC90ZXh0Pjx0ZXh0IHg9IjI3NSIgeT0iMTkwIiBmb250LXNpemU9IjEyIj5CKDMsMCk8L3RleHQ+PHRleHQgeD0iMTE1IiB5PSIyOTUiIGZvbnQtc2l6ZT0iMTIiPkMoMCwtMyk8L3RleHQ+PC9zdmc+JywKICAgICAgICAgICAgICBkaWZmaWN1bHR5OiAnZWFzeScsCiAgICAgICAgICAgICAgc2hvd0Fuc3dlcjogZmFsc2UsCiAgICAgICAgICAgIH0sCiAgICAgICAgICAgIHsKICAgICAgICAgICAgICB2YXJpYW50X2lkOiAyLAogICAgICAgICAgICAgIHR5cGU6ICfnu7zlkIjmi5PlsZXvvIjliqjngrnmnIDlgLzvvIknLAogICAgICAgICAgICAgIGNvbnRlbnQ6ICflnKjmipvniannur95PXjCsi0yeC0z55qE5a+556ew6L205LiK5piv5ZCm5a2Y5Zyo5LiA54K5UO+8jOS9v+W+l1BBK1BD55qE5ZGo6ZW/5pyA5bCP77yf6Iul5a2Y5Zyo77yM5rGC5Ye654K5UOeahOWdkOagh++8m+iLpeS4jeWtmOWcqO+8jOivt+ivtOaYjueQhueUseOAgicsCiAgICAgICAgICAgICAgb3B0aW9uczogW10sCiAgICAgICAgICAgICAgYW5zd2VyOiAn5a2Y5Zyo77yM54K5UOeahOWdkOagh+S4uigxLC0yKeOAgicsCiAgICAgICAgICAgICAgYW5hbHlzaXM6ICfnlLHovbTlr7nnp7DmgKfotKjvvIzngrlBKC0xLDAp5YWz5LqO5a+556ew6L20eD0x55qE5a+556ew54K55Li6QigzLDAp44CC6L+e57uTQkPkuqTlr7nnp7DovbTkuo7ngrlQ77yM5q2k5pe2UEErUEM9UEIrUEM9QkPmnIDlsI/jgILmsYLlh7rnm7Tnur9CQ+eahOino+aekOW8j++8jOWPlng9MeW4puWFpeWNs+WPr+W+l+WHulDngrnlnZDmoIfjgIInLAogICAgICAgICAgICAgIGhhc19zdmc6IHRydWUsCiAgICAgICAgICAgICAgc3ZnX2NvZGU6ICc8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmlld0JveD0iMCAwIDQwMCA0MDAiPjxsaW5lIHgxPSIyMDAiIHkxPSIyMCIgeDI9IjIwMCIgeTI9IjM4MCIgc3Ryb2tlPSIjNzU3NTc1IiBzdHJva2UtZGFzaGFycmF5PSI1LDUiIHN0cm9rZS13aWR0aD0iMS41Ii8+PGxpbmUgeDE9IjI3MCIgeTE9IjIwMCIgeDI9IjE1MCIgeTI9IjI5MCIgc3Ryb2tlPSIjNENBRjUwIiBzdHJva2Utd2lkdGg9IjIiLz48bGluZSB4MT0iMTEwIiB5MT0iMjAwIiB4Mj0iMjAwIiB5Mj0iMjIyLjUiIHN0cm9rZT0iIzRDQUY1MCIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtZGFzaGFycmF5PSIzLDMiLz48Y2lyY2xlIGN4PSIyMDAiIGN5PSIyMjIuNSIgcj0iNCIgZmlsbD0iI0U1MzkzNSIvPjx0ZXh0IHg9IjIxMCIgeT0iMjI1IiBmb250LXNpemU9IjEyIj5QKDEsLTIpPC90ZXh0Pjwvc3ZnPicsCiAgICAgICAgICAgICAgZGlmZmljdWx0eTogJ2hhcmQnLAogICAgICAgICAgICAgIHNob3dBbnN3ZXI6IGZhbHNlLAogICAgICAgICAgICB9LAogICAgICAgICAgXSwKICAgICAgICAgIHN1bW1hcnk6ICfmnKznu4Tlj5jlvI/ku47ln7rnoYDnmoTpgIblkJHmsYLop6PmnpDlvI/lu7bkvLjliLDliqjngrnlh6DkvZXmnIDlgLzpl67popjvvIzph43ngrnogIPmn6XkuozmrKHlh73mlbDnmoTovbTlr7nnp7DmgKfotKjkuI7kuKTngrnkuYvpl7Tnur/mrrXmnIDnn63nrYnmoLjlv4PmlbDlrabmgJ3mg7PjgIInLAogICAgICAgIH0sCiAgICAgIH07CiAgICB9LAogICAgbW91bnRlZCgpIHsKICAgICAgdGhpcy4kbmV4dFRpY2soKCkgPT4gewogICAgICAgIGxldCBlbGVtID0gdGhpcy4kcmVmcy5yb290Q29udGFpbmVySXRlbTsKICAgICAgICBNYXRoSmF4LnR5cGVzZXQoW2VsZW1dKTsKICAgICAgfSk7CiAgICB9LAogICAgbWV0aG9kczogewogICAgICB0b2dnbGVBbnN3ZXIodmFyaWFudEluZGV4KSB7CiAgICAgICAgdGhpcy5hY2NvdW50RGF0YS52YXJpYXRpb25zW3ZhcmlhbnRJbmRleF0uc2hvd0Fuc3dlciA9ICF0aGlzLmFjY291bnREYXRhLnZhcmlhdGlvbnNbdmFyaWFudEluZGV4XS5zaG93QW5zd2VyOwogICAgICAgIHRoaXMuJG5leHRUaWNrKCgpID0+IHsKICAgICAgICAgIGxldCBlbGVtID0gdGhpcy4kcmVmcy5yb290Q29udGFpbmVySXRlbTsKICAgICAgICAgIE1hdGhKYXgudHlwZXNldChbZWxlbV0pOwogICAgICAgIH0pOwogICAgICB9LAogICAgfSwKICB9Owo8L3NjcmlwdD4KPHN0eWxlIHNjb3BlZD4KICAvKiA9PT09PSDpobXpnaLog4zmma/vvJrmtYXnu7/ngbAgKyDngrnpmLXvvIzlkbzlupTlrpjnvZEgcGFnZWJnID09PT09ICovCiAgLndvcmtib29rLXJvb3QgewogICAgLS1lbC1jb2xvci1wcmltYXJ5OiAjMDA2NmNjOwogICAgLS1lbC1jb2xvci1wcmltYXJ5LWxpZ2h0LTM6ICMzMzg1ZDY7CiAgICAtLWVsLWNvbG9yLXByaW1hcnktbGlnaHQtNTogIzY2YTNlMDsKICAgIC0tZWwtY29sb3ItcHJpbWFyeS1saWdodC03OiAjOTljMmViOwogICAgLS1lbC1jb2xvci1wcmltYXJ5LWxpZ2h0LTg6ICNiM2QxZjA7CiAgICAtLWVsLWNvbG9yLXByaW1hcnktbGlnaHQtOTogI2UwZjJmZTsKICAgIC0tZWwtY29sb3ItcHJpbWFyeS1kYXJrLTI6ICMwMDUyYTM7CgogICAgYmFja2dyb3VuZC1jb2xvcjogI2VlZjNmMDsKICAgIGJhY2tncm91bmQtaW1hZ2U6IHJhZGlhbC1ncmFkaWVudCgjZGZlN2UxIDFweCwgdHJhbnNwYXJlbnQgMXB4KTsKICAgIGJhY2tncm91bmQtc2l6ZTogMjhweCAyOHB4OwogIH0KCiAgLnZhcmlhbnQtYmxvY2sgewogICAgcGFnZS1icmVhay1pbnNpZGU6IGF2b2lkOwogIH0KCiAgLnN2Zy1jb250YWluZXIgewogICAgb3ZlcmZsb3c6IGhpZGRlbjsKICB9CgogIC5zdmctd3JhcHBlciB7CiAgICB3aWR0aDogMTAwJTsKICAgIG1heC13aWR0aDogMzYwcHg7CiAgfQoKICAuc3ZnLXdyYXBwZXIgc3ZnIHsKICAgIHdpZHRoOiAxMDAlOwogICAgaGVpZ2h0OiBhdXRvOwogICAgZGlzcGxheTogYmxvY2s7CiAgfQoKICAuZWwtdGFnLmRpZmZpY3VsdHktdGFnIHsKICAgIGJvcmRlci1yYWRpdXM6IDEycHg7CiAgICBwYWRkaW5nOiAwIDhweDsKICAgIGZvbnQtd2VpZ2h0OiA1MDA7CiAgICBsZXR0ZXItc3BhY2luZzogMC41cHg7CiAgfQoKICAudHctbWF4LXctY3VzdG9tLTM2MHB4IHsKICAgIG1heC13aWR0aDogMzYwcHg7CiAgfQoKICBAbWVkaWEgcHJpbnQgewoKICAgIC50dy1zaGFkb3ctbGcsCiAgICAudHctc2hhZG93LW1kLAogICAgLnR3LXNoYWRvdy1zbSB7CiAgICAgIGJveC1zaGFkb3c6IG5vbmUgIWltcG9ydGFudDsKICAgIH0KCiAgICAudHctYmctZ3JhZGllbnQtdG8tciB7CiAgICAgIGJhY2tncm91bmQ6IG5vbmUgIWltcG9ydGFudDsKICAgIH0KCiAgICAuaG92ZXJcOnR3LWJnLWJsdWUtNTA6aG92ZXIgewogICAgICBiYWNrZ3JvdW5kLWNvbG9yOiB0cmFuc3BhcmVudCAhaW1wb3J0YW50OwogICAgfQogIH0KPC9zdHlsZT4=`,
+          data: {
+            accountData: {"title":"二次函数与几何变换综合变式训练","original_question":"如图，抛物线 y = -x² + 2x + 3 与 x 轴交于 A, B 两点（A 在 B 左侧），与 y 轴交于点 C，顶点为 D。求 A, B, C, D 的坐标及四边形 ACBD 的面积。","variations":[{"variant_id":1,"type":"变换条件（逆向思考）","content":"已知抛物线 y = ax² + bx + c 的顶点 D 的坐标为 (1, 4)，且该抛物线与 x 轴的两个交点 A, B 之间的距离为 4。若点 A 在点 B 的左侧，且抛物线与 y 轴交于点 C (0, 3)，求该抛物线的解析式，并判断四边形 ACBD 是否为平行四边形，说明理由。","options":[],"answer":"解析式为 y = -x² + 2x + 3。四边形 ACBD 不是平行四边形，因为对角线不互相平分。","analysis":"由顶点 D(1,4) 设顶点式 y = a(x-1)² + 4。由 AB = 4 且对称轴为 x=1，得 A(-1,0), B(3,0)。将 A(-1,0) 代入得 a = -1，故 y = -(x-1)² + 4 = -x² + 2x + 3。令 x=0 得 C(0,3)。考点：待定系数法、二次函数对称性。\n判断平行四边形：计算对角线 AC 中点坐标为 (-0.5, 1.5)，BD 中点坐标为 (2, 2)。中点不重合，故不是平行四边形。易错点：误认为所有对称的四边形都是平行四边形。","has_svg":true,"svg_code":"<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 400\"><defs><marker id=\"arrow\" markerWidth=\"10\" markerHeight=\"10\" refX=\"9\" refY=\"3\" orient=\"auto\" markerUnits=\"strokeWidth\"><path d=\"M0,0 L0,6 L9,3 z\" fill=\"#333\"/></marker></defs><line x1=\"30\" y1=\"250\" x2=\"370\" y2=\"250\" stroke=\"#333\" stroke-width=\"2\" marker-end=\"url(#arrow)\"/><line x1=\"150\" y1=\"30\" x2=\"150\" y2=\"370\" stroke=\"#333\" stroke-width=\"2\" marker-end=\"url(#arrow)\"/><path d=\"M 70 250 Q 150 -50 330 250\" stroke=\"#1E88E5\" fill=\"none\" stroke-width=\"2.5\"/><polygon points=\"70,250 330,250 150,50 150,310\" fill=\"rgba(30,136,229,0.1)\" stroke=\"#E53935\" stroke-width=\"1.5\" stroke-dasharray=\"5,3\"/><circle cx=\"70\" cy=\"250\" r=\"4\" fill=\"#E53935\"/><text x=\"55\" y=\"240\" font-size=\"12\" fill=\"#E53935\">A(-1,0)</text><circle cx=\"330\" cy=\"250\" r=\"4\" fill=\"#E53935\"/><text x=\"335\" y=\"240\" font-size=\"12\" fill=\"#E53935\">B(3,0)</text><circle cx=\"150\" cy=\"310\" r=\"4\" fill=\"#E53935\"/><text x=\"155\" y=\"325\" font-size=\"12\" fill=\"#E53935\">C(0,3)</text><circle cx=\"150\" cy=\"50\" r=\"4\" fill=\"#E53935\"/><text x=\"155\" y=\"45\" font-size=\"12\" fill=\"#E53935\">D(1,4)</text></svg>","difficulty":"medium"},{"variant_id":2,"type":"变换题型（存在性探究）","content":"如图，抛物线 y = -x² + 2x + 3 与 x 轴交于 A, B 两点，与 y 轴交于点 C。点 P 是 x 轴上方抛物线上的一动点，过点 P 作 PE ⊥ x 轴于点 E，交直线 BC 于点 F。是否存在点 P，使得以 C, P, F 为顶点的三角形与 △BOC 相似？若存在，求出点 P 的坐标；若不存在，请说明理由。","options":[],"answer":"存在，点 P 的坐标为 (2, 3) 或 ( (1+√5)/2, (5+√5)/2 )。","analysis":"由解析式得 B(3,0), C(0,3)，故 △BOC 是等腰直角三角形。直线 BC 解析式为 y = -x + 3。设 P(m, -m²+2m+3)，则 F(m, -m+3)。PF = | -m²+2m+3 - (-m+3) | = | -m²+3m |。\n分类讨论：\n1. 若 ∠PCF = 90°，则 PC∥OB，此时 P 纵坐标为 3，解得 m=2，P(2,3)。\n2. 若 ∠PFC = 90°，则 PF = CF。CF = √2 * (3-m)，PF = -m²+3m。解方程得 m=(1±√5)/2，取正值得 P。\n易错点：忽略动点在 x 轴上方的限制条件，或漏解。","has_svg":true,"svg_code":"<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 400\"><line x1=\"30\" y1=\"250\" x2=\"370\" y2=\"250\" stroke=\"#333\" stroke-width=\"2\"/><line x1=\"150\" y1=\"30\" x2=\"150\" y2=\"370\" stroke=\"#333\" stroke-width=\"2\"/><path d=\"M 70 250 Q 150 -50 330 250\" stroke=\"#1E88E5\" fill=\"none\" stroke-width=\"2\"/><line x1=\"330\" y1=\"250\" x2=\"150\" y2=\"310\" stroke=\"#4CAF50\" stroke-width=\"2\"/><polygon points=\"150,310 330,250 150,250\" fill=\"rgba(76,175,80,0.15)\" stroke=\"#4CAF50\" stroke-width=\"1\"/><text x=\"340\" y=\"245\" font-size=\"12\">B(3,0)</text><text x=\"155\" y=\"325\" font-size=\"12\">C(0,3)</text><text x=\"155\" y=\"245\" font-size=\"12\">O</text><line x1=\"230\" y1=\"250\" x2=\"230\" y2=\"160\" stroke=\"#E53935\" stroke-dasharray=\"4,2\" stroke-width=\"1.5\"/><line x1=\"230\" y1=\"160\" x2=\"230\" y2=\"140\" stroke=\"#E53935\" stroke-width=\"2\"/><circle cx=\"230\" cy=\"140\" r=\"4\" fill=\"#E53935\"/><text x=\"240\" y=\"135\" font-size=\"12\" fill=\"#E53935\">P</text><circle cx=\"230\" cy=\"160\" r=\"3\" fill=\"#FF9800\"/><text x=\"240\" y=\"165\" font-size=\"11\" fill=\"#FF9800\">F</text></svg>","difficulty":"hard"},{"variant_id":3,"type":"综合拓展（面积与最值）","content":"在平面直角坐标系中，抛物线 y = -x² + 2x + 3 与 x 轴交于 A, B 两点（A 在 B 左侧），与 y 轴交于点 C。连接 AC, BC。点 P 是直线 AC 上方抛物线上的一个动点。过点 P 作 y 轴的平行线交 AC 于点 Q，再过点 P 作 x 轴的垂线，垂足为点 R。设点 P 的横坐标为 t，试用含 t 的代数式表示 PQ 的长度，并求出当 t 为何值时，四边形 PQCR 的面积最大，最大值是多少？","options":[],"answer":"PQ = -t² - t；当 t = -1/2 时，四边形面积最大值为 27/8。","analysis":"由解析式得 A(-1,0), C(0,3)。直线 AC 解析式为 y = 3x + 3。\n设 P(t, -t²+2t+3)，则 Q(t, 3t+3)。\nPQ = (-t²+2t+3) - (3t+3) = -t² - t。\n四边形 PQCR 可分割为直角三角形 PCR 和梯形 PQR（实际上为直角梯形），或者直接用割补法。面积 S = S_△PCR + S_梯形PQOR（需注意坐标正负）。\n由于 R(t, 0)，C(0,3)，四边形 PQCR 面积 = 1/2 * CR * PR + 1/2 * (PQ + OR) * QR? \n更简单的方法是：S = S_梯形POCR + S_△PQR = 1/2*(OC+PR)*|t| + 1/2*PQ*|t|。\n因为 t 在 -1 到 0 之间，|t| = -t。\nS = 1/2*(3 - t² + 2t + 3)*(-t) + 1/2*(-t² - t)*(-t) = ... 整理得 S = -t³ - 3/2 t² + 3t。\n求导或配方求最值得当 t = -1/2 时，S_max = 27/8。\n考点：二次函数动点面积问题，函数建模，最值求解。","has_svg":true,"svg_code":"<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 400\"><line x1=\"30\" y1=\"250\" x2=\"370\" y2=\"250\" stroke=\"#333\" stroke-width=\"2\"/><line x1=\"150\" y1=\"30\" x2=\"150\" y2=\"370\" stroke=\"#333\" stroke-width=\"2\"/><path d=\"M 70 250 Q 150 -50 330 250\" stroke=\"#1E88E5\" fill=\"none\" stroke-width=\"2\"/><polygon points=\"70,250 150,310 330,250\" fill=\"rgba(30,136,229,0.05)\" stroke=\"#1E88E5\" stroke-width=\"1\"/><line x1=\"70\" y1=\"250\" x2=\"150\" y2=\"310\" stroke=\"#4CAF50\" stroke-width=\"2\"/><text x=\"55\" y=\"240\" font-size=\"12\">A(-1,0)</text><text x=\"335\" y=\"240\" font-size=\"12\">B(3,0)</text><text x=\"155\" y=\"325\" font-size=\"12\">C(0,3)</text><line x1=\"110\" y1=\"250\" x2=\"110\" y2=\"200\" stroke=\"#E53935\" stroke-dasharray=\"4,2\" stroke-width=\"1.5\"/><line x1=\"110\" y1=\"200\" x2=\"110\" y2=\"180\" stroke=\"#E53935\" stroke-width=\"2\"/><circle cx=\"110\" cy=\"180\" r=\"4\" fill=\"#E53935\"/><text x=\"80\" y=\"175\" font-size=\"12\" fill=\"#E53935\">P</text><circle cx=\"110\" cy=\"200\" r=\"3\" fill=\"#FF9800\"/><text x=\"120\" y=\"205\" font-size=\"11\" fill=\"#FF9800\">Q</text><circle cx=\"110\" cy=\"250\" r=\"3\" fill=\"#9C27B0\"/><text x=\"120\" y=\"255\" font-size=\"11\" fill=\"#9C27B0\">R</text></svg>","difficulty":"hard"}],"summary":"本套变式训练围绕二次函数与几何综合的核心考点展开。变式1侧重逆向思维与待定系数法，强化学生对图象性质的理解；变式2引入动点与相似三角形存在性问题，提升分类讨论与数形结合能力；变式3聚焦面积最值建模，考察函数思想与计算能力。建议教学中引导学生先画图再分析，明确动点变化范围，规范分类讨论步骤，避免漏解。"}
+          }
+        }
+      };
+    let elem = document.querySelector(".contentItemArea");
+    webCpu.updateView(elem, app);
+    });
+
+    window.addEventListener('message', function (event) {
+      // 收到消息后，判断是不是我们约定的下载指令
+      if (event.data && event.data.action === 'CROSS_DOMAIN_DOWNLOAD') {
+        // 在本地主页面域下安全执行下载，100% 不会报 SecurityError
+        WebTool.downloadString(event.data.blob, event.data.name, event.data.mimeType);
+      }
+    });
+  </script>
+</body>
+
+</html>

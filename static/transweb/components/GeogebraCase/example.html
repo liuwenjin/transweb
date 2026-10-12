@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+  <meta http-equiv="Cache-Control" content="no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>{{name}}</title>
+  <style>
+    :root {
+      --brand-primary: #2563eb;
+      --brand-dark: #1e293b;
+      --brand-soft: #f8fafc;
+      --brand-gold: #f59e0b;
+      --text-muted: #64748b;
+      --border-soft: rgba(15, 23, 42, 0.06);
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      font-family: "Nunito", "Noto Sans", "PingFang SC", "Microsoft YaHei", sans-serif;
+      overflow: hidden;
+      box-sizing: border-box;
+      color: var(--brand-dark);
+      background:
+        radial-gradient(1200px 600px at 0% 0%, rgba(37, 99, 235, 0.05), transparent 60%),
+        radial-gradient(900px 500px at 100% 100%, rgba(245, 158, 11, 0.04), transparent 60%),
+        #ffffff;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    /* ===== 主体布局：内容 + 水印固定底部 ===== */
+    .pageWrapper {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: 100%;
+    }
+
+    .contentItemArea {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      /* 为底部水印预留空间，避免遮挡阅读 */
+      padding-bottom: 44px;
+      box-sizing: border-box;
+    }
+
+    /* ===== Loading ===== */
+    .loadingTips {
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+      letter-spacing: 0.3px;
+      margin-top: 24px;
+    }
+
+    .waiting {
+      position: relative;
+      width: 56px;
+      height: 56px;
+      margin: 0 auto;
+    }
+
+    .waiting::before,
+    .waiting::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 3px solid transparent;
+      box-sizing: border-box;
+    }
+
+    .waiting::before {
+      border-top-color: var(--brand-primary);
+      border-right-color: var(--brand-primary);
+      animation: spin 1s linear infinite;
+    }
+
+    .waiting::after {
+      inset: 8px;
+      border-top-color: var(--brand-gold);
+      border-left-color: var(--brand-gold);
+      animation: spin 1.4s linear infinite reverse;
+      opacity: 0.85;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .fade-out {
+      opacity: 0;
+      transition: opacity 0.8s ease;
+    }
+
+    /* ===== 底部水印（主） ===== */
+    .siteWatermark {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      font-size: 12px;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.72);
+      backdrop-filter: saturate(180%) blur(10px);
+      -webkit-backdrop-filter: saturate(180%) blur(10px);
+      border-top: 1px solid var(--border-soft);
+      z-index: 50;
+      user-select: none;
+      pointer-events: auto;
+      transition: opacity 0.2s ease;
+    }
+
+    .siteWatermark__brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-muted);
+      text-decoration: none;
+    }
+
+    .siteWatermark__dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--brand-primary), var(--brand-gold));
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
+    }
+
+    .siteWatermark__brand strong {
+      color: var(--brand-dark);
+      font-weight: 600;
+      letter-spacing: 0.3px;
+    }
+
+    .siteWatermark__link {
+      color: var(--text-muted);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    .siteWatermark__link:hover {
+      color: var(--brand-primary);
+      background: rgba(37, 99, 235, 0.06);
+    }
+
+    .siteWatermark__link svg {
+      opacity: 0.8;
+    }
+
+    /* ===== 右下角次级角标水印（极淡，不影响阅读） ===== */
+    .cornerWatermark {
+      position: fixed;
+      right: 14px;
+      bottom: 44px;
+      font-size: 10px;
+      color: rgba(30, 41, 59, 0.25);
+      letter-spacing: 0.6px;
+      pointer-events: none;
+      text-align: right;
+      z-index: 40;
+      user-select: none;
+    }
+
+    /* ===== 导出态优化 ===== */
+    .__exporting__,
+    .__exporting * {
+      animation: none !important;
+      transition: none !important;
+    }
+
+    .__exporting {
+      background: #ffffff !important;
+    }
+
+    /* 导出时水印仍然保留 */
+    .__exporting .siteWatermark {
+      background: #ffffff !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+    }
+
+    .__export-mask {
+      position: fixed;
+      inset: 0;
+      z-index: 2147483647;
+      background: rgba(250, 250, 250, 0.85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(2px);
+    }
+
+    .__export-mask__panel {
+      background: rgba(15, 23, 42, 0.78);
+      color: #fff;
+      padding: 14px 22px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      box-shadow: 0 12px 40px rgba(15, 23, 42, 0.18);
+    }
+
+    .__export-mask__spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.35);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    /* ===== 可访问性：尊重系统降低动效偏好 ===== */
+    @media (prefers-reduced-motion: reduce) {
+
+      .waiting::before,
+      .waiting::after,
+      .__export-mask__spinner {
+        animation-duration: 3s;
+      }
+    }
+
+    /* ===== 小屏适配 ===== */
+    @media (max-width: 480px) {
+      .siteWatermark {
+        font-size: 11px;
+        padding: 0 12px;
+      }
+
+      .cornerWatermark {
+        display: none;
+      }
+    }
+  </style>
+
+  <!-- ===== Tailwind CSS ===== -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script>
+    tailwind.config = {
+      prefix: 'tw-',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              bg: '#F7F8FC',
+              panel: '#FFFFFF',
+              border: '#E4E8F4',
+              primary: '#5B6BFF',
+              secondary: '#8B7CF8',
+              text: '#1A1F3C',
+              muted: '#6B7280',
+              success: '#10B981',
+              accent: '#F0F1FF'
+            }
+          },
+          boxShadow: {
+            soft: '0 2px 24px rgba(91,107,255,0.10)',
+            card: '0 1px 4px rgba(26,31,60,0.06), 0 8px 32px rgba(91,107,255,0.08)',
+            glow: '0 0 48px rgba(91,107,255,0.18)'
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body>
+  <div class="pageWrapper">
+    <main class="contentItemArea" role="main">
+      <div class="waiting" aria-hidden="true"></div>
+      <div class="loadingTips">内容加载中，请稍候…</div>
+    </main>
+
+    <!-- 右下角次级角标水印（极淡） -->
+    <div class="cornerWatermark" aria-hidden="true">
+      Agent 应用名称：<strong>{{ agentName }}</strong><br>
+      应用创作者: {{ creator }}, 内容编辑导出者: {{ userName }}</div>
+
+    <!-- 底部主水印条 -->
+    <footer class="siteWatermark" role="contentinfo" aria-label="文档来源水印">
+      <a class="siteWatermark__brand" title="访问 Agent 应用" href="{{ agentUrl }}" target="_blank"
+        rel="noopener noreferrer">
+        <span class="siteWatermark__dot" aria-hidden="true"></span>
+        <span>由 Agent 应用导出</span>
+      </a>
+      <a class="siteWatermark__link" href="https://transweb.cn" target="_blank" rel="noopener noreferrer"
+        title="访问 TransWeb 官网">
+        <span>TransWeb 驱动</span>
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
+          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M7 17L17 7" />
+          <path d="M8 7h9v9" />
+        </svg>
+      </a>
+    </footer>
+  </div>
+
+  <script defer src="https://transweb.cn/index.js"></script>
+  <script async src="https://transweb.cn/common/mathjax/tex-chtml.js"></script>
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [["$", "$"], ["\\(", "\\)"]], displayMath: [["$$", "$$"], ["\\[", "\\]"]] },
+      svg: { fontCache: "global" }
+    };
+  </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      let app = {
+        className: "GeogebraCase",
+        task: {
+          data: {
+            name: "{{name}}",
+            mode: "{{mode}}",
+            appName: "{{appName}}",
+            perspective: "{{perspective}}",
+            language: "{{language}}",
+            version: 5.0,
+            script: {
+              value: `{{script.value}}`,
+            }
+          }
+        }
+      };
+      let elem = document.querySelector(".contentItemArea");
+      webCpu.updateView(elem, app);
+    });
+  </script>
+</body>
+
+</html>

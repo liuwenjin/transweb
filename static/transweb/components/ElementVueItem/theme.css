@@ -1,0 +1,30 @@
+:root {
+  /* 主色 */
+  --el-color-primary: #6951FF;
+  --el-color-primary-light-3: #9A8AFF;
+  --el-color-primary-light-5: #E5E1FE;
+  --el-color-primary-dark-2: #4B3E9F;
+
+  /* 语义色 */
+  --el-color-danger:  #FF5582;
+  --el-color-warning: #FF7A00;
+  --el-color-info:    #346DF2;
+  --el-color-success: #10EDC5;
+
+  /* 灰度 / 文本 */
+  --el-color-white: #FFFFFF;
+  --el-color-black: #000000;
+
+  --el-text-color-primary:   #1D2133;
+  --el-text-color-regular:   #565678;
+  --el-text-color-secondary: #8383A4;
+  --el-text-color-placeholder:#A8A8CB;
+
+  --el-border-color-base:   #CBCBE5;
+  --el-border-color-light:  #E4E4F7;
+  --el-border-color-lighter:#F7F7FF;
+  --el-border-color-extra-light: #FFFFFF;
+
+  --el-bg-color: #FFFFFF;
+  --el-bg-color-page: #F7F7FF;
+}

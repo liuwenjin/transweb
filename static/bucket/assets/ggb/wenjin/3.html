@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+  <meta http-equiv="Cache-Control" content="no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>对数螺线的扩张</title>
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      font-family: "Nunito", "Noto Sans", sans-serif;
+      overflow: hidden;
+      box-sizing: border-box;
+    }
+
+    .contentItemArea {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      text-align: center;
+    }
+
+
+    @keyframes hueShift {
+      0% {
+        filter: hue-rotate(0deg);
+      }
+
+      100% {
+        filter: hue-rotate(360deg);
+      }
+    }
+
+    .fade-out {
+      opacity: 0;
+      transition: opacity 0.8s ease;
+    }
+
+    .loadingTips {
+      text-align: center;
+      font-size: 12px;
+      color: #ccc;
+      padding: 20px 0;
+    }
+
+    .waiting {
+      width: 60px;
+      height: 60px;
+      background-color: #67cf22;
+      margin: 100px auto;
+      animation: rotateplane 1.2s infinite ease-in-out;
+    }
+
+    @keyframes rotateplane {
+      0% {
+        transform: perspective(120px) rotateX(0deg) rotateY(0deg);
+      }
+
+      50% {
+        transform: perspective(120px) rotateX(-180deg) rotateY(0deg);
+      }
+
+      100% {
+        transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
+      }
+    }
+
+    .__exporting__,
+    .__exporting * {
+      animation: none !important;
+      transition: none !important;
+    }
+
+    .__exporting {
+      background: #ffffff !important;
+    }
+
+    .__export-mask {
+      position: fixed;
+      inset: 0;
+      z-index: 2147483647;
+      background: rgba(250, 250, 250, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .__export-mask__panel {
+      background: rgba(0, 0, 0, 0.7);
+      color: #fff;
+      padding: 16px 22px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+    }
+
+    .__export-mask__spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="contentItemArea">
+    <div class="loadingTips">加载中...</div>
+    <div class="waiting"></div>
+  </div>
+  <script defer src="https://transweb.cn/index.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      let app = {
+        className: "GeogebraCase",
+        task: {
+          data: {
+            name: "对数螺线的扩张",
+            mode: "2D",
+            appName: "suite",
+            perspective: "graphing",
+            language: "zh-CN",
+            version: 5.0,
+            script: {
+              value: `SetCoordSystem(-8,8,-8,8)
+ShowGrid(true)
+ShowAxes(true)
+a = Slider(0.2, 3, 0.1, 1, 150)
+SetCaption(a, "$\\text{初始半径 } a$")
+SetLabelMode(a, 3)
+ShowLabel(a, true)
+b = Slider(0.05, 0.5, 0.01, 1, 150)
+SetCaption(b, "$\\text{增长率 } b$")
+SetLabelMode(b, 3)
+ShowLabel(b, true)
+thetaMax = Slider(pi, 8*pi, pi/4, 1, 150)
+SetCaption(thetaMax, "$\\text{展开圈数 } \\theta_{\\max}$")
+SetLabelMode(thetaMax, 3)
+ShowLabel(thetaMax, true)
+O = (0, 0)
+SetPointSize(O, 5)
+SetPointStyle(O, 0)
+SetColor(O, "#1A237E")
+SetCaption(O, "$O$")
+SetLabelMode(O, 3)
+ShowLabel(O, true)
+N = 400
+curveList = Sequence((a*exp(b*t)*cos(t), a*exp(b*t)*sin(t)), t, 0, thetaMax, thetaMax/(N-1))
+Spiral = Polyline(curveList)
+SetColor(Spiral, "#D32F2F")
+SetLineThickness(Spiral, 4)
+SetCaption(Spiral, "$r = a \\cdot e^{b\\theta}$")
+SetLabelMode(Spiral, 3)
+ShowLabel(Spiral, true)
+aux_tipPoint = (a*exp(b*thetaMax)*cos(thetaMax), a*exp(b*thetaMax)*sin(thetaMax))
+SetPointSize(aux_tipPoint, 4)
+SetPointStyle(aux_tipPoint, 0)
+SetColor(aux_tipPoint, "#D32F2F")
+SetCaption(aux_tipPoint, "$\\theta_{\\max}$")
+SetLabelMode(aux_tipPoint, 3)
+ShowLabel(aux_tipPoint, true)
+aux_radiusSeg = Segment(O, aux_tipPoint)
+SetLineThickness(aux_radiusSeg, 1)
+SetLineStyle(aux_radiusSeg, 2)
+SetColor(aux_radiusSeg, "#757575")
+aux_shellArc = Sequence((a*exp(b*t)*cos(t), a*exp(b*t)*sin(t)), t, thetaMax - pi/4, thetaMax, pi/64)
+aux_arcPoly = Polyline(aux_shellArc)
+SetColor(aux_arcPoly, "#FFC107")
+SetLineThickness(aux_arcPoly, 6)
+aux_basePoint = (a, 0)
+SetPointSize(aux_basePoint, 4)
+SetPointStyle(aux_basePoint, 0)
+SetColor(aux_basePoint, "#1A237E")
+SetCaption(aux_basePoint, "$a$")
+SetLabelMode(aux_basePoint, 3)
+ShowLabel(aux_basePoint, true)
+aux_baseSeg = Segment(O, aux_basePoint)
+SetLineThickness(aux_baseSeg, 2)
+SetLineStyle(aux_baseSeg, 1)
+SetColor(aux_baseSeg, "#1A237E")
+ShowObject(aux_radiusSeg, false)
+ShowLabel(aux_radiusSeg, false)
+ShowObject(aux_arcPoly, false)
+ShowLabel(aux_arcPoly, false)
+ShowObject(aux_baseSeg, false)
+ShowLabel(aux_baseSeg, false)`,
+            }
+          }
+        }
+      };
+      let elem = document.querySelector(".contentItemArea");
+      webCpu.updateView(elem, app);
+    });
+  </script>
+</body>
+
+</html>

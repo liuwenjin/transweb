@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+  <!-- ===== 基础 SEO ===== -->
+  <title>通用学术论文内容结构生成器 | AI 学术论文写作与科研内容组织工具</title>
+  <meta name="description"
+    content="AI 驱动的学术论文内容结构生成工具，支持摘要、引言、研究方法、实验结果、讨论与参考文献等完整论文模块构建，帮助快速完成高质量科研论文内容组织。" />
+  <meta name="keywords"
+    content="学术论文生成,AI论文写作,论文结构模板,科研写作工具,论文摘要生成,Academic Paper,Research Paper,论文内容组织,AI写作工具" />
+  <meta name="author" content="ContentOS" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta name="application-name" content="Academic Paper Generator" />
+  <meta name="theme-color" content="#5B6BFF" />
+  <meta name="format-detection" content="telephone=no" />
+
+  <!-- ===== Canonical ===== -->
+  <link rel="canonical" href="https://example.com/academic-paper-generator" />
+
+  <!-- ===== Open Graph ===== -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="通用学术论文内容结构生成器" />
+  <meta property="og:description"
+    content="快速生成符合学术规范的论文结构，支持摘要、引言、研究方法、实验结果、讨论与参考文献等模块。" />
+  <meta property="og:url" content="https://example.com/academic-paper-generator" />
+  <meta property="og:site_name" content="ContentOS" />
+  <meta property="og:locale" content="zh_CN" />
+  <meta property="og:image" content="https://example.com/assets/academic-paper-cover.jpg" />
+
+  <!-- ===== Twitter Card ===== -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="AI 学术论文内容结构生成器" />
+  <meta name="twitter:description"
+    content="AI 驱动的科研论文结构生成工具，快速构建完整论文框架。" />
+  <meta name="twitter:image" content="https://example.com/assets/academic-paper-cover.jpg" />
+
+  <!-- ===== 性能优化 ===== -->
+  <link rel="preconnect" href="https://cdn.tailwindcss.com" />
+  <link rel="preconnect" href="https://www.googletagmanager.com" />
+  <link rel="dns-prefetch" href="//transweb.cn" />
+
+  <!-- ===== PWA / favicon ===== -->
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/manifest.json" />
+
+  <!-- ===== Cache ===== -->
+  <meta http-equiv="Cache-Control" content="no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+
+  <!-- ===== JSON-LD 结构化数据 ===== -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "通用学术论文内容结构生成器",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Web",
+    "description": "AI 驱动的学术论文内容结构生成工具，可快速生成标准科研论文结构与内容模块。",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "ContentOS"
+    }
+  }
+  </script>
+
+  <!-- ===== Tailwind CSS ===== -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script>
+    tailwind.config = {
+      prefix: 'tw-',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              bg: '#F7F8FC',
+              panel: '#FFFFFF',
+              border: '#E4E8F4',
+              primary: '#5B6BFF',
+              secondary: '#8B7CF8',
+              text: '#1A1F3C',
+              muted: '#6B7280',
+              success: '#10B981',
+              accent: '#F0F1FF'
+            }
+          },
+          boxShadow: {
+            soft: '0 2px 24px rgba(91,107,255,0.10)',
+            card: '0 1px 4px rgba(26,31,60,0.06), 0 8px 32px rgba(91,107,255,0.08)',
+            glow: '0 0 48px rgba(91,107,255,0.18)'
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- ===== Google Analytics ===== -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K117F271PB"></script>
+
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+    gtag('config', 'G-K117F271PB', {
+      send_page_view: true
+    });
+
+    (function () {
+      function track(eventName, params = {}) {
+        gtag('event', eventName, {
+          page_title: document.title,
+          page_location: location.href,
+          ...params
+        });
+      }
+
+      window.$track = track;
+
+      window.addEventListener('load', () => {
+        $track('page_view_custom');
+      });
+
+      document.addEventListener('click', function (e) {
+        const target = e.target.closest('.aigcBtn');
+
+        if (target) {
+          const moduleName = target.dataset.name || target.innerText || 'unknown_module';
+
+          $track('module_click', {
+            module_name: moduleName
+          });
+        }
+      });
+
+      window.onModuleLoaded = function (moduleName) {
+        $track('module_enter', {
+          module_name: moduleName
+        });
+      };
+
+      let hasInteracted = false;
+
+      ['click', 'mousemove', 'keydown', 'touchstart'].forEach(evt => {
+        window.addEventListener(evt, () => {
+          if (!hasInteracted) {
+            hasInteracted = true;
+            $track('interaction', {
+              type: evt
+            });
+          }
+        });
+      });
+
+      setTimeout(() => {
+        $track('stay_10s');
+      }, 10000);
+
+      setTimeout(() => {
+        $track('stay_30s');
+      }, 30000);
+
+      window.addEventListener('beforeunload', () => {
+        $track('page_exit');
+      });
+    })();
+  </script>
+
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      font-family: "Nunito", "Noto Sans", sans-serif;
+      background: #F7F8FC;
+      color: #1A1F3C;
+      overflow: hidden;
+      box-sizing: border-box;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    .seoHero {
+      position: absolute;
+      left: -99999px;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+    }
+
+    .contentItemArea {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      text-align: center;
+    }
+
+    .loadingTips {
+      text-align: center;
+      font-size: 14px;
+      color: #6B7280;
+      padding: 20px 0;
+    }
+
+    .waiting {
+      width: 60px;
+      height: 60px;
+      background-color: #5B6BFF;
+      margin: 40px auto;
+      border-radius: 12px;
+      animation: rotateplane 1.2s infinite ease-in-out;
+      box-shadow: 0 0 32px rgba(91, 107, 255, 0.18);
+    }
+
+    @keyframes rotateplane {
+      0% {
+        transform: perspective(120px) rotateX(0deg) rotateY(0deg);
+      }
+
+      50% {
+        transform: perspective(120px) rotateX(-180deg) rotateY(0deg);
+      }
+
+      100% {
+        transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
+      }
+    }
+
+    .bottomInfo {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      height: 44px;
+      padding: 0 20px;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(10px);
+      border-top: 1px solid #E4E8F4;
+      font-size: 12px;
+      color: #6B7280;
+      z-index: 1000;
+    }
+
+    .agentMenuArea {
+      display: flex;
+      align-items: center;
+      margin-left: 12px;
+      height: 40px;
+      line-height: 40px;
+      width: 500px;
+      white-space: nowrap;
+    }
+
+    .documentId {
+      color: #6B7280;
+      text-decoration: none;
+      font-family: monospace;
+    }
+
+    .documentId:hover {
+      color: #000;
+    }
+
+    .fade-out {
+      opacity: 0;
+      transition: opacity 0.8s ease;
+    }
+
+    .__exporting__,
+    .__exporting * {
+      animation: none !important;
+      transition: none !important;
+    }
+
+    .__exporting {
+      background: #ffffff !important;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ===== SEO 可索引内容 ===== -->
+  <main class="seoHero">
+    <article>
+      <header>
+        <h1>通用学术论文内容结构生成器</h1>
+        <p>
+          AI 驱动的科研论文结构生成工具，帮助研究者快速完成论文摘要、引言、研究方法、实验结果、讨论与参考文献等核心内容模块组织。
+        </p>
+      </header>
+
+      <section>
+        <h2>核心功能</h2>
+        <ul>
+          <li>自动生成标准学术论文结构</li>
+          <li>支持 SCI / EI / 学术期刊论文内容组织</li>
+          <li>支持摘要、关键词、参考文献模块生成</li>
+          <li>支持 AI 辅助科研写作与论文框架优化</li>
+          <li>适用于高校、研究机构与科研团队</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>适用场景</h2>
+        <p>
+          可用于学术论文撰写、科研项目申报、毕业论文框架设计、研究报告内容整理以及 AI 科研内容生产。
+        </p>
+      </section>
+    </article>
+  </main>
+
+  <!-- ===== 页面主体 ===== -->
+  <div class="contentItemArea">
+    <div class="loadingTips">AI 正在加载学术论文内容结构...</div>
+    <div class="waiting"></div>
+  </div>
+
+  <!-- ===== 底部信息 ===== -->
+  <div class="bottomInfo">
+    <div class="agentMenuArea"></div>
+    <template class="documentId">22229842fa5139eb72d60b8b6b23f392</template>
+  </div>
+
+  <!-- ===== 外部资源 ===== -->
+  <script defer src="https://transweb.cn/index.js"></script>
+
+  <!-- ===== 页面逻辑 ===== -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+      let tRadio = Number(WebTool.urlQuery(location.href, 'transformRadio'));
+
+      if (tRadio !== 1) {
+        WebTool.adjustStyle(480);
+      } else {
+        window.transformRadio = tRadio;
+      }
+
+      webCpu.isContainerUpdated = 'false';
+
+      let tElem = document.querySelector('.documentId');
+
+      let readOnly = WebTool.urlQuery(location.href, 'readOnly') === 'true';
+
+      if (readOnly) {
+        document.querySelector('.bottomInfo').style.display = 'none';
+        document.querySelector('.contentItemArea').style.paddingBottom = '0';
+      }
+
+      let documentId = tElem.innerHTML.trim();
+
+      window.lang = 'zh';
+
+      let updateDocumentApp = function (appItem, callback) {
+
+        let content = appItem.content.constructor.name !== 'Array'
+          ? [{ content: appItem.content }]
+          : appItem.content;
+
+        content[0].content.isSolo = true;
+
+        window.aigcRequest = function (query, callback, errCallback, macros) {
+          query.rootAccount = appItem.documentMeta.rootAccount;
+          aigcInterface.request(query, callback, errCallback, macros);
+        };
+
+        appItem.documentMeta.documentId = documentId;
+
+        let mainApp = {
+          url: webCpu.documentPrefix + '/webApps/document/agent.vue',
+          cardName: 'documentEditor',
+          dsl: {
+            data: {
+              topHeaderHidden: true,
+              breadcrumbsHidden: true,
+              currentContent: content,
+              currentApp: appItem.app,
+              documentMeta: appItem.documentMeta
+            }
+          }
+        };
+
+        let elem = document.querySelector('.contentItemArea');
+
+        webCpu.updateView(elem, mainApp, callback);
+      };
+
+      let updateMenuItem = function (appId) {
+
+        let app = {
+          url: webCpu.documentPrefix + '/components/menu.vue',
+          cardName: 'documentAgentMenu',
+          dsl: {
+            data: {
+              appId: appId
+            }
+          }
+        };
+
+        let elem = document.querySelector('.agentMenuArea');
+
+        webCpu.updateView(elem, app);
+      };
+
+      webCpu.getDocumentApp(
+        documentId,
+        (app, content, rData) => {
+
+          updateDocumentApp(rData, () => {
+
+            rData.documentMeta = rData.documentMeta || {};
+
+            if (localStorage.folderName === rData.documentMeta.folderName) {
+              updateMenuItem(documentId);
+              document.querySelector('.bottomInfo').style.display = 'flex';
+              document.querySelector('.contentItemArea').style.paddingBottom = '44px';
+            } else {
+              document.querySelector('.bottomInfo').style.display = 'none';
+              document.querySelector('.contentItemArea').style.paddingBottom = '0';
+            }
+          });
+        },
+        (err) => {
+          console.error('加载文档失败', err);
+
+          let elem = document.querySelector('.contentItemArea');
+
+          elem.innerHTML = `
+            <div class="tw-bg-white tw-rounded-2xl tw-shadow-card tw-p-8 tw-max-w-md tw-text-center">
+              <h2 class="tw-text-2xl tw-font-bold tw-text-red-500 tw-mb-3">
+                加载失败
+              </h2>
+              <p class="tw-text-gray-500">
+                学术论文内容加载失败，请稍后重试。
+              </p>
+            </div>
+          `;
+        }
+      );
+    });
+  </script>
+
+</body>
+
+</html>

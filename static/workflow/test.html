@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=yes, viewport-fit=cover">
+  <title>测试 - 3:4 截图专用卡片</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind = { config: { prefix: 'tw-' } }</script>
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #f0f4f9;
+    }
+
+    /* 核心：强制外层容器在 PC/移动端都能完美呈现 3:4 比例 */
+    .screenshot-card {
+      width: 100%;
+      max-width: 560px; /* 黄金截图宽度，在大屏下不至于过大，在手机下完美铺满 */
+      aspect-ratio: 3 / 4; /* 核心：锁定 3:4 比例 */
+      background: #ffffff;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 30px 70px -10px rgba(10, 37, 64, 0.12), 0 10px 20px -10px rgba(0, 0, 0, 0.05);
+      border-radius: 2.5rem;
+    }
+
+    /* 微调内部嵌入卡片阴影 */
+    .inner-mockup {
+      box-shadow: 0 15px 35px -5px rgba(10, 37, 64, 0.05), 0 5px 15px -5px rgba(0, 0, 0, 0.02);
+    }
+
+    /* 精细化滚动条 */
+    ::-webkit-scrollbar {
+      width: 3px;
+      height: 3px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+
+<body class="tw-font-sans tw-antialiased tw-text-slate-900 tw-flex tw-justify-center tw-items-center tw-p-10 tw-m-5">
+
+  <!-- 3:4 黄金比例大卡片（直接对准这里截图即可） -->
+  <div class="screenshot-card tw-flex tw-flex-col tw-justify-between tw-p-8 sm:tw-p-10">
+    
+    <!-- 右上角设计图同款：柔和浅蓝色圆形艺术背景（封印在大卡片内部） -->
+    <div class="tw-absolute tw-top-0 tw-right-0 tw-w-64 tw-h-64 tw-bg-[#e8f0fe] tw-rounded-full tw-blur-3xl tw-opacity-90 tw-pointer-events-none -tw-translate-y-1/4 tw-translate-x-1/4"></div>
+
+    <!-- UPPER SECTION: 头部文案区域（严格左对齐） -->
+    <div class="tw-relative tw-z-10 tw-w-full">
+      
+      <!-- 胶囊标签 -->
+      <div class="tw-inline-flex tw-items-center tw-gap-1.5 tw-bg-[#0b2540] tw-text-white tw-text-xs tw-font-bold tw-tracking-wider tw-px-4 tw-py-2 tw-rounded-full tw-mb-6">
+        <span>Trans-Workflow</span>
+        <span class="tw-opacity-40">•</span>
+        <span class="tw-text-blue-400">实战</span>
+      </div>
+
+      <!-- 主标题：精准匹配文案 -->
+      <h1 class="tw-text-3xl sm:tw-text-4xl tw-font-black tw-tracking-tight tw-leading-[1.28] tw-text-[#1a202c]">
+        我的第一个
+        <span class="tw-inline-block tw-mt-2 tw-bg-[#0052cc] tw-text-white tw-px-4 tw-py-1.5 tw-rounded-xl tw-shadow-sm">
+          AI 员工
+        </span>
+        上岗了
+      </h1>
+
+      <!-- 副标题：流程拆解 -->
+      <p class="tw-text-xs sm:tw-text-sm tw-text-slate-500 tw-font-medium tw-mt-5 tw-tracking-wide">
+        帮我把 <span class="tw-text-slate-800 tw-font-semibold">微信长文章</span> · <span class="tw-text-slate-800 tw-font-semibold">短文笔记</span> · <span class="tw-text-slate-800 tw-font-semibold">视频脚本</span> · <span class="tw-text-slate-800 tw-font-semibold">插画配图</span> 都包圆啦
+      </p>
+    </div>
+
+    <!-- MIDDLE SECTION: 动态适应剩余空间的 iframe 核心区域 -->
+    <div class="tw-relative tw-z-10 tw-w-full tw-flex-1 tw-my-5 tw-flex tw-items-center tw-justify-center">
+      
+      <!-- 模拟极简白色系统外框 -->
+      <div class="inner-mockup tw-w-full tw-h-full tw-bg-white tw-p-2 tw-border tw-border-slate-100/80 tw-rounded-2xl tw-flex tw-flex-col">
+        
+        <!-- 顶部三色控制点 -->
+        <div class="tw-px-2 tw-pt-1 tw-pb-2 tw-flex tw-items-center">
+          <div class="tw-flex tw-gap-1">
+            <div class="tw-w-2.5 tw-h-2.5 tw-rounded-full tw-bg-[#ff5f57]"></div>
+            <div class="tw-w-2.5 tw-h-2.5 tw-rounded-full tw-bg-[#febc2e]"></div>
+            <div class="tw-w-2.5 tw-h-2.5 tw-rounded-full tw-bg-[#28c840]"></div>
+          </div>
+        </div>
+
+        <!-- iframe 承载容器，无缝充满卡片剩余部分 -->
+        <div class="tw-w-full tw-flex-1 tw-bg-slate-50 tw-rounded-xl tw-relative tw-border tw-border-slate-100/50">
+          <iframe src="https://transweb.cn/workflow/docs/examples/ai-employee.html?isView=1"
+            class="tw-absolute tw-inset-0 tw-w-full tw-h-full tw-border-0 tw-block tw-z-10"
+            title="Trans-Workflow 在线编辑器">
+          </iframe>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</body>
+
+</html>

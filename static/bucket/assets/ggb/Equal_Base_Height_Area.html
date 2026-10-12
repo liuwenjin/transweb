@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+  <meta http-equiv="Cache-Control" content="no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>Equal_Base_Height_Area</title>
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      font-family: "Nunito", "Noto Sans", sans-serif;
+      overflow: hidden;
+      box-sizing: border-box;
+    }
+
+    .contentItemArea {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      text-align: center;
+    }
+
+
+    @keyframes hueShift {
+      0% {
+        filter: hue-rotate(0deg);
+      }
+
+      100% {
+        filter: hue-rotate(360deg);
+      }
+    }
+
+    .fade-out {
+      opacity: 0;
+      transition: opacity 0.8s ease;
+    }
+
+    .loadingTips {
+      text-align: center;
+      font-size: 12px;
+      color: #ccc;
+      padding: 20px 0;
+    }
+
+    .waiting {
+      width: 60px;
+      height: 60px;
+      background-color: #67cf22;
+      margin: 100px auto;
+      animation: rotateplane 1.2s infinite ease-in-out;
+    }
+
+    @keyframes rotateplane {
+      0% {
+        transform: perspective(120px) rotateX(0deg) rotateY(0deg);
+      }
+
+      50% {
+        transform: perspective(120px) rotateX(-180deg) rotateY(0deg);
+      }
+
+      100% {
+        transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
+      }
+    }
+
+    .__exporting__,
+    .__exporting * {
+      animation: none !important;
+      transition: none !important;
+    }
+
+    .__exporting {
+      background: #ffffff !important;
+    }
+
+    .__export-mask {
+      position: fixed;
+      inset: 0;
+      z-index: 2147483647;
+      background: rgba(250, 250, 250, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .__export-mask__panel {
+      background: rgba(0, 0, 0, 0.7);
+      color: #fff;
+      padding: 16px 22px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+    }
+
+    .__export-mask__spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="contentItemArea">
+    <div class="loadingTips">加载中...</div>
+    <div class="waiting"></div>
+  </div>
+  <script defer src="https://transweb.cn/index.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      let app = {
+        className: "GeogebraCase",
+        task: {
+          data: {
+            name: "Equal_Base_Height_Area",
+            mode: "2D",
+            appName: "suite",
+            perspective: "graphing",
+            language: "zh-CN",
+            version: 5.0,
+            script: {
+              value: `SetCoordSystem(-8, 8, -6, 10)
+ShowGrid(true)
+ShowAxes(true)
+A = (-3, 0)
+SetPointSize(A, 4)
+SetColor(A, "#2196F3")
+SetCaption(A, "$A$")
+SetLabelMode(A, 3)
+ShowLabel(A, true)
+B = (3, 0)
+SetPointSize(B, 4)
+SetColor(B, "#2196F3")
+SetCaption(B, "$B$")
+SetLabelMode(B, 3)
+ShowLabel(B, true)
+Height_h = Slider(1, 8, 0.1, 1, 150)
+SetCaption(Height_h, "$\\text{高 } h$")
+SetLabelMode(Height_h, 3)
+ShowLabel(Height_h, true)
+SetColor(Height_h, "#FF9800")
+Slide_t = Slider(-7, 7, 0.1, 1, 150)
+SetCaption(Slide_t, "$\\text{顶点水平位置 } t$")
+SetLabelMode(Slide_t, 3)
+ShowLabel(Slide_t, true)
+SetColor(Slide_t, "#9C27B0")
+Aux_1 = (-8, Height_h)
+Aux_2 = (8, Height_h)
+ParLine = Line(Aux_1, Aux_2)
+SetColor(ParLine, "#FF9800")
+SetLineThickness(ParLine, 2)
+SetLineStyle(ParLine, 2)
+ShowLabel(ParLine, false)
+C = (Slide_t, Height_h)
+SetPointSize(C, 5)
+SetColor(C, "#E91E63")
+SetCaption(C, "$C$")
+SetLabelMode(C, 3)
+ShowLabel(C, true)
+Face_t = Polygon(A, B, C)
+SetColor(Face_t, "#4CAF50")
+SetFilling(Face_t, 0.4)
+SetLineThickness(Face_t, 3)
+ShowLabel(Face_t, false)
+Aux_3 = Segment(A, B)
+ShowObject(Aux_3, false)
+Aux_4 = (Slide_t, 0)
+Seg_h = Segment(C, Aux_4)
+SetColor(Seg_h, "#FF5722")
+SetLineThickness(Seg_h, 2)
+SetLineStyle(Seg_h, 2)
+ShowLabel(Seg_h, false)
+Base_v = Distance(A, B)
+Area_v = Base_v * Height_h / 2
+Txt_1 = Text("底边 = " + FormulaText(Round(Base_v, 2)), (-7, 9))
+SetColor(Txt_1, "#333333")
+ShowLabel(Txt_1, false)
+Txt_2 = Text("高 = " + FormulaText(Round(Height_h, 2)), (-7, 8))
+SetColor(Txt_2, "#FF9800")
+ShowLabel(Txt_2, false)
+Txt_3 = Text("面积 = " + FormulaText(Round(Area_v, 2)), (-7, 7))
+SetColor(Txt_3, "#E91E63")
+ShowLabel(Txt_3, false)
+ShowObject(Aux_1, false)
+ShowLabel(Aux_1, false)
+ShowObject(Aux_2, false)
+ShowLabel(Aux_2, false)
+ShowObject(Aux_4, false)
+ShowLabel(Aux_4, false)
+ShowLabel(Face_t, false)`,
+            }
+          }
+        }
+      };
+      let elem = document.querySelector(".contentItemArea");
+      webCpu.updateView(elem, app);
+    });
+  </script>
+</body>
+
+</html>

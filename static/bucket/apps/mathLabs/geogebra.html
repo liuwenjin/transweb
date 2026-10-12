@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>数形实验台 - 交互式基础几何动态演示与数学探索工具</title>
+  <meta name="description"
+    content="数形实验台是一个专注于基础几何教育的交互式平台。通过数形结合技术，将抽象的数学定理转化为直观的动态演示，支持几何绘图、动态变量控制及教学场景模拟，助力数学直观教学。" />
+  <meta name="keywords" content="数形实验台,几何演示,动态几何,数学实验,交互式课件,基础几何,数学可视化,Transweb" />
+  <meta name="author" content="Transweb" />
+
+  <meta property="og:title" content="数形实验台 - 让几何动起来" />
+  <meta property="og:description" content="通过交互式实验，深度理解几何逻辑，让数学学习变得直观简单。" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://transweb.cn/logo.png" />
+  <link rel="preconnect" href="https://transweb.cn" />
+  <!-- ===== 站点图标 ===== -->
+  <link rel="icon" href="logo.png" type="image/png" />
+
+  <style>
+    :root {
+      --primary-color: #67cf22;
+      --text-muted: #888;
+      --bg-glass: rgba(255, 255, 255, 0.9);
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      font-family: "Nunito", "Noto Sans SC", -apple-system, sans-serif;
+      overflow: hidden;
+      box-sizing: border-box;
+      background-color: #fcfcfc;
+    }
+
+    /* 语义化容器：主内容区 */
+    main.contentItemArea {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      text-align: center;
+    }
+
+    /* 底部交互区：毛玻璃效果 */
+    footer.bottomInfo {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      display: none;
+      /* 由 JS 动态控制显示 */
+      align-items: center;
+      justify-content: center;
+      height: 48px;
+      padding: 0 20px;
+      background: var(--bg-glass);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-top: 1px solid rgba(0, 0, 0, 0.05);
+      font-size: 12px;
+      color: var(--text-muted);
+      z-index: 1000;
+      box-sizing: border-box;
+    }
+
+    .agentMenuArea {
+      display: flex;
+      align-items: center;
+      margin-left: 12px;
+      height: 40px;
+      width: 500px;
+      white-space: nowrap;
+    }
+
+    /* 加载动画优化 */
+    .loading-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .loadingTips {
+      font-size: 14px;
+      color: #999;
+      letter-spacing: 1px;
+    }
+
+    .waiting {
+      width: 40px;
+      height: 40px;
+      background-color: var(--primary-color);
+      border-radius: 4px;
+      animation: rotateplane 1.2s infinite ease-in-out;
+      box-shadow: 0 4px 12px rgba(103, 207, 34, 0.3);
+    }
+
+    @keyframes rotateplane {
+      0% {
+        transform: perspective(120px) rotateX(0deg) rotateY(0deg);
+      }
+
+      50% {
+        transform: perspective(120px) rotateX(-180deg) rotateY(0deg);
+      }
+
+      100% {
+        transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
+      }
+    }
+
+    /* 错误提示样式 */
+    .error-msg {
+      color: #f56c6c;
+      background: #fef0f0;
+      padding: 12px 24px;
+      border-radius: 8px;
+      border: 1px solid #fde2e2;
+    }
+  </style>
+  <script src="/common/tailwindcss.js"></script>
+  <script>
+    tailwind.config = {
+      prefix: 'tw-',
+      theme: {
+        extend: {
+          colors: {
+            academic: {
+              dark: '#1e293b',
+              primary: '#2563eb',
+              soft: '#f8fafc',
+              gold: '#f59e0b'     // 强调金
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <script type="text/javascript">
+      (function (c, l, a, r, i, t, y) {
+        c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+        t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+        y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+      })(window, document, "clarity", "script", "xejk2rx33f");
+  </script>
+</head>
+
+<body>
+  <main class="contentItemArea" role="main">
+    <div class="loading-container">
+      <div class="waiting"></div>
+      <div class="loadingTips">数学实验室正在准备中...</div>
+    </div>
+  </main>
+
+  <footer class="bottomInfo">
+    <div class="agentMenuArea"></div>
+    <template id="documentIdData">28e55cff1a46d1d7cf66c4aa6a898460</template>
+  </footer>
+
+  <script defer src="https://transweb.cn/index.js"></script>
+
+  <script>
+    var I18N = {
+      zh: {
+        "title": "Trans-Agent · 丢入一份文档，3 分钟生成你的专属 AI 助教",
+        "logo": "Trans-Agent",
+        "nav.how": "功能阐释",
+        "nav.pricing": "透明计费",
+        "nav.faq": "常见疑问",
+        "nav.menu": "打开菜单",
+        "hero.title.1": "丢入一份文档，3 分钟",
+        "hero.title.2": "生成你的专属 AI 助教",
+        "hero.subtitle.1": "不写复杂 Prompt，不用搭建工作流。",
+        "hero.subtitle.2": "上传教材、手册或研报，瞬间拥有一个随时待命的领域专家。",
+        "social.proof": "已为教育者、研究员与企业团队构建了 12,000+ 个专属 AI 助教",
+        "process.title": "极简三步，从静态资料到互动助教。",
+        "process.desc": "不用写 Prompt，不用搭工作流。导入、理解、解答，三步到位。",
+        "process.1.title": "导入 · 全格式兼容",
+        "process.1.text": "支持 PDF、Word、TXT 等格式。直接上传，无需手动清洗或重新排版。",
+        "process.2.title": "理解 · 结构化构建",
+        "process.2.text": "AI 自动剔除冗余，梳理逻辑脉络，将万字长文提炼为可精准调用的知识图谱。",
+        "process.3.title": "解答 · 有据可查",
+        "process.3.text": "基于你的专属资料精准回答，拒绝张冠李戴，提供带原文引用的专业解答。",
+        "cases.title": "一套引擎，赋能多元应用场景。",
+        "cases.desc": "不预设一种使用方式。你提供内容，它成为那个领域里的专属入口。",
+        "case.1.title": "学术与教育",
+        "case.1.desc": "导入教材与讲义，成为学生的 24 小时贴身家教，轻松实现自动答疑与出题测验。",
+        "case.2.title": "企业与培训",
+        "case.2.desc": "导入员工手册与 SOP，秒变企业新人培训导师，大幅降低内部沟通与重复答疑成本。",
+        "case.3.title": "个人知识库",
+        "case.3.desc": "将长期积累的笔记与研报连成串，打造可随时对话的第二大脑，快速检索深度观点。",
+        "case.4.title": "专业咨询",
+        "case.4.desc": "将专业规范、制度和行业资料集中起来，建立针对特定领域的资料问答助手。",
+        "pricing.title": "不猜价格，只为实际使用付费。",
+        "pricing.desc": "没有复杂套餐，也不把 AI 能力包装成看不懂的权益。用多少扣多少，闲置零成本，费用一目了然。",
+        "pricing.formula": "按量计费 = 基础构建费 + 实际对话用量（闲置 0 费用）",
+        "compare.traditional.title": "传统方式",
+        "compare.traditional.value": "3 — 5 天",
+        "compare.traditional.text": "学习复杂的 Prompt 调校、反复搭建向量数据库与 Agent 工作流，测试成本高昂。",
+        "compare.badge": "推荐",
+        "compare.ai.title": "AI 助教",
+        "compare.ai.value": "3 分钟",
+        "compare.ai.text": "上传即用，无需任何技术背景。透明消费，按需扣费，无隐形订阅陷阱。",
+        "faq.title": "常见疑问",
+        "faq.desc": "关于生成方式、资料安全与计费，这里回答最常被问到的几个问题。",
+        "faq.q1": "生成一个助教需要多久？",
+        "faq.a1": "从放入资料到可以提问，通常不超过 3 分钟：解析资料、构建知识结构、生成助教依次完成，全程不需要手动配置 Prompt 或工作流。资料篇幅越长，解析时间会略有增加，页面会实时显示当前进度。",
+        "faq.q2": "支持哪些资料格式？篇幅有上限吗？",
+        "faq.a2": "支持 PDF、Word（.doc / .docx）、Markdown 与纯文本（.txt）。单份资料建议控制在 100 MB 以内；若资料本身篇幅很大，按章节拆分后分别导入，助教的回答会更聚焦，也更容易定位到你需要的段落。",
+        "faq.q3": "我上传的资料会被用于训练模型吗？",
+        "faq.a3.1": "不会。资料仅用于构建你自己的助教，传输过程加密，存储上与其它账号相互隔离，不会进入任何公共模型的训练数据，也不会被其他用户检索到。你可以随时删除资料，删除后对应的解析结果同步失效。详见",
+        "faq.a3.2": "。",
+        "faq.q4": "费用是怎么计算的？",
+        "faq.a4": "按量计费 = 基础构建费 + 实际对话用量。没有订阅，也没有需要提前购买的套餐：生成前会给出预估，生成后按真实用量结算。问得越多才产生越多费用，闲置零成本。",
+        "faq.q5": "如果回答不够准确，怎么办？",
+        "faq.a5.1": "通常意味着资料里缺少对应内容，或者表述过于零散。可以先补充、替换资料后重新生成；提问时带上章节名或专业术语等线索，助教会更容易定位到相关段落。如果问题仍然存在，欢迎",
+        "faq.contact": "联系我们",
+        "faq.a5.2": "，附上资料类型与提问示例即可。",
+        "faq.q6": "生成出来的助教可以分享给学生或同事使用吗？",
+        "faq.a6": "支持。你可以一键生成专属链接或嵌入网页，分享给学生、同事或客户使用(使用者消费自己账号的积分)。",
+        "faq.q7": "如果不满意生成的助教，支持重新生成吗？",
+        "faq.a7": "支持。你可以随时补充、替换或删除原始文档，系统会自动更新知识库，无需重新创建。",
+        "legal.privacy": "隐私政策",
+        "legal.privacy.title": "隐私政策",
+        "legal.privacy.date": "最近更新：2026 年 1 月",
+        "legal.terms": "服务条款",
+        "legal.terms.title": "服务条款",
+        "legal.terms.date": "最近更新：2026 年 1 月",
+        "legal.contact": "联系我们",
+        "legal.contact.title": "联系我们",
+        "legal.close": "关闭",
+        "legal.copyHint": "复制",
+        "legal.copied": "已复制",
+        "legal.copyManually": "请手动复制",
+        "privacy.s1.title": "我们收集哪些信息",
+        "privacy.s1.text": "账号标识（登录方式与昵称）、你主动上传的资料，以及保障服务可用所必需的运行日志，例如访问时间、设备与浏览器类型、错误信息。我们不会为了广告投放而追踪你的浏览行为，也不会将上述信息用于本政策未说明的用途。",
+        "privacy.s2.title": "资料如何被使用",
+        "privacy.s2.text": "你上传的资料只会做一件事：构建并支撑属于你自己的助教。解析结果仅在你的账号范围内可见，用于回答你的提问；我们不将其用于任何模型的训练，也不向第三方出售或共享。",
+        "privacy.s3.title": "存储与安全",
+        "privacy.s3.text": "资料在传输过程中使用 TLS 加密，存储阶段按账号隔离并施加访问控制。运行日志仅保留排障所必需的周期，到期自动清理。",
+        "privacy.s4.title": "第三方服务",
+        "privacy.s4.text": "内容的解析与问答依赖底层模型和云基础设施服务商。我们仅向其传递完成当次请求所必需的内容，并要求其承担同等的保密义务。",
+        "privacy.s5.title": "你可以做什么",
+        "privacy.s5.text": "你可以随时查看、导出或删除自己的资料与助教。删除后，对应的解析结果与索引会同步清除。如果你希望注销账号，可通过「联系我们」提出，我们会在核实身份后处理。",
+        "privacy.s6.title": "未成年人",
+        "privacy.s6.text": "本服务面向具备完全民事行为能力的用户。若你未满 18 周岁，请在监护人的陪同下阅读本政策并使用本服务。",
+        "privacy.s7.title": "政策更新",
+        "privacy.s7.text": "本政策如有实质性变更，我们会在页面显著位置提示，并同步更新顶部的更新日期。继续使用本服务，即表示你接受更新后的政策。",
+        "terms.s1.title": "服务说明",
+        "terms.s1.text": "本服务将你提供的资料转化为可对话的 AI 助教，并提供调用与计费能力。生成结果由模型自动产出，请你结合原始资料自行核对准确性。",
+        "terms.s2.title": "账号与责任",
+        "terms.s2.text": "请妥善保管账号凭证，账号下发生的操作视为你的行为。若发现账号异常，请第一时间通过「联系我们」告知我们。",
+        "terms.s3.title": "你的内容",
+        "terms.s3.text": "你保留所上传资料的全部权利。同时你需保证对资料拥有合法的使用权与授权，不侵犯他人的知识产权、隐私权或其他合法权益，也不包含违反法律法规的内容。",
+        "terms.s4.title": "合理使用",
+        "terms.s4.text": "不得利用本服务生成违法信息、实施欺诈、绕过用量限制，也不得对服务进行逆向工程、压力测试或干扰其正常运行。",
+        "terms.s5.title": "计费与退款",
+        "terms.s5.text": "费用按基础构建费与实际对话用量结算，生成前提供预估。因平台自身原因导致的服务不可用，可申请对应部分的退还。",
+        "terms.s6.title": "服务变更与终止",
+        "terms.s6.text": "我们可能对功能进行调整、暂停或终止，重大变更会提前告知。若你不同意变更内容，可以停止使用并删除你的数据。",
+        "terms.s7.title": "免责声明",
+        "terms.s7.text": "本服务按「现状」提供。AI 输出不构成法律、医疗、金融等专业意见，涉及专业判断时请咨询具备相应资质的专业人士。",
+        "terms.s8.title": "适用法律",
+        "terms.s8.text": "本条款的订立、效力与解释适用中华人民共和国法律。若发生争议，双方应先友好协商解决。",
+        "contact.date": "一般咨询 1 个工作日内回复",
+        "contact.r1.label": "支持与反馈",
+        "contact.r1.em": "功能异常、账号与计费问题请发往此邮箱",
+        "contact.r2.label": "商务与合作",
+        "contact.r2.em": "院校、企业与机构的批量使用与定制需求",
+        "contact.r3.label": "服务时间",
+        "contact.r3.value": "周一至周五 09:30 — 18:30（GMT+8）",
+        "contact.r3.em": "节假日期间的紧急问题会在下一个工作日优先处理",
+        "contact.r4.label": "响应时效",
+        "contact.r4.value": "一般咨询 1 个工作日内回复，账号与计费问题优先处理",
+        "contact.r4.em": "附上资料类型与提问示例，可以帮助我们更快定位问题",
+        "contact.r5.label": "告诉我们",
+        "contact.r5.value": "你正在使用的资料类型与场景，我们会给出更合适的导入与拆分建议",
+        "contact.r5.em": "你的使用方式，也常常是下一个功能的起点",
+        "footer.quote": "摒弃复杂，直抵所求。",
+        "drop.click": "点击选择文档",
+        "drop.or": "或将文件拖拽到此处",
+        "drop.hint": "支持 .md / .txt / .pdf / .docx，单个文件不超过 20MB",
+        "drop.repick": "点击可重新选择文档",
+        "drop.parsing": "正在解析文档…",
+        "drop.parsingHint": "正在读取并解析文档内容，请稍候…",
+        "drop.ariaEmpty": "选择或拖拽文档到此处",
+        "drop.ariaSelected": "已选择文档：{name}，点击重新选择",
+        "cta.generate": "立即一键生成 AI 助教",
+        "trust.note": "按实际用量计费 · 闲置零成本 · 生成后展示积分与用量明细",
+        "agentCreator.loading.title": "正在加载创建器…",
+        "agentCreator.loading.desc": "正在加载智能体创建组件，请稍候…",
+        "wait.title": "Agent 正在创建中",
+        "wait.desc": "正在解析文档并生成智能体，请稍候，完成后将自动展示结果…",
+        "result.created": "Agent 创建成功",
+        "result.ready": "智能体已就绪，可通过以下方式访问与分发",
+        "result.urlLabel": "Agent 访问地址",
+        "result.copy": "复制链接",
+        "result.open": "打开预览",
+        "result.qrLabel": "扫码访问",
+        "result.qrHint": "手机扫码即可体验",
+        "usage.trigger": "查看本次消耗",
+        "usage.title": "本次生成消耗",
+        "usage.close": "关闭",
+        "usage.points": "消费积分",
+        "usage.pointsUnit": "POINTS",
+        "usage.output": "输出 Token",
+        "usage.outputUnit": "COMPLETION",
+        "usage.input": "输入 Token",
+        "usage.inputUnit": "PROMPT",
+        "result.downloadQr": "下载二维码",
+        "result.downloadPage": "下载 Agent 网页",
+        "result.back": "返回重新创建",
+        "status.unsupported": "不支持的文件类型：{ext}",
+        "status.tooLarge": "文件超过 20MB 大小限制",
+        "status.selected": "已选择文档：{name}",
+        "status.needDoc": "请先选择一份文档",
+        "status.parseFail": "文档解析失败，请重试",
+        "progress.parsing": "解析文档...",
+        "progress.done": "创建完成",
+        "copy.ok": "Agent URL 已成功复制到剪贴板",
+        "copy.okShort": "Agent URL 已复制",
+        "copy.fail": "复制失败，请手动选择复制",
+        "copy.failShort": "复制失败",
+        "download.fail": "下载失败，请重试",
+        "step.title": "正在构建你的Agent…",
+        "step.s1": "构建知识库",
+        "step.s2": "生成基础信息",
+        "step.s3": "生成人设信息",
+        "step.s4": "加载Agent模板",
+        "step.s5": "合成Agent应用",
+        "progressPanel.title": "正在构建你的应用…",
+        "progressPanel.cancel": "取消",
+        "progressPanel.done": "完成",
+        "progressPanel.active": "进行中",
+        "progressPanel.error": "生成失败，请重试",
+        "progressPanel.ready": "应用已就绪，尽情探索吧！",
+        "progressPanel.tip1": "AI 正在认真思考，比我上班还努力…",
+        "progressPanel.tip2": "正在召唤神经元，请稍候片刻 ☕",
+        "progressPanel.tip3": "模型齿轮高速运转中，别眨眼！",
+        "progressPanel.tip4": "每一行提示词都是精心雕琢的艺术品 🎨",
+        "progressPanel.tip5": "Agent 正在规划它的第一步棋 ♟️",
+        "progressPanel.tip6": "连接知识图谱，织入思维网络中…",
+        "progressPanel.tip7": "比泡一杯咖啡还快，我们赌一下？ ☕",
+        "progressPanel.tip8": "正在为你定制专属智能体，独一无二 ✨",
+        "progressPanel.tip9": "神经网络正在发光发热，字面意思 💡",
+        "progressPanel.tip10": "好的 Agent 值得等待，就像一道好菜 🍜",
+        "regLogin": "登录 / 注册",
+        "anonymous": "匿名用户",
+        "rechargeTips": "充值",
+        "exitLogin": "退出登录",
+        "mySubscriptions": "我的订阅",
+        "myPpt": "我的作品",
+        "codeLogin": "验证码登录",
+        "phonePlaceholder": "请输入手机号",
+        "phoneErrorTips": "请输入正确的手机号",
+        "codePlaceholder": "请输入验证码",
+        "getCodeTips": "获取验证码",
+        "waitCodeTips": "后可重新获取",
+        "codeErrorTips": "请输入正确的验证码",
+        "agreementButton": "用户协议",
+        "confirmBtn": "登录",
+        "login.titleLogin": "登录/注册",
+        "login.titleVerify": "验证码确认",
+        "login.agree": "同意",
+        "login.agreeHint": "（同意后才可登录）",
+        "login.confirm": "确认",
+        "loginBar.nickname": "我的昵称",
+        "loginBar.edit": "编辑",
+        "loginBar.pointsBalance": "积分余额",
+        "loginBar.pointsSpent": "积分消费",
+        "loginBar.details": "详情",
+        "loginBar.pointsEarned": "积分收入",
+        "loginBar.logout": "退出登录中...",
+        "loginBar.filterName": "名称",
+        "loginBar.search": "搜索",
+        "loginBar.searchPlaceholder": "请输入名称进行搜索",
+        "loginBar.posterInvalid": "当前海报应用无效。",
+        "loginBar.incomeRecords": "积分收入记录",
+        "loginBar.expenseRecords": "积分消费记录",
+        "loginBar.passwordInvalid": "密码不可空，且长度需要大于或等于 8 个字符",
+        "loginBar.nicknameUpdated": "昵称修改成功！",
+        "loginBar.avatarUpdated": "头像修改成功！",
+        "loginBar.unitBillion": "亿+",
+        "loginBar.unitMillion": "百万+",
+        "loginBar.unitTenThousand": "万+",
+        "loginBar.unitThousand": "千+",
+        "toolbar.wechat": "微信",
+        "toolbar.wechatAria": "显示微信二维码",
+        "toolbar.wechatTitle": "添加微信",
+        "toolbar.wechatHint": "扫码，添加客服微信",
+        "toolbar.agent": "AI 客服",
+        "toolbar.agentAria": "打开客服界面",
+        "toolbar.agentTitle": "客服界面",
+        "toolbar.agentLoading": "正在加载客服界面…"
+      },
+      en: null
+    };
+
+    var LS_KEY = "appLang";
+    var EN_URL = "./i18n/en.json";
+    var EN_CACHE_KEY = "i18n_en_v1";
+
+    var lang = "zh";
+    try {
+      lang = localStorage.getItem(LS_KEY) || "zh";
+    } catch (e) { }
+    if (lang !== "en" && lang !== "zh") lang = "zh";
+
+    window.__I18N__ = I18N;
+    window.__APP_LANG__ = lang;
+    window.lang = lang;
+
+    window.__t__ = function (key) {
+      if (I18N[lang] && I18N[lang][key] !== undefined) return I18N[lang][key];
+      if (I18N.zh[key] !== undefined) return I18N.zh[key];
+      return key;
+    };
+
+    function apply(l) {
+      document.documentElement.lang = l === "en" ? "en" : "zh-CN";
+      var dict = I18N[l] || I18N.zh;
+
+      document.title = dict.title;
+
+      var nodes = document.querySelectorAll("[data-i18n]");
+      for (var i = 0; i < nodes.length; i++) {
+        var key = nodes[i].getAttribute("data-i18n");
+        if (dict[key] !== undefined) nodes[i].textContent = dict[key];
+      }
+
+      var ariaNodes = document.querySelectorAll("[data-i18n-aria]");
+      for (var j = 0; j < ariaNodes.length; j++) {
+        var ariaKey = ariaNodes[j].getAttribute("data-i18n-aria");
+        if (dict[ariaKey] !== undefined) ariaNodes[j].setAttribute("aria-label", dict[ariaKey]);
+      }
+
+      var toggle = document.getElementById("langToggle");
+      if (toggle) {
+        toggle.textContent = l === "en" ? "中文" : "EN";
+        toggle.setAttribute("aria-label", l === "en" ? "切换到中文" : "Switch to English");
+      }
+    }
+
+    function commit(next) {
+      lang = next;
+      window.lang = lang;
+      window.__APP_LANG__ = lang;
+      try {
+        localStorage.setItem(LS_KEY, lang);
+      } catch (e) { }
+      apply(lang);
+      try {
+        window.dispatchEvent(new CustomEvent("applangchange", { detail: { lang: lang } }));
+      } catch (e) { }
+      try {
+        if (window.webCpu && webCpu.mitt) webCpu.mitt.emit("langChanged", lang);
+      } catch (e) { }
+    }
+
+    // 按需加载英文词典：优先内存，其次 localStorage 缓存，最后网络请求
+    function ensureDict(l, done) {
+      if (l === "zh") return done("zh");
+      if (I18N.en) return done("en");
+
+      var cached = null;
+      try { cached = localStorage.getItem(EN_CACHE_KEY); } catch (e) { }
+      if (cached) {
+        try { I18N.en = JSON.parse(cached); } catch (e) { I18N.en = null; }
+        if (I18N.en) return done("en");
+      }
+
+      fetch(EN_URL)
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          I18N.en = data;
+          try { localStorage.setItem(EN_CACHE_KEY, JSON.stringify(data)); } catch (e) { }
+          done("en");
+        })
+        .catch(function () { done("zh"); });
+    }
+
+    window.__setAppLang__ = function (next) {
+      if (next !== "en") next = "zh";
+      ensureDict(next, commit);
+    };
+
+    // 初始应用：若上次选择英文，异步加载后再应用
+    ensureDict(lang, function (resolved) {
+      lang = resolved;
+      window.__APP_LANG__ = resolved;
+      apply(resolved);
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+      aigcInterface.init();
+      // 1. 初始化配置
+      const urlParams = new URLSearchParams(window.location.search);
+      const tRadio = Number(urlParams.get("transformRadio"));
+      const isReadOnly = urlParams.get("readOnly") === "true";
+      const docElem = document.getElementById("documentIdData");
+      const documentId = docElem ? docElem.innerHTML.trim() : "";
+
+      if (tRadio !== 1) {
+        WebTool.adjustStyle(480);
+      } else {
+        window.transformRadio = tRadio;
+      }
+
+      webCpu.isContainerUpdated = "false";
+      window.lang = "zh";
+
+      // 2. 界面控制逻辑
+      const toggleUI = (show) => {
+        const footer = document.querySelector(".bottomInfo");
+        const main = document.querySelector(".contentItemArea");
+        if (show && !isReadOnly) {
+          footer.isDisplayed = true;
+          footer.style.display = "flex";
+          main.style.paddingBottom = "48px";
+        } else {
+          footer.style.display = "none";
+          main.style.paddingBottom = "0";
+        }
+      };
+
+      // 3. 应用更新引擎
+      const updateDocumentApp = (appItem, callback) => {
+        let content = Array.isArray(appItem.content) ? appItem.content : [{ content: appItem.content }];
+        content[0].content.isSolo = true;
+
+        window.aigcRequest = (query, cb, errCb, macros) => {
+          query.rootAccount = appItem.documentMeta.rootAccount;
+          aigcInterface.request(query, cb, errCb, macros);
+        };
+
+        appItem.documentMeta.documentId = documentId;
+
+        const mainApp = {
+          url: `${webCpu.documentPrefix}/webApps/document/agent.vue`,
+          cardName: "documentEditor",
+          dsl: {
+            data: {
+              topHeaderHidden: true,
+              breadcrumbsHidden: true,
+              currentContent: content,
+              currentApp: appItem.app,
+              documentMeta: appItem.documentMeta
+            }
+          }
+        };
+
+        webCpu.updateView(document.querySelector(".contentItemArea"), mainApp, callback);
+      };
+
+      const updateMenuItem = (id) => {
+        const menuApp = {
+          url: `${webCpu.documentPrefix}/components/menu.vue`,
+          cardName: "documentAgentMenu",
+          dsl: { data: { appId: id } }
+        };
+        webCpu.updateView(document.querySelector(".agentMenuArea"), menuApp);
+      };
+
+      // 4. 执行加载
+      if (documentId) {
+        webCpu.getDocumentApp(
+          documentId,
+          (app, content, rData) => {
+            updateDocumentApp(rData, () => {
+              rData.documentMeta = rData.documentMeta || {};
+              // 校验本地存储状态，决定是否显示编辑菜单
+              if (localStorage.folderName === rData.documentMeta.folderName) {
+                toggleUI(true);
+                updateMenuItem(documentId);
+              } else {
+                toggleUI(false);
+              }
+            });
+          },
+          (err) => {
+            console.error("加载文档失败", err);
+            document.querySelector(".contentItemArea").innerHTML =
+              '<div class="error-msg">数形实验加载失败，请检查网络或刷新重试。</div>';
+          }
+        );
+      }
+    });
+  </script>
+</body>
+
+</html>

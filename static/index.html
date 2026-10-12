@@ -1,0 +1,4820 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <!-- Google Tag Manager -->
+  <script>(function (w, d, s, l, i) {
+      w[l] = w[l] || []; w[l].push({
+        'gtm.start':
+          new Date().getTime(), event: 'gtm.js'
+      }); var f = d.getElementsByTagName(s)[0],
+        j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+          'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+    })(window, document, 'script', 'dataLayer', 'GTM-NFNM4T38');</script>
+  <!-- End Google Tag Manager -->
+  <meta charset="UTF-8">
+  <!-- 资源预连接：提前解析/建连，降低首屏第三方与静态资源延迟 -->
+  <link rel="preconnect" href="https://transweb.cn">
+  <link rel="preconnect" href="https://transweb-1254183942.cos.ap-beijing.myqcloud.com">
+  <link rel="dns-prefetch" href="https://www.googletagmanager.com">
+  <link rel="dns-prefetch" href="https://www.clarity.ms">
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-X57JCN1S0T"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', 'G-X57JCN1S0T');
+  </script>
+  <script type="text/javascript">
+    (function (c, l, a, r, i, t, y) {
+      c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+      t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+      y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+    })(window, document, "clarity", "script", "xejk2rx33f");
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trans-Agent · 丢入一份文档，3 分钟生成你的专属 AI 助教</title>
+
+  <!-- ==================== 基础 SEO ==================== -->
+  <meta name="description"
+    content="Trans-Agent：上传一份 PDF、Word 或 Markdown 文档，3 分钟即可生成你的专属 AI 助教。三步极简操作，按量计费、闲置零成本，支持链接/二维码访问与分享，资料加密隔离、不用于模型训练。" />
+  <meta name="keywords"
+    content="Trans-Agent, AI 助教, AI Agent 生成, 文档生成智能体, 上传文档生成 AI, 专属 AI 助手, 知识库问答, PDF 问答助手, 教学 AI 助手, 企业知识库 AI, 无代码 AI 应用" />
+  <meta name="author" content="TransWeb" />
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+  <meta name="theme-color" content="#fafafc" />
+  <meta name="format-detection" content="telephone=no" />
+  <link rel="canonical" href="https://transweb.cn/creator.html" />
+
+  <!-- 多语言版本（默认中文，英文为 ?lang=en 变体） -->
+  <link rel="alternate" hreflang="zh-CN" href="https://transweb.cn/creator.html" />
+  <link rel="alternate" hreflang="en" href="https://transweb.cn/creator.html?lang=en" />
+  <link rel="alternate" hreflang="x-default" href="https://transweb.cn/creator.html" />
+
+  <!-- ==================== Open Graph（Facebook / LinkedIn / WhatsApp / 微信等） ==================== -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Trans-Agent" />
+  <meta property="og:title" content="Trans-Agent · 丢入一份文档，3 分钟生成你的专属 AI 助教" />
+  <meta property="og:description"
+    content="上传 PDF、Word 或 Markdown，3 分钟生成专属 AI 助教。链接/二维码一键分享，按量计费、闲置零成本，资料加密隔离、不用于模型训练。" />
+  <meta property="og:url" content="https://transweb.cn/creator.html" />
+  <meta property="og:image" content="https://transweb.cn/assets/logo.png" />
+  <meta property="og:image:alt" content="Trans-Agent - 上传文档，3 分钟生成专属 AI 助教" />
+  <meta property="og:locale" content="zh_CN" />
+  <meta property="og:locale:alternate" content="en_US" />
+
+  <!-- ==================== Twitter / X Card ==================== -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Trans-Agent · 丢入一份文档，3 分钟生成你的专属 AI 助教" />
+  <meta name="twitter:description" content="上传 PDF、Word 或 Markdown，3 分钟生成专属 AI 助教。链接/二维码一键分享，按量计费、闲置零成本。" />
+  <meta name="twitter:image" content="https://transweb.cn/assets/logo.png" />
+  <meta name="twitter:image:alt" content="Trans-Agent - 上传文档，3 分钟生成专属 AI 助教" />
+
+  <!-- 图标 -->
+  <link rel="icon" type="image/png" href="https://transweb.cn/assets/logo.png" />
+  <link rel="apple-touch-icon" href="https://transweb.cn/assets/logo.png" />
+
+  <!-- ==================== 结构化数据（JSON-LD） ==================== -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://transweb.cn/#organization",
+        "name": "TransWeb",
+        "alternateName": "Trans-Agent",
+        "url": "https://transweb.cn/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://transweb.cn/assets/logo.png"
+        }
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://transweb.cn/#website",
+        "url": "https://transweb.cn/",
+        "name": "Trans-Agent",
+        "description": "上传文档，3 分钟生成专属 AI 助教。",
+        "inLanguage": "zh-CN",
+        "publisher": {
+          "@id": "https://transweb.cn/#organization"
+        }
+      },
+      {
+        "@type": "SoftwareApplication",
+        "@id": "https://transweb.cn/#agent-creator",
+        "name": "Trans-Agent",
+        "alternateName": "AI 助教生成器",
+        "url": "https://transweb.cn/creator.html",
+        "logo": "https://transweb.cn/assets/logo.png",
+        "operatingSystem": "Any (Browser-based)",
+        "applicationCategory": "BusinessApplication",
+        "applicationSubCategory": "AI Assistant Generator",
+        "author": {
+          "@id": "https://transweb.cn/#organization"
+        },
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "CNY"
+        },
+        "featureList": [
+          "上传 PDF / Word / Markdown / TXT 文档，3 分钟生成专属 AI 助教",
+          "极简三步：导入 · 理解 · 解答",
+          "按量计费，闲置零成本",
+          "链接与二维码一键访问、下载 Agent 网页",
+          "资料加密隔离，不用于模型训练"
+        ]
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "生成一个 AI 助教需要多久？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "从放入资料到可以提问，通常不超过 3 分钟：解析资料、构建知识结构、生成助教依次完成，页面实时显示进度。"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "支持哪些资料格式？篇幅有上限吗？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "支持 PDF、Word（.doc / .docx）、Markdown 与纯文本（.txt）。单份资料建议控制在 20 MB 以内，篇幅较大的资料可按章节拆分导入。"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "我上传的资料会被用于训练模型吗？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "不会。资料仅用于构建你自己的助教，传输加密、账号隔离，不进入公共模型训练数据，也不会被其他用户检索到。"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "费用是怎么计算的？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "按量计费 = 基础构建费 + 实际对话用量。没有订阅，也没有需要提前购买的套餐，生成前给出预估，闲置零成本。"
+            }
+          }
+        ]
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "首页",
+            "item": "https://transweb.cn/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "AI 助教生成器",
+            "item": "https://transweb.cn/creator.html"
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    :root {
+      --paper: #fafafc;
+      --paper-2: #f8f8fa;
+      --card: #f3f3f5;
+      --white: #ffffff;
+      --ink: #1a1a1e;
+      --gray: #6e6e73;
+      --light: #a5a5aa;
+      --line: #e7e7eb;
+      --glow: #e6e8ec;
+
+      --serif:
+        "Source Han Serif SC",
+        "Noto Serif SC",
+        "Songti SC",
+        "STSong",
+        serif;
+
+      --sans:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Helvetica Neue",
+        Arial,
+        sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+      height: 100%;
+    }
+
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+      -webkit-font-smoothing: antialiased;
+      height: 100%;
+    }
+
+    .contentItemArea {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      scroll-behavior: smooth;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    ::selection {
+      background: var(--ink);
+      color: var(--paper);
+    }
+
+    :focus-visible {
+      outline: 1px solid var(--ink);
+      outline-offset: 3px;
+    }
+
+    /* =========================
+   Header
+========================= */
+
+    .header {
+      position: fixed;
+      z-index: 100;
+      top: 0;
+      left: 0;
+      right: 0;
+
+      height: 64px;
+
+      background: rgba(250, 250, 252, .94);
+
+      border-bottom: 1px solid rgba(230, 230, 235, .65);
+    }
+
+    /* 毛玻璃仅在滚动后启用，避免常驻 backdrop-filter 拖累滚动合成 */
+    .header.is-scrolled {
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+
+    .header-inner {
+      width: min(1120px, calc(100% - 48px));
+      height: 100%;
+      margin: auto;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: nowrap;
+    }
+
+    .logo {
+      flex: 0 0 auto;
+      white-space: nowrap;
+
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: .16em;
+    }
+
+    .nav {
+      display: flex;
+      gap: 36px;
+
+      flex: 1;
+      justify-content: center;
+      min-width: 0;
+      white-space: nowrap;
+    }
+
+    .nav a {
+      flex: 0 0 auto;
+      white-space: nowrap;
+
+      font-size: 13px;
+      color: var(--gray);
+      transition: color .3s ease;
+    }
+
+    .nav a:hover {
+      color: var(--ink);
+    }
+
+    /* 滚动位置对应的当前章节（不添加下划线，仅以墨色深浅区分） */
+    .nav a.active {
+      color: var(--ink);
+    }
+
+    #loginMenuItem {
+      flex: 0 0 140px;
+      width: 140px;
+      min-width: 140px;
+      white-space: nowrap;
+
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      height: 32px;
+      border: 0;
+      background: transparent;
+
+      color: var(--ink);
+      font-size: 13px;
+    }
+
+    .header-right {
+      flex: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .lang-toggle {
+      flex: none;
+
+      height: 32px;
+      padding: 0 12px;
+
+      border: 1px solid var(--line);
+      border-radius: 2px;
+      background: transparent;
+
+      color: var(--gray);
+      font-size: 12px;
+      letter-spacing: .04em;
+
+      transition:
+        color .3s ease,
+        border-color .3s ease;
+    }
+
+    .lang-toggle:hover {
+      color: var(--ink);
+      border-color: var(--gray);
+    }
+
+    .menu-toggle {
+      display: none;
+
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .menu-toggle span {
+      display: block;
+      width: 22px;
+      height: 1.5px;
+      background: var(--ink);
+      border-radius: 2px;
+
+      transition: transform .3s ease, opacity .3s ease;
+    }
+
+    /* =========================
+   Hero
+========================= */
+
+    .hero {
+      min-height: 100vh;
+
+      padding:
+        150px 24px 100px;
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .hero-title {
+      margin: 0;
+
+      font-family: var(--serif);
+      font-size: clamp(40px, 5vw, 64px);
+      font-weight: 400;
+      letter-spacing: .05em;
+      line-height: 1.25;
+
+      text-align: center;
+    }
+
+    .hero-title span {
+      display: block;
+    }
+
+    .hero-subtitle {
+      margin: 25px auto 58px;
+
+      max-width: 580px;
+
+      color: var(--gray);
+      font-size: 16px;
+      line-height: 1.8;
+      letter-spacing: .04em;
+
+      text-align: center;
+    }
+
+    .social-proof {
+      margin: 24px auto 0;
+
+      color: #a0a0a5;
+
+      font-size: 12px;
+      letter-spacing: .03em;
+
+      text-align: center;
+    }
+
+    /* =========================
+   Main interaction card
+========================= */
+
+    .generator {
+      width: min(900px, 100%);
+      height: 675px;
+      /* 固定高度，与 agentCreator 内容区一致，保证 PC 端窗口稳定 */
+      overflow: auto;
+      background: var(--white);
+      border: 1px solid #ebebef;
+      box-shadow:
+        0 20px 70px rgba(20, 20, 30, .055),
+        0 2px 8px rgba(20, 20, 30, .025);
+    }
+
+    /* 细滚动条，贴合「白与空」极简风 */
+    .generator::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .generator::-webkit-scrollbar-thumb {
+      background: var(--line);
+      border-radius: 99px;
+    }
+
+    .generator::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    /* agentCreator.vue 组件加载等待提示（渲染前与渲染过程中显示） */
+    .ac-loading {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      background: var(--white);
+      transition: opacity .3s ease;
+    }
+
+    .ac-loading.is-done {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .ac-loading__spinner {
+      width: 40px;
+      height: 40px;
+      margin-bottom: 24px;
+      border-radius: 50%;
+      border: 1px solid var(--line);
+      border-top-color: var(--ink);
+      animation: acSpin 1s linear infinite;
+    }
+
+    @keyframes acSpin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .ac-loading__title {
+      margin: 0 0 8px;
+      font-family: var(--serif);
+      font-size: 22px;
+      letter-spacing: .04em;
+      color: var(--ink);
+    }
+
+    .ac-loading__desc {
+      margin: 0;
+      font-size: 13px;
+      line-height: 1.8;
+      letter-spacing: .02em;
+      color: var(--gray);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .ac-loading__spinner {
+        animation: none;
+      }
+    }
+
+    .generator-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      margin-bottom: 18px;
+
+      color: var(--gray);
+      font-size: 11px;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    .drop-zone {
+      position: relative;
+
+      min-height: 250px;
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+
+      border: 1px dashed #d9d9de;
+
+      background:
+        linear-gradient(135deg,
+          rgba(245, 245, 248, .7),
+          rgba(250, 250, 252, .4));
+
+      transition:
+        border-color .35s ease,
+        background .35s ease,
+        transform .35s ease;
+    }
+
+    .drop-zone.dragging {
+      border-color: #9999a0;
+      background: #f4f4f6;
+      transform: scale(.995);
+    }
+
+    .paper-icon {
+      width: 44px;
+      height: 56px;
+
+      margin-bottom: 20px;
+
+      border: 1px solid #cfcfd4;
+      background: white;
+
+      position: relative;
+
+      box-shadow: 0 8px 18px rgba(0, 0, 0, .035);
+    }
+
+    .paper-icon::before {
+      content: "";
+
+      position: absolute;
+
+      right: -1px;
+      top: -1px;
+
+      width: 14px;
+      height: 14px;
+
+      border-left: 1px solid #cfcfd4;
+      border-bottom: 1px solid #cfcfd4;
+
+      background: #f6f6f8;
+    }
+
+    .paper-icon::after {
+      content: "";
+
+      position: absolute;
+
+      left: 10px;
+      right: 10px;
+      top: 27px;
+
+      height: 1px;
+
+      background: #d7d7db;
+
+      box-shadow:
+        0 6px #dedee2,
+        0 12px #e5e5e8;
+    }
+
+    .drop-title {
+      font-family: var(--serif);
+      font-size: 18px;
+      letter-spacing: .05em;
+    }
+
+    .drop-description {
+      margin-top: 9px;
+
+      color: var(--light);
+      font-size: 12px;
+    }
+
+    .file-examples {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+
+      gap: 8px;
+
+      margin-top: 22px;
+    }
+
+    .file {
+      padding: 7px 12px;
+
+      border: 1px solid #e5e5e9;
+      border-radius: 3px;
+
+      background: rgba(255, 255, 255, .8);
+
+      color: var(--gray);
+      font-size: 11px;
+
+      transition:
+        transform .25s ease,
+        background .25s ease;
+    }
+
+    .file:hover {
+      transform: translateY(-1px);
+      background: white;
+    }
+
+    .file.selected {
+      color: var(--ink);
+      border-color: #c9c9cf;
+    }
+
+    /* action */
+
+    .generator-action {
+      margin-top: 26px;
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .generate-btn {
+      width: min(330px, 100%);
+      height: 52px;
+
+      border: 0;
+      border-radius: 2px;
+
+      background: var(--ink);
+      color: white;
+
+      font-size: 13px;
+      letter-spacing: .12em;
+
+      position: relative;
+      overflow: hidden;
+
+      transition:
+        transform .25s ease,
+        box-shadow .35s ease;
+    }
+
+    .generate-btn::after {
+      content: "";
+
+      position: absolute;
+
+      left: 50%;
+      top: 50%;
+
+      width: 0;
+      height: 0;
+
+      border-radius: 999px;
+
+      background: rgba(255, 255, 255, .13);
+
+      transform: translate(-50%, -50%);
+
+      transition:
+        width .7s ease,
+        height .7s ease;
+    }
+
+    .generate-btn:hover {
+      box-shadow: 0 10px 30px rgba(0, 0, 0, .13);
+    }
+
+    .generate-btn:hover::after {
+      width: 420px;
+      height: 420px;
+    }
+
+    .generate-btn:active {
+      transform: translateY(1px);
+    }
+
+    .generate-btn span {
+      position: relative;
+      z-index: 2;
+    }
+
+    .price-note {
+      margin-top: 12px;
+
+      color: #a0a0a5;
+      font-size: 11px;
+    }
+
+    /* =========================
+   Result
+========================= */
+
+    .result {
+      display: none;
+
+      margin-top: 34px;
+
+      border-top: 1px solid var(--line);
+
+      padding-top: 34px;
+
+      animation: paperOpen .8s cubic-bezier(.2, .7, .2, 1);
+    }
+
+    .result.visible {
+      display: block;
+    }
+
+    @keyframes paperOpen {
+      from {
+        opacity: 0;
+        transform: translateY(-12px);
+        clip-path: inset(0 0 100% 0);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+        clip-path: inset(0 0 0 0);
+      }
+    }
+
+    .result-grid {
+      display: grid;
+      grid-template-columns: 38% 62%;
+    }
+
+    .knowledge {
+      padding-right: 34px;
+      border-right: 1px solid var(--line);
+    }
+
+    .result-chat {
+      padding-left: 34px;
+    }
+
+    .result-heading {
+      font-family: var(--serif);
+      font-size: 18px;
+      font-weight: 400;
+    }
+
+    .result-caption {
+      margin-top: 7px;
+      color: var(--light);
+      font-size: 11px;
+    }
+
+    .tree {
+      margin-top: 30px;
+    }
+
+    .tree-item {
+      padding: 10px 0;
+
+      color: var(--gray);
+      font-size: 12px;
+
+      border-bottom: 1px solid #f0f0f2;
+    }
+
+    .tree-item strong {
+      color: var(--ink);
+      font-weight: 500;
+    }
+
+    .chat-message {
+      margin-top: 25px;
+
+      padding: 18px 20px;
+
+      background: #f7f7f9;
+
+      font-family: var(--serif);
+      font-size: 14px;
+      line-height: 1.9;
+    }
+
+    .chat-answer {
+      margin-top: 15px;
+
+      color: var(--gray);
+      font-size: 12px;
+      line-height: 1.9;
+    }
+
+    /* =========================
+   Sections
+========================= */
+
+    .section {
+      width: min(1120px, calc(100% - 48px));
+
+      margin: auto;
+
+      padding: 150px 0;
+
+      /* 屏下区块惰性渲染：靠近视口前跳过布局/绘制，降低长页面初始成本 */
+      content-visibility: auto;
+      contain-intrinsic-size: 900px;
+      contain-intrinsic-size: auto 900px;
+    }
+
+    .section-header {
+      max-width: 620px;
+
+      margin-bottom: 72px;
+    }
+
+    .eyebrow {
+      margin-bottom: 18px;
+
+      color: var(--light);
+
+      font-size: 11px;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+    }
+
+    .section-title {
+      margin: 0;
+
+      font-family: var(--serif);
+      font-weight: 400;
+
+      font-size: clamp(30px, 4vw, 46px);
+      line-height: 1.4;
+
+      letter-spacing: .04em;
+    }
+
+    .section-description {
+      margin-top: 20px;
+
+      color: var(--gray);
+
+      font-size: 14px;
+      line-height: 1.9;
+    }
+
+    /* =========================
+   Process
+========================= */
+
+    .process {
+      border-top: 1px solid var(--line);
+    }
+
+    .process-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .process-item {
+      min-height: 360px;
+
+      padding: 42px 42px 42px 0;
+
+      border-right: 1px solid var(--line);
+    }
+
+    .process-item:not(:first-child) {
+      padding-left: 42px;
+    }
+
+    .process-item:last-child {
+      border-right: 0;
+    }
+
+    .process-number {
+      font-size: 11px;
+      color: var(--light);
+      letter-spacing: .16em;
+    }
+
+    .process-title {
+      margin-top: 62px;
+
+      font-family: var(--serif);
+      font-size: 25px;
+      font-weight: 400;
+    }
+
+    .process-text {
+      margin-top: 20px;
+
+      max-width: 250px;
+
+      color: var(--gray);
+
+      font-size: 13px;
+      line-height: 1.9;
+    }
+
+    .process-visual {
+      height: 80px;
+
+      margin-top: 46px;
+
+      display: flex;
+      align-items: center;
+    }
+
+    /* absorb */
+
+    .absorb-lines {
+      width: 150px;
+      height: 70px;
+
+      position: relative;
+    }
+
+    .absorb-lines span {
+      position: absolute;
+
+      left: 0;
+
+      width: 100%;
+
+      height: 1px;
+
+      background: #bdbdc2;
+
+      transform-origin: right;
+      animation: converge 3s infinite ease-in-out;
+    }
+
+    .absorb-lines span:nth-child(1) {
+      top: 8px;
+    }
+
+    .absorb-lines span:nth-child(2) {
+      top: 22px;
+    }
+
+    .absorb-lines span:nth-child(3) {
+      top: 36px;
+    }
+
+    .absorb-lines span:nth-child(4) {
+      top: 50px;
+    }
+
+    .absorb-lines span:nth-child(5) {
+      top: 64px;
+    }
+
+    @keyframes converge {
+
+      0%,
+      100% {
+        transform: scaleX(1);
+      }
+
+      50% {
+        transform: scaleX(.2);
+      }
+    }
+
+    /* distill */
+
+    .distill-tree {
+      width: 150px;
+      height: 70px;
+
+      position: relative;
+    }
+
+    .distill-tree::before {
+      content: "";
+
+      position: absolute;
+
+      left: 20px;
+      top: 35px;
+
+      width: 110px;
+
+      height: 1px;
+
+      background: #aaa;
+    }
+
+    .distill-tree span {
+      position: absolute;
+
+      width: 5px;
+      height: 5px;
+
+      border: 1px solid #999;
+      border-radius: 50%;
+
+      background: white;
+    }
+
+    .distill-tree span:nth-child(1) {
+      left: 18px;
+      top: 33px;
+    }
+
+    .distill-tree span:nth-child(2) {
+      left: 54px;
+      top: 17px;
+    }
+
+    .distill-tree span:nth-child(3) {
+      left: 54px;
+      top: 50px;
+    }
+
+    .distill-tree span:nth-child(4) {
+      left: 105px;
+      top: 17px;
+    }
+
+    .distill-tree span:nth-child(5) {
+      left: 105px;
+      top: 50px;
+    }
+
+    /* respond */
+
+    .respond-box {
+      width: 150px;
+      height: 68px;
+
+      border: 1px solid #ccc;
+
+      position: relative;
+    }
+
+    .respond-box::before {
+      content: "";
+
+      position: absolute;
+
+      left: 15px;
+      right: 25px;
+      top: 20px;
+
+      height: 1px;
+
+      background: #bbb;
+
+      box-shadow:
+        0 10px #d0d0d4,
+        0 20px #dedee1;
+    }
+
+    /* =========================
+   Cases
+========================= */
+
+    .cases {
+      display: grid;
+
+      grid-template-columns:
+        1.1fr .9fr;
+
+      gap: 24px;
+    }
+
+    .case {
+      position: relative;
+      contain: layout paint;
+
+      min-height: 280px;
+
+      padding: 38px;
+
+      background: var(--card);
+
+      overflow: hidden;
+
+      transition:
+        transform .45s cubic-bezier(.2, .7, .2, 1),
+        background .45s ease;
+    }
+
+    /* 光标高光层：用 transform 无关的径向渐变 + 透明度切换，仅在 hover 时显现 */
+    .case::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+
+      background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), #ffffff, transparent 60%);
+      opacity: 0;
+
+      transition: opacity .3s ease;
+    }
+
+    .case:hover {
+      transform: translateY(-4px);
+      background: #f0f0f3;
+    }
+
+    .case:hover::after {
+      opacity: 1;
+    }
+
+    .case:nth-child(2) {
+      min-height: 350px;
+    }
+
+    .case:nth-child(3),
+    .case:nth-child(4) {
+      min-height: 300px;
+    }
+
+    .case-number {
+      color: var(--light);
+      font-size: 11px;
+      letter-spacing: .16em;
+    }
+
+    .case-title {
+      margin-top: 45px;
+
+      font-family: var(--serif);
+      font-size: 23px;
+      font-weight: 400;
+    }
+
+    .case-desc {
+      margin-top: 14px;
+
+      max-width: 340px;
+
+      color: var(--gray);
+      font-size: 12px;
+      line-height: 1.9;
+    }
+
+    .case-mark {
+      position: absolute;
+
+      right: 35px;
+      bottom: 35px;
+
+      width: 100px;
+      height: 100px;
+
+      border: 1px solid rgba(0, 0, 0, .08);
+      border-radius: 50%;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      color: var(--gray);
+
+      transition:
+        transform .45s cubic-bezier(.2, .7, .2, 1),
+        border-color .45s ease,
+        color .45s ease;
+    }
+
+    /* 场景标识图标：极细线条，与全页 1px 线条语言一致 */
+    .case-mark svg {
+      display: block;
+
+      width: 40px;
+      height: 40px;
+    }
+
+    .case:hover .case-mark {
+      transform: scale(1.06);
+
+      border-color: rgba(0, 0, 0, .16);
+      color: var(--ink);
+    }
+
+    /* =========================
+   Pricing
+========================= */
+
+    .pricing-wrap {
+      display: flex;
+      justify-content: center;
+    }
+
+    .pricing {
+      width: min(850px, 100%);
+
+      background: white;
+
+      border: 1px solid var(--line);
+
+      padding: 58px;
+    }
+
+    .formula {
+      margin: 35px 0 45px;
+
+      font-family: var(--serif);
+
+      text-align: center;
+
+      font-size: 24px;
+      letter-spacing: .05em;
+    }
+
+    .pricing-line {
+      height: 1px;
+      background: var(--line);
+    }
+
+    .compare {
+      position: relative;
+      margin-top: 44px;
+
+      display: grid;
+
+      grid-template-columns: 1fr 1fr;
+
+      gap: 64px;
+    }
+
+    /* 居中 VS 分隔圆 */
+    .compare::before {
+      content: "VS";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 1;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--serif);
+      font-size: 12px;
+      letter-spacing: .14em;
+      color: var(--gray);
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 50%;
+    }
+
+    .compare-side {
+      position: relative;
+      padding: 30px 28px 28px;
+    }
+
+    /* 传统方式：灰卡，弱化 */
+    .compare-side:first-child {
+      background: var(--card);
+    }
+
+    .compare-side:first-child .compare-value {
+      color: var(--gray);
+    }
+
+    /* AI 助教：白卡 + 细边框 + 顶部墨线，强化 */
+    .compare-side:last-child {
+      background: var(--white);
+      border: 1px solid var(--line);
+      box-shadow: 0 14px 34px rgba(20, 20, 30, .06);
+    }
+
+    .compare-side:last-child::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--ink);
+    }
+
+    .compare-badge {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      padding: 3px 10px;
+      border: 1px solid var(--ink);
+      color: var(--ink);
+      font-size: 10px;
+      letter-spacing: .12em;
+    }
+
+    .compare-title {
+      color: var(--light);
+
+      font-size: 11px;
+      letter-spacing: .16em;
+    }
+
+    .compare-value {
+      margin-top: 16px;
+
+      font-family: var(--serif);
+
+      font-size: 28px;
+      line-height: 1.25;
+    }
+
+    .compare-side:last-child .compare-value {
+      color: var(--ink);
+    }
+
+    .compare-text {
+      margin-top: 12px;
+
+      color: var(--gray);
+
+      font-size: 12px;
+      line-height: 1.8;
+    }
+
+    /* =========================
+   FAQ
+========================= */
+
+    .faq-list {
+      border-top: 1px solid var(--line);
+    }
+
+    .faq-item {
+      border-bottom: 1px solid var(--line);
+    }
+
+    .faq-question {
+      width: 100%;
+
+      padding: 26px 0;
+
+      display: flex;
+      align-items: center;
+      gap: 20px;
+
+      border: 0;
+      background: transparent;
+
+      color: var(--ink);
+      text-align: left;
+    }
+
+    .faq-index {
+      flex: 0 0 32px;
+
+      color: var(--light);
+
+      font-size: 10px;
+      letter-spacing: .16em;
+
+      transition: color .35s ease;
+    }
+
+    .faq-text {
+      flex: 1;
+      min-width: 0;
+
+      font-family: var(--serif);
+      font-size: 17px;
+      line-height: 1.6;
+
+      letter-spacing: .03em;
+    }
+
+    .faq-toggle {
+      position: relative;
+      flex: none;
+
+      width: 22px;
+      height: 22px;
+    }
+
+    .faq-toggle span {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+
+      width: 12px;
+      height: 1px;
+
+      background: var(--light);
+
+      transform: translate(-50%, -50%);
+
+      transition:
+        transform .4s cubic-bezier(.2, .7, .2, 1),
+        background .35s ease;
+    }
+
+    /* 竖线旋回 0°，与横线重合为「−」 */
+    .faq-toggle span:last-child {
+      transform: translate(-50%, -50%) rotate(90deg);
+    }
+
+    .faq-item.open .faq-toggle span:last-child {
+      transform: translate(-50%, -50%) rotate(0deg);
+    }
+
+    .faq-item.open .faq-toggle span,
+    .faq-question:hover .faq-toggle span {
+      background: var(--ink);
+    }
+
+    .faq-item.open .faq-index,
+    .faq-question:hover .faq-index {
+      color: var(--gray);
+    }
+
+    /* 折叠容器本身不设内边距，高度才能被精确测量 */
+    .faq-answer {
+      height: 0;
+
+      overflow: hidden;
+      visibility: hidden;
+
+      transition:
+        height .5s cubic-bezier(.2, .7, .2, 1),
+        visibility .5s;
+    }
+
+    .faq-item.open .faq-answer {
+      visibility: visible;
+    }
+
+    .faq-answer-inner {
+      padding: 0 0 30px 52px;
+    }
+
+    .faq-answer-inner p {
+      margin: 0;
+
+      max-width: 640px;
+
+      color: var(--gray);
+
+      font-size: 13px;
+      line-height: 1.95;
+    }
+
+    /* 正文内联链接：以极细下划线示意可点击 */
+    .faq-answer-inner a {
+      border-bottom: 1px solid var(--line);
+
+      transition:
+        color .3s ease,
+        border-color .3s ease;
+    }
+
+    .faq-answer-inner a:hover {
+      color: var(--ink);
+      border-bottom-color: var(--ink);
+    }
+
+    /* =========================
+   条款浮层（隐私政策 / 服务条款 / 联系我们）
+========================= */
+
+    .overlay {
+      position: fixed;
+      z-index: 200;
+      inset: 0;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      padding: 40px 24px;
+
+      opacity: 0;
+      pointer-events: none;
+
+      transition: opacity .4s ease;
+    }
+
+    .overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .overlay-backdrop {
+      position: absolute;
+      inset: 0;
+
+      background: rgba(26, 26, 30, .24);
+
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    /* 如一张平铺的纸，自下方微微浮起 */
+    .panel {
+      position: relative;
+
+      width: min(720px, 100%);
+      max-height: min(82vh, 780px);
+
+      display: flex;
+      flex-direction: column;
+
+      background: var(--white);
+      border: 1px solid var(--line);
+      box-shadow: 0 40px 90px rgba(20, 20, 30, .16);
+
+      transform: translateY(14px);
+
+      transition: transform .5s cubic-bezier(.2, .7, .2, 1);
+    }
+
+    .overlay.open .panel {
+      transform: translateY(0);
+    }
+
+    .panel-close {
+      position: absolute;
+      z-index: 1;
+      top: 18px;
+      right: 18px;
+
+      width: 40px;
+      height: 40px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border: 0;
+      background: transparent;
+
+      transition: transform .4s cubic-bezier(.2, .7, .2, 1);
+    }
+
+    .panel-close span {
+      position: absolute;
+
+      width: 14px;
+      height: 1px;
+
+      background: var(--gray);
+
+      transition: background .3s ease;
+    }
+
+    .panel-close span:first-child {
+      transform: rotate(45deg);
+    }
+
+    .panel-close span:last-child {
+      transform: rotate(-45deg);
+    }
+
+    .panel-close:hover {
+      transform: rotate(90deg);
+    }
+
+    .panel-close:hover span {
+      background: var(--ink);
+    }
+
+    .panel-body {
+      overflow-y: auto;
+      overscroll-behavior: contain;
+
+      padding: 56px 60px 52px;
+    }
+
+    .panel-body::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .panel-body::-webkit-scrollbar-thumb {
+      background: var(--line);
+      border-radius: 3px;
+    }
+
+    .panel-body::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .doc-eyebrow {
+      color: var(--light);
+
+      font-size: 10px;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+    }
+
+    .doc-title {
+      margin: 16px 0 0;
+
+      font-family: var(--serif);
+      font-weight: 400;
+      font-size: 27px;
+
+      letter-spacing: .04em;
+    }
+
+    .doc-date {
+      margin-top: 12px;
+
+      color: var(--light);
+
+      font-size: 11px;
+      letter-spacing: .04em;
+    }
+
+    .doc-body {
+      margin-top: 34px;
+
+      border-top: 1px solid var(--line);
+    }
+
+    .doc-section {
+      padding: 24px 0;
+
+      border-bottom: 1px solid var(--line);
+    }
+
+    .doc-section:last-child {
+      padding-bottom: 0;
+
+      border-bottom: 0;
+    }
+
+    .doc-section h3 {
+      margin: 0;
+
+      font-family: var(--serif);
+      font-weight: 400;
+      font-size: 15px;
+
+      letter-spacing: .04em;
+    }
+
+    .doc-section p {
+      margin: 12px 0 0;
+
+      color: var(--gray);
+
+      font-size: 12.5px;
+      line-height: 1.95;
+    }
+
+    .doc-row {
+      padding: 22px 0;
+
+      display: flex;
+      align-items: baseline;
+      gap: 20px;
+
+      border-bottom: 1px solid var(--line);
+    }
+
+    .doc-row:last-child {
+      padding-bottom: 0;
+
+      border-bottom: 0;
+    }
+
+    .doc-row-icon {
+      flex: 0 0 auto;
+
+      align-self: flex-start;
+
+      width: 16px;
+      height: 16px;
+      /* 4px 补偿：让 16px 图标中心对齐 label 首行文字(11px)中心 */
+      margin: 4px -8px 0 0;
+
+      color: var(--gray);
+    }
+
+    .doc-row-icon svg {
+      display: block;
+
+      width: 16px;
+      height: 16px;
+    }
+
+    .doc-row-label {
+      flex: 0 0 96px;
+
+      color: var(--gray);
+
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: .04em;
+    }
+
+    .doc-row-value {
+      flex: 1;
+      min-width: 0;
+
+      font-size: 12.5px;
+      line-height: 1.9;
+    }
+
+    .doc-row-value em {
+      display: block;
+
+      margin-top: 8px;
+
+      color: var(--gray);
+
+      font-size: 11px;
+      font-style: normal;
+    }
+
+    .copy-btn {
+      padding: 0 0 2px;
+
+      display: inline-flex;
+      align-items: baseline;
+      gap: 8px;
+
+      border: 0;
+      border-bottom: 1px solid var(--line);
+      background: transparent;
+
+      color: var(--ink);
+
+      font-size: 12.5px;
+      letter-spacing: .02em;
+
+      transition: border-color .3s ease;
+    }
+
+    .copy-btn:hover {
+      border-bottom-color: var(--ink);
+    }
+
+    .copy-hint {
+      color: var(--gray);
+
+      font-size: 10px;
+      letter-spacing: .1em;
+
+      transition: color .3s ease;
+    }
+
+    .copy-btn.copied .copy-hint {
+      color: var(--ink);
+    }
+
+    /* =========================
+   Footer
+========================= */
+
+    .footer {
+      width: min(1120px, calc(100% - 48px));
+
+      margin: auto;
+
+      padding:
+        120px 0 70px;
+
+      border-top: 1px solid var(--line);
+
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+    }
+
+    .footer-quote {
+      font-family: var(--serif);
+
+      font-size: 19px;
+
+      letter-spacing: .06em;
+    }
+
+    .footer-copy {
+      margin-top: 14px;
+
+      color: var(--light);
+
+      font-size: 10px;
+      letter-spacing: .04em;
+    }
+
+
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+
+      color: var(--gray);
+
+      font-size: 11px;
+    }
+
+    .footer-links a {
+      transition: color .3s ease;
+    }
+
+    .footer-links a:hover {
+      color: var(--ink);
+    }
+
+    .footer-friends {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .footer-friends-label {
+      color: var(--light);
+      font-size: 10px;
+      letter-spacing: .16em;
+    }
+
+    /* =========================
+   Floating toolbar（微信二维码 / Agent 界面）
+========================= */
+
+    .floating-toolbar {
+      position: fixed;
+      z-index: 150;
+      right: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .toolbar-btn {
+      width: 54px;
+      height: 58px;
+      padding: 6px 0 7px;
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+
+      border: 1px solid var(--line);
+      border-radius: 2px;
+      background: rgba(255, 255, 255, .94);
+      box-shadow: 0 8px 24px rgba(20, 20, 30, .06);
+
+      color: var(--gray);
+      font-size: 10px;
+      letter-spacing: .06em;
+
+      transition:
+        color .3s ease,
+        border-color .3s ease,
+        transform .25s ease,
+        box-shadow .35s ease;
+    }
+
+    .toolbar-btn:hover {
+      color: var(--ink);
+      border-color: #c9c9cf;
+      transform: translateY(-1px);
+      box-shadow: 0 12px 28px rgba(20, 20, 30, .10);
+    }
+
+    .toolbar-btn:active {
+      transform: translateY(0);
+    }
+
+    .toolbar-btn svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* =========================
+   Toolbar windows（非模态浮窗：微信二维码 / Agent 界面）
+========================= */
+
+    .toolbar-window {
+      position: fixed;
+      z-index: 160;
+      right: 86px;
+      top: 50%;
+      transform: translateY(-50%);
+
+      display: flex;
+      flex-direction: column;
+
+      background: var(--white);
+      border: 1px solid var(--line);
+      box-shadow: 0 24px 64px rgba(20, 20, 30, .16);
+
+      opacity: 0;
+      transition: opacity .25s ease;
+    }
+
+    .toolbar-window.open {
+      opacity: 1;
+    }
+
+    .toolbar-window__header {
+      flex: none;
+      height: 44px;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+
+      padding: 0 10px 0 18px;
+
+      border-bottom: 1px solid var(--line);
+
+      cursor: move;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: none;
+    }
+
+    .toolbar-window__title {
+      margin: 0;
+
+      font-family: var(--serif);
+      font-weight: 400;
+      font-size: 14px;
+      letter-spacing: .04em;
+    }
+
+    .toolbar-window__close {
+      position: relative;
+      flex: none;
+
+      width: 32px;
+      height: 32px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border: 0;
+      background: transparent;
+
+      cursor: pointer;
+
+      transition: transform .4s cubic-bezier(.2, .7, .2, 1);
+    }
+
+    .toolbar-window__close span {
+      position: absolute;
+
+      width: 12px;
+      height: 1px;
+
+      background: var(--gray);
+
+      transition: background .3s ease;
+    }
+
+    .toolbar-window__close span:first-child {
+      transform: rotate(45deg);
+    }
+
+    .toolbar-window__close span:last-child {
+      transform: rotate(-45deg);
+    }
+
+    .toolbar-window__close:hover {
+      transform: rotate(90deg);
+    }
+
+    .toolbar-window__close:hover span {
+      background: var(--ink);
+    }
+
+    .toolbar-window__body {
+      padding: 24px 28px 28px;
+    }
+
+    .toolbar-window__body--center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .qr-image {
+      width: 200px;
+      height: 200px;
+
+      display: block;
+
+      border: 1px solid var(--line);
+      border-radius: 2px;
+      background: var(--white);
+      object-fit: contain;
+    }
+
+    .qr-hint {
+      margin: 18px 0 0;
+
+      color: var(--gray);
+      font-size: 12px;
+      letter-spacing: .04em;
+    }
+
+    .toolbar-window--agent {
+      width: min(760px, calc(100vw - 104px));
+      height: min(72vh, 720px);
+    }
+
+    .agent-frame-wrap {
+      position: relative;
+      flex: 1;
+      min-height: 0;
+
+      overflow: hidden;
+      background: var(--white);
+    }
+
+    .agent-loading {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+
+      text-align: center;
+      background: var(--white);
+
+      transition: opacity .3s ease;
+    }
+
+    .agent-loading.is-done {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .agent-loading__spinner {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1px solid var(--line);
+      border-top-color: var(--ink);
+      animation: acSpin 1s linear infinite;
+    }
+
+    .agent-loading__text {
+      margin: 0;
+      color: var(--gray);
+      font-size: 12px;
+      letter-spacing: .04em;
+    }
+
+    .agent-frame {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+
+      display: block;
+
+      border: 0;
+      background: var(--white);
+    }
+
+    /* =========================
+   Reveal
+========================= */
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(10px);
+
+      transition:
+        opacity .8s ease,
+        transform .8s cubic-bezier(.2, .7, .2, 1);
+    }
+
+    .reveal.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* JS 被禁用时兜底：直接显示内容，避免 opacity:0 导致不可见 */
+    @media (scripting: none) {
+      .reveal {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    /* =========================
+       Responsive / 移动端适配
+    ========================= */
+
+    @media (max-width: 760px) {
+
+      .header-inner {
+        width: calc(100% - 32px);
+      }
+
+      .nav {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+
+        flex-direction: column;
+        justify-content: flex-start;
+        gap: 0;
+        padding: 4px 16px 12px;
+
+        background: rgba(250, 250, 252, .98);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        border-bottom: 1px solid rgba(230, 230, 235, .65);
+        box-shadow: 0 16px 28px rgba(20, 20, 30, .08);
+      }
+
+      .nav.open {
+        display: flex;
+      }
+
+      .nav a {
+        text-align: center;
+        padding: 16px 0;
+        border-bottom: 1px solid var(--line);
+        font-size: 15px;
+        letter-spacing: .08em;
+      }
+
+      .nav a:last-child {
+        border-bottom: 0;
+      }
+
+      .menu-toggle {
+        display: flex;
+      }
+
+      .menu-toggle.open span:nth-child(1) {
+        transform: translateY(6.5px) rotate(45deg);
+      }
+
+      .menu-toggle.open span:nth-child(2) {
+        opacity: 0;
+      }
+
+      .menu-toggle.open span:nth-child(3) {
+        transform: translateY(-6.5px) rotate(-45deg);
+      }
+
+      #loginMenuItem {
+        flex: 0 0 140px;
+        width: 140px;
+        min-width: 140px;
+        white-space: nowrap;
+      }
+
+      .lang-toggle {
+        padding: 0 9px;
+        font-size: 11px;
+      }
+
+      .hero {
+        padding: 112px 16px 16px;
+      }
+
+      .hero-title {
+        flex: none;
+        font-size: clamp(30px, 9vw, 40px);
+        line-height: 1.3;
+      }
+
+      .hero-subtitle {
+        flex: none;
+        margin: 20px auto 24px;
+        font-size: 14px;
+      }
+
+      /* 主交互卡片：移动端固定首屏高度，内部组件超出时在卡片内滚动，彻底避免与下一区块重叠 */
+      .generator {
+        height: 530px;
+        /* 移动端固定高度：高于 PC 端 672px，保证前两态内容完整展示不出滚动条 */
+        min-height: 0;
+        overflow: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .drop-zone {
+        min-height: 200px;
+      }
+
+      .drop-title {
+        font-size: 16px;
+      }
+
+      .generate-btn {
+        width: 100%;
+      }
+
+      .result-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .knowledge {
+        padding-right: 0;
+        padding-bottom: 28px;
+
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .result-chat {
+        padding-left: 0;
+        padding-top: 28px;
+      }
+
+      .section {
+        width: calc(100% - 32px);
+        padding: 88px 0;
+      }
+
+      .section-header {
+        margin-bottom: 44px;
+      }
+
+      .section-title {
+        font-size: clamp(26px, 7.5vw, 36px);
+      }
+
+      .process-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .process-item {
+        min-height: auto;
+
+        padding: 40px 0;
+
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .process-item:not(:first-child) {
+        padding-left: 0;
+      }
+
+      .process-item:last-child {
+        border-bottom: 0;
+      }
+
+      .process-title {
+        margin-top: 32px;
+      }
+
+      .cases {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .case {
+        min-height: 0;
+        /* 底部留出标识图标的位置，避免窄屏下与描述文字挤在一起 */
+        padding: 28px 28px 104px;
+      }
+
+      .case:nth-child(2),
+      .case:nth-child(3),
+      .case:nth-child(4) {
+        min-height: 0;
+      }
+
+      .case-title {
+        margin-top: 32px;
+        font-size: 20px;
+      }
+
+      .case-mark {
+        width: 72px;
+        height: 72px;
+        right: 24px;
+        bottom: 24px;
+      }
+
+      .case-mark svg {
+        width: 30px;
+        height: 30px;
+      }
+
+      .faq-question {
+        padding: 22px 0;
+        gap: 14px;
+      }
+
+      .faq-index {
+        flex: 0 0 24px;
+      }
+
+      .faq-text {
+        font-size: 15px;
+      }
+
+      .faq-answer-inner {
+        padding: 0 0 24px 38px;
+      }
+
+      /* 移动端：浮层改为自底部升起的纸片 */
+      .overlay {
+        padding: 0;
+        align-items: flex-end;
+      }
+
+      .panel {
+        width: 100%;
+        max-height: 88vh;
+
+        border-width: 1px 0 0;
+      }
+
+      .panel-body {
+        padding: 34px 22px 40px;
+      }
+
+      .panel-close {
+        top: 8px;
+        right: 8px;
+      }
+
+      .doc-title {
+        font-size: 22px;
+      }
+
+      .doc-body {
+        margin-top: 26px;
+      }
+
+      .doc-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+
+      .doc-row-label {
+        flex: none;
+      }
+
+      .pricing {
+        padding: 28px 20px;
+      }
+
+      .formula {
+        font-size: 18px;
+        margin: 28px 0 34px;
+      }
+
+      .compare {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .compare::before {
+        display: none;
+      }
+
+      .compare-value {
+        font-size: 24px;
+      }
+
+      .footer {
+        width: calc(100% - 32px);
+        padding: 72px 0 48px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 40px;
+      }
+
+      .footer-links {
+        flex-wrap: wrap;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero {
+        padding-top: 96px;
+      }
+
+      .hero-title {
+        font-size: 30px;
+      }
+
+      .drop-zone {
+        min-height: 180px;
+      }
+
+      .file {
+        padding: 6px 10px;
+        font-size: 10px;
+      }
+
+      .section {
+        padding: 72px 0;
+      }
+
+      .faq-text {
+        font-size: 14px;
+      }
+
+      .pricing {
+        padding: 24px 16px;
+      }
+
+      .formula {
+        font-size: 16px;
+      }
+
+      .compare-value {
+        font-size: 20px;
+      }
+
+      .footer-quote {
+        font-size: 17px;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .floating-toolbar {
+        right: 12px;
+        top: auto;
+        bottom: 12px;
+        transform: none;
+
+        flex-direction: row;
+        gap: 8px;
+      }
+
+      .toolbar-btn {
+        width: 58px;
+        height: 54px;
+
+        flex-direction: column;
+        gap: 3px;
+      }
+
+      .toolbar-window {
+        right: 12px;
+        top: auto;
+        bottom: 76px;
+        transform: none;
+      }
+
+      .toolbar-window--agent {
+        width: calc(100vw - 24px);
+        height: min(64vh, 560px);
+      }
+
+      .toolbar-window__body {
+        padding: 20px 22px 24px;
+      }
+
+      .qr-image {
+        width: 180px;
+        height: 180px;
+      }
+    }
+
+    /* =========================
+       无障碍：减弱动态效果
+    ========================= */
+
+    @media (prefers-reduced-motion: reduce) {
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="contentItemArea">
+
+    <!-- =========================
+     Header
+========================= -->
+
+    <header class="header">
+      <div class="header-inner">
+
+        <a href="#" class="logo" data-i18n="logo">
+          Trans-Agent
+        </a>
+
+        <nav class="nav" id="nav">
+          <a href="#agentCreatorArea" data-i18n="nav.create">创建 Agent</a>
+          <a href="#process" data-i18n="nav.how">功能阐释</a>
+          <a href="#pricing" data-i18n="nav.pricing">透明计费</a>
+          <a href="#faq" data-i18n="nav.faq">常见疑问</a>
+        </nav>
+
+        <div class="header-right">
+          <button class="lang-toggle" id="langToggle" type="button" aria-label="Switch to English">EN</button>
+          <div id="loginMenuItem"></div>
+          <button class="menu-toggle" id="menuToggle" type="button" aria-label="打开菜单" data-i18n-aria="nav.menu"
+            aria-expanded="false">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        </div>
+
+      </div>
+    </header>
+
+
+    <!-- =========================
+     浮动工具栏：微信二维码 / Agent 界面
+========================= -->
+    <div class="floating-toolbar" id="floatingToolbar" role="toolbar" aria-label="快捷工具栏">
+      <button class="toolbar-btn" id="toolbarQrBtn" type="button" data-toolbar-open="qr" aria-haspopup="dialog"
+        data-i18n-aria="toolbar.wechatAria">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
+          stroke-linejoin="round" aria-hidden="true" focusable="false">
+          <rect x="3" y="3" width="7" height="7" rx="1" />
+          <rect x="14" y="3" width="7" height="7" rx="1" />
+          <rect x="3" y="14" width="7" height="7" rx="1" />
+          <path d="M14 14h2v2h-2zM18 14h2v2h-2zM14 18h2v2h-2zM18 18h2v2h-2z" />
+        </svg>
+        <span data-i18n="toolbar.wechat">微信</span>
+      </button>
+
+      <button class="toolbar-btn" id="toolbarAgentBtn" type="button" data-toolbar-open="agent" aria-haspopup="dialog"
+        data-i18n-aria="toolbar.agentAria">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
+          stroke-linejoin="round" aria-hidden="true" focusable="false">
+          <path d="M21 11.5a8.5 8.5 0 0 1-12.36 7.5L4 21l2.1-4.2A8.5 8.5 0 1 1 21 11.5Z" />
+          <path d="M9 11.5h.01M12 11.5h.01M15 11.5h.01" />
+        </svg>
+        <span data-i18n="toolbar.agent">Agent</span>
+      </button>
+    </div>
+
+
+    <main>
+
+      <!-- =========================
+     Hero
+========================= -->
+
+      <section class="hero">
+
+        <h1 class="hero-title reveal">
+          <span data-i18n="hero.title.1">丢入一份文档，3 分钟</span>
+          <span data-i18n="hero.title.2">生成你的专属 AI 助教</span>
+        </h1>
+
+        <p class="hero-subtitle reveal">
+          <span data-i18n="hero.subtitle.1">不写复杂 Prompt，不用搭建工作流。</span><br>
+          <span data-i18n="hero.subtitle.2">上传教材、手册或研报，瞬间拥有一个随时待命的领域专家。</span>
+        </p>
+
+
+        <!--
+    运行时替换说明：
+    此静态 .generator 演示卡片在接入 appCode.vue 后即被替换。
+    appCode.vue 已按本页「白与空」设计系统（landing_page.md）统一——
+    纸白 #fafafc / 墨色 #1a1a1e / 宋体标题 / 极细线条 / 纸卷舒展动效，
+    可直接挂载于本第一屏 hero 区域。
+  -->
+        <div class="generator reveal" id="agentCreatorArea">
+
+          <!-- agentCreator.vue 组件加载等待提示：渲染前与渲染过程中显示 -->
+          <div class="ac-loading" id="agentCreatorLoading" role="status" aria-live="polite">
+            <div class="ac-loading__spinner" aria-hidden="true"></div>
+            <p class="ac-loading__title" data-i18n="agentCreator.loading.title">正在加载创建器…</p>
+            <p class="ac-loading__desc" data-i18n="agentCreator.loading.desc">正在加载智能体创建组件，请稍候…</p>
+          </div>
+
+        </div>
+
+        <!-- <p class="social-proof" data-i18n="social.proof">
+        已为教育者、研究员与企业团队构建了 12,000+ 个专属 AI 助教
+      </p> -->
+
+      </section>
+
+
+      <!-- =========================
+     Process
+========================= -->
+
+      <section class="section reveal" id="process">
+
+        <div class="section-header">
+
+          <div class="eyebrow">
+            HOW IT WORKS
+          </div>
+
+          <h2 class="section-title" data-i18n="process.title">
+            极简三步，从静态资料到互动助教。
+          </h2>
+
+          <p class="section-description" data-i18n="process.desc">
+            不用写 Prompt，不用搭工作流。导入、理解、解答，三步到位。
+          </p>
+
+        </div>
+
+
+        <div class="process">
+
+          <div class="process-grid">
+
+
+            <article class="process-item">
+
+              <div class="process-number">
+                01 / ABSORB
+              </div>
+
+              <h3 class="process-title" data-i18n="process.1.title">
+                导入 · 全格式兼容
+              </h3>
+
+              <p class="process-text" data-i18n="process.1.text">
+                支持 PDF、Word、TXT 等格式。直接上传，无需手动清洗或重新排版。
+              </p>
+
+              <div class="process-visual">
+                <div class="absorb-lines">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+              </div>
+
+            </article>
+
+
+            <article class="process-item">
+
+              <div class="process-number">
+                02 / DISTILL
+              </div>
+
+              <h3 class="process-title" data-i18n="process.2.title">
+                理解 · 结构化构建
+              </h3>
+
+              <p class="process-text" data-i18n="process.2.text">
+                AI 自动剔除冗余，梳理逻辑脉络，将万字长文提炼为可精准调用的知识图谱。
+              </p>
+
+              <div class="process-visual">
+                <div class="distill-tree">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+              </div>
+
+            </article>
+
+
+            <article class="process-item">
+
+              <div class="process-number">
+                03 / RESPOND
+              </div>
+
+              <h3 class="process-title" data-i18n="process.3.title">
+                解答 · 有据可查
+              </h3>
+
+              <p class="process-text" data-i18n="process.3.text">
+                基于你的专属资料精准回答，拒绝张冠李戴，提供带原文引用的专业解答。
+              </p>
+
+              <div class="process-visual">
+                <div class="respond-box"></div>
+              </div>
+
+            </article>
+
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =========================
+     Use Cases
+========================= -->
+
+      <section class="section reveal" id="cases">
+
+        <div class="section-header">
+
+          <div class="eyebrow">
+            POSSIBILITIES
+          </div>
+
+          <h2 class="section-title" data-i18n="cases.title">
+            一套引擎，赋能多元应用场景。
+          </h2>
+
+          <p class="section-description" data-i18n="cases.desc">
+            不预设一种使用方式。你提供内容，它成为那个领域里的专属入口。
+          </p>
+
+        </div>
+
+
+        <div class="cases">
+
+
+          <article class="case">
+
+            <div class="case-number">
+              01 / EDUCATION
+            </div>
+
+            <h3 class="case-title" data-i18n="case.1.title">
+              学术与教育
+            </h3>
+
+            <p class="case-desc" data-i18n="case.1.desc">
+              导入教材与讲义，成为学生的 24 小时贴身家教，轻松实现自动答疑与出题测验。
+            </p>
+
+            <!-- 标识图标 01：打开的书（教材 / 课程） -->
+            <div class="case-mark">
+              <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.15" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true" focusable="false">
+                <path d="M24 15v19.4" />
+                <path d="M24 15c-4.2-2.6-9.1-3.4-14-2.4v19.6c4.9-1 9.8-.2 14 2.4" />
+                <path d="M24 15c4.2-2.6 9.1-3.4 14-2.4v19.6c-4.9-1-9.8-.2-14 2.4" />
+                <path d="M13.6 21.4h5.6" />
+                <path d="M13.6 26h5.6" />
+                <path d="M28.8 21.4h5.6" />
+                <path d="M28.8 26h5.6" />
+              </svg>
+            </div>
+
+          </article>
+
+
+          <article class="case">
+
+            <div class="case-number">
+              02 / BUSINESS
+            </div>
+
+            <h3 class="case-title" data-i18n="case.2.title">
+              企业与培训
+            </h3>
+
+            <p class="case-desc" data-i18n="case.2.desc">
+              导入员工手册与 SOP，秒变企业新人培训导师，大幅降低内部沟通与重复答疑成本。
+            </p>
+
+            <!-- 标识图标 02：组织节点（团队 / 培训） -->
+            <div class="case-mark">
+              <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.15" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true" focusable="false">
+                <circle cx="24" cy="13" r="4.2" />
+                <circle cx="12.5" cy="35" r="4.2" />
+                <circle cx="35.5" cy="35" r="4.2" />
+                <path d="M24 17.2v7" />
+                <path d="M12.5 30.8v-6.6h23v6.6" />
+              </svg>
+            </div>
+
+          </article>
+
+
+          <article class="case">
+
+            <div class="case-number">
+              03 / KNOWLEDGE
+            </div>
+
+            <h3 class="case-title" data-i18n="case.3.title">
+              个人知识库
+            </h3>
+
+            <p class="case-desc" data-i18n="case.3.desc">
+              将长期积累的笔记与研报连成串，打造可随时对话的第二大脑，快速检索深度观点。
+            </p>
+
+            <!-- 标识图标 03：层叠书页（长期积累） -->
+            <div class="case-mark">
+              <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.15" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true" focusable="false">
+                <path d="M24 10 40 17 24 24 8 17Z" />
+                <path d="M8 24 24 31 40 24" />
+                <path d="M8 31 24 38 40 31" />
+              </svg>
+            </div>
+
+          </article>
+
+
+          <article class="case">
+
+            <div class="case-number">
+              04 / PROFESSIONAL
+            </div>
+
+            <h3 class="case-title" data-i18n="case.4.title">
+              专业咨询
+            </h3>
+
+            <p class="case-desc" data-i18n="case.4.desc">
+              将专业规范、制度和行业资料集中起来，建立针对特定领域的资料问答助手。
+            </p>
+
+            <!-- 标识图标 04：天平（规范 / 制度） -->
+            <div class="case-mark">
+              <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.15" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true" focusable="false">
+                <circle cx="24" cy="12" r="1.8" />
+                <path d="M24 12v25" />
+                <path d="M8 12h32" />
+                <path d="M8 12 4 23" />
+                <path d="M8 12 12 23" />
+                <path d="M4 23a4 4 0 0 0 8 0Z" />
+                <path d="M40 12 36 23" />
+                <path d="M40 12 44 23" />
+                <path d="M36 23a4 4 0 0 0 8 0Z" />
+                <path d="M17.5 37h13" />
+              </svg>
+            </div>
+
+          </article>
+
+
+        </div>
+
+      </section>
+
+
+      <!-- =========================
+     Pricing
+========================= -->
+
+      <section class="section reveal" id="pricing">
+
+        <div class="section-header">
+
+          <div class="eyebrow">
+            TRANSPARENCY
+          </div>
+
+          <h2 class="section-title" data-i18n="pricing.title">
+            不猜价格，只为实际使用付费。
+          </h2>
+
+          <p class="section-description" data-i18n="pricing.desc">
+            没有复杂套餐，也不把 AI 能力包装成看不懂的权益。用多少扣多少，闲置零成本，费用一目了然。
+          </p>
+
+        </div>
+
+
+        <div class="pricing-wrap">
+
+          <div class="pricing">
+
+            <div class="formula" data-i18n="pricing.formula">
+              按量计费 = 基础构建费 + 实际对话用量（闲置 0 费用）
+            </div>
+
+            <div class="pricing-line"></div>
+
+
+            <div class="compare">
+
+              <div class="compare-side">
+
+                <div class="compare-title" data-i18n="compare.traditional.title">
+                  TRADITIONAL
+                </div>
+
+                <div class="compare-value" data-i18n="compare.traditional.value">
+                  3 — 5 天
+                </div>
+
+                <div class="compare-text" data-i18n="compare.traditional.text">
+                  学习复杂的 Prompt 调校、反复搭建向量数据库与 Agent 工作流，测试成本高昂。
+                </div>
+
+              </div>
+
+
+              <div class="compare-side">
+
+                <span class="compare-badge" data-i18n="compare.badge">推荐</span>
+
+                <div class="compare-title" data-i18n="compare.ai.title">
+                  AI ASSISTANT
+                </div>
+
+                <div class="compare-value" data-i18n="compare.ai.value">
+                  3 分钟
+                </div>
+
+                <div class="compare-text" data-i18n="compare.ai.text">
+                  上传即用，无需任何技术背景。透明消费，按需扣费，无隐形订阅陷阱。
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =========================
+     FAQ
+========================= -->
+
+      <section class="section reveal" id="faq">
+
+        <div class="section-header">
+
+          <div class="eyebrow">
+            QUESTIONS
+          </div>
+
+          <h2 class="section-title" data-i18n="faq.title">
+            常见疑问
+          </h2>
+
+          <p class="section-description" data-i18n="faq.desc">
+            关于生成方式、资料安全与计费，这里回答最常被问到的几个问题。
+          </p>
+
+        </div>
+
+
+        <div class="faq-list">
+
+
+          <div class="faq-item open">
+
+            <button class="faq-question" id="faq-q1" type="button" aria-expanded="true" aria-controls="faq-a1">
+
+              <span class="faq-index">
+                01
+              </span>
+
+              <span class="faq-text" data-i18n="faq.q1">
+                生成一个助教需要多久？
+              </span>
+
+              <span class="faq-toggle" aria-hidden="true">
+                <span></span>
+                <span></span>
+              </span>
+
+            </button>
+
+            <div class="faq-answer" id="faq-a1" role="region" aria-labelledby="faq-q1">
+
+              <div class="faq-answer-inner">
+
+                <p data-i18n="faq.a1">
+                  从放入资料到可以提问，通常不超过 3 分钟：解析资料、构建知识结构、生成助教依次完成，全程不需要手动配置 Prompt 或工作流。资料篇幅越长，解析时间会略有增加，页面会实时显示当前进度。
+                </p>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <div class="faq-item">
+
+            <button class="faq-question" id="faq-q2" type="button" aria-expanded="false" aria-controls="faq-a2">
+
+              <span class="faq-index">
+                02
+              </span>
+
+              <span class="faq-text" data-i18n="faq.q2">
+                支持哪些资料格式？篇幅有上限吗？
+              </span>
+
+              <span class="faq-toggle" aria-hidden="true">
+                <span></span>
+                <span></span>
+              </span>
+
+            </button>
+
+            <div class="faq-answer" id="faq-a2" role="region" aria-labelledby="faq-q2">
+
+              <div class="faq-answer-inner">
+
+                <p data-i18n="faq.a2">
+                  支持 PDF、Word（.doc / .docx）、Markdown 与纯文本（.txt）。单份资料建议控制在 20 MB
+                  以内；若资料本身篇幅很大，按章节拆分后分别导入，助教的回答会更聚焦，也更容易定位到你需要的段落。
+                </p>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <div class="faq-item">
+
+            <button class="faq-question" id="faq-q3" type="button" aria-expanded="false" aria-controls="faq-a3">
+
+              <span class="faq-index">
+                03
+              </span>
+
+              <span class="faq-text" data-i18n="faq.q3">
+                我上传的资料会被用于训练模型吗？
+              </span>
+
+              <span class="faq-toggle" aria-hidden="true">
+                <span></span>
+                <span></span>
+              </span>
+
+            </button>
+
+            <div class="faq-answer" id="faq-a3" role="region" aria-labelledby="faq-q3">
+
+              <div class="faq-answer-inner">
+
+                <p>
+                  <span
+                    data-i18n="faq.a3.1">不会。资料仅用于构建你自己的助教，传输过程加密，存储上与其它账号相互隔离，不会进入任何公共模型的训练数据，也不会被其他用户检索到。你可以随时删除资料，删除后对应的解析结果同步失效。详见</span>
+                  <a href="#privacy" data-doc="privacy"><span data-i18n="legal.privacy">隐私政策</span></a><span
+                    data-i18n="faq.a3.2">。</span>
+                </p>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <div class="faq-item">
+
+            <button class="faq-question" id="faq-q4" type="button" aria-expanded="false" aria-controls="faq-a4">
+
+              <span class="faq-index">
+                04
+              </span>
+
+              <span class="faq-text" data-i18n="faq.q4">
+                费用是怎么计算的？
+              </span>
+
+              <span class="faq-toggle" aria-hidden="true">
+                <span></span>
+                <span></span>
+              </span>
+
+            </button>
+
+            <div class="faq-answer" id="faq-a4" role="region" aria-labelledby="faq-q4">
+
+              <div class="faq-answer-inner">
+
+                <p data-i18n="faq.a4">
+                  按量计费 = 基础构建费 + 实际对话用量。没有订阅，也没有需要提前购买的套餐：生成前会给出预估，生成后按真实用量结算。问得越多才产生越多费用，闲置零成本。
+                </p>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <div class="faq-item">
+
+            <button class="faq-question" id="faq-q5" type="button" aria-expanded="false" aria-controls="faq-a5">
+
+              <span class="faq-index">
+                05
+              </span>
+
+              <span class="faq-text" data-i18n="faq.q5">
+                如果回答不够准确，怎么办？
+              </span>
+
+              <span class="faq-toggle" aria-hidden="true">
+                <span></span>
+                <span></span>
+              </span>
+
+            </button>
+
+            <div class="faq-answer" id="faq-a5" role="region" aria-labelledby="faq-q5">
+
+              <div class="faq-answer-inner">
+
+                <p>
+                  <span
+                    data-i18n="faq.a5.1">通常意味着资料里缺少对应内容，或者表述过于零散。可以先补充、替换资料后重新生成；提问时带上章节名或专业术语等线索，助教会更容易定位到相关段落。如果问题仍然存在，欢迎</span>
+                  <a href="#contact" data-doc="contact"><span data-i18n="faq.contact">联系我们</span></a><span
+                    data-i18n="faq.a5.2">，附上资料类型与提问示例即可。</span>
+                </p>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <div class="faq-item">
+
+            <button class="faq-question" id="faq-q6" type="button" aria-expanded="false" aria-controls="faq-a6">
+
+              <span class="faq-index">
+                06
+              </span>
+
+              <span class="faq-text" data-i18n="faq.q6">
+                生成出来的助教可以分享给学生或同事使用吗？
+              </span>
+
+              <span class="faq-toggle" aria-hidden="true">
+                <span></span>
+                <span></span>
+              </span>
+
+            </button>
+
+            <div class="faq-answer" id="faq-a6" role="region" aria-labelledby="faq-q6">
+
+              <div class="faq-answer-inner">
+
+                <p data-i18n="faq.a6">
+                  支持。你可以一键生成专属链接或嵌入网页，分享给学生、同事或客户使用(使用者消费自己账号的积分)。
+                </p>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <div class="faq-item">
+
+            <button class="faq-question" id="faq-q7" type="button" aria-expanded="false" aria-controls="faq-a7">
+
+              <span class="faq-index">
+                07
+              </span>
+
+              <span class="faq-text" data-i18n="faq.q7">
+                如果不满意生成的助教，支持重新生成吗？
+              </span>
+
+              <span class="faq-toggle" aria-hidden="true">
+                <span></span>
+                <span></span>
+              </span>
+
+            </button>
+
+            <div class="faq-answer" id="faq-a7" role="region" aria-labelledby="faq-q7">
+
+              <div class="faq-answer-inner">
+
+                <p data-i18n="faq.a7">
+                  支持。你可以随时补充、替换或删除原始文档，系统会自动更新知识库，无需重新创建。
+                </p>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+        </div>
+
+      </section>
+
+    </main>
+
+
+    <!-- =========================
+     Footer
+========================= -->
+
+    <footer class="footer">
+
+      <div>
+
+        <div class="footer-quote" data-i18n="footer.quote">
+          简化，直至只留下本质。
+        </div>
+
+        <div class="footer-copy">
+          © 2026 AI Assistant Agent. All rights reserved.
+        </div>
+
+      </div>
+
+
+      <div class="footer-friends">
+        <div class="footer-friends-label">友情链接</div>
+        <div class="footer-links">
+          <a href="skill.html">AI Skill 生成器</a>
+          <a href="workflow.html">Workflow</a>
+          <a href="skillHub.html">SkillHub</a>
+        </div>
+      </div>
+
+      <div class="footer-links">
+        <a href="#privacy" data-doc="privacy" aria-haspopup="dialog" data-i18n="legal.privacy">隐私政策</a>
+        <a href="#terms" data-doc="terms" aria-haspopup="dialog" data-i18n="legal.terms">服务条款</a>
+        <a href="#contact" data-doc="contact" aria-haspopup="dialog" data-i18n="legal.contact">联系我们</a>
+      </div>
+
+    </footer>
+
+
+    <!-- =========================
+     条款浮层：隐私政策 / 服务条款 / 联系我们
+     单页承载三份文档，由 footer 链接与正文内联链接唤起
+========================= -->
+
+    <div class="overlay" id="legalOverlay" hidden>
+
+      <div class="overlay-backdrop" data-overlay-close></div>
+
+      <div class="panel" role="dialog" aria-modal="true" aria-labelledby="doc-title-privacy">
+
+        <button class="panel-close" id="legalClose" type="button" aria-label="关闭" data-i18n-aria="legal.close"
+          data-overlay-close>
+          <span></span>
+          <span></span>
+        </button>
+
+        <div class="panel-body" id="legalBody">
+
+
+          <!-- 隐私政策 -->
+          <article class="doc" id="doc-privacy">
+
+            <div class="doc-eyebrow">
+              PRIVACY POLICY
+            </div>
+
+            <h2 class="doc-title" id="doc-title-privacy" data-i18n="legal.privacy.title">
+              隐私政策
+            </h2>
+
+            <div class="doc-date" data-i18n="legal.privacy.date">
+              最近更新：2026 年 1 月
+            </div>
+
+            <div class="doc-body">
+
+              <section class="doc-section">
+                <h3 data-i18n="privacy.s1.title">我们收集哪些信息</h3>
+                <p data-i18n="privacy.s1.text">
+                  账号标识（登录方式与昵称）、你主动上传的资料，以及保障服务可用所必需的运行日志，例如访问时间、设备与浏览器类型、错误信息。我们不会为了广告投放而追踪你的浏览行为，也不会将上述信息用于本政策未说明的用途。
+                </p>
+              </section>
+
+              <section class="doc-section">
+                <h3 data-i18n="privacy.s2.title">资料如何被使用</h3>
+                <p data-i18n="privacy.s2.text">
+                  你上传的资料只会做一件事：构建并支撑属于你自己的助教。解析结果仅在你的账号范围内可见，用于回答你的提问；我们不将其用于任何模型的训练，也不向第三方出售或共享。
+                </p>
+              </section>
+
+              <section class="doc-section">
+                <h3 data-i18n="privacy.s3.title">存储与安全</h3>
+                <p data-i18n="privacy.s3.text">
+                  资料在传输过程中使用 TLS 加密，存储阶段按账号隔离并施加访问控制。运行日志仅保留排障所必需的周期，到期自动清理。
+                </p>
+              </section>
+
+              <section class="doc-section">
+                <h3 data-i18n="privacy.s4.title">第三方服务</h3>
+                <p data-i18n="privacy.s4.text">
+                  内容的解析与问答依赖底层模型和云基础设施服务商。我们仅向其传递完成当次请求所必需的内容，并要求其承担同等的保密义务。
+                </p>
+              </section>
+
+              <section class="doc-section">
+                <h3 data-i18n="privacy.s5.title">你可以做什么</h3>
+                <p data-i18n="privacy.s5.text">
+                  你可以随时查看、导出或删除自己的资料与助教。删除后，对应的解析结果与索引会同步清除。如果你希望注销账号，可通过「联系我们」提出，我们会在核实身份后处理。
+                </p>
+              </section>
+
+              <section class="doc-section">
+                <h3 data-i18n="privacy.s6.title">未成年人</h3>
+                <p data-i18n="privacy.s6.text">
+                  本服务面向具备完全民事行为能力的用户。若你未满 18 周岁，请在监护人的陪同下阅读本政策并使用本服务。
+                </p>
+              </section>
+
+              <section class="doc-section">
+                <h3 data-i18n="privacy.s7.title">政策更新</h3>
+                <p data-i18n="privacy.s7.text">
+                  本政策如有实质性变更，我们会在页面显著位置提示，并同步更新顶部的更新日期。继续使用本服务，即表示你接受更新后的政策。
+                </p>
+              </section>
+
+            </div>
+
+          </article>
+
+
+          <!-- 服务条款 -->
+          <article class="doc" id="doc-terms" hidden>
+
+            <div class="doc-eyebrow">
+              TERMS OF SERVICE
+            </div>
+
+            <h2 class="doc-title" id="doc-title-terms" data-i18n="legal.terms.title">
+              服务条款
+            </h2>
+
+            <div class="doc-date" data-i18n="legal.terms.date">
+              最近更新：2026 年 1 月
+            </div>
+
+            <div class="doc-body">
+
+              <section class="doc-section">
+                <h3 data-i18n="terms.s1.title">服务说明</h3>
+                <p data-i18n="terms.s1.text">
+                  本服务将你提供的资料转化为可对话的 AI 助教，并提供调用与计费能力。生成结果由模型自动产出，请你结合原始资料自行核对准确性。
+                </p>
+              </section>
+
+              <section class="doc-section">
+                <h3 data-i18n="terms.s2.title">账号与责任</h3>
+                <p data-i18n="terms.s2.text">
+                  请妥善保管账号凭证，账号下发生的操作视为你的行为。若发现账号异常，请第一时间通过「联系我们」告知我们。
+                </p>
+              </section>
+
+              <section class="doc-section">
+                <h3 data-i18n="terms.s3.title">你的内容</h3>
+                <p data-i18n="terms.s3.text">
+                  你保留所上传资料的全部权利。同时你需保证对资料拥有合法的使用权与授权，不侵犯他人的知识产权、隐私权或其他合法权益，也不包含违反法律法规的内容。
+                </p>
+              </section>
+
+              <section class="doc-section">
+                <h3 data-i18n="terms.s4.title">合理使用</h3>
+                <p data-i18n="terms.s4.text">
+                  不得利用本服务生成违法信息、实施欺诈、绕过用量限制，也不得对服务进行逆向工程、压力测试或干扰其正常运行。
+                </p>
+              </section>
+
+              <section class="doc-section">
+                <h3 data-i18n="terms.s5.title">计费与退款</h3>
+                <p data-i18n="terms.s5.text">
+                  费用按基础构建费与实际对话用量结算，生成前提供预估。因平台自身原因导致的服务不可用，可申请对应部分的退还。
+                </p>
+              </section>
+
+              <section class="doc-section">
+                <h3 data-i18n="terms.s6.title">服务变更与终止</h3>
+                <p data-i18n="terms.s6.text">
+                  我们可能对功能进行调整、暂停或终止，重大变更会提前告知。若你不同意变更内容，可以停止使用并删除你的数据。
+                </p>
+              </section>
+
+              <section class="doc-section">
+                <h3 data-i18n="terms.s7.title">免责声明</h3>
+                <p data-i18n="terms.s7.text">
+                  本服务按「现状」提供。AI 输出不构成法律、医疗、金融等专业意见，涉及专业判断时请咨询具备相应资质的专业人士。
+                </p>
+              </section>
+
+              <section class="doc-section">
+                <h3 data-i18n="terms.s8.title">适用法律</h3>
+                <p data-i18n="terms.s8.text">
+                  本条款的订立、效力与解释适用中华人民共和国法律。若发生争议，双方应先友好协商解决。
+                </p>
+              </section>
+
+            </div>
+
+          </article>
+
+
+          <!-- 联系我们 -->
+          <article class="doc" id="doc-contact" hidden>
+
+            <div class="doc-eyebrow">
+              CONTACT
+            </div>
+
+            <h2 class="doc-title" id="doc-title-contact" data-i18n="legal.contact.title">
+              联系我们
+            </h2>
+
+            <div class="doc-date" data-i18n="contact.date">
+              一般咨询 1 个工作日内回复
+            </div>
+
+            <div class="doc-body">
+
+              <div class="doc-row">
+
+                <div class="doc-row-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+                    <path d="M21 11.5a8.5 8.5 0 0 1-12.36 7.5L4 21l2.1-4.2A8.5 8.5 0 1 1 21 11.5Z" />
+                    <path d="M9 11.5h.01M12 11.5h.01M15 11.5h.01" />
+                  </svg>
+                </div>
+
+                <div class="doc-row-label" data-i18n="contact.r1.label">
+                  支持与反馈
+                </div>
+
+                <div class="doc-row-value">
+                  <button class="copy-btn" type="button" data-copy="neilking@163.com">
+                    <span class="copy-value">neilking@163.com</span>
+                    <span class="copy-hint" aria-live="polite" data-i18n="legal.copyHint">复制</span>
+                  </button>
+                  <em data-i18n="contact.r1.em">功能异常、账号与计费问题请发往此邮箱</em>
+                </div>
+
+              </div>
+
+              <div class="doc-row">
+
+                <div class="doc-row-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+                    <rect x="3" y="7" width="18" height="13" rx="2" />
+                    <path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                    <path d="M3 12.5h18" />
+                  </svg>
+                </div>
+
+                <div class="doc-row-label" data-i18n="contact.r2.label">
+                  商务与合作
+                </div>
+
+                <div class="doc-row-value">
+                  <button class="copy-btn" type="button" data-copy="neil.king.liu@gmail.com">
+                    <span class="copy-value">neil.king.liu@gmail.com</span>
+                    <span class="copy-hint" aria-live="polite" data-i18n="legal.copyHint">复制</span>
+                  </button>
+                  <em data-i18n="contact.r2.em">院校、企业与机构的批量使用与定制需求</em>
+                </div>
+
+              </div>
+
+              <div class="doc-row">
+
+                <div class="doc-row-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+                    <circle cx="12" cy="12" r="9" />
+                    <path d="M12 7.5V12l3 1.8" />
+                  </svg>
+                </div>
+
+                <div class="doc-row-label" data-i18n="contact.r3.label">
+                  服务时间
+                </div>
+
+                <div class="doc-row-value">
+                  <span data-i18n="contact.r3.value">周一至周五 09:30 — 18:30（GMT+8）</span>
+                  <em data-i18n="contact.r3.em">节假日期间的紧急问题会在下一个工作日优先处理</em>
+                </div>
+
+              </div>
+
+              <div class="doc-row">
+
+                <div class="doc-row-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+                    <path d="M13 2 4.5 13.5H11L9.5 22 18 10.5h-6.5L13 2Z" />
+                  </svg>
+                </div>
+
+                <div class="doc-row-label" data-i18n="contact.r4.label">
+                  响应时效
+                </div>
+
+                <div class="doc-row-value">
+                  <span data-i18n="contact.r4.value">一般咨询 1 个工作日内回复，账号与计费问题优先处理</span>
+                  <em data-i18n="contact.r4.em">附上资料类型与提问示例，可以帮助我们更快定位问题</em>
+                </div>
+
+              </div>
+
+              <div class="doc-row">
+
+                <div class="doc-row-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+                    <path d="M9 18h6" />
+                    <path d="M10 21h4" />
+                    <path d="M12 3a6 6 0 0 0-3.6 10.8c.6.5 1 1.2 1.1 2h5c.1-.8.5-1.5 1.1-2A6 6 0 0 0 12 3Z" />
+                  </svg>
+                </div>
+
+                <div class="doc-row-label" data-i18n="contact.r5.label">
+                  告诉我们
+                </div>
+
+                <div class="doc-row-value">
+                  <span data-i18n="contact.r5.value">你正在使用的资料类型与场景，我们会给出更合适的导入与拆分建议</span>
+                  <em data-i18n="contact.r5.em">你的使用方式，也常常是下一个功能的起点</em>
+                </div>
+
+              </div>
+
+            </div>
+
+          </article>
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- =========================
+     浮动工具栏浮窗（非模态）：微信二维码 / Agent 界面
+========================= -->
+
+    <!-- 微信二维码 -->
+    <div class="toolbar-window" id="toolbarQrWindow" hidden>
+      <div class="toolbar-window__header" data-toolbar-drag>
+        <span class="toolbar-window__title" data-i18n="toolbar.wechatTitle">添加微信</span>
+        <button class="toolbar-window__close" type="button" aria-label="关闭" data-i18n-aria="legal.close"
+          data-toolbar-close>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+      <div class="toolbar-window__body toolbar-window__body--center">
+        <img class="qr-image"
+          data-qr-src="https://transweb-1254183942.cos.ap-beijing.myqcloud.com/introduce/wx_liuwenjin.png"
+          loading="lazy" alt="微信二维码" />
+        <p class="qr-hint" data-i18n="toolbar.wechatHint">扫码，添加客服微信</p>
+      </div>
+    </div>
+
+    <!-- Agent 界面 -->
+    <div class="toolbar-window toolbar-window--agent" id="toolbarAgentWindow" hidden>
+      <div class="toolbar-window__header" data-toolbar-drag>
+        <span class="toolbar-window__title" data-i18n="toolbar.agentTitle">客服界面</span>
+        <button class="toolbar-window__close" type="button" aria-label="关闭" data-i18n-aria="legal.close"
+          data-toolbar-close>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+      <div class="agent-frame-wrap">
+        <div class="agent-loading" id="agentFrameLoading" role="status" aria-live="polite">
+          <div class="agent-loading__spinner" aria-hidden="true"></div>
+          <p class="agent-loading__text" data-i18n="toolbar.agentLoading">正在加载客服界面…</p>
+        </div>
+        <iframe class="agent-frame" title="客服"
+          data-agent-src="https://transweb.cn/agent.html?id=33b5b1ef050262959407aebb3a745c8e&amp;solo=true"
+          allow="clipboard-read; clipboard-write" allowfullscreen></iframe>
+      </div>
+    </div>
+
+
+  </div>
+
+  <script defer src="https://transweb.cn/index.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      let qParams = WebTool.getQueryParams();
+      let documentId = qParams.id;
+      if (documentId) {
+        let url = WebTool.attachParams("https://transweb.cn/agent.html", qParams);
+        location.href = url;
+      }
+    });
+
+
+/* =========================
+   中英文切换（默认中文）
+========================= */
+    (function () {
+      var I18N = {
+        zh: {
+          "title": "Trans-Agent · 丢入一份文档，3 分钟生成你的专属 AI 助教",
+          "logo": "Trans-Agent",
+          "nav.create": "创建 Agent",
+          "nav.how": "功能阐释",
+          "nav.pricing": "透明计费",
+          "nav.faq": "常见疑问",
+          "nav.menu": "打开菜单",
+          "hero.title.1": "丢入一份文档，3 分钟",
+          "hero.title.2": "生成你的专属 AI 助教",
+          "hero.subtitle.1": "不写复杂 Prompt，不用搭建工作流。",
+          "hero.subtitle.2": "上传教材、手册或研报，瞬间拥有一个随时待命的领域专家。",
+          "social.proof": "已为教育者、研究员与企业团队构建了 12,000+ 个专属 AI 助教",
+          "process.title": "极简三步，从静态资料到互动助教。",
+          "process.desc": "不用写 Prompt，不用搭工作流。导入、理解、解答，三步到位。",
+          "process.1.title": "导入 · 全格式兼容",
+          "process.1.text": "支持 PDF、Word、TXT 等格式。直接上传，无需手动清洗或重新排版。",
+          "process.2.title": "理解 · 结构化构建",
+          "process.2.text": "AI 自动剔除冗余，梳理逻辑脉络，将万字长文提炼为可精准调用的知识图谱。",
+          "process.3.title": "解答 · 有据可查",
+          "process.3.text": "基于你的专属资料精准回答，拒绝张冠李戴，提供带原文引用的专业解答。",
+          "cases.title": "一套引擎，赋能多元应用场景。",
+          "cases.desc": "不预设一种使用方式。你提供内容，它成为那个领域里的专属入口。",
+          "case.1.title": "学术与教育",
+          "case.1.desc": "导入教材与讲义，成为学生的 24 小时贴身家教，轻松实现自动答疑与出题测验。",
+          "case.2.title": "企业与培训",
+          "case.2.desc": "导入员工手册与 SOP，秒变企业新人培训导师，大幅降低内部沟通与重复答疑成本。",
+          "case.3.title": "个人知识库",
+          "case.3.desc": "将长期积累的笔记与研报连成串，打造可随时对话的第二大脑，快速检索深度观点。",
+          "case.4.title": "专业咨询",
+          "case.4.desc": "将专业规范、制度和行业资料集中起来，建立针对特定领域的资料问答助手。",
+          "pricing.title": "不猜价格，只为实际使用付费。",
+          "pricing.desc": "没有复杂套餐，也不把 AI 能力包装成看不懂的权益。用多少扣多少，闲置零成本，费用一目了然。",
+          "pricing.formula": "按量计费 = 基础构建费 + 实际对话用量（闲置 0 费用）",
+          "compare.traditional.title": "传统方式",
+          "compare.traditional.value": "3 — 5 天",
+          "compare.traditional.text": "学习复杂的 Prompt 调校、反复搭建向量数据库与 Agent 工作流，测试成本高昂。",
+          "compare.badge": "推荐",
+          "compare.ai.title": "AI 助教",
+          "compare.ai.value": "3 分钟",
+          "compare.ai.text": "上传即用，无需任何技术背景。透明消费，按需扣费，无隐形订阅陷阱。",
+          "faq.title": "常见疑问",
+          "faq.desc": "关于生成方式、资料安全与计费，这里回答最常被问到的几个问题。",
+          "faq.q1": "生成一个助教需要多久？",
+          "faq.a1": "从放入资料到可以提问，通常不超过 3 分钟：解析资料、构建知识结构、生成助教依次完成，全程不需要手动配置 Prompt 或工作流。资料篇幅越长，解析时间会略有增加，页面会实时显示当前进度。",
+          "faq.q2": "支持哪些资料格式？篇幅有上限吗？",
+          "faq.a2": "支持 PDF、Word（.doc / .docx）、Markdown 与纯文本（.txt）。单份资料建议控制在 20 MB 以内；若资料本身篇幅很大，按章节拆分后分别导入，助教的回答会更聚焦，也更容易定位到你需要的段落。",
+          "faq.q3": "我上传的资料会被用于训练模型吗？",
+          "faq.a3.1": "不会。资料仅用于构建你自己的助教，传输过程加密，存储上与其它账号相互隔离，不会进入任何公共模型的训练数据，也不会被其他用户检索到。你可以随时删除资料，删除后对应的解析结果同步失效。详见",
+          "faq.a3.2": "。",
+          "faq.q4": "费用是怎么计算的？",
+          "faq.a4": "按量计费 = 基础构建费 + 实际对话用量。没有订阅，也没有需要提前购买的套餐：生成前会给出预估，生成后按真实用量结算。问得越多才产生越多费用，闲置零成本。",
+          "faq.q5": "如果回答不够准确，怎么办？",
+          "faq.a5.1": "通常意味着资料里缺少对应内容，或者表述过于零散。可以先补充、替换资料后重新生成；提问时带上章节名或专业术语等线索，助教会更容易定位到相关段落。如果问题仍然存在，欢迎",
+          "faq.contact": "联系我们",
+          "faq.a5.2": "，附上资料类型与提问示例即可。",
+          "faq.q6": "生成出来的助教可以分享给学生或同事使用吗？",
+          "faq.a6": "支持。你可以一键生成专属链接或嵌入网页，分享给学生、同事或客户使用(使用者消费自己账号的积分)。",
+          "faq.q7": "如果不满意生成的助教，支持重新生成吗？",
+          "faq.a7": "支持。你可以随时补充、替换或删除原始文档，系统会自动更新知识库，无需重新创建。",
+          "legal.privacy": "隐私政策",
+          "legal.privacy.title": "隐私政策",
+          "legal.privacy.date": "最近更新：2026 年 1 月",
+          "legal.terms": "服务条款",
+          "legal.terms.title": "服务条款",
+          "legal.terms.date": "最近更新：2026 年 1 月",
+          "legal.contact": "联系我们",
+          "legal.contact.title": "联系我们",
+          "legal.close": "关闭",
+          "legal.copyHint": "复制",
+          "legal.copied": "已复制",
+          "legal.copyManually": "请手动复制",
+          "privacy.s1.title": "我们收集哪些信息",
+          "privacy.s1.text": "账号标识（登录方式与昵称）、你主动上传的资料，以及保障服务可用所必需的运行日志，例如访问时间、设备与浏览器类型、错误信息。我们不会为了广告投放而追踪你的浏览行为，也不会将上述信息用于本政策未说明的用途。",
+          "privacy.s2.title": "资料如何被使用",
+          "privacy.s2.text": "你上传的资料只会做一件事：构建并支撑属于你自己的助教。解析结果仅在你的账号范围内可见，用于回答你的提问；我们不将其用于任何模型的训练，也不向第三方出售或共享。",
+          "privacy.s3.title": "存储与安全",
+          "privacy.s3.text": "资料在传输过程中使用 TLS 加密，存储阶段按账号隔离并施加访问控制。运行日志仅保留排障所必需的周期，到期自动清理。",
+          "privacy.s4.title": "第三方服务",
+          "privacy.s4.text": "内容的解析与问答依赖底层模型和云基础设施服务商。我们仅向其传递完成当次请求所必需的内容，并要求其承担同等的保密义务。",
+          "privacy.s5.title": "你可以做什么",
+          "privacy.s5.text": "你可以随时查看、导出或删除自己的资料与助教。删除后，对应的解析结果与索引会同步清除。如果你希望注销账号，可通过「联系我们」提出，我们会在核实身份后处理。",
+          "privacy.s6.title": "未成年人",
+          "privacy.s6.text": "本服务面向具备完全民事行为能力的用户。若你未满 18 周岁，请在监护人的陪同下阅读本政策并使用本服务。",
+          "privacy.s7.title": "政策更新",
+          "privacy.s7.text": "本政策如有实质性变更，我们会在页面显著位置提示，并同步更新顶部的更新日期。继续使用本服务，即表示你接受更新后的政策。",
+          "terms.s1.title": "服务说明",
+          "terms.s1.text": "本服务将你提供的资料转化为可对话的 AI 助教，并提供调用与计费能力。生成结果由模型自动产出，请你结合原始资料自行核对准确性。",
+          "terms.s2.title": "账号与责任",
+          "terms.s2.text": "请妥善保管账号凭证，账号下发生的操作视为你的行为。若发现账号异常，请第一时间通过「联系我们」告知我们。",
+          "terms.s3.title": "你的内容",
+          "terms.s3.text": "你保留所上传资料的全部权利。同时你需保证对资料拥有合法的使用权与授权，不侵犯他人的知识产权、隐私权或其他合法权益，也不包含违反法律法规的内容。",
+          "terms.s4.title": "合理使用",
+          "terms.s4.text": "不得利用本服务生成违法信息、实施欺诈、绕过用量限制，也不得对服务进行逆向工程、压力测试或干扰其正常运行。",
+          "terms.s5.title": "计费与退款",
+          "terms.s5.text": "费用按基础构建费与实际对话用量结算，生成前提供预估。因平台自身原因导致的服务不可用，可申请对应部分的退还。",
+          "terms.s6.title": "服务变更与终止",
+          "terms.s6.text": "我们可能对功能进行调整、暂停或终止，重大变更会提前告知。若你不同意变更内容，可以停止使用并删除你的数据。",
+          "terms.s7.title": "免责声明",
+          "terms.s7.text": "本服务按「现状」提供。AI 输出不构成法律、医疗、金融等专业意见，涉及专业判断时请咨询具备相应资质的专业人士。",
+          "terms.s8.title": "适用法律",
+          "terms.s8.text": "本条款的订立、效力与解释适用中华人民共和国法律。若发生争议，双方应先友好协商解决。",
+          "contact.date": "一般咨询 1 个工作日内回复",
+          "contact.r1.label": "支持与反馈",
+          "contact.r1.em": "功能异常、账号与计费问题请发往此邮箱",
+          "contact.r2.label": "商务与合作",
+          "contact.r2.em": "院校、企业与机构的批量使用与定制需求",
+          "contact.r3.label": "服务时间",
+          "contact.r3.value": "周一至周五 09:30 — 18:30（GMT+8）",
+          "contact.r3.em": "节假日期间的紧急问题会在下一个工作日优先处理",
+          "contact.r4.label": "响应时效",
+          "contact.r4.value": "一般咨询 1 个工作日内回复，账号与计费问题优先处理",
+          "contact.r4.em": "附上资料类型与提问示例，可以帮助我们更快定位问题",
+          "contact.r5.label": "告诉我们",
+          "contact.r5.value": "你正在使用的资料类型与场景，我们会给出更合适的导入与拆分建议",
+          "contact.r5.em": "你的使用方式，也常常是下一个功能的起点",
+          "footer.quote": "摒弃复杂，直抵所求。",
+          "drop.click": "点击选择文档",
+          "drop.or": "或将文件拖拽到此处",
+          "drop.hint": "支持 .md / .txt / .pdf / .docx，单个文件不超过 20MB",
+          "drop.repick": "点击可重新选择文档",
+          "drop.parsing": "正在解析文档…",
+          "drop.parsingHint": "正在读取并解析文档内容，请稍候…",
+          "drop.ariaEmpty": "选择或拖拽文档到此处",
+          "drop.ariaSelected": "已选择文档：{name}，点击重新选择",
+          "cta.generate": "立即一键生成 AI 助教",
+          "trust.note": "按实际用量计费 · 闲置零成本 · 生成后展示积分与用量明细",
+          "agentCreator.loading.title": "正在加载创建器…",
+          "agentCreator.loading.desc": "正在加载智能体创建组件，请稍候…",
+          "wait.title": "Agent 正在创建中",
+          "wait.desc": "正在解析文档并生成智能体，请稍候，完成后将自动展示结果…",
+          "result.created": "Agent 创建成功",
+          "result.ready": "智能体已就绪，可通过以下方式访问与分发",
+          "result.urlLabel": "Agent 访问地址",
+          "result.copy": "复制链接",
+          "result.open": "打开预览",
+          "result.qrLabel": "扫码访问",
+          "result.qrHint": "手机扫码即可体验",
+          "usage.trigger": "查看本次消耗",
+          "usage.title": "本次生成消耗",
+          "usage.close": "关闭",
+          "usage.points": "消费积分",
+          "usage.pointsUnit": "POINTS",
+          "usage.output": "输出 Token",
+          "usage.outputUnit": "COMPLETION",
+          "usage.input": "输入 Token",
+          "usage.inputUnit": "PROMPT",
+          "result.downloadQr": "下载二维码",
+          "result.downloadPage": "下载 Agent 网页",
+          "result.back": "返回重新创建",
+          "status.unsupported": "不支持的文件类型：{ext}",
+          "status.tooLarge": "文件超过 20MB 大小限制",
+          "status.selected": "已选择文档：{name}",
+          "status.needDoc": "请先选择一份文档",
+          "status.parseFail": "文档解析失败，请重试",
+          "progress.parsing": "解析文档...",
+          "progress.done": "创建完成",
+          "copy.ok": "Agent URL 已成功复制到剪贴板",
+          "copy.okShort": "Agent URL 已复制",
+          "copy.fail": "复制失败，请手动选择复制",
+          "copy.failShort": "复制失败",
+          "download.fail": "下载失败，请重试",
+          "step.title": "正在构建你的Agent…",
+          "step.s1": "构建知识库",
+          "step.s2": "生成基础信息",
+          "step.s3": "生成人设信息",
+          "step.s4": "加载Agent模板",
+          "step.s5": "合成Agent应用",
+          "progressPanel.title": "正在构建你的应用…",
+          "progressPanel.cancel": "取消",
+          "progressPanel.done": "完成",
+          "progressPanel.active": "进行中",
+          "progressPanel.error": "生成失败，请重试",
+          "progressPanel.ready": "应用已就绪，尽情探索吧！",
+          "progressPanel.tip1": "AI 正在认真思考，比我上班还努力…",
+          "progressPanel.tip2": "正在召唤神经元，请稍候片刻 ☕",
+          "progressPanel.tip3": "模型齿轮高速运转中，别眨眼！",
+          "progressPanel.tip4": "每一行提示词都是精心雕琢的艺术品 🎨",
+          "progressPanel.tip5": "Agent 正在规划它的第一步棋 ♟️",
+          "progressPanel.tip6": "连接知识图谱，织入思维网络中…",
+          "progressPanel.tip7": "比泡一杯咖啡还快，我们赌一下？ ☕",
+          "progressPanel.tip8": "正在为你定制专属智能体，独一无二 ✨",
+          "progressPanel.tip9": "神经网络正在发光发热，字面意思 💡",
+          "progressPanel.tip10": "好的 Agent 值得等待，就像一道好菜 🍜",
+          "regLogin": "登录 / 注册",
+          "anonymous": "匿名用户",
+          "rechargeTips": "充值",
+          "exitLogin": "退出登录",
+          "mySubscriptions": "我的订阅",
+          "myPpt": "我的作品",
+          "codeLogin": "验证码登录",
+          "phonePlaceholder": "请输入手机号",
+          "phoneErrorTips": "请输入正确的手机号",
+          "codePlaceholder": "请输入验证码",
+          "getCodeTips": "获取验证码",
+          "waitCodeTips": "后可重新获取",
+          "codeErrorTips": "请输入正确的验证码",
+          "agreementButton": "用户协议",
+          "confirmBtn": "登录",
+          "login.titleLogin": "登录/注册",
+          "login.titleVerify": "验证码确认",
+          "login.agree": "同意",
+          "login.agreeHint": "（同意后才可登录）",
+          "login.confirm": "确认",
+          "loginBar.nickname": "我的昵称",
+          "loginBar.edit": "编辑",
+          "loginBar.pointsBalance": "积分余额",
+          "loginBar.pointsSpent": "积分消费",
+          "loginBar.details": "详情",
+          "loginBar.pointsEarned": "积分收入",
+          "loginBar.logout": "退出登录中...",
+          "loginBar.filterName": "名称",
+          "loginBar.search": "搜索",
+          "loginBar.searchPlaceholder": "请输入名称进行搜索",
+          "loginBar.posterInvalid": "当前海报应用无效。",
+          "loginBar.incomeRecords": "积分收入记录",
+          "loginBar.expenseRecords": "积分消费记录",
+          "loginBar.passwordInvalid": "密码不可空，且长度需要大于或等于 8 个字符",
+          "loginBar.nicknameUpdated": "昵称修改成功！",
+          "loginBar.avatarUpdated": "头像修改成功！",
+          "loginBar.unitBillion": "亿+",
+          "loginBar.unitMillion": "百万+",
+          "loginBar.unitTenThousand": "万+",
+          "loginBar.unitThousand": "千+",
+          "toolbar.wechat": "微信",
+          "toolbar.wechatAria": "显示微信二维码",
+          "toolbar.wechatTitle": "添加微信",
+          "toolbar.wechatHint": "扫码，添加客服微信",
+          "toolbar.agent": "AI 客服",
+          "toolbar.agentAria": "打开客服界面",
+          "toolbar.agentTitle": "客服界面",
+          "toolbar.agentLoading": "正在加载客服界面…"
+        },
+        en: null
+      };
+
+      var LS_KEY = "appLang";
+      var EN_URL = "./i18n/en.json";
+      var EN_CACHE_KEY = "i18n_en_v2";
+
+      var lang = "zh";
+      try {
+        lang = localStorage.getItem(LS_KEY) || "zh";
+      } catch (e) { }
+      if (lang !== "en" && lang !== "zh") lang = "zh";
+
+      window.__I18N__ = I18N;
+      window.__APP_LANG__ = lang;
+      window.lang = lang;
+
+      window.__t__ = function (key) {
+        if (I18N[lang] && I18N[lang][key] !== undefined) return I18N[lang][key];
+        if (I18N.zh[key] !== undefined) return I18N.zh[key];
+        return key;
+      };
+
+      function apply(l) {
+        document.documentElement.lang = l === "en" ? "en" : "zh-CN";
+        var dict = I18N[l] || I18N.zh;
+
+        document.title = dict.title;
+
+        var nodes = document.querySelectorAll("[data-i18n]");
+        for (var i = 0; i < nodes.length; i++) {
+          var key = nodes[i].getAttribute("data-i18n");
+          if (dict[key] !== undefined) nodes[i].textContent = dict[key];
+        }
+
+        var ariaNodes = document.querySelectorAll("[data-i18n-aria]");
+        for (var j = 0; j < ariaNodes.length; j++) {
+          var ariaKey = ariaNodes[j].getAttribute("data-i18n-aria");
+          if (dict[ariaKey] !== undefined) ariaNodes[j].setAttribute("aria-label", dict[ariaKey]);
+        }
+
+        var toggle = document.getElementById("langToggle");
+        if (toggle) {
+          toggle.textContent = l === "en" ? "中文" : "EN";
+          toggle.setAttribute("aria-label", l === "en" ? "切换到中文" : "Switch to English");
+        }
+      }
+
+      function commit(next) {
+        lang = next;
+        window.lang = lang;
+        window.__APP_LANG__ = lang;
+        try {
+          localStorage.setItem(LS_KEY, lang);
+        } catch (e) { }
+        apply(lang);
+        try {
+          window.dispatchEvent(new CustomEvent("applangchange", { detail: { lang: lang } }));
+        } catch (e) { }
+        try {
+          if (window.webCpu && webCpu.mitt) webCpu.mitt.emit("langChanged", lang);
+        } catch (e) { }
+      }
+
+      // 按需加载英文词典：优先内存，其次 localStorage 缓存，最后网络请求
+      function ensureDict(l, done) {
+        if (l === "zh") return done("zh");
+        if (I18N.en) return done("en");
+
+        var cached = null;
+        try { cached = localStorage.getItem(EN_CACHE_KEY); } catch (e) { }
+        if (cached) {
+          try { I18N.en = JSON.parse(cached); } catch (e) { I18N.en = null; }
+          if (I18N.en) return done("en");
+        }
+
+        fetch(EN_URL)
+          .then(function (r) { return r.json(); })
+          .then(function (data) {
+            I18N.en = data;
+            try { localStorage.setItem(EN_CACHE_KEY, JSON.stringify(data)); } catch (e) { }
+            done("en");
+          })
+          .catch(function () { done("zh"); });
+      }
+
+      window.__setAppLang__ = function (next) {
+        if (next !== "en") next = "zh";
+        ensureDict(next, commit);
+      };
+
+      // 初始应用：若上次选择英文，异步加载后再应用
+      ensureDict(lang, function (resolved) {
+        lang = resolved;
+        window.__APP_LANG__ = resolved;
+        apply(resolved);
+      });
+
+      var toggleBtn = document.getElementById("langToggle");
+      if (toggleBtn) {
+        toggleBtn.addEventListener("click", function () {
+          window.__setAppLang__(lang === "en" ? "zh" : "en");
+          window.lang = lang;
+          var elem = document.getElementById("loginMenuItem");
+          if (elem && window.aigcInterface && typeof aigcInterface.updateLoginBar === "function") {
+            aigcInterface.updateLoginBar(elem);
+          }
+        });
+      }
+    })();
+
+    /* =========================
+       Scroll reveal
+    ========================= */
+
+    const revealObserver = new IntersectionObserver(
+      entries => {
+
+        entries.forEach(entry => {
+
+          if (entry.isIntersecting) {
+
+            entry.target.classList.add("show");
+
+            revealObserver.unobserve(entry.target);
+
+          }
+
+        });
+
+      },
+      {
+        threshold: .12
+      }
+    );
+
+    document
+      .querySelectorAll(".reveal")
+      .forEach(el => revealObserver.observe(el));
+
+
+    /* =========================
+       Mobile nav toggle（IIFE + 内联样式兜底，确保显示/隐藏可靠）
+    ========================= */
+
+    (function () {
+      var navToggleBtn = document.getElementById("menuToggle");
+      var siteNav = document.getElementById("nav");
+      if (!navToggleBtn || !siteNav) return;
+
+      var mobileQuery = window.matchMedia("(max-width: 760px)");
+
+      function setOpen(open) {
+        siteNav.classList.toggle("open", open);
+        navToggleBtn.classList.toggle("open", open);
+        navToggleBtn.setAttribute("aria-expanded", String(open));
+
+        // 内联样式只作为移动端的兜底；桌面端必须清空，
+        // 否则 siteNav.style.display = "none" 会覆盖样式表的 .nav{display:flex}，
+        // 导致 PC 端点击菜单后整个导航被隐藏。
+        if (mobileQuery.matches) {
+          siteNav.style.display = open ? "flex" : "none";
+        } else {
+          siteNav.style.display = "";
+        }
+      }
+
+      function applyBreakpoint() {
+        if (mobileQuery.matches) {
+          // 移动端：默认隐藏菜单，显示汉堡按钮
+          siteNav.style.display = "none";
+          navToggleBtn.style.display = "flex";
+        } else {
+          // 桌面端：清除内联样式，回落到样式表默认值
+          siteNav.classList.remove("open");
+          navToggleBtn.classList.remove("open");
+          siteNav.style.display = "";
+          navToggleBtn.style.display = "";
+          navToggleBtn.setAttribute("aria-expanded", "false");
+        }
+      }
+
+      applyBreakpoint();
+
+      navToggleBtn.addEventListener("click", function () {
+        setOpen(!siteNav.classList.contains("open"));
+      });
+
+      siteNav.querySelectorAll("a").forEach(function (link) {
+        link.addEventListener("click", function () {
+          // 桌面端导航常驻显示，点击链接后不应收起；仅在移动端关闭抽屉
+          if (mobileQuery.matches) setOpen(false);
+        });
+      });
+
+      if (typeof mobileQuery.addEventListener === "function") {
+        mobileQuery.addEventListener("change", applyBreakpoint);
+      } else if (typeof mobileQuery.addListener === "function") {
+        mobileQuery.addListener(applyBreakpoint);
+      }
+    })();
+
+
+    /* =========================
+       FAQ 手风琴（同时仅展开一项）
+    ========================= */
+
+    (function () {
+      var items = Array.prototype.slice.call(document.querySelectorAll(".faq-item"));
+      if (!items.length) return;
+
+      function answerOf(item) {
+        return item.querySelector(".faq-answer");
+      }
+
+      function questionOf(item) {
+        return item.querySelector(".faq-question");
+      }
+
+      function expand(item) {
+        var answer = answerOf(item);
+        if (!answer) return;
+
+        item.classList.add("open");
+        questionOf(item).setAttribute("aria-expanded", "true");
+
+        // 先量出内容高度，过渡结束后交还给 auto，窗口尺寸变化时不会错位
+        answer.style.height = answer.scrollHeight + "px";
+      }
+
+      function collapse(item) {
+        var answer = answerOf(item);
+        if (!answer) return;
+
+        if (!answer.style.height || answer.style.height === "auto") {
+          answer.style.height = answer.scrollHeight + "px";
+          void answer.offsetHeight; // 强制回流，保证从具体高度开始过渡
+        }
+
+        item.classList.remove("open");
+        questionOf(item).setAttribute("aria-expanded", "false");
+
+        answer.style.height = "0px";
+      }
+
+      items.forEach(function (item) {
+        var answer = answerOf(item);
+
+        answer.addEventListener("transitionend", function (event) {
+          if (event.propertyName !== "height") return;
+          if (item.classList.contains("open")) answer.style.height = "auto";
+        });
+
+        questionOf(item).addEventListener("click", function () {
+          var isOpen = item.classList.contains("open");
+
+          items.forEach(function (other) {
+            if (other !== item && other.classList.contains("open")) collapse(other);
+          });
+
+          if (isOpen) collapse(item);
+          else expand(item);
+        });
+      });
+
+      // 与 HTML 中标记为 open 的初始状态保持一致
+      items.forEach(function (item) {
+        if (item.classList.contains("open")) expand(item);
+      });
+    })();
+
+
+    /* =========================
+       条款浮层：隐私政策 / 服务条款 / 联系我们
+    ========================= */
+
+    (function () {
+      var overlay = document.getElementById("legalOverlay");
+      if (!overlay) return;
+
+      var panel = overlay.querySelector(".panel");
+      var scrollArea = overlay.querySelector(".panel-body");
+      var closeBtn = document.getElementById("legalClose");
+
+      var docs = {
+        privacy: document.getElementById("doc-privacy"),
+        terms: document.getElementById("doc-terms"),
+        contact: document.getElementById("doc-contact")
+      };
+
+      var docIds = Object.keys(docs).filter(function (key) {
+        return !!docs[key];
+      });
+
+      if (!docIds.length) return;
+
+      var current = null;
+      var lastFocus = null;
+      var pushedFor = null;
+      var closeTimer = null;
+      var lockedScroll = 0;
+
+      function isOpen() {
+        return overlay.classList.contains("open");
+      }
+
+      function lockScroll() {
+        lockedScroll = window.pageYOffset || document.documentElement.scrollTop || 0;
+
+        var gutter = window.innerWidth - document.documentElement.clientWidth;
+
+        document.body.style.position = "fixed";
+        document.body.style.top = -lockedScroll + "px";
+        document.body.style.left = "0";
+        document.body.style.right = "0";
+        document.body.style.width = "100%";
+
+        if (gutter > 0) document.body.style.paddingRight = gutter + "px";
+      }
+
+      function unlockScroll() {
+        document.body.style.position = "";
+        document.body.style.top = "";
+        document.body.style.left = "";
+        document.body.style.right = "";
+        document.body.style.width = "";
+        document.body.style.paddingRight = "";
+
+        // 暂时关闭滚动惯性，避免关闭浮层时出现一段可见的回滚动画
+        var root = document.documentElement;
+        var previous = root.style.scrollBehavior;
+
+        root.style.scrollBehavior = "auto";
+        window.scrollTo(0, lockedScroll);
+        root.style.scrollBehavior = previous;
+      }
+
+      function showDoc(id) {
+        var doc = docs[id];
+        if (!doc) return;
+
+        docIds.forEach(function (key) {
+          docs[key].hidden = key !== id;
+        });
+
+        var title = doc.querySelector(".doc-title");
+        if (title) {
+          if (!title.id) title.id = "doc-title-" + id;
+          panel.setAttribute("aria-labelledby", title.id);
+        }
+
+        if (scrollArea) scrollArea.scrollTop = 0;
+
+        overlay.hidden = false;
+        void overlay.offsetHeight; // 强制回流，让入场过渡生效
+        overlay.classList.add("open");
+      }
+
+      function open(id, options) {
+        if (!docs[id]) return;
+        options = options || {};
+
+        if (isOpen() && current === id) return;
+
+        if (!isOpen()) {
+          lastFocus = document.activeElement;
+          lockScroll();
+        }
+
+        current = id;
+        showDoc(id);
+
+        // 每次打开写入一条历史记录，浏览器返回键即可关闭浮层
+        if (options.push !== false && pushedFor !== id) {
+          pushedFor = id;
+
+          try {
+            history.pushState({ legal: id }, "", "#" + id);
+          } catch (error) {
+            pushedFor = null;
+          }
+        }
+
+        window.setTimeout(function () {
+          if (isOpen() && closeBtn) closeBtn.focus();
+        }, 80);
+      }
+
+      function close(fromHistory) {
+        if (!isOpen()) return;
+
+        current = null;
+
+        overlay.classList.remove("open");
+
+        if (closeTimer) window.clearTimeout(closeTimer);
+        closeTimer = window.setTimeout(function () {
+          closeTimer = null;
+          if (!isOpen()) overlay.hidden = true;
+        }, 420);
+
+        if (!fromHistory) unlockScroll();
+
+        if (lastFocus && typeof lastFocus.focus === "function") lastFocus.focus();
+        lastFocus = null;
+
+        var pushed = pushedFor;
+        pushedFor = null;
+
+        if (fromHistory) return;
+
+        if (pushed && window.location.hash === "#" + pushed) {
+          history.back();
+        } else if (docIds.indexOf((window.location.hash || "").slice(1)) > -1) {
+          history.replaceState(null, "", window.location.pathname + window.location.search);
+        }
+      }
+
+      function syncFromHash() {
+        var id = (window.location.hash || "").slice(1);
+
+        if (docIds.indexOf(id) > -1) {
+          open(id, { push: false });
+        } else if (isOpen()) {
+          close(true);
+        }
+      }
+
+      Array.prototype.forEach.call(document.querySelectorAll("[data-doc]"), function (trigger) {
+        trigger.addEventListener("click", function (event) {
+          var id = trigger.getAttribute("data-doc");
+          if (!docs[id]) return;
+
+          event.preventDefault();
+          open(id);
+        });
+      });
+
+      Array.prototype.forEach.call(overlay.querySelectorAll("[data-overlay-close]"), function (element) {
+        element.addEventListener("click", function () {
+          close(false);
+        });
+      });
+
+      document.addEventListener("keydown", function (event) {
+        if (event.key !== "Escape" || !isOpen()) return;
+
+        event.preventDefault();
+        close(false);
+      });
+
+      // 键盘焦点限制在浮层内部
+      overlay.addEventListener("keydown", function (event) {
+        if (event.key !== "Tab") return;
+
+        var focusable = Array.prototype.filter.call(
+          panel.querySelectorAll('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'),
+          function (element) {
+            return element.offsetParent !== null;
+          }
+        );
+
+        if (!focusable.length) return;
+
+        var first = focusable[0];
+        var last = focusable[focusable.length - 1];
+
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      });
+
+      window.addEventListener("popstate", syncFromHash);
+      window.addEventListener("hashchange", syncFromHash);
+
+      // 支持以 #privacy / #terms / #contact 直接进入
+      syncFromHash();
+    })();
+
+
+    /* =========================
+       邮箱复制
+    ========================= */
+
+    (function () {
+      var buttons = document.querySelectorAll(".copy-btn");
+      if (!buttons.length) return;
+
+      function legacyCopy(text) {
+        var field = document.createElement("textarea");
+
+        field.value = text;
+        field.setAttribute("readonly", "");
+        field.style.position = "fixed";
+        field.style.top = "-1000px";
+
+        document.body.appendChild(field);
+        field.select();
+
+        var ok = false;
+
+        try {
+          ok = document.execCommand("copy");
+        } catch (error) {
+          ok = false;
+        }
+
+        document.body.removeChild(field);
+        return ok;
+      }
+
+      Array.prototype.forEach.call(buttons, function (button) {
+        var hint = button.querySelector(".copy-hint");
+        var timer = null;
+
+        button.addEventListener("click", function () {
+          var text = button.getAttribute("data-copy") || "";
+
+          var resetLabel = window.__t__ ? window.__t__("legal.copyHint") : "复制";
+          var okLabel = window.__t__ ? window.__t__("legal.copied") : "已复制";
+          var failLabel = window.__t__ ? window.__t__("legal.copyManually") : "请手动复制";
+
+          function feedback(ok) {
+            if (!hint) return;
+
+            hint.textContent = ok ? okLabel : failLabel;
+            button.classList.toggle("copied", ok);
+
+            if (timer) window.clearTimeout(timer);
+            timer = window.setTimeout(function () {
+              hint.textContent = resetLabel;
+              button.classList.remove("copied");
+            }, 1800);
+          }
+
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(function () {
+              feedback(true);
+            }, function () {
+              feedback(legacyCopy(text));
+            });
+          } else {
+            feedback(legacyCopy(text));
+          }
+        });
+      });
+    })();
+
+
+    /* =========================
+       导航滚动高亮
+    ========================= */
+
+    (function () {
+      var links = Array.prototype.slice.call(document.querySelectorAll(".nav a[href^='#']"));
+      if (!links.length) return;
+
+      var targets = links.map(function (link) {
+        return document.getElementById(link.getAttribute("href").slice(1));
+      }).filter(Boolean);
+
+      if (!targets.length) return;
+
+      targets.sort(function (a, b) {
+        return a.getBoundingClientRect().top - b.getBoundingClientRect().top;
+      });
+
+      // 缓存各 section 的绝对偏移，避免滚动时每帧读布局
+      var tops = [];
+
+      function measure() {
+        tops = targets.map(function (section) {
+          return section.offsetTop;
+        });
+      }
+      measure();
+
+      var ticking = false;
+      var activeId = null;
+
+      function update() {
+        ticking = false;
+
+        var threshold = 160;
+        var atBottom =
+          window.innerHeight + window.pageYOffset >= document.documentElement.scrollHeight - 2;
+
+        var active = null;
+
+        if (atBottom) {
+          active = targets[targets.length - 1];
+        } else {
+          var y = (window.pageYOffset || document.documentElement.scrollTop) + threshold;
+          for (var i = 0; i < targets.length; i++) {
+            if (tops[i] <= y) active = targets[i];
+          }
+        }
+
+        var id = active ? active.id : null;
+        if (id === activeId) return;
+        activeId = id;
+
+        links.forEach(function (link) {
+          var on = link.getAttribute("href") === "#" + id;
+
+          link.classList.toggle("active", on);
+
+          if (on) link.setAttribute("aria-current", "true");
+          else link.removeAttribute("aria-current");
+        });
+      }
+
+      function requestUpdate() {
+        if (ticking) return;
+
+        ticking = true;
+        window.requestAnimationFrame(update);
+      }
+
+      window.addEventListener("scroll", requestUpdate, { passive: true });
+      window.addEventListener("resize", function () {
+        measure();
+        requestUpdate();
+      }, { passive: true });
+
+      update();
+    })();
+
+
+    /* =========================
+       Header 毛玻璃滚动降级：滚动后启用 blur，顶部时关闭以省合成开销
+    ========================= */
+    (function () {
+      var header = document.querySelector(".header");
+      if (!header) return;
+      function onScroll() {
+        header.classList.toggle("is-scrolled", (window.pageYOffset || document.documentElement.scrollTop) > 8);
+      }
+      window.addEventListener("scroll", onScroll, { passive: true });
+      onScroll();
+    })();
+
+
+    /* =========================
+       Logo 点击回到顶部
+    ========================= */
+    (function () {
+      var logo = document.querySelector(".logo");
+      var area = document.querySelector(".contentItemArea");
+      if (!logo || !area) return;
+      logo.addEventListener("click", function (event) {
+        event.preventDefault();
+        area.scrollTo({ top: 0, behavior: "smooth" });
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+    })();
+
+
+
+
+    /* =========================
+       Generate
+    ========================= */
+    document.addEventListener("DOMContentLoaded", function () {
+      aigcInterface.init();
+      webCpu.componentPath = "https://transweb.cn/transweb/components/";
+      let elem = document.getElementById("agentCreatorArea");
+      let loading = document.getElementById("agentCreatorLoading");
+      let app = {
+        url: "/webApps/document/agentCreator.vue",
+        className: "ElementVueItem"
+      }
+      webCpu.updateView(elem, app, function () {
+        // agentCreator.vue 组件渲染完成：淡出并移除加载等待提示
+        if (loading) {
+          loading.classList.add("is-done");
+          setTimeout(function () {
+            if (loading.parentNode) loading.parentNode.removeChild(loading);
+          }, 320);
+        }
+      });
+
+      elem = document.getElementById("loginMenuItem");
+      aigcInterface.updateLoginBar(elem);
+    });
+
+    /* =========================
+       subtle mouse interaction
+    ========================= */
+
+    document
+      .querySelectorAll(".case")
+      .forEach(card => {
+
+        let raf = null;
+        let x = 0;
+        let y = 0;
+
+        card.addEventListener(
+          "mousemove",
+          event => {
+            const rect = card.getBoundingClientRect();
+            x = (event.clientX - rect.left) / rect.width;
+            y = (event.clientY - rect.top) / rect.height;
+
+            // 合并到下一帧，仅更新 CSS 变量，避免每帧直接重写渐变背景
+            if (!raf) {
+              raf = requestAnimationFrame(() => {
+                raf = null;
+                card.style.setProperty("--mx", (x * 100).toFixed(1) + "%");
+                card.style.setProperty("--my", (y * 100).toFixed(1) + "%");
+              });
+            }
+          }
+        );
+
+        card.addEventListener(
+          "mouseleave",
+          () => {
+            card.style.setProperty("--mx", "");
+            card.style.setProperty("--my", "");
+          }
+        );
+
+      });
+
+
+    /* =========================
+       浮动工具栏：微信二维码 / Agent 界面（非模态浮窗）
+    ========================= */
+
+    (function () {
+      var windows = {
+        qr: document.getElementById("toolbarQrWindow"),
+        agent: document.getElementById("toolbarAgentWindow")
+      };
+      var agentFrame = windows.agent ? windows.agent.querySelector(".agent-frame") : null;
+      var agentLoading = windows.agent ? windows.agent.querySelector(".agent-loading") : null;
+      var agentLoaded = false;
+      var current = null;
+
+      function hideAgentLoading() {
+        if (agentLoading) agentLoading.classList.add("is-done");
+      }
+
+      function showAgentLoading() {
+        if (agentLoading) agentLoading.classList.remove("is-done");
+      }
+
+      if (agentFrame) {
+        agentFrame.addEventListener("load", hideAgentLoading);
+        agentFrame.addEventListener("error", hideAgentLoading);
+      }
+
+      function makeDraggable(win) {
+        var handle = win.querySelector("[data-toolbar-drag]");
+        if (!handle) return;
+
+        var startX = 0, startY = 0, origLeft = 0, origTop = 0, dragging = false;
+
+        function end() {
+          if (!dragging) return;
+          dragging = false;
+          document.body.style.userSelect = "";
+        }
+
+        handle.addEventListener("pointerdown", function (event) {
+          // 点击关闭按钮时不触发拖动
+          if (event.target.closest("[data-toolbar-close]")) return;
+
+          event.preventDefault();
+
+          var rect = win.getBoundingClientRect();
+          origLeft = rect.left;
+          origTop = rect.top;
+          startX = event.clientX;
+          startY = event.clientY;
+
+          // 从居中定位切换为 left/top 定位，便于拖动
+          win.style.left = origLeft + "px";
+          win.style.top = origTop + "px";
+          win.style.right = "auto";
+          win.style.transform = "none";
+
+          dragging = true;
+          document.body.style.userSelect = "none";
+
+          try { handle.setPointerCapture(event.pointerId); } catch (error) { }
+        });
+
+        handle.addEventListener("pointermove", function (event) {
+          if (!dragging) return;
+          win.style.left = (origLeft + event.clientX - startX) + "px";
+          win.style.top = (origTop + event.clientY - startY) + "px";
+        });
+
+        handle.addEventListener("pointerup", end);
+        handle.addEventListener("pointercancel", end);
+      }
+
+      function open(name) {
+        var win = windows[name];
+        if (!win) return;
+
+        // 再次点击同一按钮则关闭浮窗
+        if (current === name) {
+          close(name);
+          return;
+        }
+
+        if (current) close(current);
+        current = name;
+
+        // Agent iframe 首次打开时才加载，避免页面初始化时额外请求
+        if (name === "agent" && agentFrame && !agentLoaded) {
+          var src = agentFrame.getAttribute("data-agent-src");
+          if (src) {
+            showAgentLoading();
+            agentFrame.src = src;
+            agentLoaded = true;
+          }
+        }
+
+        // 二维码首次打开时才加载图片，避免初始冗余请求
+        if (name === "qr") {
+          var img = win.querySelector(".qr-image");
+          if (img && !img.getAttribute("src") && img.getAttribute("data-qr-src")) {
+            img.src = img.getAttribute("data-qr-src");
+          }
+        }
+
+        win.hidden = false;
+        void win.offsetHeight; // 强制回流，保证入场过渡生效
+        win.classList.add("open");
+      }
+
+      function close(name) {
+        var win = windows[name];
+        if (!win) return;
+
+        win.classList.remove("open");
+
+        window.setTimeout(function () {
+          if (!win.classList.contains("open")) win.hidden = true;
+        }, 260);
+
+        if (current === name) current = null;
+      }
+
+      Object.keys(windows).forEach(function (key) {
+        if (windows[key]) makeDraggable(windows[key]);
+      });
+
+      Array.prototype.forEach.call(document.querySelectorAll("[data-toolbar-open]"), function (btn) {
+        btn.addEventListener("click", function () {
+          open(btn.getAttribute("data-toolbar-open"));
+        });
+      });
+
+      Array.prototype.forEach.call(document.querySelectorAll("[data-toolbar-close]"), function (el) {
+        el.addEventListener("click", function () {
+          if (current) close(current);
+        });
+      });
+
+      document.addEventListener("keydown", function (event) {
+        if (event.key !== "Escape" || !current) return;
+        event.preventDefault();
+        close(current);
+      });
+    })();
+
+  </script>
+
+</body>
+
+</html>

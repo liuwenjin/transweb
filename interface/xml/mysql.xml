@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<root>
+    <interface name="testa" method="get">
+        select {{name}} from {{table}}
+    </interface>
+    <interface name="testb" method="get">
+        select * from state
+    </interface>
+    <interface name="testc" method="get">
+        select * from country
+    </interface>
+    <interface name="testy" method="get">
+        select * from party
+    </interface>
+</root>

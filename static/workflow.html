@@ -1,0 +1,1752 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <!-- Google Tag Manager -->
+  <script>(function (w, d, s, l, i) {
+      w[l] = w[l] || []; w[l].push({
+        'gtm.start':
+          new Date().getTime(), event: 'gtm.js'
+      }); var f = d.getElementsByTagName(s)[0],
+        j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+          'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+    })(window, document, 'script', 'dataLayer', 'GTM-NFNM4T38');</script>
+  <!-- End Google Tag Manager -->
+  <meta charset="UTF-8">
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-X57JCN1S0T"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', 'G-X57JCN1S0T');
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Trans-Workflow | 把一次性 AI 对话，变成可复用的 AI 流水线</title>
+  <meta name="description" content="Trans-Workflow 帮你把提示词、AI Skill 和多个模型组合成工作流，变成可反复使用的 AI 流水线工具。无需安装，数据留在本地，可一键导出为网页。">
+  <meta name="keywords"
+    content="Trans-Workflow, AI 工作流基础服务, AI Workflow Infrastructure, 开源 AI 工作流, 单文件工作流引擎, 无代码 AI Agent, 节点级回溯, 本地私有 AI">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://transweb.cn/">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Trans-Workflow | 把一次性 AI 对话，变成可复用的 AI 流水线">
+  <meta property="og:description" content="把提示词、AI Skill 和多个模型组合成工作流，变成可反复使用的 AI 流水线工具。">
+  <meta property="og:url" content="https://transweb.cn/">
+  <meta property="og:site_name" content="Trans-Workflow">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:image" content="https://transweb.cn/assets/images/workflow-hero.png">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Trans-Workflow | 把一次性 AI 对话，变成可复用的 AI 流水线">
+  <meta name="twitter:description" content="把提示词、AI Skill 和多个模型组合成工作流，变成可反复使用的 AI 流水线工具。">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://transweb.cn/#organization",
+        "name": "TransWeb",
+        "alternateName": "Trans-Workflow",
+        "url": "https://transweb.cn/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://transweb.cn/assets/logo.png"
+        },
+        "sameAs": [
+          "https://github.com/liuwenjin/trans-workflow"
+        ]
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://transweb.cn/#website",
+        "url": "https://transweb.cn/",
+        "name": "Trans-Workflow",
+        "description": "面向开发者的开源 AI 流水线工具，单文件编排 AI Skill与 Agent。",
+        "inLanguage": "zh-CN",
+        "publisher": {
+          "@id": "https://transweb.cn/#organization"
+        }
+      },
+      {
+        "@type": "SoftwareApplication",
+        "@id": "https://transweb.cn/#application",
+        "name": "Trans-Workflow Engine",
+        "alternateName": "Trans-Workflow AI 流水线工具",
+        "url": "https://transweb.cn/workflow/index.html",
+        "logo": "https://transweb.cn/assets/logo.png",
+        "screenshot": "https://transweb.cn/assets/images/workflow-hero.png",
+        "operatingSystem": "Any (Browser-based)",
+        "applicationCategory": "DeveloperApplication",
+        "applicationSubCategory": "AI Workflow Automation",
+        "license": "https://opensource.org/licenses/MIT",
+        "author": {
+          "@id": "https://transweb.cn/#organization"
+        },
+        "version": "1.0.0",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "featureList": [
+          "单 HTML 文件部署的 AI 流水线工具",
+          "节点级局部重跑与 Human-in-the-loop 中间干预",
+          "纯浏览器本地存储，数据 100% 隐私安全",
+          "支持多 AI Skill 节点协同与可视化编排",
+          "MIT 开源，可快速扩展新节点与模板"
+        ]
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Trans-Workflow 与 Dify、FastGPT 等平台有什么区别？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Trans-Workflow 定位为轻量级 AI 流水线工具，整个引擎封装在单 HTML 文件中，可直接在浏览器本地或静态服务器运行。"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "使用 Trans-Workflow 会有数据泄露风险吗？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "不会。引擎采用纯前端架构，工作流配置、节点日志与中间结果均保存在本地或所属账户中。"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "如何导入或分享编排好的 AI 工作流？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "支持一键导出 HTML 文件，团队成员直接双击即可运行与分享。"
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="common/lucide.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f8f8fa',
+              100: '#f3f3f5',
+              200: '#e7e7eb',
+              300: '#c9c9cf',
+              400: '#a5a5aa',
+              500: '#6e6e73',
+              600: '#1a1a1e',
+              700: '#2b2b31',
+              800: '#000000',
+              900: '#16161a'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+            mono: ['JetBrains Mono', 'SF Mono', 'Fira Code', 'Cascadia Code', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-image: none;
+    }
+
+    /* SVG 图标统一行内显示：优先级高于 preflight 的 display:block，但低于 .hidden/.block 等工具类 */
+    body svg {
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    .hero-grid-bg {
+      background-size: 40px 40px;
+      background-image:
+        linear-gradient(to right, rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+    }
+
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.3);
+      border-radius: 24px;
+    }
+
+    details summary::-webkit-details-marker {
+      display: none;
+    }
+  </style>
+</head>
+
+<body
+  class="bg-[#fafafc] dark:bg-[#1a1a1e] text-slate-800 dark:text-slate-200 transition-colors duration-300 min-h-screen flex flex-col antialiased selection:bg-brand-500/20 selection:text-brand-600 dark:selection:text-brand-300">
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NFNM4T38" height="0" width="0"
+      style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
+
+  <header
+    class="sticky top-0 z-50 w-full border-b border-slate-200/70 dark:border-slate-800/70 bg-[#f8f8fa]/90 dark:bg-slate-950/90 backdrop-blur-md shadow-sm">
+    <div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <a href="/" title="Trans-Workflow 首页" class="flex items-center gap-3">
+        <img class="w-8 h-8 sm:w-9 sm:h-9" src="https://transweb.cn/assets/images/logo-brand.png" alt="Trans-Workflow Logo" width="36"
+          height="36">
+        <span class="flex flex-col leading-none">
+          <span
+            class="text-base sm:text-xl font-bold tracking-wider text-slate-900 dark:text-white">Trans-Workflow</span>
+          <span class="mt-1 text-[10px] sm:text-xs uppercase tracking-widest text-slate-400 dark:text-slate-500">单文件 AI
+            流水线</span>
+        </span>
+      </a>
+
+      <nav class="hidden md:flex items-center gap-7 text-sm font-medium" aria-label="主导航">
+        <a href="#market"
+          class="whitespace-nowrap text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-brand-300 transition-colors">流水线市场</a>
+        <a href="#quickstart"
+          class="whitespace-nowrap text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-brand-300 transition-colors">快速开始</a>
+        <a href="#builder"
+          class="whitespace-nowrap text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-brand-300 transition-colors">怎么组装</a>
+        <a href="#personas"
+          class="whitespace-nowrap text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-brand-300 transition-colors">谁在用
+          · 案例</a>
+        <a href="#community"
+          class="whitespace-nowrap text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-brand-300 transition-colors">开源&文档</a>
+      </nav>
+
+      <div class="flex items-center gap-2">
+        <a target="_blank" href="https://transweb.cn/skill.html"
+          class="hidden lg:inline-flex items-center gap-2 rounded-full border border-slate-200 dark:border-slate-700 px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 hover:border-brand-600 hover:text-brand-600 dark:hover:text-brand-300 transition-colors">
+          <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path
+              d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
+          </svg>
+          Skill 生成
+        </a>
+        <a target="_blank" href="https://transweb.cn/skillHub.html" rel="noopener"
+          class="hidden sm:inline-flex items-center gap-2 rounded-full border border-slate-200 dark:border-slate-700 px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 hover:border-brand-600 hover:text-brand-600 dark:hover:text-brand-300 transition-colors">
+          <i data-lucide="layout-grid" class="w-5 h-5"></i>
+          可选 Skills
+        </a>
+        <a target="_blank" href="https://transweb.cn/workflow/mathFlow.html"
+          class="inline-flex items-center gap-2 rounded-full bg-brand-600 hover:bg-brand-500 px-5 py-2 text-sm font-semibold text-white transition-colors">
+          <i data-lucide="terminal" class="w-4 h-4"></i>
+          <span class="hidden sm:inline">免费运行</span><span class="sm:hidden">运行</span>
+        </a>
+        <button id="theme-toggle" aria-label="切换明暗主题"
+          class="p-2 rounded-none text-slate-500 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+          <i data-lucide="sun" class="w-4 h-4 hidden" id="theme-icon-sun"></i>
+          <i data-lucide="moon" class="w-4 h-4" id="theme-icon-moon"></i>
+        </button>
+        <button id="mobile-menu-toggle" aria-label="切换移动端导航菜单"
+          class="md:hidden p-2 rounded-none text-slate-500 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+          <i data-lucide="menu" class="w-5 h-5" id="menu-icon-open"></i>
+          <i data-lucide="x" class="w-5 h-5 hidden" id="menu-icon-close"></i>
+        </button>
+      </div>
+    </div>
+
+    <div id="mobile-menu"
+      class="hidden md:hidden border-t border-slate-200/60 dark:border-slate-800/60 bg-white/95 dark:bg-slate-950/95 px-4 py-3 space-y-1">
+      <a href="#market"
+        class="block px-3 py-2.5 rounded-none text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">流水线市场</a>
+      <a href="#quickstart"
+        class="block px-3 py-2.5 rounded-none text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">快速开始</a>
+      <a href="#builder"
+        class="block px-3 py-2.5 rounded-none text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">怎么组装</a>
+      <a href="#personas"
+        class="block px-3 py-2.5 rounded-none text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">谁在用
+        · 案例</a>
+      <a href="#community"
+        class="block px-3 py-2.5 rounded-none text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">开源&文档</a>
+      <a target="_blank" href="https://transweb.cn/skill.html"
+        class="block px-3 py-2.5 rounded-none text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">Skill
+        生成</a>
+      <a target="_blank" href="https://transweb.cn/skillHub.html" rel="noopener"
+        class="block px-3 py-2.5 rounded-none text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">可选
+        Skills</a>
+      <div class="pt-3 border-t border-slate-200/60 dark:border-slate-800/60 flex flex-col gap-2">
+        <a target="_blank" href="https://transweb.cn/workflow/index.html"
+          class="w-full text-center py-2.5 rounded-full text-sm font-semibold text-white bg-brand-600">免费运行</a>
+        <a target="_blank" href="https://github.com/liuwenjin/trans-workflow" rel="noopener"
+          class="w-full text-center py-2.5 rounded-full text-sm font-medium text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800">
+          <i data-lucide="star" class="w-4 h-4"></i>
+          GitHub 仓库</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero：墨色全幅展示区 -->
+  <section id="demo" class="relative bg-brand-900 text-white overflow-hidden scroll-mt-24">
+    <!-- 背景装饰：墨色渐变 + 网格纹理 + 弥散光晕 -->
+    <div class="pointer-events-none absolute inset-0 bg-gradient-to-br from-brand-900 via-brand-800 to-brand-700"
+      aria-hidden="true"></div>
+    <div class="pointer-events-none absolute inset-0 hero-grid-bg" aria-hidden="true"></div>
+    <div class="pointer-events-none absolute -top-24 -right-16 h-96 w-96 rounded-full bg-brand-500/30 blur-3xl"
+      aria-hidden="true"></div>
+    <div class="pointer-events-none absolute -bottom-32 -left-16 h-96 w-96 rounded-full bg-slate-500/20 blur-3xl"
+      aria-hidden="true"></div>
+
+    <div class="relative max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+
+        <div class="lg:col-span-6">
+          <div
+            class="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-xs font-semibold tracking-wide">
+            <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
+            零服务器成本 · 数据 100% 私有 · 开箱即用
+          </div>
+          <h1 class="mt-6 text-[30px] sm:text-5xl font-extrabold leading-[1.15] text-white tracking-tight">
+            不用写后端、零部署成本！<br>10 分钟组装你的专属 AI 专家工作流
+          </h1>
+          <p class="mt-5 max-w-xl text-base sm:text-lg leading-relaxed text-slate-300">
+            只需一个 HTML 文件，在浏览器里直接跑 AI！告别 Docker 踩坑与高昂服务器账单。支持任意节点随时“回滚重跑”与人工干预，让复杂工作流结果 100% 可控。
+          </p>
+
+          <div class="mt-8 flex flex-col sm:flex-row items-start gap-3">
+            <a target="_blank" href="https://transweb.cn/workflow/mathFlow.html"
+              class="inline-flex w-full sm:w-auto items-center justify-center gap-2 whitespace-nowrap rounded-full bg-brand-600 hover:bg-brand-500 px-5 sm:px-7 py-3 text-base font-bold text-white shadow-lg transition-colors">
+              👉 立即免费运行工作流
+            </a>
+            <a target="_blank" href="https://github.com/liuwenjin/trans-workflow" rel="noopener"
+              class="inline-flex w-full sm:w-auto items-center justify-center gap-2 whitespace-nowrap rounded-full border border-white/25 bg-white/10 px-7 py-3 text-base font-semibold text-white hover:bg-white/20 transition-colors">
+              <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path fill-rule="evenodd" clip-rule="evenodd"
+                  d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.203 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2Z" />
+              </svg>
+              查看 GitHub 源码（MIT 开源）
+            </a>
+          </div>
+
+        </div>
+
+        <div class="lg:col-span-6 space-y-4">
+          <div
+            class="overflow-hidden rounded-none border border-white/10 bg-white dark:bg-slate-900 dark:border-slate-800 shadow-xl">
+            <div class="flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 px-4 py-2.5">
+              <span class="h-2.5 w-2.5 rounded-full bg-rose-400"></span>
+              <span class="h-2.5 w-2.5 rounded-full bg-amber-400"></span>
+              <span class="h-2.5 w-2.5 rounded-full bg-emerald-400"></span>
+              <span class="ml-3 font-mono text-xs text-slate-400">transweb.cn/workflow</span>
+            </div>
+            <img src="https://transweb.cn/assets/images/workflow-hero.png" alt="Trans-Workflow 工作流引擎真实运行界面" class="block w-full h-auto"
+              width="1440" height="900" loading="eager">
+          </div>
+
+
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <main class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 flex-1 w-full flex flex-col gap-12 sm:gap-16">
+
+    <!-- AI Skill 市场 -->
+    <section id="market" class="scroll-mt-24">
+      <div class="text-center max-w-3xl mx-auto mb-10">
+        <h2 class="text-3xl font-bold text-slate-900 dark:text-white">不必从零开始！挑选适合你的场景模板，一秒开启自动化</h2>
+        <p class="mt-4 text-lg text-gray-600 dark:text-slate-400">精选 AI 流水线，覆盖创作、科研、教学、合规与营销，开箱即用</p>
+      </div>
+
+      <div class="space-y-4">
+        <div class="relative max-w-2xl">
+          <div
+            class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 group-focus-within:text-brand-600 transition-colors z-10">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 sm:w-5 sm:h-5" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+            </svg>
+          </div>
+          <input type="text" id="search-input" aria-label="搜索 AI 流水线" placeholder="搜索流水线名称、用途或能力…"
+            class="w-full pl-10 sm:pl-12 pr-10 sm:pr-16 py-3 bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 rounded-none shadow-sm focus:outline-none focus:ring-4 focus:ring-brand-500/15 focus:border-brand-600/50 transition-all placeholder-slate-400 dark:placeholder-slate-500 text-sm text-slate-800 dark:text-slate-100" />
+          <kbd id="search-kbd" title="按 Ctrl/Cmd + K 或 / 聚焦搜索"
+            class="hidden sm:inline-flex absolute right-4 top-1/2 -translate-y-1/2 items-center px-2 py-1 rounded-none border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 font-mono text-[11px] text-slate-400 shadow-sm">
+            Ctrl K
+          </kbd>
+        </div>
+
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 max-w-3xl">
+          <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1 pt-1 -mx-4 px-4 sm:mx-0 sm:px-0" id="category-tags"
+            role="tablist" aria-label="工作流分类">
+            <button
+              class="shrink-0 px-4 py-2 rounded-full text-sm font-medium bg-brand-600 text-white border border-brand-600">全部</button>
+          </div>
+          <div
+            class="flex items-center justify-between sm:justify-end gap-4 text-xs sm:text-sm font-medium text-slate-400 dark:text-slate-500 shrink-0">
+            <span id="result-count">共 17 条流水线</span>
+            <button id="clear-filter"
+              class="hidden inline-flex items-center gap-1 hover:text-brand-600 dark:hover:text-brand-300 transition-colors">清除筛选
+              <i data-lucide="x" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <section id="workflow-grid" class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+        aria-label="AI 流水线列表"></section>
+
+      <div id="empty-state" class="hidden flex-col items-center justify-center py-16 text-center">
+        <div
+          class="w-12 h-12 rounded-none bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 mb-4">
+          <i data-lucide="search-x" class="w-6 h-6"></i>
+        </div>
+        <h2 class="text-lg font-semibold text-slate-800 dark:text-slate-200">未找到匹配的 AI 流水线</h2>
+        <p class="text-sm text-slate-500 mt-2">尝试更改关键词或重置分类</p>
+        <button id="empty-reset"
+          class="mt-4 inline-flex items-center gap-2 rounded-full bg-brand-600 hover:bg-brand-500 px-5 py-2.5 text-sm font-semibold text-white transition-colors">
+          <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+          重置筛选
+        </button>
+      </div>
+    </section>
+
+    <!-- 核心卖点 -->
+    <section id="features" class="scroll-mt-24">
+      <div class="text-center max-w-3xl mx-auto mb-10">
+        <h2 class="text-3xl font-bold text-slate-900 dark:text-white">为什么选择 Trans-Workflow？</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div
+          class="rounded-none bg-[#f8f8fa] dark:bg-slate-900/70 p-6 shadow-sm border border-gray-100 dark:border-slate-800 hover:shadow-md transition flex flex-col">
+          <div
+            class="flex h-10 w-10 items-center justify-center rounded-none bg-brand-100 dark:bg-brand-500/10 text-brand-600 dark:text-brand-300">
+            <i data-lucide="rocket" class="w-5 h-5"></i>
+          </div>
+          <h3 class="mt-4 text-lg font-bold text-slate-800 dark:text-white">双击即用，零部署门槛</h3>
+          <p class="mt-2 text-sm text-gray-600 dark:text-slate-400 leading-relaxed">一个 HTML 文件就是完整引擎。无需
+            Docker，无需搭建数据库，下载即可本地运行，像打开网页一样简单。</p>
+        </div>
+        <div
+          class="rounded-none bg-[#f8f8fa] dark:bg-slate-900/70 p-6 shadow-sm border border-gray-100 dark:border-slate-800 hover:shadow-md transition flex flex-col">
+          <div
+            class="flex h-10 w-10 items-center justify-center rounded-none bg-brand-100 dark:bg-brand-500/10 text-brand-600 dark:text-brand-300">
+            <i data-lucide="refresh-cw" class="w-5 h-5"></i>
+          </div>
+          <h3 class="mt-4 text-lg font-bold text-slate-800 dark:text-white">节点级修正，告别“抽卡式”生成</h3>
+          <p class="mt-2 text-sm text-gray-600 dark:text-slate-400 leading-relaxed">
+            运行中断或结果不满意？无需从头再来！支持单节点局部重跑与人工干预，让每次输出都精准达标。</p>
+        </div>
+        <div
+          class="rounded-none bg-[#f8f8fa] dark:bg-slate-900/70 p-6 shadow-sm border border-gray-100 dark:border-slate-800 hover:shadow-md transition flex flex-col">
+          <div
+            class="flex h-10 w-10 items-center justify-center rounded-none bg-brand-100 dark:bg-brand-500/10 text-brand-600 dark:text-brand-300">
+            <i data-lucide="shield-check" class="w-5 h-5"></i>
+          </div>
+          <h3 class="mt-4 text-lg font-bold text-slate-800 dark:text-white">数据 100% 私有，零隐私泄露风险</h3>
+          <p class="mt-2 text-sm text-gray-600 dark:text-slate-400 leading-relaxed">
+            执行记录严格保留在你的本地浏览器中，中间结果和最终输出存在私人账户中。敏感合同、科研论文、商业方案安心处理。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quickstart -->
+    <section id="quickstart" class="scroll-mt-24">
+      <div class="text-center max-w-3xl mx-auto mb-10">
+        <h2 class="text-3xl font-bold text-slate-900 dark:text-white">快速开始 · 使用 AI 流水线</h2>
+      </div>
+      <div class="w-full">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+          <div
+            class="rounded-none bg-[#f8f8fa] dark:bg-slate-900/70 p-6 shadow-sm border border-gray-100 dark:border-slate-800 hover:shadow-md transition flex flex-col">
+            <div
+              class="relative h-40 shrink-0 overflow-hidden rounded-none bg-brand-50/70 dark:bg-slate-800/70 flex items-center justify-center px-5">
+              <svg class="w-full max-w-[250px] h-auto" viewBox="0 0 280 160" fill="none"
+                xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <rect x="16" y="52" width="76" height="72" rx="14" fill="#6e6e73" fill-opacity="0.06" />
+                <rect x="192" y="52" width="76" height="72" rx="14" fill="#6e6e73" fill-opacity="0.06" />
+                <rect x="100" y="30" width="82" height="88" rx="16" fill="#6e6e73" fill-opacity="0.12"
+                  stroke="#1a1a1e" stroke-width="1.5" />
+                <g stroke="#1a1a1e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M32 84h22M72 84h7" />
+                  <circle cx="32" cy="84" r="7" fill="#FFFFFF" stroke="#1a1a1e" />
+                  <rect x="57" y="77" width="14" height="14" rx="5" fill="#6e6e73" />
+                  <path d="M208 84h22M248 84h7" />
+                  <circle cx="208" cy="84" r="7" fill="#FFFFFF" stroke="#1a1a1e" />
+                  <rect x="233" y="77" width="14" height="14" rx="5" fill="#a5a5aa" />
+                  <path d="M116 88h18M158 88h10" />
+                  <circle cx="116" cy="88" r="7" fill="#FFFFFF" stroke="#1a1a1e" />
+                  <rect x="140" y="81" width="14" height="14" rx="5" fill="#a5a5aa" />
+                  <path d="M161 88h7" />
+                </g>
+                <circle cx="180" cy="29" r="16" fill="#6e6e73" />
+                <path d="M172.5 29.5L177.5 34.5L187.5 23.5" stroke="#FFFFFF" stroke-width="3"
+                  stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </div>
+            <div class="mt-5 flex items-center justify-between gap-3">
+              <span class="text-xs font-bold uppercase tracking-[0.22em] text-brand-600 dark:text-brand-300">Step
+                01</span>
+              <span class="text-lg font-black text-brand-600/20 dark:text-brand-300/20">01</span>
+            </div>
+            <h2 class="mt-2 text-lg font-bold text-slate-800 dark:text-white">选一个 AI 流水线</h2>
+            <p class="mt-2 text-sm text-gray-600 dark:text-slate-400 leading-relaxed">从市场挑一个，直接打开就能用。</p>
+          </div>
+          <div
+            class="rounded-none bg-[#f8f8fa] dark:bg-slate-900/70 p-6 shadow-sm border border-gray-100 dark:border-slate-800 hover:shadow-md transition flex flex-col">
+            <div
+              class="relative h-40 shrink-0 overflow-hidden rounded-none bg-brand-50/70 dark:bg-slate-800/70 flex items-center justify-center px-5">
+              <svg class="w-full max-w-[250px] h-auto" viewBox="0 0 280 160" fill="none"
+                xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <rect x="18" y="70" width="70" height="52" rx="12" fill="#6e6e73" fill-opacity="0.06"
+                  stroke="#6e6e73" stroke-opacity="0.2" />
+                <path d="M30 84h34M30 97h22M30 110h28" stroke="#1a1a1e" stroke-width="2"
+                  stroke-linecap="round" />
+                <rect x="106" y="48" width="76" height="76" rx="18" fill="#6e6e73" fill-opacity="0.12"
+                  stroke="#1a1a1e" stroke-width="1.5" />
+                <g stroke="#1a1a1e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M122 86h14M154 86h11" />
+                  <circle cx="122" cy="86" r="7" fill="#FFFFFF" stroke="#1a1a1e" />
+                  <rect x="139" y="79" width="14" height="14" rx="5" fill="#a5a5aa" />
+                  <path d="M162 86h7" />
+                </g>
+                <circle cx="144" cy="106" r="17" fill="#6e6e73" />
+                <path d="M139 98L153 106L139 114V98Z" fill="#FFFFFF" />
+                <rect x="204" y="70" width="58" height="52" rx="12" fill="#6e6e73" fill-opacity="0.08"
+                  stroke="#6e6e73" stroke-opacity="0.4" />
+                <path d="M216 84h34M216 96h24" stroke="#6e6e73" stroke-width="2"
+                  stroke-linecap="round" />
+                <path d="M102 96H96M96 96H18V125H73" stroke="#a5a5aa" stroke-width="1.5"
+                  stroke-linecap="round" stroke-dasharray="4 5" />
+                <path d="M193 96H201" stroke="#a5a5aa" stroke-width="1.5" stroke-linecap="round"
+                  stroke-dasharray="4 5" />
+              </svg>
+            </div>
+            <div class="mt-5 flex items-center justify-between gap-3">
+              <span class="text-xs font-bold uppercase tracking-[0.22em] text-brand-600 dark:text-brand-300">Step
+                02</span>
+              <span class="text-lg font-black text-brand-600/20 dark:text-brand-300/20">02</span>
+            </div>
+            <h2 class="mt-2 text-lg font-bold text-slate-800 dark:text-white">输入需求，点击生成</h2>
+            <p class="mt-2 text-sm text-gray-600 dark:text-slate-400 leading-relaxed">执行后，自动按流水线完成内容生成，支持用户随时调整中间结果。
+            </p>
+          </div>
+          <div
+            class="rounded-none bg-[#f8f8fa] dark:bg-slate-900/70 p-6 shadow-sm border border-gray-100 dark:border-slate-800 hover:shadow-md transition flex flex-col">
+            <div
+              class="relative h-40 shrink-0 overflow-hidden rounded-none bg-brand-50/70 dark:bg-slate-800/70 flex items-center justify-center px-5">
+              <svg class="w-full max-w-[250px] h-auto" viewBox="0 0 280 160" fill="none"
+                xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <rect x="48" y="28" width="178" height="104" rx="14" fill="#6e6e73" fill-opacity="0.08"
+                  stroke="#1a1a1e" stroke-width="1.5" />
+                <path d="M48 42C48 34.268 54.268 28 62 28H212C219.732 28 226 34.268 226 42V52H48V42Z"
+                  fill="#6e6e73" fill-opacity="0.12" stroke="#1a1a1e" stroke-width="1.5" />
+                <circle cx="64" cy="40" r="4" fill="#FF5F56" />
+                <circle cx="78" cy="40" r="4" fill="#FFBD2E" />
+                <circle cx="92" cy="40" r="4" fill="#27C93F" />
+                <rect x="66" y="66" width="92" height="9" rx="4.5" fill="#1a1a1e" fill-opacity="0.75" />
+                <rect x="66" y="84" width="136" height="8" rx="4" fill="#a5a5aa" fill-opacity="0.6" />
+                <rect x="66" y="102" width="112" height="8" rx="4" fill="#6e6e73" fill-opacity="0.75" />
+                <rect x="208" y="132" width="42" height="26" rx="8" fill="#6e6e73" fill-opacity="0.12"
+                  stroke="#6e6e73" stroke-width="1.5" />
+                <path d="M222 141L228 147L236 137" stroke="#6e6e73" stroke-width="2.5"
+                  stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M226 114V126" stroke="#a5a5aa" stroke-width="1.5" stroke-linecap="round"
+                  stroke-dasharray="4 5" />
+              </svg>
+            </div>
+            <div class="mt-5 flex items-center justify-between gap-3">
+              <span class="text-xs font-bold uppercase tracking-[0.22em] text-brand-600 dark:text-brand-300">Step
+                03</span>
+              <span class="text-lg font-black text-brand-600/20 dark:text-brand-300/20">03</span>
+            </div>
+            <h2 class="mt-2 text-lg font-bold text-slate-800 dark:text-white">导出结果网页</h2>
+            <p class="mt-2 text-sm text-gray-600 dark:text-slate-400 leading-relaxed">一键变成可分享、可交付的结果网页。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 核心能力 -->
+    <section id="builder" class="scroll-mt-24 pt-6 border-t border-slate-200/80 dark:border-slate-800/80">
+      <div class="text-center max-w-3xl mx-auto mb-10">
+        <h2 class="text-3xl font-bold text-slate-900 dark:text-white">怎么组装 AI 流水线</h2>
+        <p class="mt-4 text-lg text-gray-600 dark:text-slate-400">像搭积木一样，把 AI Skill 组装成一条流水线</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div
+          class="rounded-none bg-[#f8f8fa] dark:bg-slate-900/70 p-6 shadow-sm border border-gray-100 dark:border-slate-800 hover:shadow-md transition flex flex-col">
+          <div class="flex items-center justify-between">
+            <div
+              class="flex h-10 w-10 items-center justify-center rounded-none bg-brand-100 dark:bg-brand-500/10 text-brand-600 dark:text-brand-300">
+              <i data-lucide="package" class="w-5 h-5"></i>
+            </div>
+            <span class="text-lg font-bold text-brand-600">01</span>
+          </div>
+          <h3 class="mt-4 text-lg font-bold text-slate-800 dark:text-white mb-2">选 Skill</h3>
+          <p class="text-sm text-gray-600 dark:text-slate-400 leading-relaxed">从库里挑一个，或新建一个自己的。</p>
+        </div>
+        <div
+          class="rounded-none bg-[#f8f8fa] dark:bg-slate-900/70 p-6 shadow-sm border border-gray-100 dark:border-slate-800 hover:shadow-md transition flex flex-col">
+          <div class="flex items-center justify-between">
+            <div
+              class="flex h-10 w-10 items-center justify-center rounded-none bg-brand-100 dark:bg-brand-500/10 text-brand-600 dark:text-brand-300">
+              <i data-lucide="refresh-cw" class="w-5 h-5"></i>
+            </div>
+            <span class="text-lg font-bold text-brand-600">02</span>
+          </div>
+          <h3 class="mt-4 text-lg font-bold text-slate-800 dark:text-white mb-2">排节点</h3>
+          <p class="text-sm text-gray-600 dark:text-slate-400 leading-relaxed">按执行顺序拖出流程。</p>
+        </div>
+        <div
+          class="rounded-none bg-[#f8f8fa] dark:bg-slate-900/70 p-6 shadow-sm border border-gray-100 dark:border-slate-800 hover:shadow-md transition flex flex-col">
+          <div class="flex items-center justify-between">
+            <div
+              class="flex h-10 w-10 items-center justify-center rounded-none bg-brand-100 dark:bg-brand-500/10 text-brand-600 dark:text-brand-300">
+              <i data-lucide="lock" class="w-5 h-5"></i>
+            </div>
+            <span class="text-lg font-bold text-brand-600">03</span>
+          </div>
+          <h3 class="mt-4 text-lg font-bold text-slate-800 dark:text-white mb-2">连数据</h3>
+          <p class="text-sm text-gray-600 dark:text-slate-400 leading-relaxed">让上一个节点的结果喂给下一个。</p>
+        </div>
+        <div
+          class="rounded-none bg-[#f8f8fa] dark:bg-slate-900/70 p-6 shadow-sm border border-gray-100 dark:border-slate-800 hover:shadow-md transition flex flex-col">
+          <div class="flex items-center justify-between">
+            <div
+              class="flex h-10 w-10 items-center justify-center rounded-none bg-brand-100 dark:bg-brand-500/10 text-brand-600 dark:text-brand-300">
+              <i data-lucide="git-branch" class="w-5 h-5"></i>
+            </div>
+            <span class="text-lg font-bold text-brand-600">04</span>
+          </div>
+          <h3 class="mt-4 text-lg font-bold text-slate-800 dark:text-white mb-2">导出网页</h3>
+          <p class="text-sm text-gray-600 dark:text-slate-400 leading-relaxed">一个 HTML，双击即用、可分享。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 运行架构 -->
+    <section id="architecture" class="scroll-mt-24 pt-6 border-t border-slate-200/80 dark:border-slate-800/80">
+      <div class="text-center max-w-3xl mx-auto mb-10">
+        <h2 class="text-3xl font-bold text-slate-900 dark:text-white">运行架构</h2>
+        <p class="mt-4 text-lg text-gray-600 dark:text-slate-400">两种视角看清同一条流水线：谁先执行、数据流向哪里。</p>
+      </div>
+      <div class="relative flex flex-col justify-center items-center">
+
+        <!-- 背景弥散光晕 -->
+        <div
+          class="absolute -inset-2 bg-gradient-to-r from-brand-500/20 via-slate-500/10 to-slate-500/10 rounded-3xl blur-3xl opacity-70 dark:opacity-30">
+        </div>
+
+        <!-- 顶部选项卡切换按钮（默认高亮时序关系图） -->
+        <div
+          class="relative z-20 flex p-1 mb-4 space-x-1 rounded-none bg-slate-200/60 dark:bg-slate-800/60 backdrop-blur-md border border-slate-300/40 dark:border-slate-700/50">
+          <button id="tab-sequence-btn" onclick="switchWorkflowTab('sequence')"
+            class="px-4 py-1.5 text-xs font-bold rounded-none transition-all duration-200 shadow-sm bg-white dark:bg-slate-900 text-brand-600 dark:text-brand-400">
+            时序关系图
+          </button>
+          <button id="tab-dataflow-btn" onclick="switchWorkflowTab('dataflow')"
+            class="px-4 py-1.5 text-xs font-bold rounded-none transition-all duration-200 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+            数据流拓扑图
+          </button>
+        </div>
+
+        <!-- Tab 1: 时序关系 SVG 插画 (默认显示 block) -->
+        <div id="tab-sequence" style="text-align: center;"
+          class="w-full relative z-10 transition-opacity duration-300 block item-center justify-center">
+          <svg style="display: inline-block;" class="relative w-full max-w-2xl h-auto drop-shadow-xl select-none"
+            viewBox="0 0 780 480" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <style>
+                .d-stroke {
+                  stroke-linecap: round;
+                  stroke-linejoin: round;
+                }
+
+                .d-title {
+                  font-family: system-ui, -apple-system, sans-serif;
+                  font-weight: 700;
+                  font-size: 11px;
+                }
+
+                .d-sub {
+                  font-family: system-ui, -apple-system, sans-serif;
+                  font-weight: 600;
+                  font-size: 8.5px;
+                  letter-spacing: 0.5px;
+                }
+
+                .d-badge {
+                  font-family: system-ui, -apple-system, sans-serif;
+                  font-weight: 800;
+                  font-size: 12px;
+                }
+
+                @keyframes dashFlow {
+                  from {
+                    stroke-dashoffset: 28;
+                  }
+
+                  to {
+                    stroke-dashoffset: 0;
+                  }
+                }
+
+                .animated-flow {
+                  animation: dashFlow 1.2s linear infinite;
+                }
+
+                @media (prefers-color-scheme: dark) {
+                  .node-card {
+                    fill: #1a1a1e;
+                    stroke: #3a3a40;
+                  }
+
+                  .node-head {
+                    fill: #2b2b31;
+                  }
+
+                  .node-text-main {
+                    fill: #fafafc;
+                  }
+                }
+              </style>
+              <filter id="node-shadow-2" x="-10%" y="-10%" width="120%" height="120%">
+                <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#1a1a1e" flood-opacity="0.08" />
+              </filter>
+            </defs>
+
+            <!-- 浮动背景装饰 -->
+            <g stroke="currentColor" class="text-slate-300 dark:text-slate-700 d-stroke" opacity="0.4"
+              stroke-width="1.5">
+              <path d="M 30 20 L 42 10 L 38 30 M 740 40 L 750 50 M 750 40 L 740 50" />
+              <circle cx="40" cy="420" r="8" stroke-dasharray="3 3" />
+              <path d="M 260 20 L 262 25 L 267 27 L 262 29 L 260 34 L 258 29 L 253 27 L 258 25 Z" fill="#a5a5aa"
+                stroke="none" />
+              <path d="M 450 440 L 452 445 L 457 447 L 452 449 L 450 454 L 448 449 L 443 447 L 448 445 Z" fill="#a5a5aa"
+                stroke="none" />
+            </g>
+
+            <!-- 数据流向实线 (与拓扑结构一致: A->B, A->C, B->D, C->D, D->Human, Human->Result) -->
+            <g class="d-stroke">
+              <!-- 1. A -> B (实线) -->
+              <path d="M 180 85 L 280 85" stroke="#1a1a1e" stroke-width="2.5" />
+              <path d="M 272 80 L 280 85 L 272 90" stroke="#1a1a1e" stroke-width="2" fill="none" />
+
+              <!-- 2. A -> C (弧线穿越下方: A(180,140) -> C(520,140)) -->
+              <path d="M 180 140 C 280 180, 420 180, 520 140" stroke="#6e6e73" stroke-width="2.5" />
+              <path d="M 512 135 L 520 140 L 512 148" stroke="#6e6e73" stroke-width="2" fill="none" />
+
+              <!-- 3. B -> D (从第一行 B(420,110) 斜向连接至第二行 D(520,290)) -->
+              <path d="M 420 110 C 470 110, 470 290, 520 290" stroke="#6e6e73" stroke-width="2.5" />
+              <path d="M 512 284 L 520 290 L 512 296" stroke="#6e6e73" stroke-width="2" fill="none" />
+
+              <!-- 4. C -> D (从第一行 C(590,180) 垂直下拉至第二行 D(590,260)) -->
+              <path d="M 590 180 L 590 260" stroke="#6e6e73" stroke-width="2.5" />
+              <path d="M 585 252 L 590 260 L 595 252" stroke="#6e6e73" stroke-width="2" fill="none" />
+
+              <!-- 5. D -> Human_Review (从 D(520,330) 向左连接至 Human_Review(420,330)) -->
+              <path d="M 520 330 L 420 330" stroke="#6e6e73" stroke-width="2.5" />
+              <path d="M 428 325 L 420 330 L 428 335" stroke="#6e6e73" stroke-width="2" fill="none" />
+
+              <!-- 6. Human_Review -> result.html (从 Human_Review(280,320) 向左连接至 result.html(190,320)) -->
+              <path d="M 280 320 L 190 320" stroke="#6e6e73" stroke-width="2.5" />
+              <path d="M 198 315 L 190 320 L 198 325" stroke="#6e6e73" stroke-width="2" fill="none" />
+
+              <!-- 时序先后流动线 (虚线: A -> B -> C -> D -> Human -> Result) -->
+              <path d="M 180 110 L 280 110" stroke="#6e6e73" stroke-width="1.5" stroke-dasharray="6 4"
+                class="animated-flow" opacity="0.6" />
+              <path d="M 420 110 L 520 110" stroke="#a5a5aa" stroke-width="1.5" stroke-dasharray="6 4"
+                class="animated-flow" opacity="0.6" />
+              <path d="M 610 180 C 610 220, 610 220, 610 260" stroke="#a5a5aa" stroke-width="1.5" stroke-dasharray="6 4"
+                class="animated-flow" opacity="0.6" />
+              <path d="M 520 310 L 420 310" stroke="#6e6e73" stroke-width="1.5" stroke-dasharray="6 4"
+                class="animated-flow" opacity="0.6" />
+              <path d="M 280 340 L 190 340" stroke="#6e6e73" stroke-width="1.5" stroke-dasharray="6 4"
+                class="animated-flow" opacity="0.6" />
+            </g>
+
+            <!-- 第一行节点 (y=40) -->
+            <!-- Skill_A -->
+            <g transform="translate(40, 40)">
+              <rect width="140" height="140" rx="16" fill="#FFFFFF" stroke="#1a1a1e" stroke-width="2"
+                class="node-card d-stroke" filter="url(#node-shadow-2)" />
+              <rect x="3" y="3" width="134" height="24" rx="12" fill="#f3f3f5" class="node-head" />
+              <text x="8" y="19" fill="#1a1a1e" class="d-title">🧩 Skill A</text>
+              <g transform="translate(25, 48)">
+                <rect x="0" y="0" width="90" height="72" rx="12" fill="#f3f3f5" stroke="#1a1a1e" stroke-width="2"
+                  class="d-stroke" />
+                <circle cx="28" cy="30" r="5" fill="#1a1a1e" />
+                <circle cx="62" cy="30" r="5" fill="#1a1a1e" />
+                <path d="M 36 48 Q 45 55 54 48" stroke="#1a1a1e" stroke-width="2.5" fill="none" class="d-stroke" />
+              </g>
+            </g>
+
+            <!-- Skill_B -->
+            <g transform="translate(280, 40)">
+              <rect width="140" height="140" rx="16" fill="#FFFFFF" stroke="#a5a5aa" stroke-width="2"
+                class="node-card d-stroke" filter="url(#node-shadow-2)" />
+              <rect x="3" y="3" width="134" height="24" rx="12" fill="#f3f3f5" class="node-head" />
+              <text x="8" y="19" fill="#1a1a1e" class="d-title">🧩 Skill B</text>
+              <g transform="translate(18, 42)">
+                <path d="M 18 75 C 13 35, 87 35, 82 75 Z" fill="#a5a5aa" stroke="#1a1a1e" stroke-width="2"
+                  class="d-stroke" />
+                <circle cx="38" cy="50" r="4" fill="#FFFFFF" stroke="#1a1a1e" stroke-width="1.5" />
+                <circle cx="62" cy="50" r="4" fill="#FFFFFF" stroke="#1a1a1e" stroke-width="1.5" />
+                <path d="M 43 62 Q 50 68 57 62 Z" fill="#a5a5aa" stroke="#1a1a1e" stroke-width="1.5" class="d-stroke" />
+              </g>
+            </g>
+
+            <!-- Skill_C -->
+            <g transform="translate(520, 40)">
+              <rect width="140" height="140" rx="16" fill="#FFFFFF" stroke="#a5a5aa" stroke-width="2"
+                class="node-card d-stroke" filter="url(#node-shadow-2)" />
+              <rect x="3" y="3" width="134" height="24" rx="12" fill="#f3f3f5" class="node-head" />
+              <text x="8" y="19" fill="#1a1a1e" class="d-title">🧩 Skill C</text>
+              <g transform="translate(15, 45)">
+                <rect x="15" y="10" width="80" height="45" rx="10" fill="#f3f3f5" stroke="#1a1a1e" stroke-width="2"
+                  class="d-stroke" />
+                <rect x="20" y="18" width="70" height="18" rx="5" fill="#1a1a1e" />
+                <circle cx="35" cy="27" r="3" fill="#a5a5aa" />
+                <circle cx="75" cy="27" r="3" fill="#a0554a" />
+                <g transform="translate(5, 48)">
+                  <rect x="0" y="0" width="100" height="24" rx="6" fill="#1a1a1e" stroke="#1a1a1e" stroke-width="1.5"
+                    class="d-stroke" />
+                  <path d="M 10 12 L 15 8 L 10 4" stroke="#a5a5aa" stroke-width="2" fill="none" class="d-stroke" />
+                  <path d="M 20 14 L 32 14" stroke="#a5a5aa" stroke-width="2" class="d-stroke" />
+                </g>
+              </g>
+            </g>
+
+            <!-- 第二行节点 (y=260) -->
+            <!-- Skill_D -->
+            <g transform="translate(520, 260)">
+              <rect width="140" height="140" rx="16" fill="#FFFFFF" stroke="#6e6e73" stroke-width="2"
+                class="node-card d-stroke" filter="url(#node-shadow-2)" />
+              <rect x="3" y="3" width="134" height="24" rx="12" fill="#f3f3f5" class="node-head" />
+              <text x="8" y="19" fill="#6e6e73" class="d-title">🛠️ Skill D</text>
+              <g transform="translate(18, 48)">
+                <rect x="15" y="15" width="70" height="52" rx="12" fill="#f3f3f5" stroke="#1a1a1e" stroke-width="2"
+                  class="d-stroke" />
+                <circle cx="35" cy="35" r="4" fill="#1a1a1e" />
+                <circle cx="65" cy="35" r="4" fill="#1a1a1e" />
+                <path d="M 50 0 L 52 5 L 57 7 L 52 9 L 50 14 L 48 9 L 43 7 L 48 5 Z" fill="#6e6e73" stroke="#1a1a1e"
+                  stroke-width="1" />
+              </g>
+            </g>
+
+            <!-- Human_Review 人工干预节点 -->
+            <g transform="translate(280, 260)">
+              <rect width="140" height="140" rx="16" fill="#FFFFFF" stroke="#6e6e73" stroke-width="2"
+                class="node-card d-stroke" filter="url(#node-shadow-2)" />
+              <rect x="3" y="3" width="134" height="24" rx="12" fill="#f3f3f5" class="node-head" />
+              <text x="8" y="19" fill="#1a1a1e" class="d-title">👤 人工复核</text>
+              <text x="8" y="40" fill="#6e6e73" class="d-sub">人工干预 · 确认</text>
+              <g transform="translate(17, 45)">
+                <circle cx="50" cy="36" r="26" fill="#f3f3f5" stroke="#1a1a1e" stroke-width="2" class="d-stroke" />
+                <circle cx="38" cy="32" r="3" fill="#1a1a1e" />
+                <circle cx="62" cy="32" r="3" fill="#1a1a1e" />
+                <path d="M 32 48 C 42 55, 58 55, 68 48 Z" fill="#6e6e73" stroke="#1a1a1e" stroke-width="1.5"
+                  class="d-stroke" />
+                <g transform="translate(55, 38) rotate(-10)">
+                  <circle cx="14" cy="14" r="14" fill="#6e6e73" stroke="#1a1a1e" stroke-width="2" class="d-stroke" />
+                  <path d="M 7 14 L 11 18 L 20 10" stroke="#FFFFFF" stroke-width="2.5" fill="none" class="d-stroke" />
+                </g>
+              </g>
+            </g>
+
+            <!-- 成果产出节点 -->
+            <g transform="translate(40, 292)">
+              <rect width="150" height="56" rx="12" fill="#1a1a1e" stroke="#6e6e73" stroke-width="2" class="d-stroke"
+                filter="url(#node-shadow-2)" />
+              <text x="14" y="26" fill="#a5a5aa" class="d-title">📄 结果网页</text>
+              <text x="14" y="42" fill="#a5a5aa" class="d-sub">最终产出</text>
+            </g>
+
+            <!-- 底部图例说明 -->
+            <g transform="translate(40, 420)">
+              <line x1="0" y1="10" x2="30" y2="10" stroke="#1a1a1e" stroke-width="2.5" />
+              <text x="38" y="14" fill="#6e6e73" class="d-sub">实线：数据走向（A→B, A→C, B→D, C→D）</text>
+
+              <line x1="260" y1="10" x2="290" y2="10" stroke="#6e6e73" stroke-width="1.5" stroke-dasharray="6 4" />
+              <text x="298" y="14" fill="#6e6e73" class="d-sub">虚线：执行时序步进</text>
+            </g>
+
+            <!-- 顶部贴纸标识 -->
+            <g transform="translate(605, 10)">
+              <rect width="135" height="32" rx="10" fill="#6e6e73" stroke="#FFFFFF" stroke-width="2" class="d-stroke"
+                filter="url(#node-shadow-2)" />
+              <text x="67" y="20" text-anchor="middle" fill="#FFFFFF" class="d-badge">顺序串行 + 人工复核</text>
+            </g>
+          </svg>
+        </div>
+
+        <!-- Tab 2: 数据流走向 SVG 插画 (默认隐藏 hidden) -->
+        <div id="tab-dataflow" style="text-align: center;"
+          class="w-full relative z-10 transition-opacity duration-300 hidden">
+          <svg style="display: inline-block;" class="relative w-full max-w-2xl h-auto drop-shadow-xl select-none"
+            viewBox="0 0 780 480" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <style>
+                .d-stroke {
+                  stroke-linecap: round;
+                  stroke-linejoin: round;
+                }
+
+                .d-title {
+                  font-family: system-ui, -apple-system, sans-serif;
+                  font-weight: 700;
+                  font-size: 11px;
+                }
+
+                .d-sub {
+                  font-family: system-ui, -apple-system, sans-serif;
+                  font-weight: 600;
+                  font-size: 8.5px;
+                  letter-spacing: 0.5px;
+                }
+
+                .d-badge {
+                  font-family: system-ui, -apple-system, sans-serif;
+                  font-weight: 800;
+                  font-size: 12px;
+                }
+
+                @keyframes dashFlow {
+                  from {
+                    stroke-dashoffset: 28;
+                  }
+
+                  to {
+                    stroke-dashoffset: 0;
+                  }
+                }
+
+                .animated-flow {
+                  animation: dashFlow 1.2s linear infinite;
+                }
+
+                @media (prefers-color-scheme: dark) {
+                  .node-card {
+                    fill: #1a1a1e;
+                    stroke: #3a3a40;
+                  }
+
+                  .node-head {
+                    fill: #2b2b31;
+                  }
+
+                  .node-text-main {
+                    fill: #fafafc;
+                  }
+                }
+              </style>
+              <filter id="node-shadow-1" x="-10%" y="-10%" width="120%" height="120%">
+                <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#1a1a1e" flood-opacity="0.08" />
+              </filter>
+            </defs>
+
+            <!-- 浮动背景装饰 -->
+            <g stroke="currentColor" class="text-slate-300 dark:text-slate-700 d-stroke" opacity="0.4"
+              stroke-width="1.5">
+              <path d="M 30 20 L 42 10 L 38 30 M 740 40 L 750 50 M 750 40 L 740 50" />
+              <circle cx="40" cy="420" r="8" stroke-dasharray="3 3" />
+              <path d="M 260 20 L 262 25 L 267 27 L 262 29 L 260 34 L 258 29 L 253 27 L 258 25 Z" fill="#a5a5aa"
+                stroke="none" />
+              <path d="M 450 440 L 452 445 L 457 447 L 452 449 L 450 454 L 448 449 L 443 447 L 448 445 Z" fill="#a5a5aa"
+                stroke="none" />
+            </g>
+
+            <!-- 数据流动管道 -->
+            <g class="d-stroke">
+              <!-- Skill_A(180,220) -> Skill_B(260,110) -->
+              <path d="M 180 220 C 220 220, 220 110, 260 110" stroke="#6e6e73" stroke-width="3.5" stroke-dasharray="8 6"
+                class="animated-flow" opacity="0.8" />
+              <!-- Skill_A(180,220) -> Skill_C(260,330) -->
+              <path d="M 180 220 C 220 220, 220 330, 260 330" stroke="#6e6e73" stroke-width="3.5" stroke-dasharray="8 6"
+                class="animated-flow" opacity="0.8" />
+
+              <!-- Skill_B(400,110) -> Skill_D(470,220) -->
+              <path d="M 400 110 C 435 110, 435 220, 470 220" stroke="#6e6e73" stroke-width="3.5" stroke-dasharray="8 6"
+                class="animated-flow" opacity="0.8" />
+              <!-- Skill_C(400,330) -> Skill_D(470,220) -->
+              <path d="M 400 330 C 435 330, 435 220, 470 220" stroke="#6e6e73" stroke-width="3.5" stroke-dasharray="8 6"
+                class="animated-flow" opacity="0.8" />
+
+              <!-- Skill_D(620,220) -> result.html(600,360) -->
+              <path d="M 620 220 L 670 220 L 670 360 L 600 360" stroke="#6e6e73" stroke-width="3.5"
+                stroke-dasharray="6 5" opacity="0.85" />
+              <path d="M 610 354 L 600 360 L 610 366" stroke="#6e6e73" stroke-width="2.5" fill="none" />
+
+              <!-- 端点 Socket 节点 -->
+              <circle cx="180" cy="220" r="4.5" fill="#1a1a1e" stroke="#FFFFFF" stroke-width="2" />
+              <circle cx="260" cy="110" r="4.5" fill="#6e6e73" stroke="#FFFFFF" stroke-width="2" />
+              <circle cx="260" cy="330" r="4.5" fill="#6e6e73" stroke="#FFFFFF" stroke-width="2" />
+              <circle cx="400" cy="110" r="4.5" fill="#6e6e73" stroke="#FFFFFF" stroke-width="2" />
+              <circle cx="400" cy="330" r="4.5" fill="#6e6e73" stroke="#FFFFFF" stroke-width="2" />
+              <circle cx="470" cy="220" r="4.5" fill="#6e6e73" stroke="#FFFFFF" stroke-width="2" />
+              <circle cx="620" cy="220" r="4.5" fill="#6e6e73" stroke="#FFFFFF" stroke-width="2" />
+            </g>
+
+            <!-- Skill 节点组 -->
+            <g transform="translate(40, 150)">
+              <rect width="140" height="140" rx="16" fill="#FFFFFF" stroke="#1a1a1e" stroke-width="2"
+                class="node-card d-stroke" filter="url(#node-shadow-1)" />
+              <rect x="3" y="3" width="134" height="24" rx="12" fill="#f3f3f5" class="node-head" />
+              <text x="8" y="19" fill="#1a1a1e" class="d-title">🧩 Skill A</text>
+              <g transform="translate(25, 48)">
+                <rect x="0" y="0" width="90" height="72" rx="12" fill="#f3f3f5" stroke="#1a1a1e" stroke-width="2"
+                  class="d-stroke" />
+                <circle cx="28" cy="30" r="5" fill="#1a1a1e" />
+                <circle cx="62" cy="30" r="5" fill="#1a1a1e" />
+                <path d="M 36 48 Q 45 55 54 48" stroke="#1a1a1e" stroke-width="2.5" fill="none" class="d-stroke" />
+              </g>
+            </g>
+
+            <g transform="translate(260, 40)">
+              <rect width="140" height="140" rx="16" fill="#FFFFFF" stroke="#a5a5aa" stroke-width="2"
+                class="node-card d-stroke" filter="url(#node-shadow-1)" />
+              <rect x="3" y="3" width="134" height="24" rx="12" fill="#f3f3f5" class="node-head" />
+              <text x="8" y="19" fill="#1a1a1e" class="d-title">🧩 Skill B</text>
+              <g transform="translate(18, 42)">
+                <path d="M 18 75 C 13 35, 87 35, 82 75 Z" fill="#a5a5aa" stroke="#1a1a1e" stroke-width="2"
+                  class="d-stroke" />
+                <circle cx="38" cy="50" r="4" fill="#FFFFFF" stroke="#1a1a1e" stroke-width="1.5" />
+                <circle cx="62" cy="50" r="4" fill="#FFFFFF" stroke="#1a1a1e" stroke-width="1.5" />
+                <path d="M 43 62 Q 50 68 57 62 Z" fill="#a5a5aa" stroke="#1a1a1e" stroke-width="1.5" class="d-stroke" />
+              </g>
+            </g>
+
+            <g transform="translate(260, 260)">
+              <rect width="140" height="140" rx="16" fill="#FFFFFF" stroke="#a5a5aa" stroke-width="2"
+                class="node-card d-stroke" filter="url(#node-shadow-1)" />
+              <rect x="3" y="3" width="134" height="24" rx="12" fill="#f3f3f5" class="node-head" />
+              <text x="8" y="19" fill="#1a1a1e" class="d-title">🧩 Skill C</text>
+              <g transform="translate(15, 45)">
+                <rect x="15" y="10" width="80" height="45" rx="10" fill="#f3f3f5" stroke="#1a1a1e" stroke-width="2"
+                  class="d-stroke" />
+                <rect x="20" y="18" width="70" height="18" rx="5" fill="#1a1a1e" />
+                <circle cx="35" cy="27" r="3" fill="#a5a5aa" />
+                <circle cx="75" cy="27" r="3" fill="#a0554a" />
+                <g transform="translate(5, 48)">
+                  <rect x="0" y="0" width="100" height="24" rx="6" fill="#1a1a1e" stroke="#1a1a1e" stroke-width="1.5"
+                    class="d-stroke" />
+                  <path d="M 10 12 L 15 8 L 10 4" stroke="#a5a5aa" stroke-width="2" fill="none" class="d-stroke" />
+                  <path d="M 20 14 L 32 14" stroke="#a5a5aa" stroke-width="2" class="d-stroke" />
+                </g>
+              </g>
+            </g>
+
+            <g transform="translate(470, 150)">
+              <rect width="150" height="140" rx="16" fill="#FFFFFF" stroke="#6e6e73" stroke-width="2"
+                class="node-card d-stroke" filter="url(#node-shadow-1)" />
+              <rect x="3" y="3" width="144" height="24" rx="12" fill="#f3f3f5" class="node-head" />
+              <text x="8" y="19" fill="#6e6e73" class="d-title">🛠️ Skill D</text>
+              <g transform="translate(23, 48)">
+                <rect x="15" y="15" width="70" height="52" rx="12" fill="#f3f3f5" stroke="#1a1a1e" stroke-width="2"
+                  class="d-stroke" />
+                <circle cx="35" cy="35" r="4" fill="#1a1a1e" />
+                <circle cx="65" cy="35" r="4" fill="#1a1a1e" />
+                <path d="M 50 0 L 52 5 L 57 7 L 52 9 L 50 14 L 48 9 L 43 7 L 48 5 Z" fill="#6e6e73" stroke="#1a1a1e"
+                  stroke-width="1" />
+              </g>
+            </g>
+
+            <!-- 成果产出节点 -->
+            <g transform="translate(445, 332)">
+              <rect width="155" height="56" rx="12" fill="#1a1a1e" stroke="#6e6e73" stroke-width="2" class="d-stroke"
+                filter="url(#node-shadow-1)" />
+              <text x="14" y="26" fill="#a5a5aa" class="d-title">📄 结果网页</text>
+              <text x="14" y="42" fill="#a5a5aa" class="d-sub">结构化产出</text>
+            </g>
+
+            <!-- 顶部贴纸标识 -->
+            <g transform="translate(605, 20)">
+              <rect width="135" height="32" rx="10" fill="#1a1a1e" stroke="#FFFFFF" stroke-width="2" class="d-stroke"
+                filter="url(#node-shadow-1)" />
+              <text x="67" y="20" text-anchor="middle" fill="#FFFFFF" class="d-badge">拓扑并行协同</text>
+            </g>
+          </svg>
+        </div>
+
+        <!-- JS 控制 Tab 切换脚本 -->
+        <script>
+          function switchWorkflowTab(tabName) {
+            const dataflowEl = document.getElementById('tab-dataflow');
+            const sequenceEl = document.getElementById('tab-sequence');
+            const dataflowBtn = document.getElementById('tab-dataflow-btn');
+            const sequenceBtn = document.getElementById('tab-sequence-btn');
+
+            const activeBtnClasses = ['bg-white', 'dark:bg-slate-900', 'text-brand-600', 'dark:text-brand-400', 'shadow-sm'];
+            const inactiveBtnClasses = ['text-slate-600', 'dark:text-slate-400', 'hover:text-slate-900', 'dark:hover:text-white'];
+
+            if (tabName === 'sequence') {
+              sequenceEl.classList.remove('hidden');
+              sequenceEl.classList.add('block');
+              dataflowEl.classList.remove('block');
+              dataflowEl.classList.add('hidden');
+
+              sequenceBtn.classList.add(...activeBtnClasses);
+              sequenceBtn.classList.remove(...inactiveBtnClasses);
+              dataflowBtn.classList.remove(...activeBtnClasses);
+              dataflowBtn.classList.add(...inactiveBtnClasses);
+            } else {
+              dataflowEl.classList.remove('hidden');
+              dataflowEl.classList.add('block');
+              sequenceEl.classList.remove('block');
+              sequenceEl.classList.add('hidden');
+
+              dataflowBtn.classList.add(...activeBtnClasses);
+              dataflowBtn.classList.remove(...inactiveBtnClasses);
+              sequenceBtn.classList.remove(...activeBtnClasses);
+              sequenceBtn.classList.add(...inactiveBtnClasses);
+            }
+          }
+        </script>
+
+      </div>
+    </section>
+
+    <!-- 用户画像：谁在用 -->
+    <section id="personas" class="scroll-mt-24">
+      <div class="w-full">
+        <div class="text-center max-w-3xl mx-auto mb-12">
+          <span
+            class="text-xs font-semibold uppercase tracking-widest text-brand-600 bg-brand-500/10 dark:bg-brand-500/20 px-3 py-1 rounded-full">For
+            Whom</span>
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white mt-3">谁在用 Trans-Workflow</h2>
+          <p class="mt-3 text-base sm:text-lg text-slate-600 dark:text-slate-400">你不是在「调一个聊天机器人」，而是在「雇一条能直接交付成品的流水线」</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+          <!-- 老师 -->
+          <div
+            class="rounded-none bg-[#f8f8fa] dark:bg-slate-900/70 p-6 shadow-sm border border-gray-100 dark:border-slate-800 hover:shadow-md transition flex flex-col">
+            <div class="flex items-center gap-3">
+              <div
+                class="flex h-11 w-11 shrink-0 items-center justify-center rounded-none bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-300">
+                <i data-lucide="graduation-cap" class="w-5 h-5"></i>
+              </div>
+              <span
+                class="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300 text-xs font-semibold">老师
+                · 教学备课</span>
+            </div>
+            <p class="mt-4 text-[15px] font-semibold leading-relaxed text-slate-800 dark:text-slate-100">
+              「如果你是老师，把<span class="text-brand-600 dark:text-brand-300">二次函数</span>变成会动的图、一套分层题、一份模拟卷」
+            </p>
+            <div class="mt-4 mb-4 text-sm">
+              <div class="flex items-center gap-1.5 text-rose-500 dark:text-rose-400 font-semibold">
+                <i data-lucide="zap" class="w-3.5 h-3.5"></i> 痛点
+              </div>
+              <p class="mt-1 text-sm text-gray-600 dark:text-slate-400 leading-relaxed">可视化课件难做 · 出题耗时 · 分层教学难落地</p>
+            </div>
+            <div class="mt-auto pt-4 border-t border-slate-100 dark:border-slate-800 flex flex-wrap gap-1.5">
+              <span
+                class="whitespace-nowrap rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-2.5 py-1 text-xs font-medium text-slate-600 dark:text-slate-300">数形结合动画</span>
+              <span
+                class="whitespace-nowrap rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-2.5 py-1 text-xs font-medium text-slate-600 dark:text-slate-300">分层变式题库</span>
+              <span
+                class="whitespace-nowrap rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-2.5 py-1 text-xs font-medium text-slate-600 dark:text-slate-300">微课设计</span>
+              <span
+                class="whitespace-nowrap rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-2.5 py-1 text-xs font-medium text-slate-600 dark:text-slate-300">中考模拟卷</span>
+            </div>
+          </div>
+
+          <!-- 备考学生 -->
+          <div
+            class="rounded-none bg-[#f8f8fa] dark:bg-slate-900/70 p-6 shadow-sm border border-gray-100 dark:border-slate-800 hover:shadow-md transition flex flex-col">
+            <div class="flex items-center gap-3">
+              <div
+                class="flex h-11 w-11 shrink-0 items-center justify-center rounded-none bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-300">
+                <i data-lucide="book-open" class="w-5 h-5"></i>
+              </div>
+              <span
+                class="px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-300 text-xs font-semibold">备考学生</span>
+            </div>
+            <p class="mt-4 text-[15px] font-semibold leading-relaxed text-slate-800 dark:text-slate-100">
+              「如果你是备考学生，把一道<span class="text-brand-600 dark:text-brand-300">错题</span>变成一组『换汤不换药』的变式练习」
+            </p>
+            <div class="mt-4 mb-4 text-sm">
+              <div class="flex items-center gap-1.5 text-rose-500 dark:text-rose-400 font-semibold">
+                <i data-lucide="zap" class="w-3.5 h-3.5"></i> 痛点
+              </div>
+              <p class="mt-1 text-sm text-gray-600 dark:text-slate-400 leading-relaxed">错题反复错 · 不会举一反三 · 抽象概念看不懂</p>
+            </div>
+            <div class="mt-auto pt-4 border-t border-slate-100 dark:border-slate-800 flex flex-wrap gap-1.5">
+              <span
+                class="whitespace-nowrap rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-2.5 py-1 text-xs font-medium text-slate-600 dark:text-slate-300">错题变式专项</span>
+              <span
+                class="whitespace-nowrap rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-2.5 py-1 text-xs font-medium text-slate-600 dark:text-slate-300">数学可视化</span>
+              <span
+                class="whitespace-nowrap rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-2.5 py-1 text-xs font-medium text-slate-600 dark:text-slate-300">知识点讲解</span>
+            </div>
+          </div>
+
+          <!-- 公司法务 -->
+          <div
+            class="rounded-none bg-[#f8f8fa] dark:bg-slate-900/70 p-6 shadow-sm border border-gray-100 dark:border-slate-800 hover:shadow-md transition flex flex-col">
+            <div class="flex items-center gap-3">
+              <div
+                class="flex h-11 w-11 shrink-0 items-center justify-center rounded-none bg-cyan-50 text-cyan-600 dark:bg-cyan-500/10 dark:text-cyan-300">
+                <i data-lucide="scale" class="w-5 h-5"></i>
+              </div>
+              <span
+                class="px-3 py-1 rounded-full bg-cyan-50 text-cyan-700 dark:bg-cyan-500/10 dark:text-cyan-300 text-xs font-semibold">公司法务
+                · 律师</span>
+            </div>
+            <p class="mt-4 text-[15px] font-semibold leading-relaxed text-slate-800 dark:text-slate-100">
+              「如果你是公司法务，丢进一份<span class="text-brand-600 dark:text-brand-300">合同</span>，拿到一份带风险等级与修改建议的审核报告」
+            </p>
+            <div class="mt-4 mb-4 text-sm">
+              <div class="flex items-center gap-1.5 text-rose-500 dark:text-rose-400 font-semibold">
+                <i data-lucide="zap" class="w-3.5 h-3.5"></i> 痛点
+              </div>
+              <p class="mt-1 text-sm text-gray-600 dark:text-slate-400 leading-relaxed">逐条审太慢 · 风险点易漏 · 报告整理费时</p>
+            </div>
+            <div class="mt-auto pt-4 border-t border-slate-100 dark:border-slate-800 flex flex-wrap gap-1.5">
+              <span
+                class="whitespace-nowrap rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-2.5 py-1 text-xs font-medium text-slate-600 dark:text-slate-300">合同风险审核报告</span>
+              <span
+                class="whitespace-nowrap rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-2.5 py-1 text-xs font-medium text-slate-600 dark:text-slate-300">修改建议</span>
+              <span
+                class="whitespace-nowrap rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-2.5 py-1 text-xs font-medium text-slate-600 dark:text-slate-300">合规排查</span>
+            </div>
+          </div>
+
+
+
+        </div>
+      </div>
+    </section>
+
+    <!-- 使用案例：如果你是… -->
+    <section id="use-cases" class="scroll-mt-24 pt-6 border-t border-slate-200/80 dark:border-slate-800/80">
+      <div class="text-center max-w-3xl mx-auto mb-10">
+        <h2 class="text-3xl font-bold text-slate-900 dark:text-white">使用案例 · 一个输入，换来一份成品</h2>
+        <p class="mt-4 text-lg text-gray-600 dark:text-slate-400">不用想象，直接看「喂进去什么 → 中间怎么走 → 最后拿到什么」</p>
+      </div>
+
+      <!-- 场景切换 Tab -->
+      <div class="flex justify-center mb-8">
+        <div
+          class="flex flex-wrap justify-center gap-1 p-1 rounded-none bg-slate-200/60 dark:bg-slate-800/60 border border-slate-300/40 dark:border-slate-700/50">
+          <button id="case-tab-teacher" onclick="switchCaseTab('teacher')"
+            class="whitespace-nowrap px-4 py-2 text-sm font-bold rounded-none transition-all duration-200 bg-white dark:bg-slate-900 text-brand-600 dark:text-brand-400 shadow-sm">
+            🧑‍🏫 如果你是老师
+          </button>
+          <button id="case-tab-student" onclick="switchCaseTab('student')"
+            class="whitespace-nowrap px-4 py-2 text-sm font-bold rounded-none transition-all duration-200 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+            🎓 如果你是备考学生
+          </button>
+          <button id="case-tab-legal" onclick="switchCaseTab('legal')"
+            class="whitespace-nowrap px-4 py-2 text-sm font-bold rounded-none transition-all duration-200 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+            ⚖️ 如果你是公司法务
+          </button>
+        </div>
+      </div>
+
+      <!-- ===================== 老师 ===================== -->
+      <div id="case-panel-teacher" class="block w-full">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+          <!-- 左：输入 + 流水线 -->
+          <div class="lg:col-span-5 space-y-4">
+            <div
+              class="rounded-none bg-[#f8f8fa] dark:bg-slate-900/70 border border-gray-100 dark:border-slate-800 p-6 shadow-sm">
+              <div class="flex items-center gap-2 text-sm font-semibold text-slate-700 dark:text-slate-300">
+                <span
+                  class="flex h-6 w-6 items-center justify-center rounded-none bg-brand-600 text-white text-xs font-bold">1</span>
+                打开 AI 流水线网页：<a href="https://transweb.cn/workflow/docs/examples/tiered-lesson.html" target="_blank"
+                  class="text-brand-600 dark:text-brand-400 hover:underline">多级难度“分层教案”</a>
+              </div>
+            </div>
+            <div
+              class="rounded-none bg-[#f8f8fa] dark:bg-slate-900/70 border border-gray-100 dark:border-slate-800 p-6 shadow-sm">
+
+              <div class="flex items-center gap-2 mb-3 text-sm font-semibold text-slate-700 dark:text-slate-300">
+                <span
+                  class="flex h-6 w-6 items-center justify-center rounded-none bg-brand-600 text-white text-xs font-bold">2</span>
+                你只需要输入一句需求
+              </div>
+              <div
+                class="rounded-none bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-4 py-3 text-sm text-slate-700 dark:text-slate-300 font-mono leading-relaxed">
+                围绕四棱柱的图形特性，出一道包含几何求证和求解的题目。
+              </div>
+            </div>
+
+            <div
+              class="rounded-none bg-[#f8f8fa] dark:bg-slate-900/70 border border-gray-100 dark:border-slate-800 p-6 shadow-sm">
+              <div class="flex items-center gap-2 mb-3 text-sm font-semibold text-slate-700 dark:text-slate-300">
+                <span
+                  class="flex h-6 w-6 items-center justify-center rounded-none bg-brand-600 text-white text-xs font-bold">3</span>
+                流水线自动按 4 步执行
+              </div>
+              <div class="flex flex-wrap items-center gap-1.5">
+                <span
+                  class="whitespace-nowrap rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-2.5 py-1 text-xs font-medium text-slate-600 dark:text-slate-300">概念讲解</span>
+                <i data-lucide="arrow-right" class="w-3.5 h-3.5 text-slate-300 dark:text-slate-600 shrink-0"></i>
+                <span
+                  class="whitespace-nowrap rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-2.5 py-1 text-xs font-medium text-slate-600 dark:text-slate-300">基础巩固</span>
+                <i data-lucide="arrow-right" class="w-3.5 h-3.5 text-slate-300 dark:text-slate-600 shrink-0"></i>
+                <span
+                  class="whitespace-nowrap rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-2.5 py-1 text-xs font-medium text-slate-600 dark:text-slate-300">能力提升</span>
+                <i data-lucide="arrow-right" class="w-3.5 h-3.5 text-slate-300 dark:text-slate-600 shrink-0"></i>
+                <span
+                  class="whitespace-nowrap rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-2.5 py-1 text-xs font-medium text-slate-600 dark:text-slate-300">压轴探索</span>
+              </div>
+              <p class="mt-3 text-xs text-slate-400 dark:text-slate-500">每个节点都能中途叫停、人工改一句，再继续往下跑 —— 不用全部重来。</p>
+            </div>
+          </div>
+
+          <!-- 右：成品预览 -->
+          <div class="lg:col-span-7">
+            <div
+              class="overflow-hidden rounded-none border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xl">
+              <div
+                class="flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 px-4 py-2.5 bg-slate-50 dark:bg-slate-950/60">
+                <span class="h-2.5 w-2.5 rounded-full bg-rose-400"></span>
+                <span class="h-2.5 w-2.5 rounded-full bg-amber-400"></span>
+                <span class="h-2.5 w-2.5 rounded-full bg-emerald-400"></span>
+                <span class="ml-3 font-mono text-xs text-slate-400">生成结果 · 分层变式题.html</span>
+              </div>
+              <div class="p-5 sm:p-6" style="height: 500px;">
+                <iframe src="https://transweb.cn/bucket/assets/html/example01.html" class="w-full h-full"
+                  frameborder="0"></iframe>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================== 学生 ===================== -->
+      <div id="case-panel-student" class="hidden w-full">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          <div class="lg:col-span-5 space-y-4">
+            <div
+              class="rounded-none bg-[#f8f8fa] dark:bg-slate-900/70 border border-gray-100 dark:border-slate-800 p-6 shadow-sm">
+              <div class="flex items-center gap-2 text-sm font-semibold text-slate-700 dark:text-slate-300">
+                <span
+                  class="flex h-6 w-6 items-center justify-center rounded-none bg-brand-600 text-white text-xs font-bold">1</span>
+                打开 AI 流水线网页：<a href="https://transweb.cn/workflow/docs/examples/practice4missed.html" target="_blank"
+                  class="text-brand-600 dark:text-brand-400 hover:underline">错题专项变式题助理</a>
+              </div>
+            </div>
+            <div
+              class="rounded-none bg-[#f8f8fa] dark:bg-slate-900/70 border border-gray-100 dark:border-slate-800 p-6 shadow-sm">
+
+              <div class="flex items-center gap-2 mb-3 text-sm font-semibold text-slate-700 dark:text-slate-300">
+                <span
+                  class="flex h-6 w-6 items-center justify-center rounded-none bg-brand-600 text-white text-xs font-bold">2</span>
+                粘贴一道你总是做错的题
+              </div>
+              <div
+                class="rounded-none bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-4 py-3 text-sm text-slate-700 dark:text-slate-300 font-mono leading-relaxed">
+                如图，抛物线 y = -x² + 2x + 3 与 x 轴交于 A, B 两点（A 在 B 左侧），与 y 轴交于点 C，顶点为 D。求 A, B, C, D 的坐标及四边形 ACBD 的面积。
+              </div>
+            </div>
+            <div
+              class="rounded-none bg-[#f8f8fa] dark:bg-slate-900/70 border border-gray-100 dark:border-slate-800 p-6 shadow-sm">
+              <div class="flex items-center gap-2 mb-3 text-sm font-semibold text-slate-700 dark:text-slate-300">
+                <span
+                  class="flex h-6 w-6 items-center justify-center rounded-none bg-brand-600 text-white text-xs font-bold">3</span>
+                流水线拆解错因 → 出变式
+              </div>
+              <div class="flex flex-wrap items-center gap-1.5">
+                <span
+                  class="whitespace-nowrap rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-2.5 py-1 text-xs font-medium text-slate-600 dark:text-slate-300">错题分析</span>
+                <i data-lucide="arrow-right" class="w-3.5 h-3.5 text-slate-300 dark:text-slate-600 shrink-0"></i>
+                <span
+                  class="whitespace-nowrap rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-2.5 py-1 text-xs font-medium text-slate-600 dark:text-slate-300">出题练习</span>
+              </div>
+              <p class="mt-3 text-xs text-slate-400 dark:text-slate-500">换数字、换条件、换问法，同一个考点反复练，直到真正吃透。</p>
+            </div>
+          </div>
+          <div class="lg:col-span-7">
+            <div
+              class="overflow-hidden rounded-none border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xl">
+              <div
+                class="flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 px-4 py-2.5 bg-slate-50 dark:bg-slate-950/60">
+                <span class="h-2.5 w-2.5 rounded-full bg-rose-400"></span>
+                <span class="h-2.5 w-2.5 rounded-full bg-amber-400"></span>
+                <span class="h-2.5 w-2.5 rounded-full bg-emerald-400"></span>
+                <span class="ml-3 font-mono text-xs text-slate-400">生成结果 · 错题变式专练.html</span>
+              </div>
+              <div class="p-5 sm:p-6" style="height: 500px;">
+                <iframe src="https://transweb.cn/bucket/assets/html/example02.html" class="w-full h-full"
+                  frameborder="0"></iframe>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================== 法务 ===================== -->
+      <div id="case-panel-legal" class="hidden w-full">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          <div class="lg:col-span-5 space-y-4">
+            <div
+              class="rounded-none bg-[#f8f8fa] dark:bg-slate-900/70 border border-gray-100 dark:border-slate-800 p-6 shadow-sm">
+              <div class="flex items-center gap-2 text-sm font-semibold text-slate-700 dark:text-slate-300">
+                <span
+                  class="flex h-6 w-6 items-center justify-center rounded-none bg-brand-600 text-white text-xs font-bold">1</span>
+                打开 AI 流水线网页：<a href="https://transweb.cn/workflow/docs/examples/contract-review.html" target="_blank"
+                  class="text-brand-600 dark:text-brand-400 hover:underline">法律审核场景</a>
+              </div>
+            </div>
+            <div
+              class="rounded-none bg-[#f8f8fa] dark:bg-slate-900/70 border border-gray-100 dark:border-slate-800 p-6 shadow-sm">
+
+              <div class="flex items-center gap-2 mb-3 text-sm font-semibold text-slate-700 dark:text-slate-300">
+                <span
+                  class="flex h-6 w-6 items-center justify-center rounded-none bg-brand-600 text-white text-xs font-bold">2</span>
+                粘贴合同条款（或整份合同）
+              </div>
+              <div
+                class="rounded-none bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-4 py-3 text-sm text-slate-700 dark:text-slate-300 font-mono leading-relaxed">
+                第 5.2 条：乙方逾期交付的，按日支付违约金，具体金额双方另行协商……
+              </div>
+            </div>
+            <div
+              class="rounded-none bg-[#f8f8fa] dark:bg-slate-900/70 border border-gray-100 dark:border-slate-800 p-6 shadow-sm">
+              <div class="flex items-center gap-2 mb-3 text-sm font-semibold text-slate-700 dark:text-slate-300">
+                <span
+                  class="flex h-6 w-6 items-center justify-center rounded-none bg-brand-600 text-white text-xs font-bold">3</span>
+                流水线按 5 步审核
+              </div>
+              <div class="flex flex-wrap items-center gap-1.5">
+                <span
+                  class="whitespace-nowrap rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-2.5 py-1 text-xs font-medium text-slate-600 dark:text-slate-300">结构化</span>
+                <i data-lucide="arrow-right" class="w-3.5 h-3.5 text-slate-300 dark:text-slate-600 shrink-0"></i>
+                <span
+                  class="whitespace-nowrap rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-2.5 py-1 text-xs font-medium text-slate-600 dark:text-slate-300">基础校验</span>
+                <i data-lucide="arrow-right" class="w-3.5 h-3.5 text-slate-300 dark:text-slate-600 shrink-0"></i>
+                <span
+                  class="whitespace-nowrap rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-2.5 py-1 text-xs font-medium text-slate-600 dark:text-slate-300">商务风险</span>
+                <i data-lucide="arrow-right" class="w-3.5 h-3.5 text-slate-300 dark:text-slate-600 shrink-0"></i>
+                <span
+                  class="whitespace-nowrap rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-2.5 py-1 text-xs font-medium text-slate-600 dark:text-slate-300">合规法务</span>
+                <i data-lucide="arrow-right" class="w-3.5 h-3.5 text-slate-300 dark:text-slate-600 shrink-0"></i>
+                <span
+                  class="whitespace-nowrap rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-2.5 py-1 text-xs font-medium text-slate-600 dark:text-slate-300">汇总报告</span>
+              </div>
+              <p class="mt-3 text-xs text-slate-400 dark:text-slate-500">多角色交叉审查：商务风险与合规法务分开跑，再汇总成一份报告。</p>
+            </div>
+          </div>
+          <div class="lg:col-span-7">
+            <div
+              class="overflow-hidden rounded-none border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xl">
+              <div
+                class="flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 px-4 py-2.5 bg-slate-50 dark:bg-slate-950/60">
+                <span class="h-2.5 w-2.5 rounded-full bg-rose-400"></span>
+                <span class="h-2.5 w-2.5 rounded-full bg-amber-400"></span>
+                <span class="h-2.5 w-2.5 rounded-full bg-emerald-400"></span>
+                <span class="ml-3 font-mono text-xs text-slate-400">生成结果 · 合同风险审核报告.html</span>
+              </div>
+              <div class="p-5 sm:p-6" style="height: 500px;">
+                <iframe src="https://transweb.cn/bucket/assets/html/example03.html" class="w-full h-full"
+                  frameborder="0"></iframe>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script>
+        function switchCaseTab(tabName) {
+          const panels = { teacher: 'case-panel-teacher', student: 'case-panel-student', legal: 'case-panel-legal' };
+          const tabs = { teacher: 'case-tab-teacher', student: 'case-tab-student', legal: 'case-tab-legal' };
+
+          Object.keys(panels).forEach(key => {
+            const panel = document.getElementById(panels[key]);
+            if (!panel) return;
+            if (key === tabName) { panel.classList.remove('hidden'); panel.classList.add('block'); }
+            else { panel.classList.remove('block'); panel.classList.add('hidden'); }
+          });
+
+          Object.keys(tabs).forEach(key => {
+            const btn = document.getElementById(tabs[key]);
+            if (!btn) return;
+            if (key === tabName) {
+              btn.classList.add('bg-white', 'dark:bg-slate-900', 'text-brand-600', 'dark:text-brand-400', 'shadow-sm');
+              btn.classList.remove('text-slate-600', 'dark:text-slate-400', 'hover:text-slate-900', 'dark:hover:text-white');
+            } else {
+              btn.classList.remove('bg-white', 'dark:bg-slate-900', 'text-brand-600', 'dark:text-brand-400', 'shadow-sm');
+              btn.classList.add('text-slate-600', 'dark:text-slate-400', 'hover:text-slate-900', 'dark:hover:text-white');
+            }
+          });
+
+          if (window.lucide && typeof window.lucide.createIcons === 'function') {
+            window.lucide.createIcons();
+          }
+        }
+      </script>
+    </section>
+
+    <!-- 开源社区 -->
+    <section id="community" class="scroll-mt-24 max-w-4xl mx-auto w-full">
+      <div class="rounded-none bg-brand-900 text-white p-8 sm:p-12 text-center">
+        <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-white/10">
+          <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path fill-rule="evenodd" clip-rule="evenodd"
+              d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.203 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2Z" />
+          </svg>
+        </div>
+        <div class="mt-5">
+          <div class="text-sm font-semibold text-brand-200">liuwenjin/trans-workflow</div>
+          <h2 class="mt-3 text-2xl sm:text-3xl font-bold">开源，但不止于代码</h2>
+          <p class="mt-3 text-sm sm:text-base text-slate-300">模板、Skill、文档与引擎本身都开放贡献</p>
+        </div>
+        <div class="mt-7 flex flex-col sm:flex-row justify-center gap-3">
+          <a target="_blank" href="https://github.com/liuwenjin/trans-workflow" rel="noopener"
+            class="inline-flex items-center justify-center gap-2 rounded-full bg-brand-600 hover:bg-brand-500 px-7 py-3 text-sm font-bold text-white shadow-lg transition-colors">
+            <i data-lucide="star" class="w-4 h-4"></i>
+            查看仓库
+          </a>
+          <a target="_blank" href="https://transweb.cn/workflow/docs/index.html"
+            class="inline-flex items-center justify-center gap-2 rounded-full border border-white/25 bg-white/10 hover:bg-white/20 px-7 py-3 text-sm font-semibold text-white transition-colors">
+            <i data-lucide="book-open" class="w-4 h-4"></i>
+            阅读文档
+          </a>
+        </div>
+        <div class="mt-7 flex flex-wrap justify-center gap-2 text-xs">
+          <span class="rounded-full border border-white/20 bg-white/10 px-3 py-1">MIT 协议</span>
+          <span class="rounded-full border border-white/20 bg-white/10 px-3 py-1">v1.0.0</span>
+          <span class="rounded-full border border-white/20 bg-white/10 px-3 py-1">欢迎 PR</span>
+          <span class="rounded-full border border-white/20 bg-white/10 px-3 py-1">单文件发行</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 对比与 FAQ -->
+    <section class="max-w-4xl mx-auto w-full space-y-4">
+      <details
+        class="group rounded-none bg-[#f8f8fa] dark:bg-slate-900/70 border border-gray-100 dark:border-slate-800 p-6 shadow-sm">
+        <summary
+          class="flex items-center justify-between cursor-pointer text-sm font-semibold text-slate-800 dark:text-slate-200">
+          <span>与传统 AI 工作流平台对比（如 Dify / Coze）</span>
+          <span class="transition group-open:rotate-180">
+            <svg fill="none" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+              stroke-width="1.5" viewBox="0 0 24 24" width="20">
+              <path d="M6 9l6 6 6-6" />
+            </svg>
+          </span>
+        </summary>
+        <div class="mt-5 overflow-x-auto">
+          <table class="w-full text-xs sm:text-sm text-left border-collapse">
+            <thead class="bg-slate-50 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300">
+              <tr>
+                <th class="p-3 font-semibold">对比维度</th>
+                <th class="p-3 font-semibold">传统 AI 工作流平台（如 Dify / Coze）</th>
+                <th class="p-3 font-bold text-brand-600 dark:text-brand-300">Trans-Workflow（本平台）</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 dark:divide-slate-800 text-slate-600 dark:text-slate-400">
+              <tr>
+                <td class="p-3 font-medium">部署成本</td>
+                <td class="p-3">需配置服务器、Docker、向量数据库，按月付费</td>
+                <td class="p-3 font-semibold text-emerald-600 dark:text-emerald-400">￥0 服务器成本！一个 HTML 文件直接跑</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-medium">调试效率</td>
+                <td class="p-3">某一步出问题往往需要全盘重跑，浪费 Token</td>
+                <td class="p-3 font-semibold text-emerald-600 dark:text-emerald-400">精准重跑单个节点，支持随时人工修正</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-medium">团队分发</td>
+                <td class="p-3">需要配置复杂账号权限与环境变量</td>
+                <td class="p-3 font-semibold text-emerald-600 dark:text-emerald-400">导出 HTML 发给同事，双击就能直接用</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </details>
+
+      <details
+        class="group rounded-none bg-[#f8f8fa] dark:bg-slate-900/70 border border-gray-100 dark:border-slate-800 p-6 shadow-sm">
+        <summary
+          class="flex items-center justify-between cursor-pointer text-sm font-semibold text-slate-800 dark:text-slate-200">
+          <span>为什么单文件架构比传统云端工作流更有优势？</span>
+          <span class="transition group-open:rotate-180">
+            <svg fill="none" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+              stroke-width="1.5" viewBox="0 0 24 24" width="20">
+              <path d="M6 9l6 6 6-6" />
+            </svg>
+          </span>
+        </summary>
+        <p class="text-sm text-slate-500 dark:text-slate-400 mt-3 leading-relaxed">
+          单文件意味着零运维、零调优、易存档、极速分发。你的工作流资产可以像文档一样保存在本地，随用随开，永不担心因服务端宕机而中断业务。
+        </p>
+      </details>
+
+      <details
+        class="group rounded-none bg-[#f8f8fa] dark:bg-slate-900/70 border border-gray-100 dark:border-slate-800 p-6 shadow-sm">
+        <summary
+          class="flex items-center justify-between cursor-pointer text-sm font-semibold text-slate-800 dark:text-slate-200">
+          <span>如何导入或分享工作流？</span>
+          <span class="transition group-open:rotate-180">
+            <svg fill="none" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+              stroke-width="1.5" viewBox="0 0 24 24" width="20">
+              <path d="M6 9l6 6 6-6" />
+            </svg>
+          </span>
+        </summary>
+        <p class="text-sm text-slate-500 dark:text-slate-400 mt-3 leading-relaxed">
+          支持一键导出 HTML 文件，团队成员双击即可运行，也可以放回静态服务器继续使用。
+        </p>
+      </details>
+
+      <details
+        class="group rounded-none bg-[#f8f8fa] dark:bg-slate-900/70 border border-gray-100 dark:border-slate-800 p-6 shadow-sm">
+        <summary
+          class="flex items-center justify-between cursor-pointer text-sm font-semibold text-slate-800 dark:text-slate-200">
+          <span>使用需要付费吗？</span>
+          <span class="transition group-open:rotate-180">
+            <svg fill="none" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+              stroke-width="1.5" viewBox="0 0 24 24" width="20">
+              <path d="M6 9l6 6 6-6" />
+            </svg>
+          </span>
+        </summary>
+        <p class="text-sm text-slate-500 dark:text-slate-400 mt-3 leading-relaxed">
+          功能完全免费。引擎本身 MIT 开源，无需注册或订阅，打开网页即用。
+        </p>
+      </details>
+
+      <details
+        class="group rounded-none bg-[#f8f8fa] dark:bg-slate-900/70 border border-gray-100 dark:border-slate-800 p-6 shadow-sm">
+        <summary
+          class="flex items-center justify-between cursor-pointer text-sm font-semibold text-slate-800 dark:text-slate-200">
+          <span>支持自己配置 API Key 吗？</span>
+          <span class="transition group-open:rotate-180">
+            <svg fill="none" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+              stroke-width="1.5" viewBox="0 0 24 24" width="20">
+              <path d="M6 9l6 6 6-6" />
+            </svg>
+          </span>
+        </summary>
+        <p class="text-sm text-slate-500 dark:text-slate-400 mt-3 leading-relaxed">
+          支持配置。可使用内置模型，也支持调用大模型时需填入你自己的 API Key，Key 只保存在你的浏览器本地，不会上传到任何服务器。
+        </p>
+      </details>
+
+      <details
+        class="group rounded-none bg-[#f8f8fa] dark:bg-slate-900/70 border border-gray-100 dark:border-slate-800 p-6 shadow-sm">
+        <summary
+          class="flex items-center justify-between cursor-pointer text-sm font-semibold text-slate-800 dark:text-slate-200">
+          <span>支持哪些模型？</span>
+          <span class="transition group-open:rotate-180">
+            <svg fill="none" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+              stroke-width="1.5" viewBox="0 0 24 24" width="20">
+              <path d="M6 9l6 6 6-6" />
+            </svg>
+          </span>
+        </summary>
+        <p class="text-sm text-slate-500 dark:text-slate-400 mt-3 leading-relaxed">
+          支持兼容 OpenAI 接口的主流模型，可在 Skill 节点中灵活切换。
+        </p>
+      </details>
+
+      <details
+        class="group rounded-none bg-[#f8f8fa] dark:bg-slate-900/70 border border-gray-100 dark:border-slate-800 p-6 shadow-sm">
+        <summary
+          class="flex items-center justify-between cursor-pointer text-sm font-semibold text-slate-800 dark:text-slate-200">
+          <span>我可以将 Trans-Workflow 嵌入我们现有的系统或产品中吗？</span>
+          <span class="transition group-open:rotate-180">
+            <svg fill="none" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+              stroke-width="1.5" viewBox="0 0 24 24" width="20">
+              <path d="M6 9l6 6 6-6" />
+            </svg>
+          </span>
+        </summary>
+        <p class="text-sm text-slate-500 dark:text-slate-400 mt-3 leading-relaxed">
+          当然！Trans-Workflow 采用极简的单文件架构与 MIT 开源协议。无论是作为内部工具链的基础设施，还是集成到现有 SaaS 产品中，你都可以自由定制与商业化使用。
+        </p>
+      </details>
+    </section>
+
+  </main>
+
+  <!-- 终极 CTA -->
+  <section class="max-w-4xl mx-auto w-full px-4 sm:px-6 lg:px-8 pb-4">
+    <div class="relative overflow-hidden rounded-none bg-brand-900 text-white p-8 sm:p-12 text-center">
+      <div class="pointer-events-none absolute inset-0 bg-gradient-to-br from-brand-800 to-brand-600"
+        aria-hidden="true"></div>
+      <div class="pointer-events-none absolute -top-24 -right-16 h-72 w-72 rounded-full bg-brand-500/30 blur-3xl"
+        aria-hidden="true"></div>
+      <div class="relative">
+        <h2 class="text-2xl sm:text-3xl font-bold">准备好体验下一代 AI 工作流了吗？</h2>
+        <p class="mt-3 text-sm sm:text-base text-slate-300">无需绑定信用卡，10 秒内开启你的第一个自动化 Workflow。</p>
+        <div class="mt-7 flex flex-col sm:flex-row justify-center gap-3">
+          <a target="_blank" href="https://transweb.cn/workflow/index.html"
+            class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full bg-white text-brand-700 hover:bg-brand-50 px-7 py-3 text-sm font-bold shadow-lg transition-colors">
+            🚀 立即在线体验
+          </a>
+          <a target="_blank" href="https://github.com/liuwenjin/trans-workflow" rel="noopener"
+            class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full border border-white/25 bg-white/10 hover:bg-white/20 px-7 py-3 text-sm font-semibold text-white transition-colors">
+            ⭐ 在 GitHub 上支持我们
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="mt-auto bg-[#1a1a1e] py-8 text-center text-xs sm:text-sm text-slate-500 px-4">
+    <span class="text-lg font-bold text-white tracking-wider">Trans-Workflow</span>
+    <p class="mt-3">© 2026 Trans-Workflow. MIT License. | <a class="text-slate-400 hover:text-white hover:underline"
+        href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">京ICP备17026815号-1</a></p>
+    <p class="mt-2">
+      <a class="text-slate-400 hover:text-white hover:underline" href="https://github.com/liuwenjin/trans-workflow"
+        target="_blank" rel="noopener noreferrer">GitHub</a>
+      <span class="mx-2">·</span>
+      <a class="text-slate-400 hover:text-white hover:underline" href="https://transweb.cn/workflow/docs/index.html"
+        target="_blank" rel="noopener noreferrer">Docs</a>
+    </p>
+  </footer>
+
+  <div id="toast-container"
+    class="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center gap-2 pointer-events-none"></div>
+
+  <!-- 脚本逻辑 -->
+  <script defer src="https://transweb.cn/transweb/webCpu.js"></script>
+  <script defer src="https://transweb.cn/workflow.js"></script>
+</body>
+
+</html>

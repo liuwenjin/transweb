@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+  <meta http-equiv="Cache-Control" content="no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>Cone_Volume_Derivation</title>
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      font-family: "Nunito", "Noto Sans", sans-serif;
+      overflow: hidden;
+      box-sizing: border-box;
+    }
+
+    .contentItemArea {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      text-align: center;
+    }
+
+
+    @keyframes hueShift {
+      0% {
+        filter: hue-rotate(0deg);
+      }
+
+      100% {
+        filter: hue-rotate(360deg);
+      }
+    }
+
+    .fade-out {
+      opacity: 0;
+      transition: opacity 0.8s ease;
+    }
+
+    .loadingTips {
+      text-align: center;
+      font-size: 12px;
+      color: #ccc;
+      padding: 20px 0;
+    }
+
+    .waiting {
+      width: 60px;
+      height: 60px;
+      background-color: #67cf22;
+      margin: 100px auto;
+      animation: rotateplane 1.2s infinite ease-in-out;
+    }
+
+    @keyframes rotateplane {
+      0% {
+        transform: perspective(120px) rotateX(0deg) rotateY(0deg);
+      }
+
+      50% {
+        transform: perspective(120px) rotateX(-180deg) rotateY(0deg);
+      }
+
+      100% {
+        transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
+      }
+    }
+
+    .__exporting__,
+    .__exporting * {
+      animation: none !important;
+      transition: none !important;
+    }
+
+    .__exporting {
+      background: #ffffff !important;
+    }
+
+    .__export-mask {
+      position: fixed;
+      inset: 0;
+      z-index: 2147483647;
+      background: rgba(250, 250, 250, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .__export-mask__panel {
+      background: rgba(0, 0, 0, 0.7);
+      color: #fff;
+      padding: 16px 22px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+    }
+
+    .__export-mask__spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="contentItemArea">
+    <div class="loadingTips">加载中...</div>
+    <div class="waiting"></div>
+  </div>
+  <script defer src="https://transweb.cn/index.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      let app = {
+        className: "GeogebraCase",
+        task: {
+          data: {
+            name: "Cone_Volume_Derivation",
+            mode: "3D",
+            appName: "3d",
+            perspective: "3d",
+            language: "zh-CN",
+            version: 5.0,
+            script: {
+              value: `SetCoordSystem(-8, 8, -8, 8, -8, 8)
+ShowGrid(false)
+ShowAxes(true)
+Radius_r = Slider(0.5, 3, 0.1, 1, 150)
+SetCaption(Radius_r, "$\\text{底面半径 } r$")
+SetLabelMode(Radius_r, 3)
+ShowLabel(Radius_r, true)
+Height_h = Slider(1, 5, 0.1, 1, 150)
+SetCaption(Height_h, "$\\text{高 } h$")
+SetLabelMode(Height_h, 3)
+ShowLabel(Height_h, true)
+Fill_t = Slider(0, 1, 0.01, 1, 150)
+SetCaption(Fill_t, "$\\text{注水比例 } t$")
+SetLabelMode(Fill_t, 3)
+ShowLabel(Fill_t, true)
+Surf_c = Surface(Radius_r * (1 - u) * cos(v), Radius_r * (1 - u) * sin(v), u * Height_h, u, 0, 1, v, 0, 2 * pi)
+SetColor(Surf_c, "#FF8800")
+SetFilling(Surf_c, 0.35)
+SetLineThickness(Surf_c, 0)
+Surf_b = Surface(u * Radius_r * cos(v), u * Radius_r * sin(v), 0, u, 0, 1, v, 0, 2 * pi)
+SetColor(Surf_b, "#FF8800")
+SetFilling(Surf_b, 0.4)
+SetLineThickness(Surf_b, 0)
+Surf_d = Surface((4 + u * Radius_r) * cos(v), (4 + u * Radius_r) * sin(v), 0, u, 0, 1, v, 0, 2 * pi)
+SetColor(Surf_d, "#3388FF")
+SetFilling(Surf_d, 0.25)
+SetLineThickness(Surf_d, 0)
+Surf_e = Surface(4 * cos(v) + u * Radius_r * cos(v), 4 * sin(v) + u * Radius_r * sin(v), Height_h, u, 0, 1, v, 0, 2 * pi)
+SetColor(Surf_e, "#3388FF")
+SetFilling(Surf_e, 0.25)
+SetLineThickness(Surf_e, 0)
+Surf_f = Surface((4 + Radius_r) * cos(v), (4 + Radius_r) * sin(v), u * Height_h, u, 0, 1, v, 0, 2 * pi)
+SetColor(Surf_f, "#3388FF")
+SetFilling(Surf_f, 0.2)
+SetLineThickness(Surf_f, 0)
+Water_a = Surface(u * Radius_r * cbrt(Fill_t / 3) * cos(v), u * Radius_r * cbrt(Fill_t / 3) * sin(v), Height_h * (1 - cbrt(Fill_t / 3)) + u * 0, u, 0, 1, v, 0, 2 * pi)
+SetColor(Water_a, "#00BBFF")
+SetFilling(Water_a, 0.55)
+SetLineThickness(Water_a, 0)
+Aux_1 = Height_h * (1 - cbrt(Fill_t / 3))
+Water_b = Surface(Radius_r * (1 - (Aux_1 + u * (Height_h - Aux_1)) / Height_h) * cos(v), Radius_r * (1 - (Aux_1 + u * (Height_h - Aux_1)) / Height_h) * sin(v), Aux_1 + u * (Height_h - Aux_1), u, 0, 1, v, 0, 2 * pi)
+SetColor(Water_b, "#00BBFF")
+SetFilling(Water_b, 0.5)
+SetLineThickness(Water_b, 0)
+Water_c = Surface((4 + u * Radius_r) * cos(v), (4 + u * Radius_r) * sin(v), Fill_t * Height_h / 3, u, 0, 1, v, 0, 2 * pi)
+SetColor(Water_c, "#00BBFF")
+SetFilling(Water_c, 0.55)
+SetLineThickness(Water_c, 0)
+Water_d = Surface((4 + Radius_r) * cos(v), (4 + Radius_r) * sin(v), u * Fill_t * Height_h / 3, u, 0, 1, v, 0, 2 * pi)
+SetColor(Water_d, "#00BBFF")
+SetFilling(Water_d, 0.5)
+SetLineThickness(Water_d, 0)
+Label_a = (0, 0, -0.8)
+SetCaption(Label_a, "$\\text{圆锥 } V = \\frac{1}{3} \\pi r^2 h$")
+SetLabelMode(Label_a, 3)
+ShowLabel(Label_a, true)
+SetPointSize(Label_a, 0)
+SetColor(Label_a, "#FF8800")
+Label_b = (4, 0, -0.8)
+SetCaption(Label_b, "$\\text{圆柱 } V = \\pi r^2 h$")
+SetLabelMode(Label_b, 3)
+ShowLabel(Label_b, true)
+SetPointSize(Label_b, 0)
+SetColor(Label_b, "#3388FF")
+ShowObject(Aux_1, false)
+ShowLabel(Aux_1, false)`,
+            }
+          }
+        }
+      };
+      let elem = document.querySelector(".contentItemArea");
+      webCpu.updateView(elem, app);
+    });
+  </script>
+</body>
+
+</html>

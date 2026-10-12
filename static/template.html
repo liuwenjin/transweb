@@ -1,0 +1,150 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0, user-scalable=no" />
+  <meta http-equiv="Access-Control-Allow-Origin" content="*">
+  <meta HTTP-EQUIV="pragma" CONTENT="no-cache">
+  <meta HTTP-EQUIV="Cache-Control" CONTENT="no-store, must-revalidate">
+  <meta HTTP-EQUIV="expires" CONTENT="Wed, 26 Feb 1997 08:21:57 GMT">
+  <meta HTTP-EQUIV="expires" CONTENT="0">
+  <title>Transweb</title>
+  <style>
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      padding: 0;
+      margin: 0;
+      box-sizing: border-box;
+      overflow: hidden !important;
+      background-color: #f8f8f8;
+    }
+
+    .CardItem_mask:hover {
+      box-shadow: 2px 2px 4px #333 !important;
+      background-color: rgba(80, 80, 80, 0.3) !important;
+    }
+
+    [pageCardSelected=true]>.CardItem>.CardItem_contentArea>.CardItem_mask {
+      box-sizing: border-box;
+      border: 2px solid !important;
+      border-image: linear-gradient(45deg, gold, deeppink) 1 !important;
+      clip-path: inset(0px round 2px);
+      animation: huerotate 6s infinite linear;
+      filter: hue-rotate(360deg);
+    }
+
+    @keyframes huerotate {
+      0% {
+        filter: hue-rotate(0deg);
+      }
+
+      100% {
+        filter: hue-rotate(360deg);
+      }
+    }
+    .contentAreaItem {
+      position: relative;
+      float: left;
+      width: 100%;
+      height: 100%;
+      padding-bottom: 30px;
+    }
+    .developerInfoArea {
+      position: absolute;
+      z-index: 2;
+      width: 100%;
+      text-align: center;
+      font-size: 12px;
+      line-height: 30px;
+      height: 30px;
+      bottom: 0px;
+      color: #bbb;
+    }
+
+  </style>
+  <!-- ===== Tailwind CSS ===== -->
+  <script src="/common/tailwind.js"></script>
+  <script>
+    tailwind.config = {
+      prefix: 'tw-',
+      theme: {
+        extend: {
+          colors: {
+            academic: {
+              dark: '#1e293b',    // 深色专业蓝
+              primary: '#2563eb', // 活力蓝
+              soft: '#f8fafc',    // 背景灰
+              gold: '#f59e0b'     // 强调金
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body>
+  <div class="contentAreaItem"></div>
+  <div class="developerInfoArea">
+    from: {{developer}}admin@transweb/{{folderName}}; time: {{time}}.
+  </div>
+</body>
+<script type="text/javascript" src="{{origin}}/transweb/webCpu.js"></script>
+<script type="text/javascript" src="{{origin}}/common/util.js"></script>
+<script>
+  webCpu.componentPath = "{{origin}}/transweb/components";
+  let containerStyle = {
+    background: "#f8f8f8",
+    padding: "5px",
+    boxShadow: "0px 1px 2px #333"
+  };
+  let size = {
+    width: WebTool.urlQuery(location.href, "width"),
+    height: WebTool.urlQuery(location.href, "height")
+  }
+  let styleMap = {
+    mobile: {
+      width: "100%",
+      maxWidth: "700px",
+      height: "100%",
+      overflow: "auto",
+      margin: "auto"
+    },
+    pc: {
+      width: Number(size.width) || size.width || 1920,
+      height: Number(size.height) || size.height || 1080,
+      border: "solid 1px #999",
+      background: "#fff",
+      borderRadius: "5px",
+      "overflow-x": "auto",
+      "overflow-y": "auto"
+    }
+  }
+  
+  let container = document.body.querySelector(".contentAreaItem");
+  let data = {{data}};
+  if (data && data.moduleMap && data.routeData) {
+    let style = data.style || {};
+    let mode = data.mode || "pc";
+    let renderStyle = styleMap[mode] || styleMap.pc;
+    style.renderStyle = style.renderStyle || renderStyle;
+    style.containerStyle = style.containerStyle || containerStyle;
+    style.contentStyle = decodeURIComponent(style.contentStyle || '');
+    webCpu.initProject(container, data);
+  }
+  else {
+    data.style = {
+      width: "100%",
+      height: "100%",
+      maxWidth: "1200px",
+      position: "relative",
+      margin: "auto"
+    }
+    webCpu.updateView(container, data);
+  }
+</script>
+
+</html>

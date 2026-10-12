@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+  <meta http-equiv="Cache-Control" content="no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>UnitCircle_and_Hyperbolic_Analogy</title>
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      font-family: "Nunito", "Noto Sans", sans-serif;
+      overflow: hidden;
+      box-sizing: border-box;
+    }
+
+    .contentItemArea {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      text-align: center;
+    }
+
+
+    @keyframes hueShift {
+      0% {
+        filter: hue-rotate(0deg);
+      }
+
+      100% {
+        filter: hue-rotate(360deg);
+      }
+    }
+
+    .fade-out {
+      opacity: 0;
+      transition: opacity 0.8s ease;
+    }
+
+    .loadingTips {
+      text-align: center;
+      font-size: 12px;
+      color: #ccc;
+      padding: 20px 0;
+    }
+
+    .waiting {
+      width: 60px;
+      height: 60px;
+      background-color: #67cf22;
+      margin: 100px auto;
+      animation: rotateplane 1.2s infinite ease-in-out;
+    }
+
+    @keyframes rotateplane {
+      0% {
+        transform: perspective(120px) rotateX(0deg) rotateY(0deg);
+      }
+
+      50% {
+        transform: perspective(120px) rotateX(-180deg) rotateY(0deg);
+      }
+
+      100% {
+        transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
+      }
+    }
+
+    .__exporting__,
+    .__exporting * {
+      animation: none !important;
+      transition: none !important;
+    }
+
+    .__exporting {
+      background: #ffffff !important;
+    }
+
+    .__export-mask {
+      position: fixed;
+      inset: 0;
+      z-index: 2147483647;
+      background: rgba(250, 250, 250, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .__export-mask__panel {
+      background: rgba(0, 0, 0, 0.7);
+      color: #fff;
+      padding: 16px 22px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+    }
+
+    .__export-mask__spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="contentItemArea">
+    <div class="loadingTips">加载中...</div>
+    <div class="waiting"></div>
+  </div>
+  <script defer src="https://transweb.cn/index.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      let app = {
+        className: "GeogebraCase",
+        task: {
+          data: {
+            name: "UnitCircle_and_Hyperbolic_Analogy",
+            mode: "2D",
+            appName: "suite",
+            perspective: "graphing",
+            language: "zh-CN",
+            version: 5.0,
+            script: {
+              value: `SetCoordSystem(-8,8,-8,8)
+ShowGrid(true)
+ShowAxes(true)
+Angle_a = Slider(0, 2*pi, 0.01, 1, 150)
+ShowLabel(Angle_a, false)
+Radius = Slider(0.5, 3, 0.1, 1, 150)
+ShowLabel(Radius, false)
+C = (0,0)
+SetPointSize(C, 4)
+SetColor(C, "#333333")
+ShowLabel(C, false)
+P_circ = C + Radius * (cos(Angle_a), sin(Angle_a))
+SetPointSize(P_circ, 6)
+SetColor(P_circ, "#1E90FF")
+SetCaption(P_circ, "三角点 P")
+SetLabelMode(P_circ, 3)
+ShowLabel(P_circ, true)
+P_hyp = C + Radius * (cosh(Angle_a), sinh(Angle_a))
+SetPointSize(P_hyp, 6)
+SetColor(P_hyp, "#FF4500")
+SetCaption(P_hyp, "双曲点 Q")
+SetLabelMode(P_hyp, 3)
+ShowLabel(P_hyp, true)
+Circ = Circle(C, Radius)
+SetColor(Circ, "#1E90FF")
+SetLineThickness(Circ, 2)
+SetFilling(Circ, 0)
+SetCaption(Circ, "单位圆")
+SetLabelMode(Circ, 3)
+ShowLabel(Circ, true)
+Hyp_x = Curve(C + Radius * (cosh(t), sinh(t)), t, 0, Angle_a)
+SetColor(Hyp_x, "#FF4500")
+SetLineThickness(Hyp_x, 2)
+SetFilling(Hyp_x, 0)
+SetCaption(Hyp_x, "双曲线分支")
+SetLabelMode(Hyp_x, 3)
+ShowLabel(Hyp_x, true)
+Seg_circ_x = Segment(C, (Radius,0))
+SetColor(Seg_circ_x, "#888888")
+SetLineThickness(Seg_circ_x, 1)
+SetLineStyle(Seg_circ_x, 2)
+ShowLabel(Seg_circ_x, false)
+Seg_circ_y = Segment(C, (0,Radius))
+SetColor(Seg_circ_y, "#888888")
+SetLineThickness(Seg_circ_y, 1)
+SetLineStyle(Seg_circ_y, 2)
+ShowLabel(Seg_circ_y, false)
+Seg_hyp_x = Segment(C, (Radius*cosh(Angle_a),0))
+SetColor(Seg_hyp_x, "#888888")
+SetLineThickness(Seg_hyp_x, 1)
+SetLineStyle(Seg_hyp_x, 2)
+ShowLabel(Seg_hyp_x, false)
+Seg_hyp_y = Segment(C, (0,Radius*sinh(Angle_a)))
+SetColor(Seg_hyp_y, "#888888")
+SetLineThickness(Seg_hyp_y, 1)
+SetLineStyle(Seg_hyp_y, 2)
+ShowLabel(Seg_hyp_y, false)
+Arc_circ = CircularArc(C, (Radius,0), P_circ)
+SetColor(Arc_circ, "#1E90FF")
+SetLineThickness(Arc_circ, 2)
+ShowLabel(Arc_circ, false)
+Area_circ = Sector(C, (Radius,0), P_circ)
+SetColor(Area_circ, "#1E90FF")
+SetFilling(Area_circ, 0.3)
+ShowLabel(Area_circ, false)
+Area_hyp = Polygon(C, (Radius*cosh(Angle_a),0), P_hyp)
+SetColor(Area_hyp, "#FF4500")
+SetFilling(Area_hyp, 0.3)
+ShowLabel(Area_hyp, false)
+ShowObject(Seg_circ_x, false)
+ShowObject(Seg_circ_y, false)
+ShowObject(Seg_hyp_x, false)
+ShowObject(Seg_hyp_y, false)
+ShowObject(Arc_circ, false)
+ShowObject(Area_circ, false)
+ShowObject(Area_hyp, false)
+ShowLabel(C, false)
+ShowLabel(Seg_circ_x, false)
+ShowLabel(Seg_circ_y, false)
+ShowLabel(Seg_hyp_x, false)
+ShowLabel(Seg_hyp_y, false)
+ShowLabel(Arc_circ, false)
+ShowLabel(Area_circ, false)
+ShowLabel(Area_hyp, false)`,
+            }
+          }
+        }
+      };
+      let elem = document.querySelector(".contentItemArea");
+      webCpu.updateView(elem, app);
+    });
+  </script>
+</body>
+
+</html>

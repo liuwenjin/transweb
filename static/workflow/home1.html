@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=yes, viewport-fit=cover">
+  <title>Trans-Workflow | 免运维的企业级 AI 数字生产流水线</title>
+  <meta name="description"
+    content="Trans-Workflow 是一款专为中小企业打造的免运维 AI 数字生产流水线。零技术债务、不增加服务器账单，将工作流压缩至单个 HTML 文件。双击即用，直接分发交互式网页工具，为企业交付确定性的效率红利。">
+  <meta name="keywords" content="免运维AI,数字流水线,Trans-Workflow,零技术债务,单文件应用,交互式网页工具,组件化资产,企业自动化,确定性效率红利">
+  <meta name="author" content="Liu Wenjin">
+  <link rel="canonical" href="https://transweb.cn/workflow/home.html">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://transweb.cn/workflow/home.html">
+  <meta property="og:title" content="Trans-Workflow | 零服务器账单，构建开箱即用的 AI 交互式网页工具">
+  <meta property="og:description"
+    content="拒绝昂贵的服务器运维与黑盒系统！一个静态 HTML 文件，即刻开启可视化 AI 工业级生产流水线。输出 100% 私有、双击即用的交互式组件，让业务部门直接收割确定性红利。">
+  <meta property="og:image" content="https://transweb.cn/assets/logo.png">
+  <meta property="og:site_name" content="TransWeb">
+  <meta property="og:locale" content="zh_CN">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Trans-Workflow | 免运维的企业级 AI 数字生产流水线">
+  <meta name="twitter:description" content="零运维成本、零技术债务。将 AI 工作流引擎与编辑器打包成单个 HTML，拒绝繁琐的云端绑定，业务人员双击即用，管理层清晰看见 ROI。">
+  <meta name="twitter:image" content="https://transweb.cn/assets/logo.png">
+  <script type="text/javascript" src="//api.tongjiniao.com/c?_=930147679443345408" async></script>
+  <script type="text/javascript">
+    (function (c, l, a, r, i, t, y) {
+      c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+      t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+      y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+    })(window, document, "clarity", "script", "xejk2rx33f");
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Trans-Workflow",
+    "operatingSystem": "Platform-Independent (Browser-based)",
+    "applicationCategory": "BusinessApplication",
+    "browserRequirements": "Requires HTML5 compatible browser.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "CNY"
+    },
+    "description": "一个静态 HTML 文件，完美压缩智能体流程引擎与可视化编辑器。将 AI 转化为可分发的交互式网页工具，零服务器开销，零技术债务，击穿中小企业智能化落地门槛。",
+    "softwareVersion": "1.0.0",
+    "downloadUrl": "https://transweb.cn/workflow/home.html",
+    "applicationSubCategory": "Enterprise AI Workflow Builder",
+    "license": "https://github.com/liuwenjin/trans-workflow",
+    "author": {
+      "@type": "Person",
+      "name": "Liu Wenjin"
+    }
+  }
+  </script>
+
+  <!-- Tailwind CSS & Prefix Configuration -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind = { config: { prefix: 'tw-' } }</script>
+
+  <style>
+    html,
+    body {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    ::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+
+    .table-scroll-x {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* 星芒（Starburst）精密图形组件 - 绝无多余文本干扰 */
+    .starburst-icon {
+      clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+    }
+
+    /* 刚性资产玻璃态（1px solid 微光 + 物理实体阴影暗示） */
+    .physical-asset-card {
+      border: 1px solid rgba(135, 64, 219, 0.12);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05),
+        0 10px 20px -5px rgba(135, 64, 219, 0.04),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.6);
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(8px);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .physical-asset-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(135, 64, 219, 0.25);
+      box-shadow: 0 20px 35px -10px rgba(135, 64, 219, 0.1),
+        0 4px 12px -2px rgba(0, 0, 0, 0.03);
+    }
+
+    /* 工业流水线步骤卡片 */
+    .pipeline-step {
+      transition: all 0.25s ease;
+      border: 1px solid #e2e8f0;
+    }
+
+    .pipeline-step:hover {
+      border-color: #8740DB;
+      background-color: #fff;
+    }
+
+    /* 按钮下沉交互动效 */
+    .btn-pack-down {
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .btn-pack-down:active {
+      transform: scale(0.97) translateY(2px);
+    }
+
+    /* Loading 骨架旋转线 */
+    @keyframes spin-slow {
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .animate-spin-slow {
+      animation: spin-slow 1.5s linear infinite;
+    }
+  </style>
+</head>
+
+<body class="tw-bg-[#f8fafc] tw-font-sans tw-antialiased tw-text-slate-800">
+
+  <!-- 固顶导航栏 -->
+  <header
+    class="tw-sticky tw-top-0 tw-z-30 tw-w-full tw-backdrop-blur-md tw-bg-white/80 tw-border-b tw-border-slate-200/60 tw-shadow-sm">
+    <div class="tw-max-w-7xl tw-mx-auto tw-px-5 sm:tw-px-6 lg:tw-px-8">
+      <div class="tw-flex tw-items-center tw-justify-between tw-h-16 md:tw-h-20">
+        <div class="tw-flex tw-items-center tw-gap-3">
+          <!-- 纯图形无文本 Logo 规范 -->
+          <div class="tw-w-9 tw-h-9 tw-rounded-md tw-flex tw-items-center tw-justify-center tw-overflow-hidden">
+            <img class="tw-w-full tw-h-full tw-object-contain" src="https://transweb.cn/assets/logo.png"
+              alt="Logo Icon">
+          </div>
+          <div class="tw-font-bold tw-text-lg tw-tracking-tight tw-text-slate-900">
+            <span>Trans</span><span style="color: #8740DB;">Workflow</span>
+          </div>
+          <div
+            class="tw-hidden md:tw-flex tw-items-center tw-gap-1.5 tw-bg-slate-100 tw-px-2.5 tw-py-1 tw-rounded-md tw-border tw-border-slate-200">
+            <div class="tw-w-2 tw-h-2 tw-bg-emerald-500 tw-rounded-full"></div>
+            <span class="tw-text-xs tw-font-mono tw-font-semibold tw-text-slate-600 tw-tracking-wide">免运维智能化生产线</span>
+          </div>
+        </div>
+
+        <div class="tw-hidden md:tw-flex tw-items-center tw-gap-6">
+          <a href="#exampleWorkflow"
+            class="tw-text-sm tw-font-medium tw-text-slate-600 hover:tw-text-purple-600 tw-transition">AI 流水线</a>
+          <a href="#coreAppeals"
+            class="tw-text-sm tw-font-medium tw-text-slate-600 hover:tw-text-purple-600 tw-transition">资产安全感</a>
+          <a href="#coreFeatures"
+            class="tw-text-sm tw-font-medium tw-text-slate-600 hover:tw-text-purple-600 tw-transition">核心优势</a>
+          <a href="#comparisonTable"
+            class="tw-text-sm tw-font-medium tw-text-slate-600 hover:tw-text-purple-600 tw-transition">降本算账面板</a>
+          <a href="https://transweb.cn/workflow/index.html" target="_blank">
+            <button
+              class="tw-bg-slate-900 hover:tw-bg-purple-700 tw-text-white tw-px-5 tw-py-2 tw-rounded-full tw-text-sm tw-font-semibold tw-shadow-md tw-transition-all tw-flex tw-items-center tw-gap-1">
+              🏭 开始构建 AI 工作流 <span class="tw-text-xs tw-opacity-60">→</span>
+            </button>
+          </a>
+        </div>
+
+        <div class="tw-flex md:tw-hidden tw-items-center tw-gap-3">
+          <a href="https://transweb.cn/workflow/index.html" target="_blank">
+            <button
+              class="tw-bg-slate-900 tw-text-white tw-px-4 tw-py-1.5 tw-rounded-full tw-text-xs tw-font-semibold">立即开始</button>
+          </a>
+          <button id="mobileMenuBtn" class="tw-p-2 tw-rounded-md tw-bg-slate-100">
+            <svg class="tw-w-5 tw-h-5 tw-text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div id="mobileNavPanel" class="tw-hidden md:tw-hidden tw-py-3 tw-border-t tw-border-slate-100 tw-bg-white">
+        <div class="tw-flex tw-flex-col tw-gap-2 tw-pb-2">
+          <a href="#exampleWorkflow" class="tw-text-sm tw-text-slate-700 tw-py-1.5">工业流水线</a>
+          <a href="#coreAppeals" class="tw-text-sm tw-text-slate-700 tw-py-1.5">资产安全感</a>
+          <a href="#coreFeatures" class="tw-text-sm tw-text-slate-700 tw-py-1.5">核心优势</a>
+          <a href="#comparisonTable" class="tw-text-sm tw-text-slate-700 tw-py-1.5">降本算账面板</a>
+          <button onclick="triggerPackDownload(this)"
+            class="tw-bg-purple-600 tw-text-white tw-px-4 tw-py-2.5 tw-rounded-lg tw-text-sm tw-font-semibold tw-w-full tw-text-center tw-mt-2">
+            📦 打包下载离线静态组件
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- 主体部分 -->
+  <section class="tw-relative tw-overflow-hidden tw-py-12 md:tw-py-20">
+    <div class="tw-max-w-7xl tw-mx-auto tw-px-5 sm:tw-px-6 lg:tw-px-8">
+
+      <!-- 头部文案 -->
+      <div class="tw-text-center tw-mb-16 md:tw-mb-24">
+        <div
+          class="tw-inline-flex tw-items-center tw-gap-2 tw-px-3.5 tw-py-1.5 tw-rounded-md tw-bg-slate-900 tw-text-slate-200 tw-text-xs md:tw-text-sm tw-font-mono tw-mb-6">
+          <!-- 纯图形星芒视觉锚点 -->
+          <div class="tw-w-3 tw-h-3 tw-bg-purple-400 starburst-icon"></div>
+          企业智能化转型钥匙：零技术债务，确定的效率红利
+        </div>
+        <h1
+          class="tw-text-3xl sm:tw-text-5xl md:tw-text-6xl tw-font-extrabold tw-tracking-tight tw-leading-tight tw-text-slate-900">
+          免运维的 AI 数字流水线<br>
+          <span
+            class="tw-text-transparent tw-bg-clip-text tw-bg-gradient-to-r tw-from-purple-600 tw-to-indigo-600">零服务器账单，打包可分发网页资产</span>
+        </h1>
+        <p
+          class="tw-text-base sm:tw-text-lg md:tw-text-xl tw-text-slate-600 tw-max-w-3xl tw-mx-auto tw-mt-6 tw-leading-relaxed">
+          工作流最终输出的核心价值是<strong>高可用的交互式组件</strong>，而非昂贵的云端黑盒。Trans-Workflow 基于单文件分发优势，将工业级流水线压缩为<strong>单个静态
+            HTML</strong>。不用买服务器，不增加系统账单，双击即用，助企业直接收割确定性数字资产红利。
+        </p>
+
+        <!-- 首屏双 CTA 交互层 -->
+        <div class="tw-flex tw-flex-wrap tw-justify-center tw-gap-4 tw-mt-10">
+          <a href="https://transweb.cn/workflow/index.html" target="_blank">
+            <button
+              class="tw-bg-slate-900 hover:tw-bg-slate-800 tw-text-white tw-px-8 tw-py-4 tw-rounded-md tw-text-base tw-font-bold tw-shadow-lg tw-transition-all tw-flex tw-items-center tw-gap-2">
+              🏭 开始构建 AI 工作流 <span class="tw-font-mono tw-text-purple-400">➔</span>
+            </button>
+          </a>
+          <button onclick="triggerPackDownload(this)"
+            class="btn-pack-down tw-border tw-border-purple-300 hover:tw-border-purple-500 tw-bg-white tw-text-purple-700 tw-px-8 tw-py-4 tw-rounded-md tw-text-base tw-font-bold tw-shadow-sm tw-flex tw-items-center tw-gap-2">
+            <span class="btn-icon-box">📦</span> <span class="btn-text-box">打包导出独立交互组件</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 核心演示区与工业流水线化排版 -->
+      <div id="exampleWorkflow" class="tw-w-full tw-max-w-5xl tw-mx-auto tw-mb-28 tw-scroll-mt-24">
+
+        <!-- 刚性拓扑连线视觉 -->
+        <div class="tw-grid tw-grid-cols-2 md:tw-grid-cols-4 tw-gap-4 tw-mb-8 tw-relative">
+
+          <!-- 步骤 1: INPUT -->
+          <div class="pipeline-step tw-bg-slate-50 tw-p-4 tw-rounded-lg tw-relative">
+            <!-- 具象化标签：物料注入 -->
+            <div
+              class="tw-inline-flex tw-items-center tw-gap-1.5 tw-text-[11px] tw-font-bold tw-text-slate-400 tw-mb-1.5 tw-leading-none">
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 3v12" />
+                <path d="m8 11 4 4 4-4" />
+                <path d="M8 5H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-4" />
+              </svg>
+              <span>物料注入</span>
+            </div>
+            <div class="tw-text-sm tw-font-bold tw-text-slate-800">1. 物料注入</div>
+            <p class="tw-text-slate-500 tw-text-[11px] tw-mt-1">文案、指标或业务规范一键导入</p>
+            <!-- 拓扑连接箭头 (仅在桌面端 md 展示) -->
+            <div
+              class="tw-hidden md:tw-flex tw-absolute tw-top-1/2 tw-right-[-14px] tw-transform tw--translate-y-1/2 tw-z-10 tw-text-slate-300">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
+            </div>
+          </div>
+
+          <!-- 步骤 2: PROCESS -->
+          <div class="pipeline-step tw-bg-slate-50 tw-p-4 tw-rounded-lg tw-relative">
+            <!-- 具象化标签：串联加工 -->
+            <div class="tw-flex tw-items-center tw-gap-1 tw-text-[10px] tw-font-bold tw-text-slate-400 tw-mb-1.5">
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path
+                  d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.1a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+              <span>智能加工</span>
+            </div>
+            <div class="tw-text-sm tw-font-bold tw-text-slate-800">2. 级联刚性加工</div>
+            <p class="tw-text-slate-500 tw-text-[11px] tw-mt-1">1→n / n→1 多智能体反思与聚合加工</p>
+            <!-- 拓扑连接箭头 (仅在桌面端 md 展示) -->
+            <div
+              class="tw-hidden md:tw-flex tw-absolute tw-top-1/2 tw-right-[-14px] tw-transform tw--translate-y-1/2 tw-z-10 tw-text-slate-300">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
+            </div>
+          </div>
+
+          <!-- 步骤 3: HITL -->
+          <div class="pipeline-step tw-bg-slate-50 tw-p-4 tw-rounded-lg tw-relative">
+            <!-- 具象化标签：人工拦截 -->
+            <div class="tw-flex tw-items-center tw-gap-1 tw-text-[10px] tw-font-bold tw-text-amber-600 tw-mb-1.5">
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                <line x1="12" y1="8" x2="12" y2="12" />
+                <line x1="12" y1="16" x2="12.01" y2="16" />
+              </svg>
+              <span>人工审核</span>
+            </div>
+            <div class="tw-text-sm tw-font-bold tw-text-slate-800">3. 人工拦截确权</div>
+            <p class="tw-text-slate-500 tw-text-[11px] tw-mt-1">关键节点专家介入进行微调</p>
+            <!-- 拓扑连接箭头 (仅在桌面端 md 展示) -->
+            <div
+              class="tw-hidden md:tw-flex tw-absolute tw-top-1/2 tw-right-[-14px] tw-transform tw--translate-y-1/2 tw-z-10 tw-text-purple-400">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
+            </div>
+          </div>
+
+          <!-- 步骤 4: ASSET (高亮交付节点) -->
+          <div class="pipeline-step tw-bg-purple-50/60 tw-border-purple-200 tw-border tw-p-4 tw-rounded-lg">
+            <!-- 具象化标签：核心资产 -->
+            <div class="tw-flex tw-items-center tw-gap-1 tw-text-[10px] tw-font-bold tw-text-purple-600 tw-mb-1.5">
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 3h12l4 6-10 13L2 9z" />
+                <path d="M11 3 8 9l4 13 4-13-3-6" />
+                <path d="M2 9h20" />
+              </svg>
+              <span>数字资产</span>
+            </div>
+            <div class="tw-text-sm tw-font-bold tw-text-purple-900 tw-flex tw-items-center tw-gap-2">
+              4. 导出网页资产
+            </div>
+            <p class="tw-text-purple-700/80 tw-text-[11px] tw-mt-1">单 HTML 文件，本地双击运行</p>
+          </div>
+
+        </div>
+
+        <!-- 监控台化仪表盘容器 -->
+        <div
+          class="tw-w-full tw-bg-slate-900 tw-rounded-xl tw-p-3 sm:tw-p-4 tw-shadow-2xl tw-border tw-border-slate-800">
+
+          <!-- 控制台仪表盘化顶栏 -->
+          <div
+            class="tw-flex tw-flex-wrap tw-items-center tw-justify-between tw-gap-3 tw-pb-3 tw-mb-4 tw-border-b tw-border-slate-800 tw-px-1 text-slate-400 tw-font-mono tw-text-[11px] tw-tracking-wider">
+            <div class="tw-flex tw-items-center tw-gap-4">
+              <div class="tw-flex tw-items-center tw-gap-1.5 tw-text-slate-500">
+                <span class="tw-w-2 tw-h-2 tw-bg-emerald-400 tw-rounded-full tw-animate-pulse"></span>
+                <span class="tw-text-slate-400">WORKFLOW_ENGINE: ACTIVE</span>
+              </div>
+              <div class="tw-hidden lg:block tw-text-slate-700">|</div>
+              <div id="workflow-manifesto" class="tw-hidden lg:block tw-text-slate-400">
+                🚀 当前场景：营销场景 (1 → n 批量分发)
+              </div>
+            </div>
+            <div
+              class="tw-text-slate-500 tw-text-[10px] tw-bg-slate-950 tw-px-2 tw-py-0.5 tw-rounded tw-border tw-border-slate-800/80 tw-font-sans">
+              ⚙️ MULTI-SCENARIO DEMO
+            </div>
+          </div>
+
+          <!-- 场景单选标签组 (响应式网格：移动端单列，大屏三列) -->
+          <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-3 tw-gap-2.5 tw-mb-5">
+
+            <!-- 标签 1：营销场景 -->
+            <button
+              onclick="switchScenario('https://transweb.cn/workflow/docs/examples/marketing-workflow.html', '🚀 当前场景：营销场景 (1 → n 批量分发)', this)"
+              class="scenario-tab active tw-text-left tw-p-3 tw-rounded-lg tw-border tw-transition-all tw-duration-200 tw-cursor-pointer tw-bg-slate-800/80 tw-border-emerald-500/30 tw-shadow-md">
+              <div class="tw-flex tw-items-center tw-gap-2">
+                <span class="tw-text-base">📢</span>
+                <span class="tw-text-xs tw-font-bold tw-text-emerald-400 font-title">营销场景 <span
+                    class="tw-text-[10px] tw-opacity-80 tw-font-normal">(1→n 批量分发)</span></span>
+              </div>
+              <p class="tw-mt-1 tw-text-[11px] tw-text-slate-400 tw-line-clamp-2 tw-leading-relaxed">
+                痛点输入 → 自动拆解多平台文案/脚本/SVG配图 → 人工审核 → 一键导出
+              </p>
+            </button>
+
+            <!-- 标签 2：企业合同标准化审核场景 -->
+            <button
+              onclick="switchScenario('https://transweb.cn/workflow/docs/examples/contract-review.html', '📊 当前场景：法律审核场景 (n → 1 顺序聚合)', this)"
+              class="scenario-tab tw-text-left tw-p-3 tw-rounded-lg tw-border tw-transition-all tw-duration-200 tw-cursor-pointer tw-bg-slate-950/40 tw-border-slate-800/80 hover:tw-bg-slate-800/40 hover:tw-border-slate-700">
+              <div class="tw-flex tw-items-center tw-gap-2">
+                <span class="tw-text-base">⚖️</span>
+                <span class="tw-text-xs tw-font-bold tw-text-slate-300 font-title">法律审核场景 <span
+                    class="tw-text-[10px] tw-opacity-60 tw-font-normal">(n→1 顺序聚合)</span></span>
+              </div>
+              <p class="tw-mt-1 tw-text-[11px] tw-text-slate-500 tw-line-clamp-2 tw-leading-relaxed">
+                标准结构化 → 基础校验 → 商务风险审核 → 合规法务审核 → 报告汇总
+              </p>
+            </button>
+
+            <!-- 标签 3：学术论文场景 -->
+            <button
+              onclick="switchScenario('https://transweb.cn/workflow/docs/examples/academic-paper.html', '🎯 当前场景：学术论文场景 (线性高控流)', this)"
+              class="scenario-tab tw-text-left tw-p-3 tw-rounded-lg tw-border tw-transition-all tw-duration-200 tw-cursor-pointer tw-bg-slate-950/40 tw-border-slate-800/80 hover:tw-bg-slate-800/40 hover:tw-border-slate-700">
+              <div class="tw-flex tw-items-center tw-gap-2">
+                <span class="tw-text-base">💼</span>
+                <span class="tw-text-xs tw-font-bold tw-text-slate-300 font-title">学术论文场景 <span
+                    class="tw-text-[10px] tw-opacity-60 tw-font-normal">(线性高控流)</span></span>
+              </div>
+              <p class="tw-mt-1 tw-text-[11px] tw-text-slate-500 tw-line-clamp-2 tw-leading-relaxed">
+                竞品官网信息抓取 → 话术痛点精准匹配 → 自动生成定制化外贸开发信
+              </p>
+            </button>
+
+          </div>
+
+          <!-- 编辑器实机交互区 -->
+          <div id="iframeWrapper" class="tw-bg-white tw-rounded-lg tw-overflow-hidden tw-relative tw-w-full"
+            style="height: 620px;">
+            <div id="iframeScaleContainer" class="tw-absolute tw-top-0 tw-left-0 tw-w-full tw-h-full"
+              style="transform-origin: top left;">
+              <!-- 请在这里更换为你实际的默认示例 URL -->
+              <iframe id="workflowIframe" src="https://transweb.cn/workflow/docs/examples/marketing-workflow.html"
+                class="tw-absolute tw-inset-0 tw-border-0 tw-w-full tw-h-full" style="min-width: 500px;"
+                title="Trans-Workflow 监控台">
+              </iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 核心诉求：物理资产安全感（融合算账文案） -->
+      <div id="coreAppeals" class="tw-mb-28 tw-scroll-mt-24">
+        <div class="tw-text-center tw-mb-16">
+          <span
+            class="tw-text-xs tw-font-mono tw-font-bold tw-text-purple-600 tw-bg-purple-50 tw-px-3 tw-py-1 tw-rounded">核心算账面板</span>
+          <h2 class="tw-text-2xl sm:tw-text-4xl tw-font-bold tw-text-slate-900 tw-mt-3">为什么 80% 的企业试过
+            AI，却只留下堆技术债务与服务器账单？</h2>
+          <p class="tw-text-slate-500 tw-mt-2 tw-max-w-2xl tw-mx-auto tw-text-sm sm:tw-text-base">因为传统的重度方案在逼着你为了偶尔的 AI
+            需求，去养一套复杂的后端系统和运维团队。我们需要务实降本，将数字工作流固化为可带走的物理资产。</p>
+        </div>
+
+        <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-3 tw-gap-6">
+          <div class="physical-asset-card tw-rounded-xl tw-p-6">
+            <div
+              class="tw-w-10 tw-h-10 tw-bg-purple-100 tw-rounded-lg tw-mb-4 tw-flex tw-items-center tw-justify-center tw-text-purple-600 tw-shadow-md">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z" />
+                <path d="M4 14a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z" />
+                <path d="M6 6h.01M6 14h.01" />
+                <line x1="2" y1="2" x2="22" y2="22" />
+              </svg>
+            </div>
+            <h3 class="tw-text-lg tw-font-bold tw-text-slate-900 tw-mb-2">不增加任何服务器账单</h3>
+            <p class="tw-text-slate-600 tw-text-sm tw-leading-relaxed">传统工作流逼你买高配 ECS、配云数据库。Trans-Workflow
+              零后台依赖，完全依托浏览器本地算力构建，企业固定 IT 运维开销直接归零。</p>
+          </div>
+
+          <div class="physical-asset-card tw-rounded-xl tw-p-6">
+            <!-- 图标容器：调整为浅紫色背景，突出积累感 -->
+            <div
+              class="tw-w-10 tw-h-10 tw-bg-purple-100 tw-rounded-lg tw-mb-4 tw-flex tw-items-center tw-justify-center tw-text-purple-600 tw-shadow-inner">
+              <!-- 新图标：体现层叠和增加（资产积累） -->
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 6l9 3 9-3-9-3-9 3z" />
+                <path d="M3 10l9 3 9-3" />
+                <path d="M3 14l9 3 9-3" />
+                <path d="M12 22l-9-3v-5l9 3 9-3v1.5" />
+                <path d="M16 19h6" />
+                <path d="M19 16v6" />
+              </svg>
+            </div>
+            <h3 class="tw-text-lg tw-font-bold tw-text-slate-900 tw-mb-2">分发双击即用的动态资产</h3>
+            <p class="tw-text-slate-600 tw-text-sm tw-leading-relaxed">
+              一键打包出的交互式网页工具，任何业务人员双击即可在本地使用，属于企业完全私有、高可用的数字化资产，拒绝黑盒系统绑定。</p>
+          </div>
+
+          <div class="physical-asset-card tw-rounded-xl tw-p-6">
+            <div
+              class="tw-w-10 tw-h-10 tw-bg-purple-100 tw-rounded-lg tw-mb-4 tw-flex tw-items-center tw-justify-center tw-text-purple-600 tw-shadow-md">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path
+                  d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+                <line x1="12" y1="22.08" x2="12" y2="12" />
+              </svg>
+            </div>
+            <h3 class="tw-text-lg tw-font-bold tw-text-slate-900 tw-mb-2">零技术债务，随时平替</h3>
+            <p class="tw-text-slate-600 tw-text-sm tw-leading-relaxed">没有沉重的系统框架绑定，单个 HTML
+              随用随走。无侵入性，不积累任何老旧系统垃圾，业务人员可根据需求随时微调步骤。</p>
+          </div>
+
+          <div class="physical-asset-card tw-rounded-xl tw-p-6">
+            <div
+              class="tw-w-10 tw-h-10 tw-bg-purple-100 tw-rounded-lg tw-mb-4 tw-flex tw-items-center tw-justify-center tw-text-purple-600 tw-shadow-md">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                <circle cx="12" cy="11" r="2" />
+              </svg>
+            </div>
+            <h3 class="tw-text-lg tw-font-bold tw-text-slate-900 tw-mb-2">100% 保护核心商业策略</h3>
+            <p class="tw-text-slate-600 tw-text-sm tw-leading-relaxed">调试成功的核心 Prompt、运营增长模型和历史物料 100%
+              沉淀在本地，支持本地化存储部署(不上云)，不给外部云平台提供白嫖训练的可能。</p>
+          </div>
+
+          <div class="physical-asset-card tw-rounded-xl tw-p-6">
+            <div
+              class="tw-w-10 tw-h-10 tw-bg-purple-100 tw-rounded-lg tw-mb-4 tw-flex tw-items-center tw-justify-center tw-text-purple-600 tw-shadow-md">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="4" cy="12" r="2" />
+                <circle cx="12" cy="12" r="2" />
+                <circle cx="20" cy="12" r="2" />
+                <line x1="6" y1="12" x2="10" y2="12" />
+                <line x1="14" y1="12" x2="18" y2="12" />
+                <path d="M12 8V4" />
+                <path d="M10 4h4" />
+              </svg>
+            </div>
+            <h3 class="tw-text-lg tw-font-bold tw-text-slate-900 tw-mb-2">刚性卡死大模型随机性</h3>
+            <p class="tw-text-slate-600 tw-text-sm tw-leading-relaxed">
+              不搞玄学跳转，采用硬编码式的刚性单向线性拓扑。按预设步骤顺序加工，挂起拦截、人工微调确权后再向下流转，确保生产结果 100% 受控。</p>
+          </div>
+
+          <div class="physical-asset-card tw-rounded-xl tw-p-6">
+            <div
+              class="tw-w-10 tw-h-10 tw-bg-purple-100 tw-rounded-lg tw-mb-4 tw-flex tw-items-center tw-justify-center tw-text-purple-600 tw-shadow-md">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="4" y="4" width="16" height="16" rx="2" ry="2" />
+                <line x1="9" y1="9" x2="15" y2="9" />
+                <line x1="9" y1="13" x2="15" y2="13" />
+                <line x1="9" y1="17" x2="15" y2="17" />
+                <path d="M16 2v4" />
+                <path d="M8 2v4" />
+              </svg>
+            </div>
+            <h3 class="tw-text-lg tw-font-bold tw-text-slate-900 tw-mb-2">确定性效率红利立等可现</h3>
+            <p class="tw-text-slate-600 tw-text-sm tw-leading-relaxed">每个节点的耗时、Token 成本一目了然。业务人员 10 分钟自主搭建，IT
+              部门无需排期，管理层当天就能算清每一笔账，立刻实现量化剪刀差。</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 核心优势：释放数字流水线生产力 -->
+      <div id="coreFeatures" class="tw-mb-28 tw-scroll-mt-24">
+        <div class="tw-text-center tw-mb-16">
+          <span
+            class="tw-text-xs tw-font-mono tw-font-bold tw-text-purple-600 tw-bg-purple-50 tw-px-3 tw-py-1 tw-rounded">释放数字流水线生产力</span>
+          <h2 class="tw-text-2xl sm:tw-text-4xl tw-font-bold tw-text-slate-900 tw-mt-3">用极致轻量的架构，驱动企业高效内容工厂</h2>
+          <p class="tw-text-slate-500 tw-mt-2 tw-max-w-xl tw-mx-auto tw-text-sm sm:tw-text-base">将复杂的 AIGC
+            编排转化为直观的积木式装配，交付具备完整生命周期的交互组件。</p>
+        </div>
+
+        <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-3 tw-gap-6">
+          <div class="tw-bg-white tw-border tw-border-slate-200/70 tw-rounded-xl tw-p-6 tw-shadow-sm">
+            <div
+              class="tw-w-10 tw-h-10 tw-bg-purple-50 tw-text-purple-600 tw-rounded-lg tw-mb-4 tw-flex tw-items-center tw-justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="4" cy="12" r="2" />
+                <circle cx="14" cy="6" r="2" />
+                <circle cx="14" cy="18" r="2" />
+                <circle cx="21" cy="12" r="2" />
+                <path d="M6 12h3M9 12l3-5M9 12l3 5M16 6l3 5M16 18l3-5" />
+              </svg>
+            </div>
+            <h3 class="tw-text-lg tw-font-bold tw-text-slate-900 tw-mb-2">1→n 与 n→1 拓扑，还原数字工业线</h3>
+            <p class="tw-text-slate-600 tw-text-sm tw-leading-relaxed">打破单一 AI 对话局限。支持将复杂大任务拆解并分发给多个专属 Agent
+              并行加工（1→n），再由质检 Agent 顺序聚合与协同修正（n→1），榨干模型生产力。</p>
+          </div>
+
+          <div class="tw-bg-white tw-border tw-border-slate-200/70 tw-rounded-xl tw-p-6 tw-shadow-sm">
+            <div
+              class="tw-w-10 tw-h-10 tw-bg-purple-50 tw-text-purple-600 tw-rounded-lg tw-mb-4 tw-flex tw-items-center tw-justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2" />
+                <path d="M3 9h18M9 21V9M14 13h3M14 17h2" />
+              </svg>
+            </div>
+            <h3 class="tw-text-lg tw-font-bold tw-text-slate-900 tw-mb-2">双击即用交互网页，跨角色无缝分发</h3>
+            <p class="tw-text-slate-600 tw-text-sm tw-leading-relaxed">编排完毕的工作流一键导出为独立 HTML
+              网页。团队内的销售、外包人员无需注册账号，直接双击网页即可输入并生产物料，无任何认知门槛。</p>
+          </div>
+
+          <div class="tw-bg-white tw-border tw-border-slate-200/70 tw-rounded-xl tw-p-6 tw-shadow-sm">
+            <div
+              class="tw-w-10 tw-h-10 tw-bg-purple-50 tw-text-purple-600 tw-rounded-lg tw-mb-4 tw-flex tw-items-center tw-justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 12h7" />
+                <path d="M15 12h7" />
+                <rect x="9" y="8" width="6" height="8" rx="1" fill="currentColor" fill-opacity="0.1" />
+                <path d="M11 10v4M13 10v4" />
+                <circle cx="12" cy="12" r="9" stroke-dasharray="3 3" />
+              </svg>
+            </div>
+            <h3 class="tw-text-lg tw-font-bold tw-text-slate-900 tw-mb-2">Human-in-the-Loop 关键节点随时拦截</h3>
+            <p class="tw-text-slate-600 tw-text-sm tw-leading-relaxed">
+              拒绝无控的一键黑盒到底。数字流水线支持在中间任何加工环节挂起拦截，由人类专家进行微调、确认后再流转至下一站，保证交付结果 100% 达到工业级标准。</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 信息架构：降本算账面板 -->
+      <div id="comparisonTable" class="tw-mb-28 tw-scroll-mt-24">
+        <div class="tw-bg-white tw-rounded-xl tw-border tw-border-slate-200/80 tw-p-5 sm:tw-p-8 tw-shadow-xl">
+          <div class="tw-text-center tw-mb-8">
+            <div class="tw-text-xs tw-font-mono tw-font-bold tw-text-slate-400 tw-mb-1">降本算账面板</div>
+            <h2 class="tw-text-xl sm:tw-text-2xl tw-font-bold tw-text-slate-900">企业级 AIGC 选型：算算技术账与资产账</h2>
+            <p class="tw-text-slate-500 tw-mt-2 tw-text-sm">冷启动与成长期，把预算砸在业务红利上，而不是淹没在繁琐的后台运维与巨额的服务器账单里。</p>
+          </div>
+
+          <div class="table-scroll-x">
+            <table class="tw-min-w-[760px] md:tw-w-full tw-text-left tw-border-collapse">
+              <thead>
+                <tr class="tw-bg-slate-900 tw-text-slate-100">
+                  <th style="width: 150px;" class="tw-p-4 tw-text-xs tw-font-mono tw-font-bold tw-rounded-l-lg">选型考察维度
+                  </th>
+                  <th class="tw-p-4 tw-text-xs tw-font-mono tw-font-bold tw-text-purple-300 tw-bg-slate-950">
+                    Trans-Workflow</th>
+                  <th class="tw-p-4 tw-text-xs tw-font-mono tw-font-bold tw-text-slate-400">云端黑盒工作流 (如 Dify 等)</th>
+                  <th class="tw-p-4 tw-text-xs tw-font-mono tw-font-bold tw-text-slate-400 tw-rounded-r-lg">传统后台系统定制开发
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="tw-text-slate-700 tw-text-xs sm:tw-text-sm">
+                <tr class="tw-border-b tw-border-slate-100 hover:tw-bg-slate-50/60">
+                  <td class="tw-p-4 tw-font-medium tw-text-slate-900">💳 服务器固定账单</td>
+                  <td class="tw-p-4 tw-bg-purple-50/40 tw-text-purple-950">
+                    <span
+                      class="tw-font-bold tw-bg-purple-100 tw-px-1.5 tw-py-0.5 tw-rounded text-purple-700">【￥0/月】</span><br>
+                    纯静态单文件本地运行，无数据库，无服务器维护成本。
+                  </td>
+                  <td class="tw-p-4 tw-text-slate-500">需强绑定 ECS、Redis、云数据库等多服务组合，承担固定的月度高额开销。</td>
+                  <td class="tw-p-4 tw-text-slate-500">长驻云端微服务架构，随团队算力使用量激增，服务器硬件及带宽费用持续滚雪球。</td>
+                </tr>
+                <tr class="tw-border-b tw-border-slate-100 hover:tw-bg-slate-50/60">
+                  <td class="tw-p-4 tw-font-medium tw-text-slate-900">📉 沉没技术债务</td>
+                  <td class="tw-p-4 tw-bg-purple-50/40 tw-text-purple-950">
+                    <span
+                      class="tw-font-bold tw-bg-purple-100 tw-px-1.5 tw-py-0.5 tw-rounded text-purple-700">【零技术债务】</span><br>
+                    单个 HTML 包随用随走。无侵入性，不积累任何老旧系统垃圾，没有底层框架烂摊子。
+                  </td>
+                  <td class="tw-p-4 tw-text-slate-500">深度依赖 Docker 容器集群更新，版本升级容易崩溃，需要专业技术网管持续盯防。</td>
+                  <td class="tw-p-4 tw-text-slate-500">交付即债务。大模型接口高频变更，代码极易腐化，后期改动及修补需持续投入资金。</td>
+                </tr>
+                <tr class="tw-border-b tw-border-slate-100 hover:tw-bg-slate-50/60">
+                  <td class="tw-p-4 tw-font-medium tw-text-slate-900">📦 交付物核心价值</td>
+                  <td class="tw-p-4 tw-bg-purple-50/40 tw-text-purple-950">
+                    <span
+                      class="tw-font-bold tw-bg-purple-100 tw-px-1.5 tw-py-0.5 tw-rounded text-purple-700">【离线分发资产】</span><br>
+                    直接交付脱离母体的交互式轻量单文件工具，团队内双击即用，核心策略完全本地化。
+                  </td>
+                  <td class="tw-p-4 tw-text-slate-500">仅为特定的后台访问链接，高度绑定母平台账号系统，无法作为独立资产自由离线分发。</td>
+                  <td class="tw-p-4 tw-text-slate-500">多为冰冷的多段基础代码片段或复杂的后端 API 入口，非技术部门成员完全无法直接挪用。</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="tw-text-center tw-mt-6 tw-text-xs tw-text-slate-400">✨ 拒绝为过度工程买单。用最简单的顺序流水线，打包真正属于公司财产的数字化交互式工具。
+          </div>
+        </div>
+      </div>
+
+      <!-- 落地闭环步骤卡片 -->
+      <div
+        class="tw-bg-gradient-to-br tw-from-slate-50 tw-to-purple-50/30 tw-rounded-3xl tw-border tw-border-slate-200 tw-p-8 md:tw-p-12 tw-mb-28">
+        <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-10 tw-items-center">
+          <div>
+            <span
+              class="tw-inline-block tw-px-3 tw-py-1 tw-rounded-full tw-bg-purple-100 tw-text-purple-700 tw-text-xs tw-font-semibold tw-tracking-wide tw-mb-4">🚀
+              资产快速裂变</span>
+            <h2 class="tw-text-2xl sm:tw-text-3xl tw-font-bold tw-text-slate-900 tw-mb-4">把 AI 沉淀为资产，把资产转化为确定的红利</h2>
+            <p class="tw-text-slate-600 tw-leading-relaxed tw-mb-6">
+              如果 AI 无法形成双击即用的交互式网页工具，它就永远被困在研发部门的调试沙盒里。Trans-Workflow 的核心价值，就是让非技术业务人员花 10
+              分钟拼装好的流程，直接裂变为无依赖的、全公司通用的数字流水线。
+            </p>
+            <ul class="tw-space-y-3">
+              <li class="tw-flex tw-items-start tw-gap-3">
+                <span
+                  class="tw-w-5 tw-h-5 tw-rounded-full tw-bg-purple-100 tw-text-purple-600 tw-flex tw-items-center tw-justify-center tw-text-xs tw-mt-0.5">✓</span>
+                <span class="tw-text-sm tw-text-slate-600"><strong>单文件优势：</strong>无需复杂的 IT 系统嵌入，一个 HTML
+                  文件承载全部加工业务流。</span>
+              </li>
+              <li class="tw-flex tw-items-start tw-gap-3">
+                <span
+                  class="tw-w-5 tw-h-5 tw-rounded-full tw-bg-purple-100 tw-text-purple-600 tw-flex tw-items-center tw-justify-center tw-text-xs tw-mt-0.5">✓</span>
+                <span
+                  class="tw-text-sm tw-text-slate-600"><strong>免去培训成本：</strong>只有“输入数据”与“运行输出”的开箱即用直观面板，拒绝认知过载。</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="tw-bg-white tw-rounded-2xl tw-border tw-border-slate-200 tw-p-6 tw-shadow-lg">
+            <div class="tw-flex tw-items-center tw-gap-3 tw-mb-4">
+              <div class="tw-w-10 tw-h-10 tw-rounded-full tw-bg-purple-100 tw-flex tw-items-center tw-justify-center">
+                <div class="tw-w-4 tw-h-4 tw-bg-purple-600 starburst-icon"></div>
+              </div>
+              <div>
+                <div class="tw-text-sm tw-font-bold tw-text-slate-800">红利落地三步走</div>
+                <div class="tw-text-xs tw-text-slate-500">不花一分运维钱，跑通业务闭环</div>
+              </div>
+            </div>
+            <div class="tw-space-y-4">
+              <div class="tw-flex tw-gap-4">
+                <div
+                  class="tw-w-8 tw-h-8 tw-rounded-lg tw-bg-purple-600 tw-text-white tw-flex tw-items-center tw-justify-center tw-text-sm tw-font-bold tw-shrink-0">
+                  1</div>
+                <div>
+                  <div class="tw-text-sm tw-font-bold tw-text-slate-800">顺序列出步骤，搭好积木</div>
+                  <div class="tw-text-xs tw-text-slate-500">业务人员自主场景节点拼装（如小红书封面助手、行业报告复盘）。</div>
+                </div>
+              </div>
+              <div class="tw-flex tw-gap-4">
+                <div
+                  class="tw-w-8 tw-h-8 tw-rounded-lg tw-bg-purple-600 tw-text-white tw-flex tw-items-center tw-justify-center tw-text-sm tw-font-bold tw-shrink-0">
+                  2</div>
+                <div>
+                  <div class="tw-text-sm tw-font-bold tw-text-slate-800">一键打包，导出独立网页</div>
+                  <div class="tw-text-xs tw-text-slate-500">脱离云端黑盒限制，直接导出为无任何依赖的交互式单 HTML 工具。</div>
+                </div>
+              </div>
+              <div class="tw-flex tw-gap-4">
+                <div
+                  class="tw-w-8 tw-h-8 tw-rounded-lg tw-bg-purple-600 tw-text-white tw-flex tw-items-center tw-justify-center tw-text-sm tw-font-bold tw-shrink-0">
+                  3</div>
+                <div>
+                  <div class="tw-text-sm tw-font-bold tw-text-slate-800">双击即用，全面裂变分发</div>
+                  <div class="tw-text-xs tw-text-slate-500">直接发给其他非技术员工或合作商。双击即用，收割确定的效率剪刀差。</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 信任背书与行动点（CTA）视觉分层 -->
+      <div class="tw-bg-slate-900 tw-rounded-2xl tw-p-8 md:tw-p-12 tw-text-center tw-relative tw-overflow-hidden">
+        <div class="tw-absolute tw-top-4 tw-right-4 tw-w-24 tw-h-24 tw-bg-purple-600/10 tw-rounded-full tw-blur-xl">
+        </div>
+
+        <h2
+          class="tw-text-4xl sm:tw-text-5xl md:tw-text-6xl tw-font-black tw-bg-gradient-to-r tw-from-purple-400 tw-to-indigo-300 tw-bg-clip-text tw-text-transparent tw-mb-4">
+          用轻量智能组件，收割确定的转型红利
+        </h2>
+        <p class="tw-text-slate-400 tw-max-w-xl tw-mx-auto tw-text-sm sm:tw-text-base tw-mb-10">
+          免运维云端底盘 · 零技术债务积累 · 开箱即用交互资产 · 100% 独立离线私有运行
+        </p>
+
+        <!-- 双按钮视觉分层与微交互 -->
+        <div class="tw-flex tw-flex-wrap tw-justify-center tw-gap-5 tw-mb-12">
+          <a href="https://transweb.cn/workflow/index.html" target="_blank">
+            <button
+              class="tw-bg-purple-600 hover:tw-bg-purple-700 tw-text-white tw-px-8 tw-py-4 tw-rounded-md tw-text-base tw-font-bold tw-shadow-xl tw-transition-all tw-flex tw-items-center tw-gap-2">
+              开始构建 AI 工作流 <span class="tw-font-mono">➔</span>
+            </button>
+          </a>
+          <button onclick="triggerPackDownload(this)"
+            class="btn-pack-down tw-bg-slate-950 tw-border tw-border-slate-800 hover:tw-border-purple-500/50 tw-text-slate-200 tw-px-8 tw-py-4 tw-rounded-md tw-text-base tw-font-bold tw-flex tw-items-center tw-gap-2">
+            <span class="btn-icon-box">📦</span> <span class="btn-text-box">打包下载离线静态组件</span>
+          </button>
+        </div>
+
+        <!-- 合规与安全标贴 -->
+        <div
+          class="tw-flex tw-flex-wrap tw-justify-center tw-items-center tw-gap-x-8 tw-gap-y-3 tw-pt-6 tw-border-t tw-border-slate-800 tw-text-slate-500 tw-text-xs tw-font-mono">
+          <div class="tw-flex tw-items-center tw-gap-1.5">
+            <span>🔒</span> 100% 本地数据隔离
+          </div>
+          <div class="tw-flex tw-items-center tw-gap-1.5">
+            <span>📄</span> MIT 开源合规认证
+          </div>
+          <div class="tw-flex tw-items-center tw-gap-1.5">
+            <span>❌</span> 无常驻云端缓存 / 拒绝算法白嫖
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 悬浮微信组件 -->
+  <div class="tw-fixed tw-right-6 tw-bottom-6 tw-z-50">
+    <div class="tw-relative tw-group">
+      <div
+        class="tw-absolute tw-right-full tw-bottom-0 tw-mr-3 tw-w-32 tw-h-32 tw-bg-white tw-border tw-border-slate-200 tw-rounded-lg tw-shadow-xl tw-opacity-0 tw-invisible group-hover:tw-opacity-100 group-hover:tw-visible tw-transition-all tw-duration-300 tw-flex tw-items-center tw-justify-center">
+        <img src="https://transweb.cn/assets/qrcode.png" alt="微信二维码" class="tw-w-28 tw-h-28 tw-object-cover tw-rounded">
+        <div
+          class="tw-absolute tw-right-[-6px] tw-bottom-4 tw-w-3 tw-h-3 tw-bg-white tw-border-r tw-border-b tw-border-slate-200 tw-transform tw--rotate-45">
+        </div>
+      </div>
+      <button
+        class="tw-w-11 tw-h-11 tw-bg-slate-900 tw-text-white tw-rounded-md tw-shadow-lg hover:tw-bg-purple-700 tw-transition-all tw-duration-200 tw-flex tw-items-center tw-justify-center focus:tw-outline-none">
+        <svg class="tw-w-6 tw-h-6" fill="currentColor" viewBox="0 0 22 22">
+          <path
+            d="M8.5 13.5c-.8 0-1.5-.7-1.5-1.5s.7-1.5 1.5-1.5 1.5.7 1.5 1.5-.7 1.5-1.5 1.5zm6.5 0c-.8 0-1.5-.7-1.5-1.5s.7-1.5 1.5-1.5 1.5.7 1.5 1.5-.7 1.5-1.5 1.5zm3.5-3.5c0-3.3-3.1-6-7-6s-7 2.7-7 6c0 1.8.9 3.5 2.4 4.6l-.8 2.4 2.8-1.4c.8.3 1.7.4 2.6.4 3.9 0 7-2.7 7-6z" />
+        </svg>
+      </button>
+    </div>
+  </div>
+  <script defer src="https://transweb.cn/index.js"></script>
+  <script defer src="https://transweb.cn/workflow/index.js"></script>
+</body>
+
+</html>
