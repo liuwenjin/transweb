@@ -173,7 +173,7 @@ app.use((req, res, next) => {
     "skills": "https://transweb.cn/skillHub.html",
     "math": "https://transweb.cn/workflow/math.html",
     "simulation": "https://transweb.cn/workflow/docs/examples/physics-simulation.html",
-    "ggb": "https://transweb.cn/workflow/docs/examples/ggb-skill.html",
+    "ggb": "https://transweb.cn/workflow/docs/examples/ggb-agent.html",
     "canvas": "https://transweb.cn/workflow/docs/examples/canvas-skill.html",
     'noaifeel': 'https://transweb.cn/skill.html?id=e508059dd3be1f3055b81105200beba8&solo=true',
     'chart': "https://transweb.cn/skill.html?id=916d7e5e4d50cc14621878d9f98dbd93&solo=true",

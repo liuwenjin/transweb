@@ -71,7 +71,8 @@ TransWeb 是一个 **B/S 架构、无代码生成 AI Agent** 的在线平台：�
         ▼                      ▼                          ▼
   Trans-Agent             Skill 生成器               Trans-Workflow
   creator.html            skill.html                workflow/index.html
-  选资料一键生成            agent.html                index.html（落地页）
+  index.html（落地页）      agent.html
+  选资料一键生成
         │                      │                          │
         └──── 技能 / 工作流 + 知识库 + 人设 = Agent ◄──────┘
                                │
@@ -86,11 +87,11 @@ TransWeb 是一个 **B/S 架构、无代码生成 AI Agent** 的在线平台：�
 
 | 页面 | 它是什么 | 输入 → 输出 |
 | --- | --- | --- |
-| `creator.html` | **Trans-Agent（Agent 生成器）** | 选一份资料 → 一键生成「Agent」（知识库 + 人设 + 绑定技能/工作流） |
+| `creator.html` / `index.html` | **Trans-Agent（Agent 生成器）** | 选一份资料 → 一键生成「Agent」（知识库 + 人设 + 绑定技能/工作流） |
 | `skill.html` / `agent.html` | **Skill 生成器** | 一句话需求 → 一个可复用的「技能」 |
 | `workflow/index.html` | **Trans-Workflow（工作流引擎）** | 多个技能 → 一条「流水线」，可编排、可回溯、可导出 |
 
-> `index.html` 是 Trans-Workflow 的对外落地页（介绍「为什么选它、怎么用」）；`workflow/` 下的 `math.html`、`mathFlow.html` 是面向「数学教研」这一垂直场景的专属流水线。
+> `index.html` 是 Trans-Agent 的对外落地页（与 `creator.html` 相同）；`workflow/` 下的 `math.html`、`mathFlow.html` 是面向「数学教研」这一垂直场景的专属流水线。
 
 ### 辅线一：逛现成的
 
