@@ -368,7 +368,7 @@
             img.src = content;
             // 将图片添加到粘贴区域
             // container.appendChild(img);
-            task.editor.dangerouslyInsertHtml(`<img src="${img.src}" width="700px" height="auto" />`);
+            task.editor.dangerouslyInsertHtml(`<img src="${img.src}" alt="${img.alt || img.name || ''}" width="700px" height="auto" />`);
           }
         };
         if (blob) {

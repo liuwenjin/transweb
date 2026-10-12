@@ -566,7 +566,7 @@
     if (!data.inactive || $("#tModalDialog").attr("state") === "previewCardItem") {
       webCpu.CardItem._fresh(data, _interface);
     } else if (data.sketch) {
-      $(data.task.container).html('<div class="CardItem_sketch"><img src="#" /></div>');
+      $(data.task.container).html('<div class="CardItem_sketch"><img src="#" alt="" /></div>');
       $(data.task.container).find(".CardItem_sketch>img").attr("src", data.sketch);
       $(data.task.container).find(".CardItem_sketch>img").attr("alt", data.title || data.cardName);
     } else { }
