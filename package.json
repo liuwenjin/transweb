@@ -1,7 +1,7 @@
 {
     "name": "transweb",
     "version": "0.0.1",
-    "description": "无代码生成 AI 技能的在线工具（AI Harness 框架）",
+    "description": "无代码生成 AI Agent：每个 Agent 可绑定 AI 技能或工作流（技能可无代码生成、可视化编排成工作流）",
     "main": "gulpfile.js",
     "scripts": {
         "test": "gulp",
