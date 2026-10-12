@@ -112,6 +112,8 @@ TransWeb 是一个 **B/S 架构、无代码生成 AI Agent** 的在线平台：�
 | `admin.html` | 管理员界面（Skill 生成器的管理端） |
 | `initialize.html` / `initAdmin.html` | 初始化 / 初始化管理员账号 |
 
+> ⚠️ **安全告警**：以上为管理员/初始化页面，**发布到互联网前必须删除 `admin.html` 和 `initAdmin.html`**（`initialize.html` 等其它后台页面也建议一并处理），否则任何人可直接访问初始化/管理入口。
+
 > 其余 `preview.html`（预览容器）、`proxy.html`（跨域代理）、`template.html` / `transApp.html`（应用模板）为框架内部支撑页面，普通用户无需关心。
 
 ---
@@ -218,6 +220,13 @@ npm run test           # 即 gulp，压缩合并组件脚本
 ```
 
 启动后访问 `http://localhost/`，前端由 `static/` 静态托管。
+
+> ⚠️ **上线前安全必做**：把服务对外发布到互联网之前，务必删除后台与初始化页面：
+> - `static/admin.html`
+> - `static/initAdmin.html`
+> - 同类页面如 `static/initialize.html` 也建议一并删除
+>
+> 否则任何人无需登录即可访问初始化/管理入口，可创建管理员账号或操作后台。
 
 ### 运行时目录与数据文件（已被 .gitignore 排除）
 

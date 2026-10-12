@@ -167,7 +167,7 @@ app.use((req, res, next) => {
     '/mathVisual': 'https://transweb.cn/workflow/docs/examples/math-visual.html',
     "demo": "https://transweb.cn/skill.html?id=580dd5317774579b532c19ae36011774&solo=true",
     "skill": "https://transweb.cn/skill.html",
-    "agent": "https://transweb.cn/creator.html",
+    "agent": "https://transweb.cn/index.html",
     "creator": "https://transweb.cn/creator.html",
     "workflow": "https://transweb.cn/workflow.html",
     "skills": "https://transweb.cn/skillHub.html",
