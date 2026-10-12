@@ -4,7 +4,8 @@
     "description": "无代码生成 AI 技能的在线工具（AI Harness 框架）",
     "main": "gulpfile.js",
     "scripts": {
-        "test": "gulp"
+        "test": "gulp",
+        "init": "node scripts/init.js"
     },
     "author": "",
     "license": "ISC",

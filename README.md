@@ -206,17 +206,36 @@ transweb/
 # 1. 安装依赖
 npm install
 
-# 2. 配置环境变量
-cp .env.example .env   # 按注释填写 SESSION_SECRET、MongoDB、ADMIN_* 等必填项
+# 2. 初始化运行环境（创建运行时目录 + 生成 .env）
+npm run init           # 即 node scripts/init.js
 
-# 3. 启动服务
+# 3. 配置环境变量
+#    编辑 .env，按注释填写 SESSION_SECRET、MongoDB、ADMIN_* 等必填项
+
+# 4. 启动服务
 node webServer.js      # HTTP: PORT（默认 80）；HTTPS: SSLPORT（默认 443）
 
-# 4.（可选）构建前端组件
+# 5.（可选）构建前端组件
 npm run test           # 即 gulp，压缩合并组件脚本
 ```
 
 启动后访问 `http://localhost/`，前端由 `static/` 静态托管。
+
+### 运行时目录与数据文件（已被 .gitignore 排除）
+
+下列目录/文件保存运行时状态或敏感信息，**不会**随仓库分发，`npm run init` 会自动创建缺失项：
+
+| 路径 | 用途 | 备注 |
+| --- | --- | --- |
+| `.env` | 环境变量/密钥 | 由 `.env.example` 复制生成，勿提交 |
+| `ca/` | HTTPS 证书与私钥 | 启用 HTTPS（`SSLPORT`）时需自行放入证书 |
+| `personal/appData/`、`personal/permission/` | 用户应用/权限数据 | 运行时生成 |
+| `static/bucket/personal/` | 用户个人空间（文档/应用） | 运行时生成 |
+| `wxPayLog/` | 微信支付流水日志 | 运行时生成 |
+| `interface/config/logined.js`、`guest.js` | 登录/访客会话 | 需以 `var data={}\n module.exports = data;` 形式存在 |
+| `temp_uploads/`、`temp/`、`tmp/` | 上传/临时目录 | 运行时生成 |
+
+> 全新 clone 后务必先执行 `npm run init`，否则 `webServer.js` 启动时会因缺少 `interface/config/logined.js` 等文件报错。
 
 ### 环境变量（关键项，完整见 `.env.example`）
 
