@@ -38,7 +38,7 @@ TransWeb 是一个 **B/S 架构、无代码生成 AI Agent** 的在线平台：�
 | --- | --- | --- |
 | **Agent（助理）** | 核心成品：**包含**知识库 + 人设规则，**可以使用** Skill / Workflow | 一个「配了资料和手册、会干活的员工」 |
 | **Skill（技能）** | 一套「怎么干这件事」的说明，供 Agent 使用 | 一张「岗位操作卡」 |
-| **Workflow（工作流）** | 多个 Skill 可视化编排成的「流水线」，供 Agent 使用 | 一条「生产线」 |
+| **Workflow（工作流）** | 多个 Skill 可视化编排成的「工作流」，供 Agent 使用 | 一条「生产线」 |
 | **知识库（Knowledge Base）** | 你给的资料，变成 Agent 的「记忆」 | Agent 的「资料库/记忆」 |
 
 它们的关系：
@@ -67,7 +67,7 @@ TransWeb 是一个 **B/S 架构、无代码生成 AI Agent** 的在线平台：�
                           TransWeb 平台
                                │
         ┌──────────────────────┼──────────────────────────┐
-     造「Agent」              造「技能」                 串「流水线」
+     造「Agent」              造「技能」                 串「工作流」
         ▼                      ▼                          ▼
   Trans-Agent             Skill 生成器               Trans-Workflow
   creator.html            skill.html                workflow/index.html
@@ -89,9 +89,9 @@ TransWeb 是一个 **B/S 架构、无代码生成 AI Agent** 的在线平台：�
 | --- | --- | --- |
 | `creator.html` / `index.html` | **Trans-Agent（Agent 生成器）** | 选一份资料 → 一键生成「Agent」（知识库 + 人设 + 绑定技能/工作流） |
 | `skill.html` / `agent.html` | **Skill 生成器** | 一句话需求 → 一个可复用的「技能」 |
-| `workflow/index.html` | **Trans-Workflow（工作流引擎）** | 多个技能 → 一条「流水线」，可编排、可回溯、可导出 |
+| `workflow/index.html` | **Trans-Workflow（工作流引擎）** | 多个技能 → 一条「工作流」，可编排、可回溯、可导出 |
 
-> `index.html` 是 Trans-Agent 的对外落地页（与 `creator.html` 相同）；`workflow/` 下的 `math.html`、`mathFlow.html` 是面向「数学教研」这一垂直场景的专属流水线。
+> `index.html` 是 Trans-Agent 的对外落地页（与 `creator.html` 相同）；`workflow/` 下的 `math.html`、`mathFlow.html` 是面向「数学教研」这一垂直场景的专属工作流。
 
 ### 辅线一：逛现成的
 
@@ -130,7 +130,7 @@ TransWeb 是一个 **B/S 架构、无代码生成 AI Agent** 的在线平台：�
 
 **一句话总结痛点：** 想让 AI 真正「懂你的资料、按你的规矩干活」，过去需要写代码、搭数据库、反复调 Prompt。
 
-**它的回答是：** 上传资料 / 说句需求 → 自动生成 → 得到直接可用的技能、助理或流水线。
+**它的回答是：** 上传资料 / 说句需求 → 自动生成 → 得到直接可用的 Agent、技能或工作流。
 
 ---
 
@@ -142,7 +142,9 @@ TransWeb 是一个 **B/S 架构、无代码生成 AI Agent** 的在线平台：�
 | **省** | 按量计费、闲置零成本，没有看不懂的套餐和隐藏订阅 |
 | **稳** | 回答有据可查（带原文引用），资料加密隔离、不用于训练模型 |
 
-**产品特质（对 Trans-Workflow）：**
+**产品特质：**
+
+- **资料一键成 Agent**：上传一份资料，自动生成带知识库与人设的专属 Agent，可绑定技能 / 工作流。
 
 - **单文件部署**：一个 HTML 文件 = 编辑器 + 工作流引擎 + 运行环境，零依赖、双击即用。
 - **过程透明 + 人工干预（Human-in-the-Loop）**：中间结果可见、可暂停、可手动改，AI 与人协同。
@@ -156,7 +158,7 @@ TransWeb 是一个 **B/S 架构、无代码生成 AI Agent** 的在线平台：�
 
 **能做什么：**
 
-- **生成**：文档 → 助理；需求 → 技能；文档 → 知识库；多技能 → 工作流。
+- **生成**：资料 → Agent；需求 → 技能；多技能 → 工作流；资料 → 知识库。
 - **分发**：链接分享、二维码访问、下载独立网页、嵌入 iframe。
 - **编辑**：可视化编辑生成结果，可删除/调整元素、保存、复制、发布。
 - **配置**：换 AI 模型与供应商、绑定多知识库、设价格与佣金。
@@ -187,18 +189,24 @@ TransWeb 是一个 **B/S 架构、无代码生成 AI Agent** 的在线平台：�
 
 ```
 transweb/
-├── webServer.js        # 服务端入口（Express + HTTPS + 路由/支付/微信）
-├── gulpfile.js         # 前端组件打包任务
-├── .env.example        # 环境变量样例（密钥/数据库/模型 Key）
-├── custom/             # 框架核心：DB 连接、Restful 路由、Bucket、WebTool、Adapter
-├── interface/          # 业务接口（user/gpt/admin）与模型适配配置
-│   ├── config/         # common.js / interface.js / appConfig.js
-│   └── xml/            # MySQL/Neo4j 查询配置
-├── static/             # 前端全部页面与组件（见「产品地图」）
-│   ├── transweb/       # 运行时核心：webCpu.js / aigcPlugin.js / vueSfcEditor.js / 组件 / 模板
-│   ├── webApps/        # 文档/Agent 相关 Vue 组件
-│   └── bucket/         # 应用 / 素材 / 个人空间
-└── ca/                 # HTTPS 证书（SNI 多域名）
+├── webServer.js          # 服务端入口（Express + HTTPS + 路由/支付/微信）
+├── gulpfile.js           # 前端组件打包任务
+├── package.json          # 依赖与脚本（npm run init / npm run test）
+├── scripts/
+│   └── init.js           # 初始化脚本（生成运行时目录与 .env）
+├── .env.example          # 环境变量样例（密钥/数据库/模型 Key）
+├── LICENSE               # ISC 许可证
+├── README.md
+├── SECURITY.md
+├── custom/               # 框架核心：DB 连接、Restful 路由、Bucket、WebTool、Adapter
+├── interface/            # 业务接口（user/gpt/admin）与模型适配配置
+│   ├── config/           # common.js / interface.js / appConfig.js
+│   └── xml/              # MySQL/Neo4j 查询配置
+└── static/               # 前端全部页面与组件（见「产品地图」）
+    ├── transweb/         # 运行时核心：webCpu.js / aigcPlugin.js / vueSfcEditor.js / 组件 / 模板
+    ├── webApps/          # 文档/Agent 相关 Vue 组件
+    ├── workflow/         # 工作流引擎与文档/示例
+    └── bucket/           # 应用 / 素材 / 个人空间
 ```
 
 ### 快速开始

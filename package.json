@@ -2,13 +2,30 @@
     "name": "transweb",
     "version": "0.0.1",
     "description": "无代码生成 AI Agent：每个 Agent 可绑定 AI 技能或工作流（技能可无代码生成、可视化编排成工作流）",
-    "main": "gulpfile.js",
+    "main": "webServer.js",
     "scripts": {
         "test": "gulp",
         "init": "node scripts/init.js"
     },
-    "author": "",
+    "author": "liuwenjin",
     "license": "ISC",
+    "homepage": "https://transweb.cn",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/liuwenjin/transweb.git"
+    },
+    "bugs": {
+        "url": "https://github.com/liuwenjin/transweb/issues"
+    },
+    "keywords": [
+        "ai",
+        "agent",
+        "workflow",
+        "no-code",
+        "low-code",
+        "nodejs",
+        "express"
+    ],
     "devDependencies": {
         "gulp": "^4.0.2",
         "gulp-terser": "^2.1.0"
