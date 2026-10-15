@@ -206,7 +206,13 @@ app.use((req, res, next) => {
 app.disable("x-powered-by");
 app.use(function (req, res, next) {
   res.setHeader("X-Content-Type-Options", "nosniff");
-  res.setHeader("X-Frame-Options", "SAMEORIGIN");
+  // 默认不发送 X-Frame-Options / frame-ancestors，从而允许任意来源（含本地 file://）通过 iframe 嵌入本服务。
+  // 说明：frame-ancestors 的 '*' 只匹配 http/https/ws/wss 等网络协议，无法匹配 file:// 的 null 源，
+  // 因此要放行本地 file:// 页面，必须完全不发送该限制头。
+  // 如需收紧，可设置环境变量 FRAME_ANCESTORS，例如：FRAME_ANCESTORS="'self' https://example.com"
+  if (process.env.FRAME_ANCESTORS) {
+    res.setHeader("Content-Security-Policy", "frame-ancestors " + process.env.FRAME_ANCESTORS);
+  }
   res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
   next();
 });

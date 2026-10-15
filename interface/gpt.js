@@ -243,7 +243,7 @@ const Billing = {
             params.root = params.root || defaultId;
             if (params.root) {
               console.log("_奖励发布者: ", params.root);
-              let rate = params.publishRate || 0.7;
+              let rate = params.publishRate || commonData.defaultPublishRate || 0.9;
               awardPoints(
                 params.root,
                 Math.ceil(params.margin * rate),
@@ -254,7 +254,7 @@ const Billing = {
                   console.log("_奖励开发商: ", params.agentId);
                   awardPoints(
                     params.agentId,
-                    Math.ceil(params.margin * (params.develeperRate || 0.2)),
+                    Math.ceil(params.margin * (params.develeperRate || commonData.defaultDeveloperRate || 0.1)),
                     "开发者-奖励提成",
                     db,
                     () => {
@@ -268,7 +268,7 @@ const Billing = {
                       console.log("_奖励传播者: ", params.from);
                       awardPoints(
                         params.from,
-                        Math.ceil(params.margin * (params.transferRate || 0.1)),
+                        Math.ceil(params.margin * (params.transferRate || commonData.defaultTransferRate || 0.01)),
                         "传播者-奖励提成",
                         db,
                         () => {
