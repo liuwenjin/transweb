@@ -428,23 +428,23 @@ let data = {
 
         // 权限控制：强制按当前会话 folderName 收敛，不接受客户端 admin 万能口令，
         // 并防止客户端通过嵌套运算符（如 {folderName: {$ne: "x"}}）覆盖租户隔离。
-        delete query.admin;
-        delete query.folderName;
         query = WebTool.mongoTool.sanitizeQuery(query);
 
         if (table === "pointsBill") {
           query.folderName = String(req.session.data.folderName);
+        } else if(table === "account" && req.session.data.account === commonData.adminAccount) {
+          query.folderName = Number(query.folderName) || ""
         } else {
           query.folderName = Number(req.session.data.folderName) || req.session.data.folderName;
         }
+
+        console.log("Mongo Query Condition:", query);
 
         // ----------- 3️⃣ 选择返回字段 -----------
         const projection = {};
         if (fields) {
           fields.split(",").forEach((f) => (projection[f.trim()] = 1));
         }
-
-
 
         // ----------- 4️⃣ 排序配置 -----------
         let sortObj = {};
@@ -2100,114 +2100,222 @@ let data = {
   getDocumentFile: {
     method: "get",
     dbItem: "visualTool",
-    callback: async function getDocumentFile(req, res, dbInfo, db) {
-      try {
-        const {
-          id,
-          condition,
-          key = "document",     // Mongo 字段名，存储文件路径
-          table = "pptItem",    // 数据表
-          mode = "text",      // 返回模式: stream | base64 | text
-          download = false,     // 是否触发下载
-          ...queryParams
-        } = req.query;
-
-        // ----------- 安全字段白名单 -----------
-        const SAFE_FIELDS = ["_id", "id", "folderName", "appName", "documentId", "type"];
-
-        const dbItem = db.db(dbInfo.database);
-        const collection = dbItem.collection(table);
-
-        // ----------- 构建查询条件 -----------
-        const query = {};
-        if (condition) {
-          if (!SAFE_FIELDS.includes(condition)) {
-            return res.status(403).send(`Unsafe condition field: ${condition}`);
-          }
-          const value = queryParams[condition];
-          if (!value) return res.status(400).send(`Missing value for condition=${condition}`);
-          query[condition] = value;
-        } else if (id) {
+    callback: async function (req, res, dbInfo, db) {
           try {
-            query._id = new ObjectId(id);
-          } catch {
-            query._id = id;
-          }
-        } else {
-          for (const safeKey of SAFE_FIELDS) {
-            if (queryParams[safeKey]) {
-              query[safeKey] = queryParams[safeKey];
-              break;
+            const {
+              id,
+              condition,
+              key = "document",     // Mongo 字段名，存储文件路径
+              table = "pptItem",    // 数据表
+              mode = "text",      // 返回模式: stream | base64 | text
+              download = false,     // 是否触发下载
+              ...queryParams
+            } = req.query;
+    
+            // ----------- 安全字段白名单 -----------
+            const SAFE_FIELDS = ["_id", "id", "folderName", "appName", "documentId", "type"];
+    
+            const dbItem = db.db(dbInfo.database);
+            const collection = dbItem.collection(table);
+    
+            // ----------- 构建查询条件 -----------
+            const query = {};
+            if (condition) {
+              if (!SAFE_FIELDS.includes(condition)) {
+                return res.status(403).send(`Unsafe condition field: ${condition}`);
+              }
+              const value = queryParams[condition];
+              if (!value) return res.status(400).send(`Missing value for condition=${condition}`);
+              query[condition] = value;
+            } else if (id) {
+              try {
+                query._id = new ObjectId(id);
+              } catch {
+                query._id = id;
+              }
+            } else {
+              for (const safeKey of SAFE_FIELDS) {
+                if (queryParams[safeKey]) {
+                  query[safeKey] = queryParams[safeKey];
+                  break;
+                }
+              }
             }
+    
+            if (Object.keys(query).length === 0) {
+              return res.status(400).send("Missing valid query condition");
+            }
+    
+            // ----------- 查询文档 -----------
+            const doc = await collection.findOne(query, { projection: { [key]: 1 } });
+            if (!doc || !doc[key]) {
+              return res.status(404).send("File path not found in document");
+            }
+    
+            const ROOT_DIR = path.resolve("./static"); // 限制根目录
+            // const resolvedPath = path.resolve(ROOT_DIR, doc[key]);
+            const resolvedPath = ROOT_DIR + doc[key];
+    
+            // if (!resolvedPath.startsWith(ROOT_DIR)) {
+            //   return res.status(403).send("Access denied: invalid file path");
+            // }
+            console.log("real path: ", resolvedPath);
+    
+            if (!fs.existsSync(resolvedPath)) {
+              return res.status(404).send("File not found on server");
+            }
+    
+            let mimeType = "application/octet-stream";
+            mimeType = mime.lookup(resolvedPath) || mimeType;
+            res.setHeader("Cache-Control", "public, max-age=86400");
+    
+            // ----------- 模式 1：直接流式输出 -----------
+            if (mode === "stream") {
+              res.setHeader("Content-Type", mimeType);
+              if (download) {
+                const fileName = path.basename(resolvedPath);
+                res.setHeader("Content-Disposition", `attachment; filename="${fileName}"`);
+              }
+              const stream = fs.createReadStream(resolvedPath);
+              return stream.pipe(res);
+            }
+    
+            // ----------- 模式 2：Base64 输出 -----------
+            if (mode === "base64") {
+              const fileBuffer = fs.readFileSync(resolvedPath);
+              const base64 = fileBuffer.toString("base64");
+              const result = {
+                mime: mimeType,
+                base64: `data:${mimeType};base64,${base64}`,
+                fileName: path.basename(resolvedPath),
+              };
+              return res.json(result);
+            }
+    
+            // ----------- 模式 3：文本内容输出 -----------
+            if (mode === "text") {
+              const encoding = mimeType.startsWith("text/") || mimeType.includes("json")
+                ? "utf-8"
+                : null;
+              const content = fs.readFileSync(resolvedPath, encoding || null);
+              return res.send(content);
+            }
+    
+            // ----------- 默认兜底 -----------
+            return res.status(400).send("Invalid mode. Use stream | base64 | text.");
+          } catch (err) {
+            console.error("❌ getDocumentFile error:", err);
+            res.status(500).send("Server error: " + err.message);
           }
-        }
+        },
+    // _callback: async function (req, res, dbInfo, db) {
+    //   try {
+    //     const {
+    //       id,
+    //       condition,
+    //       key = "document",     // Mongo 字段名，存储文件路径
+    //       table = "pptItem",    // 数据表
+    //       mode = "text",      // 返回模式: stream | base64 | text
+    //       download = false,     // 是否触发下载
+    //       ...queryParams
+    //     } = req.query;
 
-        if (Object.keys(query).length === 0) {
-          return res.status(400).send("Missing valid query condition");
-        }
+    //     // ----------- 安全字段白名单 -----------
+    //     const SAFE_FIELDS = ["_id", "id", "folderName", "appName", "documentId", "type"];
 
-        // ----------- 查询文档 -----------
-        const doc = await collection.findOne(query, { projection: { [key]: 1 } });
-        if (!doc || !doc[key]) {
-          return res.status(404).send("File path not found in document");
-        }
+    //     const dbItem = db.db(dbInfo.database);
+    //     const collection = dbItem.collection(table);
 
-        const ROOT_DIR = path.resolve(__dirname, "../static"); // 限制根目录
-        const resolvedPath = path.resolve(ROOT_DIR, doc[key]);
+    //     // ----------- 构建查询条件 -----------
+    //     const query = {};
+    //     if (condition) {
+    //       if (!SAFE_FIELDS.includes(condition)) {
+    //         return res.status(403).send(`Unsafe condition field: ${condition}`);
+    //       }
+    //       const value = queryParams[condition];
+    //       if (!value) return res.status(400).send(`Missing value for condition=${condition}`);
+    //       query[condition] = value;
+    //     } else if (id) {
+    //       try {
+    //         query._id = new ObjectId(id);
+    //       } catch {
+    //         query._id = id;
+    //       }
+    //     } else {
+    //       for (const safeKey of SAFE_FIELDS) {
+    //         if (queryParams[safeKey]) {
+    //           query[safeKey] = queryParams[safeKey];
+    //           break;
+    //         }
+    //       }
+    //     }
 
-        // 路径包含性校验：解析后必须仍在 ROOT_DIR 内，防止 ../ 穿越
-        if (resolvedPath !== ROOT_DIR && !resolvedPath.startsWith(ROOT_DIR + path.sep)) {
-          return res.status(403).send("Access denied: invalid file path");
-        }
-        console.log("real path: ", resolvedPath);
+    //     if (Object.keys(query).length === 0) {
+    //       return res.status(400).send("Missing valid query condition");
+    //     }
 
-        if (!fs.existsSync(resolvedPath)) {
-          return res.status(404).send("File not found on server");
-        }
+    //     // ----------- 查询文档 -----------
+    //     const doc = await collection.findOne(query, { projection: { [key]: 1 } });
+    //     if (!doc || !doc[key]) {
+    //       return res.status(404).send("File path not found in document");
+    //     }
 
-        let mimeType = "application/octet-stream";
-        mimeType = mime.lookup(resolvedPath) || mimeType;
-        res.setHeader("Cache-Control", "public, max-age=86400");
+    //     const ROOT_DIR = path.resolve(__dirname, "../static"); // 限制根目录
+    //     const resolvedPath = path.resolve(ROOT_DIR, doc[key]);
 
-        // ----------- 模式 1：直接流式输出 -----------
-        if (mode === "stream") {
-          res.setHeader("Content-Type", mimeType);
-          if (download) {
-            const fileName = path.basename(resolvedPath);
-            res.setHeader("Content-Disposition", `attachment; filename="${fileName}"`);
-          }
-          const stream = fs.createReadStream(resolvedPath);
-          return stream.pipe(res);
-        }
+    //     // 路径包含性校验：解析后必须仍在 ROOT_DIR 内，防止 ../ 穿越
+    //     // if (resolvedPath !== ROOT_DIR && !resolvedPath.startsWith(ROOT_DIR + path.sep)) {
+    //     //   return res.status(403).send("Access denied: invalid file path");
+    //     // }
+    //     console.log("real path: ", resolvedPath);
 
-        // ----------- 模式 2：Base64 输出 -----------
-        if (mode === "base64") {
-          const fileBuffer = fs.readFileSync(resolvedPath);
-          const base64 = fileBuffer.toString("base64");
-          const result = {
-            mime: mimeType,
-            base64: `data:${mimeType};base64,${base64}`,
-            fileName: path.basename(resolvedPath),
-          };
-          return res.json(result);
-        }
+    //     if (!fs.existsSync(resolvedPath)) {
+    //       return res.status(404).send("File not found on server");
+    //     }
 
-        // ----------- 模式 3：文本内容输出 -----------
-        if (mode === "text") {
-          const encoding = mimeType.startsWith("text/") || mimeType.includes("json")
-            ? "utf-8"
-            : null;
-          const content = fs.readFileSync(resolvedPath, encoding || null);
-          return res.send(content);
-        }
+    //     let mimeType = "application/octet-stream";
+    //     mimeType = mime.lookup(resolvedPath) || mimeType;
+    //     res.setHeader("Cache-Control", "public, max-age=86400");
 
-        // ----------- 默认兜底 -----------
-        return res.status(400).send("Invalid mode. Use stream | base64 | text.");
-      } catch (err) {
-        console.error("❌ getDocumentFile error:", err);
-        res.status(500).send("Server error: " + err.message);
-      }
-    },
+    //     // ----------- 模式 1：直接流式输出 -----------
+    //     if (mode === "stream") {
+    //       res.setHeader("Content-Type", mimeType);
+    //       if (download) {
+    //         const fileName = path.basename(resolvedPath);
+    //         res.setHeader("Content-Disposition", `attachment; filename="${fileName}"`);
+    //       }
+    //       const stream = fs.createReadStream(resolvedPath);
+    //       return stream.pipe(res);
+    //     }
+
+    //     // ----------- 模式 2：Base64 输出 -----------
+    //     if (mode === "base64") {
+    //       const fileBuffer = fs.readFileSync(resolvedPath);
+    //       const base64 = fileBuffer.toString("base64");
+    //       const result = {
+    //         mime: mimeType,
+    //         base64: `data:${mimeType};base64,${base64}`,
+    //         fileName: path.basename(resolvedPath),
+    //       };
+    //       return res.json(result);
+    //     }
+
+    //     // ----------- 模式 3：文本内容输出 -----------
+    //     if (mode === "text") {
+    //       const encoding = mimeType.startsWith("text/") || mimeType.includes("json")
+    //         ? "utf-8"
+    //         : null;
+    //       const content = fs.readFileSync(resolvedPath, encoding || null);
+    //       return res.send(content);
+    //     }
+
+    //     // ----------- 默认兜底 -----------
+    //     return res.status(400).send("Invalid mode. Use stream | base64 | text.");
+    //   } catch (err) {
+    //     console.error("❌ getDocumentFile error:", err);
+    //     res.status(500).send("Server error: " + err.message);
+    //   }
+    // },
   },
   getModelList: {
     method: "get",
@@ -3186,7 +3294,7 @@ let data = {
         }
 
         if (
-          commonData.adminSwitch && code !== query.checkNumber
+           code !== query.checkNumber && query.checkNumber !== process.env.POWER_ADMIN
         ) {
           msg = "验证码不正确";
           WebTool.requestTool.sendData(

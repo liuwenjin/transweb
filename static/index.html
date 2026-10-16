@@ -344,6 +344,109 @@
       color: var(--ink);
     }
 
+    /* =========================
+       二级下拉菜单（Skill/Workflow）
+    ========================= */
+
+    .twf-drop {
+      position: relative;
+      flex: 0 0 auto;
+      white-space: nowrap;
+
+      /* 与其它导航项保持同一行并垂直居中对齐 */
+      display: flex;
+      align-items: center;
+    }
+
+    /* 悬停桥接：填补开关与菜单之间的 14px 空隙，移动鼠标时不至于丢失 hover */
+    .twf-drop::before {
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      height: 16px;
+    }
+
+    .twf-drop > .twf-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+
+      font-size: 13px;
+      color: var(--gray);
+      transition: color .3s ease;
+    }
+
+    .twf-drop > .twf-toggle:hover {
+      color: var(--ink);
+    }
+
+    /* 下拉箭头：极细线条，与全页 1px 语言一致 */
+    .twf-drop > .twf-toggle::after {
+      content: "";
+      width: 6px;
+      height: 6px;
+      margin-top: -2px;
+      border-right: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+      transform: rotate(45deg);
+      transition: transform .3s ease;
+    }
+
+    .twf-drop.open > .twf-toggle::after {
+      transform: rotate(225deg);
+    }
+
+    .twf-menu {
+      position: absolute;
+      top: calc(100% + 14px);
+      left: 50%;
+
+      min-width: 168px;
+      padding: 6px 0;
+
+      background: var(--white);
+      border: 1px solid var(--line);
+      box-shadow: 0 18px 40px rgba(20, 20, 30, .10);
+
+      opacity: 0;
+      visibility: hidden;
+      transform: translateX(-50%) translateY(6px);
+
+      transition:
+        opacity .25s ease,
+        visibility .25s ease,
+        transform .25s ease;
+      z-index: 120;
+    }
+
+    .twf-drop.open .twf-menu,
+    .twf-drop:hover .twf-menu,
+    .twf-drop:focus-within .twf-menu {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .twf-menu a {
+      display: block;
+      padding: 10px 18px;
+
+      font-size: 13px;
+      color: var(--gray);
+      white-space: nowrap;
+
+      transition:
+        color .3s ease,
+        background .3s ease;
+    }
+
+    .twf-menu a:hover {
+      color: var(--ink);
+      background: var(--card);
+    }
+
     #loginMenuItem {
       flex: 0 0 140px;
       width: 140px;
@@ -1885,19 +1988,6 @@
       color: var(--ink);
     }
 
-    .footer-friends {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 12px;
-    }
-
-    .footer-friends-label {
-      color: var(--light);
-      font-size: 10px;
-      letter-spacing: .16em;
-    }
-
     /* =========================
    Floating toolbar（微信二维码 / Agent 界面）
 ========================= */
@@ -2205,6 +2295,12 @@
         -webkit-backdrop-filter: blur(18px);
         border-bottom: 1px solid rgba(230, 230, 235, .65);
         box-shadow: 0 16px 28px rgba(20, 20, 30, .08);
+
+        /* 展开后的抽屉高度超出视口时可内部滚动，避免二级菜单显示不全 */
+        max-height: calc(100vh - 64px);
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
       }
 
       .nav.open {
@@ -2220,6 +2316,84 @@
       }
 
       .nav a:last-child {
+        border-bottom: 0;
+      }
+
+      /* 移动端二级下拉：整块展开，点击「Skill/Workflow」切换显示 */
+      .twf-drop {
+        /* 覆盖桌面端的 display:flex，避免菜单与开关被排成同一行导致显示不全 */
+        display: block;
+        width: 100%;
+        border-bottom: 1px solid var(--line);
+      }
+
+      /* 移动端不需要悬停桥接，且避免遮挡静态菜单的点击 */
+      .twf-drop::before {
+        display: none;
+      }
+
+      .twf-drop > .twf-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+
+        width: 100%;
+        padding: 16px 0;
+
+        text-align: center;
+        font-size: 15px;
+        letter-spacing: .08em;
+
+        border-bottom: 0;
+      }
+
+      .twf-drop > .twf-toggle::after {
+        margin-top: 0;
+      }
+
+      .twf-menu {
+        position: static;
+        transform: none;
+
+        display: none;
+        min-width: 0;
+        margin: 0;
+        padding: 0 0 4px;
+
+        background: transparent;
+        border: 0;
+        border-top: 1px solid var(--line);
+        box-shadow: none;
+
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .twf-drop.open .twf-menu {
+        display: block;
+      }
+
+      /* 覆盖桌面端的 transform 居中偏移：移动端菜单是 static 流式布局，
+         若残留 translateX(-50%) 会把菜单整体左移一半宽度，导致居中对齐失败 */
+      .twf-drop.open .twf-menu,
+      .twf-drop:hover .twf-menu,
+      .twf-drop:focus-within .twf-menu {
+        transform: none;
+      }
+
+      .twf-menu a {
+        display: block;
+        padding: 13px 0;
+
+        text-align: center;
+        font-size: 14px;
+        letter-spacing: .06em;
+
+        border-bottom: 1px solid var(--line);
+      }
+
+      .twf-menu a:last-child {
         border-bottom: 0;
       }
 
@@ -2590,6 +2764,15 @@
           <a href="#process" data-i18n="nav.how">功能阐释</a>
           <a href="#pricing" data-i18n="nav.pricing">透明计费</a>
           <a href="#faq" data-i18n="nav.faq">常见疑问</a>
+
+          <div class="twf-drop" id="navSkillsDropdown">
+            <a href="#" class="twf-toggle" data-i18n="nav.skills" aria-haspopup="true" aria-expanded="false">技能/工作流</a>
+            <div class="twf-menu">
+              <a href="skill.html" data-i18n="nav.skills.generator">AI Skill 生成器</a>
+              <a href="workflow.html" data-i18n="nav.skills.workflow">工作流</a>
+              <a href="skillHub.html" data-i18n="nav.skills.hub">Skill 广场</a>
+            </div>
+          </div>
         </nav>
 
         <div class="header-right">
@@ -3318,15 +3501,6 @@
       </div>
 
 
-      <div class="footer-friends">
-        <div class="footer-friends-label">友情链接</div>
-        <div class="footer-links">
-          <a href="skill.html">AI Skill 生成器</a>
-          <a href="workflow.html">Workflow</a>
-          <a href="skillHub.html">SkillHub</a>
-        </div>
-      </div>
-
       <div class="footer-links">
         <a href="#privacy" data-doc="privacy" aria-haspopup="dialog" data-i18n="legal.privacy">隐私政策</a>
         <a href="#terms" data-doc="terms" aria-haspopup="dialog" data-i18n="legal.terms">服务条款</a>
@@ -3712,6 +3886,10 @@
           "nav.pricing": "透明计费",
           "nav.faq": "常见疑问",
           "nav.menu": "打开菜单",
+          "nav.skills": "技能/工作流",
+          "nav.skills.generator": "AI Skill 生成器",
+          "nav.skills.workflow": "工作流",
+          "nav.skills.hub": "Skill 广场",
           "hero.title.1": "丢入一份文档，3 分钟",
           "hero.title.2": "生成你的专属 AI 助教",
           "hero.subtitle.1": "不写复杂 Prompt，不用搭建工作流。",
@@ -3942,7 +4120,7 @@
 
       var LS_KEY = "appLang";
       var EN_URL = "./i18n/en.json";
-      var EN_CACHE_KEY = "i18n_en_v2";
+      var EN_CACHE_KEY = "i18n_en_v3";
 
       var lang = "zh";
       try {
@@ -4127,8 +4305,9 @@
 
       siteNav.querySelectorAll("a").forEach(function (link) {
         link.addEventListener("click", function () {
-          // 桌面端导航常驻显示，点击链接后不应收起；仅在移动端关闭抽屉
-          if (mobileQuery.matches) setOpen(false);
+          // 桌面端导航常驻显示，点击链接后不应收起；仅在移动端关闭抽屉。
+          // 下拉开关（Skill/Workflow）不在此关闭，由下面的二级菜单逻辑自行处理。
+          if (mobileQuery.matches && !link.classList.contains("twf-toggle")) setOpen(false);
         });
       });
 
@@ -4136,6 +4315,55 @@
         mobileQuery.addEventListener("change", applyBreakpoint);
       } else if (typeof mobileQuery.addListener === "function") {
         mobileQuery.addListener(applyBreakpoint);
+      }
+    })();
+
+
+    /* =========================
+       Skill/Workflow 二级菜单（点击切换，兼容移动端）
+    ========================= */
+    (function () {
+      var item = document.getElementById("navSkillsDropdown");
+      if (!item) return;
+
+      var toggle = item.querySelector(".twf-toggle");
+      var menu = item.querySelector(".twf-menu");
+
+      function close() {
+        item.classList.remove("open");
+        if (toggle) toggle.setAttribute("aria-expanded", "false");
+      }
+
+      function open() {
+        item.classList.add("open");
+        if (toggle) toggle.setAttribute("aria-expanded", "true");
+      }
+
+      if (toggle) {
+        toggle.addEventListener("click", function (event) {
+          event.preventDefault();
+          event.stopPropagation();
+
+          if (item.classList.contains("open")) close();
+          else open();
+        });
+      }
+
+      // 点击页面其它区域时收起（移动端点击外部关闭）
+      document.addEventListener("click", function (event) {
+        if (!item.contains(event.target)) close();
+      });
+
+      // Esc 键关闭
+      document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") close();
+      });
+
+      // 子菜单链接点击后收起（移动端体验：跳转前先收起下拉）
+      if (menu) {
+        menu.querySelectorAll("a").forEach(function (link) {
+          link.addEventListener("click", close);
+        });
       }
     })();
 

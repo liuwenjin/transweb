@@ -316,7 +316,7 @@ export default {
       foreign:
         location.host === "transweb.ai" ||
         WebTool.urlQuery(location.href, "foreign"),
-      myShareList: webCpu.appConfig.myShareList,
+      myShareList: webCpu.appConfig.agentListApp,
       moduleEditor: {
         url: webCpu.documentPrefix + "/mainApp/app/moduleEditor/main.vue",
         className: "ElementVueItem",

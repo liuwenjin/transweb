@@ -3850,9 +3850,9 @@
         this.mdLoading = true;
         var self = this;
         var mdUrl =
-          "https://cdn.jsdelivr.net/npm/markdown-it@14/dist/markdown-it.min.js";
+          "/common/markdown-it.min.js";
         var purifyUrl =
-          "https://cdn.jsdelivr.net/npm/dompurify@3/dist/purify.min.js";
+          "/common/purify.min.js";
         var tasks = [];
         if (!window.markdownit) {
           tasks.push(this.loadScript(mdUrl));
