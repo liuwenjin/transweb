@@ -233,5 +233,6 @@
   "toolbar.agent": "Agent",
   "toolbar.agentAria": "Open AI Customer",
   "toolbar.agentTitle": "AI Customer",
-  "toolbar.agentLoading": "Loading AI Customer…"
+  "toolbar.agentLoading": "Loading AI Customer…",
+  "myApps.more": "More"
 }

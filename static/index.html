@@ -368,7 +368,7 @@
       height: 16px;
     }
 
-    .twf-drop > .twf-toggle {
+    .twf-drop>.twf-toggle {
       display: inline-flex;
       align-items: center;
       gap: 7px;
@@ -378,12 +378,12 @@
       transition: color .3s ease;
     }
 
-    .twf-drop > .twf-toggle:hover {
+    .twf-drop>.twf-toggle:hover {
       color: var(--ink);
     }
 
     /* 下拉箭头：极细线条，与全页 1px 语言一致 */
-    .twf-drop > .twf-toggle::after {
+    .twf-drop>.twf-toggle::after {
       content: "";
       width: 6px;
       height: 6px;
@@ -394,7 +394,7 @@
       transition: transform .3s ease;
     }
 
-    .twf-drop.open > .twf-toggle::after {
+    .twf-drop.open>.twf-toggle::after {
       transform: rotate(225deg);
     }
 
@@ -2269,6 +2269,148 @@
     }
 
     /* =========================
+       我的 Apps（登录后展示）
+    ========================= */
+
+    .my-apps-section {
+      content-visibility: visible;
+    }
+
+    .my-apps-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .my-app-card {
+      background: var(--white);
+      border: 1px solid var(--line);
+      padding: 20px;
+
+      display: flex;
+      align-items: center;
+      gap: 16px;
+
+      cursor: pointer;
+      text-align: left;
+
+      transition:
+        transform .25s ease,
+        box-shadow .35s ease,
+        border-color .3s ease;
+    }
+
+    .my-app-card:hover,
+    .my-app-card:focus-visible {
+      transform: translateY(-2px);
+      border-color: #c9c9cf;
+      box-shadow: 0 12px 32px rgba(20, 20, 30, .08);
+    }
+
+    .my-app-card__thumb {
+      flex: 0 0 50px;
+      width: 50px;
+      height: 50px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      background: var(--paper-2);
+      border: 1px solid var(--line);
+      overflow: hidden;
+    }
+
+    .my-app-card__thumb img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .my-app-card__thumb.is-fallback::after {
+      content: "🖼";
+      font-size: 20px;
+      color: var(--light);
+    }
+
+    .my-app-card__thumb.is-fallback img {
+      display: none;
+    }
+
+    .my-app-card__meta {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .my-app-card__title {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--ink);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .my-app-card__time {
+      margin-top: 5px;
+      font-size: 12px;
+      color: var(--gray);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .my-app-card--more {
+      justify-content: center;
+      align-items: center;
+      min-height: 92px;
+      cursor: default;
+    }
+
+    .my-app-card--more:hover {
+      transform: none;
+      box-shadow: none;
+      border-color: var(--line);
+    }
+
+    .my-apps-more-btn {
+      height: 40px;
+      padding: 0 30px;
+
+      border: 0;
+      background: transparent;
+
+      color: var(--gray);
+      font-size: 13px;
+      letter-spacing: .04em;
+
+      transition: color .3s ease;
+    }
+
+    .my-apps-more-btn:hover {
+      color: var(--ink);
+    }
+
+    @media (max-width: 1199px) {
+      .my-apps-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 767px) {
+      .my-apps-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .my-app-card {
+        padding: 16px;
+      }
+    }
+
+    /* =========================
        Responsive / 移动端适配
     ========================= */
 
@@ -2332,7 +2474,7 @@
         display: none;
       }
 
-      .twf-drop > .twf-toggle {
+      .twf-drop>.twf-toggle {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -2348,7 +2490,7 @@
         border-bottom: 0;
       }
 
-      .twf-drop > .twf-toggle::after {
+      .twf-drop>.twf-toggle::after {
         margin-top: 0;
       }
 
@@ -2859,6 +3001,19 @@
         已为教育者、研究员与企业团队构建了 12,000+ 个专属 AI 助教
       </p> -->
 
+      </section>
+
+
+      <!-- =========================
+     我的 Apps（登录后展示）
+     参考 webApps/document/input.vue 的 .myAppsArea 逻辑
+========================= -->
+      <section class="section my-apps-section" id="myApps" hidden>
+        <div class="section-header">
+          <div class="eyebrow">MY APPS</div>
+          <h2 class="section-title">我的 Apps</h2>
+        </div>
+        <div class="my-apps-grid" id="myAppsGrid"></div>
       </section>
 
 
@@ -3699,7 +3854,8 @@
               <div class="doc-row">
 
                 <div class="doc-row-icon" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
+                    stroke-linejoin="round" focusable="false">
                     <path d="M21 11.5a8.5 8.5 0 0 1-12.36 7.5L4 21l2.1-4.2A8.5 8.5 0 1 1 21 11.5Z" />
                     <path d="M9 11.5h.01M12 11.5h.01M15 11.5h.01" />
                   </svg>
@@ -3722,7 +3878,8 @@
               <div class="doc-row">
 
                 <div class="doc-row-icon" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
+                    stroke-linejoin="round" focusable="false">
                     <rect x="3" y="7" width="18" height="13" rx="2" />
                     <path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
                     <path d="M3 12.5h18" />
@@ -3746,7 +3903,8 @@
               <div class="doc-row">
 
                 <div class="doc-row-icon" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
+                    stroke-linejoin="round" focusable="false">
                     <circle cx="12" cy="12" r="9" />
                     <path d="M12 7.5V12l3 1.8" />
                   </svg>
@@ -3766,7 +3924,8 @@
               <div class="doc-row">
 
                 <div class="doc-row-icon" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
+                    stroke-linejoin="round" focusable="false">
                     <path d="M13 2 4.5 13.5H11L9.5 22 18 10.5h-6.5L13 2Z" />
                   </svg>
                 </div>
@@ -3785,7 +3944,8 @@
               <div class="doc-row">
 
                 <div class="doc-row-icon" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
+                    stroke-linejoin="round" focusable="false">
                     <path d="M9 18h6" />
                     <path d="M10 21h4" />
                     <path d="M12 3a6 6 0 0 0-3.6 10.8c.6.5 1 1.2 1.1 2h5c.1-.8.5-1.5 1.1-2A6 6 0 0 0 12 3Z" />
@@ -3864,18 +4024,24 @@
   <script defer src="https://transweb.cn/index.js"></script>
   <script>
     document.addEventListener("DOMContentLoaded", function () {
+      let tRadio = Number(WebTool.urlQuery(location.href, "transformRadio"));
+      if (tRadio !== 1) {
+        WebTool.adjustStyle(480, 530);
+      } else {
+        window.transformRadio = tRadio;
+      }
       let qParams = WebTool.getQueryParams();
       let documentId = qParams.id;
       if (documentId) {
-        let url = WebTool.attachParams("https://transweb.cn/agent.html", qParams);
+        let url = WebTool.attachParams("/agent.html", qParams);
         location.href = url;
       }
     });
 
 
-/* =========================
-   中英文切换（默认中文）
-========================= */
+    /* =========================
+       中英文切换（默认中文）
+    ========================= */
     (function () {
       var I18N = {
         zh: {
@@ -4072,6 +4238,7 @@
           "exitLogin": "退出登录",
           "mySubscriptions": "我的订阅",
           "myPpt": "我的作品",
+          "myApps.more": "更多",
           "codeLogin": "验证码登录",
           "phonePlaceholder": "请输入手机号",
           "phoneErrorTips": "请输入正确的手机号",
@@ -5035,6 +5202,238 @@
         if (event.key !== "Escape" || !current) return;
         event.preventDefault();
         close(current);
+      });
+    })();
+
+    /* =========================
+       我的 Apps 卡片列表（登录后展示）
+       参考 input.vue 的 updateMyApps / openAppLink 逻辑
+    ========================= */
+    (function () {
+      var section = document.getElementById("myApps");
+      var grid = document.getElementById("myAppsGrid");
+      if (!section || !grid) return;
+
+      var cachedAdapter = null;
+      var lastFolderName = null;
+
+      function documentPrefix() {
+        return (window.webCpu && webCpu.documentPrefix) || location.origin;
+      }
+
+      function getAdapter() {
+        if (cachedAdapter) return cachedAdapter;
+        if (!window.webCpu || typeof webCpu.initAdapter !== "function") return null;
+        cachedAdapter = webCpu.initAdapter({
+          myAppList: {
+            url: documentPrefix() + "/user/getLoginedData",
+            method: "post",
+            dataType: "json",
+          },
+        });
+        return cachedAdapter;
+      }
+
+      function formatTime(t) {
+        var d = new Date(t);
+        if (isNaN(d.getTime())) return "";
+        try {
+          return new Intl.DateTimeFormat("zh-CN", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            hour: "numeric",
+            minute: "numeric",
+            second: "numeric",
+          }).format(d);
+        } catch (e) {
+          return d.toLocaleString();
+        }
+      }
+
+      function imageUrl(item) {
+        var params = {
+          condition: "documentId",
+          documentId: item.documentId,
+          key: "image",
+          _t: new Date().getTime(),
+        };
+        if (window.WebTool && typeof WebTool.attachParams === "function") {
+          return WebTool.attachParams("/user/getDocumentImage", params);
+        }
+        var qs = Object.keys(params)
+          .map(function (k) {
+            return encodeURIComponent(k) + "=" + encodeURIComponent(params[k]);
+          })
+          .join("&");
+        return "/user/getDocumentImage?" + qs;
+      }
+
+      function openAppLink(card) {
+        var url = documentPrefix() + "?id=" + card.documentId;
+        if (window.parent !== window) {
+          location.href = url;
+        } else {
+          window.open(url, "_blank");
+        }
+      }
+
+      function openMore() {
+        try {
+          if (
+            window.aigcInterface &&
+            typeof aigcInterface.openAgentListDialog === "function"
+          ) {
+            aigcInterface.openAgentListDialog();
+          }
+        } catch (e) {
+          console.warn("打开更多我的 Apps 失败:", e);
+        }
+      }
+
+      function moreLabel() {
+        if (window.__t__ && typeof window.__t__ === "function") {
+          return window.__t__("myApps.more");
+        }
+        return window.lang === "en" ? "More" : "更多";
+      }
+
+      function createCard(item) {
+        var card = document.createElement("article");
+        card.className = "my-app-card";
+        card.setAttribute("role", "button");
+        card.tabIndex = 0;
+
+        var thumb = document.createElement("div");
+        thumb.className = "my-app-card__thumb";
+        var img = document.createElement("img");
+        img.src = item.image || "";
+        img.alt = item.title || "";
+        img.loading = "lazy";
+        img.addEventListener("error", function () {
+          thumb.classList.add("is-fallback");
+        });
+        thumb.appendChild(img);
+
+        var meta = document.createElement("div");
+        meta.className = "my-app-card__meta";
+
+        var title = document.createElement("h3");
+        title.className = "my-app-card__title";
+        title.textContent = item.title || "";
+        title.title = item.title || "";
+
+        var time = document.createElement("div");
+        time.className = "my-app-card__time";
+        time.textContent = "更新时间: " + (item.time || "");
+
+        meta.appendChild(title);
+        meta.appendChild(time);
+        card.appendChild(thumb);
+        card.appendChild(meta);
+
+        function activate(e) {
+          if (e && e.type === "keydown" && e.key !== "Enter" && e.key !== " ") {
+            return;
+          }
+          if (e && e.type === "keydown") e.preventDefault();
+          openAppLink(item);
+        }
+        card.addEventListener("click", activate);
+        card.addEventListener("keydown", activate);
+
+        return card;
+      }
+
+      function render(items, total) {
+        if (!items || !items.length) {
+          section.hidden = true;
+          return;
+        }
+
+        section.hidden = false;
+        grid.innerHTML = "";
+
+        items.forEach(function (item) {
+          grid.appendChild(createCard(item));
+        });
+
+        if (items.length < total) {
+          var moreCard = document.createElement("article");
+          moreCard.className = "my-app-card my-app-card--more";
+
+          var moreBtn = document.createElement("button");
+          moreBtn.type = "button";
+          moreBtn.className = "my-apps-more-btn";
+          moreBtn.setAttribute("data-i18n", "myApps.more");
+          moreBtn.textContent = moreLabel();
+          moreBtn.addEventListener("click", openMore);
+
+          moreCard.appendChild(moreBtn);
+          grid.appendChild(moreCard);
+        }
+      }
+
+      function load() {
+        if (!localStorage.folderName) {
+          section.hidden = true;
+          return;
+        }
+
+        var adapter = getAdapter();
+        if (!adapter || !adapter.myAppList) return;
+
+        var agent = window.agent;
+        var appName = window.appName;
+
+        adapter.myAppList(
+          {
+            pageSize: 5,
+            condition: { appAgent: agent, appName: appName },
+          },
+          function (res) {
+            if (res && (res.code === 0 || res.ret === 0) && res.data) {
+              var items = (res.data || []).map(function (item) {
+                item.author = item.appOwner;
+                item.usageCount = item.usageCount || 1;
+                item.title = item.name || item.title;
+                item.time = formatTime(item.time);
+                item.image = imageUrl(item);
+                return item;
+              });
+              var total =
+                (res.pagination && res.pagination.total) || items.length;
+              render(items, total);
+            }
+          }
+        );
+      }
+
+      function watchLogin() {
+        var current = localStorage.folderName || null;
+        if (current !== lastFolderName) {
+          lastFolderName = current;
+          load();
+        }
+      }
+
+      window.addEventListener("storage", function (e) {
+        if (e.key === "folderName" || e.key === "logined" || e.key === null) {
+          watchLogin();
+        }
+      });
+
+      function ready(fn) {
+        if (document.readyState === "loading") {
+          document.addEventListener("DOMContentLoaded", fn);
+        } else {
+          fn();
+        }
+      }
+
+      ready(function () {
+        watchLogin();
+        setInterval(watchLogin, 1000);
       });
     })();
 
