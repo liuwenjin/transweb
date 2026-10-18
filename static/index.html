@@ -4027,9 +4027,9 @@
       let tRadio = Number(WebTool.urlQuery(location.href, "transformRadio"));
       if (tRadio !== 1) {
         WebTool.adjustStyle(480, 530);
-      } else {
-        window.transformRadio = tRadio;
-      }
+      } 
+      window.transformRadio = tRadio;
+      
       let qParams = WebTool.getQueryParams();
       let documentId = qParams.id;
       if (documentId) {

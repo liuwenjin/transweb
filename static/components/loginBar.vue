@@ -12,12 +12,12 @@
     <slot v-if="logined && userData.folderName">
       <el-popover
         placement="bottom-end"
-        :width="460"
+        :width="popoverWidth"
         :teleported="false"
         trigger="click"
         :show-arrow="false"
         popper-class="saas-premium-popover"
-        @show="popoverShow = true"
+        @show="handlePopoverShow"
         @hide="popoverShow = false"
       >
         <template #reference>
@@ -173,6 +173,7 @@ export default {
       logined: false,
       position: "down",
       popoverShow: false,
+      popoverWidth: 460,
       loading: false,
       loginOffTips: (window.__t__ ? window.__t__("loginBar.logout") : "退出登录中..."),
       flag: WebTool.adjustSize([false, false, true]),
@@ -376,12 +377,17 @@ export default {
     // 与父页面 creator.html 的语言状态保持一致（默认中文）
     this.lang = window.__APP_LANG__ === "en" ? "en" : "zh";
     window.addEventListener("applangchange", this.onLangChange);
+    window.addEventListener("resize", this.updatePopoverWidth);
     if (typeof this.switchRoleData === "function") {
       this.switchRoleData();
     }
+    this.$nextTick(() => {
+      this.updatePopoverWidth();
+    });
   },
   beforeUnmount() {
     window.removeEventListener("applangchange", this.onLangChange);
+    window.removeEventListener("resize", this.updatePopoverWidth);
   },
   methods: {
     // 文案翻译：优先读取父页面 creator.html 注入的全局词表（单一数据源）
@@ -398,6 +404,42 @@ export default {
     },
     onLangChange(e) {
       this.lang = e && e.detail && e.detail.lang === "en" ? "en" : "zh";
+    },
+    handlePopoverShow() {
+      this.popoverShow = true;
+      this.updatePopoverWidth();
+    },
+    // 根据触发按钮的右边缘位置计算浮窗宽度：
+    // 浮窗为 bottom-end（右对齐），宽度 = min(460, 触发按钮右边缘 - 左边距)。
+    // 移动端保证最小宽度 360px，同时尽量宽且不越过左侧边界。
+    updatePopoverWidth() {
+      const maxWidth = 460;
+      const margin = 12;
+      const mobileMinWidth = 360;
+      const vw =
+        window.innerWidth ||
+        document.documentElement.clientWidth ||
+        document.body.clientWidth;
+      const isMobile = vw < 768;
+
+      let right = vw;
+      const root = this.$el;
+      const trigger = root && root.querySelector
+        ? root.querySelector(".user-trigger-btn")
+        : null;
+      if (trigger && typeof trigger.getBoundingClientRect === "function") {
+        const rect = trigger.getBoundingClientRect();
+        if (rect && rect.right > 0) {
+          right = rect.right;
+        }
+      }
+
+      let width = Math.min(maxWidth, right - margin);
+      if (isMobile) {
+        // 移动端最小宽度 360px，尽量宽且不超过 460px
+        width = Math.max(mobileMinWidth, width);
+      }
+      this.popoverWidth = Math.max(0, width);
     },
     handleClickBtn() {
       this.logined = true;
@@ -990,6 +1032,7 @@ export default {
 .avatarContainer {
   position: relative;
   display: inline-block;
+  flex: 0 0 auto;
 }
 
 .user-large-avatar {
@@ -1012,7 +1055,9 @@ export default {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 8px;
-  width: 280px;
+  flex: 1 1 auto;
+  min-width: 0;
+  margin-left: 16px;
   float: none;
 }
 
@@ -1154,6 +1199,15 @@ export default {
 .loginContentArea [contenteditable="true"]:focus {
   outline: 1px solid var(--ink);
   outline-offset: 3px;
+}
+
+/* ==========================================================================
+   移动端适配：浮窗宽度与内容布局
+   ========================================================================== */
+@media (max-width: 767px) {
+  .mySpaceInfo {
+    padding: 20px 16px;
+  }
 }
 
 /* ==========================================================================
