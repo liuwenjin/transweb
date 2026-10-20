@@ -209,7 +209,6 @@
           <div class="child-nav-actions">
             <button type="button" class="child-nav-btn child-nav-btn--danger" title="关闭全部子窗口" :disabled="!childWindows.length" @click="closeAllChildWindows">
               <i class="bi bi-x-lg"></i>
-              <span class="child-nav-btn-text">全部关闭</span>
             </button>
             <button type="button" class="child-nav-btn" title="收起面板（保留任务，按钮恢复显示）" @click="toggleChildPanel">
               <i class="bi bi-chevron-down"></i>
@@ -313,10 +312,7 @@
               <div class="skill-config-item-fields">
                 <input v-model="item.label" class="skill-config-edit" placeholder="Skill 名称" title="名称" />
                 <div class="skill-config-item-row">
-                  <div class="skill-mode-toggle skill-mode-toggle--sm" role="tablist">
-                    <button type="button" class="skill-mode-btn" :class="{ active: skillItemMode(item) === 'id' }" :aria-pressed="skillItemMode(item) === 'id'" @click="setSkillItemMode(item, 'id')">ID</button>
-                    <button type="button" class="skill-mode-btn" :class="{ active: skillItemMode(item) === 'url' }" :aria-pressed="skillItemMode(item) === 'url'" @click="setSkillItemMode(item, 'url')">URL</button>
-                  </div>
+                  <span class="skill-config-mode-badge" :title="skillItemMode(item) === 'id' ? '按 ID 定位' : '按完整 URL 定位'">{{ skillItemMode(item) === 'id' ? 'ID' : 'URL' }}</span>
                   <div class="skill-config-input">
                     <input v-if="skillItemMode(item) === 'id'" v-model="item.id" class="skill-config-edit skill-config-edit--id skill-config-edit--grow" placeholder="Skill ID" title="ID" />
                     <input v-else v-model="item.url" class="skill-config-edit skill-config-edit--url skill-config-edit--grow" placeholder="完整 URL" title="完整 URL" />
@@ -2162,6 +2158,26 @@
     font-size: var(--font-size-sm);
   }
 
+  /* 已有 Skill 行的定位方式标识：仅展示 ID / URL，不再提供切换 */
+  .skill-config-mode-badge {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 22px;
+    padding: 0 8px;
+    border: 1px solid var(--muse-border);
+    border-radius: var(--radius-sm);
+    background: var(--muse-hover);
+    color: var(--muse-text-secondary);
+    font-family: "JetBrains Mono", "Fira Code", Menlo, Consolas, monospace;
+    font-size: var(--font-size-2xs);
+    font-weight: 600;
+    line-height: var(--line-height-none);
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+
   .skill-mode-toggle {
     display: inline-flex;
     align-items: center;
@@ -3985,15 +4001,6 @@
           return item.mode;
         }
         return item.url ? "url" : "id";
-      },
-      "setSkillItemMode": function(item, mode) {
-        mode = mode === "url" ? "url" : "id";
-        this.$set(item, "mode", mode);
-        if (mode === "url") {
-          this.$set(item, "id", "");
-        } else {
-          this.$set(item, "url", "");
-        }
       },
       "confirmSkillConfig": function() {
         this.confirmMessageActions();

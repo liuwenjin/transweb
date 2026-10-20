@@ -696,69 +696,69 @@ let data = {
   searchPluginList: {
     method: "get",
     dbItem: "visualTool",
-    callback: function (req, res, dbInfo, db) {
-      let keyword = req.query.keyword;
-      let tName = req.params.table || "pluginList";
-      let config = {};
-      config.size = req.query.size || req.query.pageSize || 10;
-      config.current = req.query.current || 1;
-      let tObject = db.db(dbInfo.database).collection(tName);
-      let condition = {
-        $or: [
-          {
-            label: {
-              $regex: keyword,
-              $options: "i",
-            },
-          },
-          {
-            cardName: {
-              $regex: keyword,
-              $options: "i",
-            },
-          },
-        ],
-      };
-      let temp = tObject.find(condition);
-      temp.count((err, count) => {
-        let size = Number(config.pageSize || config.size) || 10;
-        let sort = config.sort || {};
-        let current = Number(config.current) || 1;
-        if (current < 0) {
-          current = 0;
-        }
+    callback: async function (req, res, dbInfo, db) {
+      const startTime = Date.now();
+      try {
+        const keyword = (req.query.keyword || "").trim();
+        const tName = req.params.table || "pluginList";
+        const size = Math.max(
+          1,
+          Math.min(Number(req.query.size || req.query.pageSize) || 10, 100)
+        );
+        const current = Math.max(Number(req.query.current) || 1, 1);
 
-        temp
-          .skip(size * (current - 1))
-          .sort(sort)
-          .limit(size)
-          .toArray(function (err, result) {
-            db.close();
-            if (err) {
-              WebTool.requestTool.sendData(
-                {
-                  ret: 1,
-                  message: "查询出现异常。",
-                },
-                req,
-                res
-              );
-              throw err;
-            } else {
-              WebTool.requestTool.sendData(
-                {
-                  ret: 0,
-                  pageSize: size,
-                  current: current,
-                  total: count,
-                  data: result,
-                },
-                req,
-                res
-              );
-            }
-          });
-      });
+        // ✅ 转义正则特殊字符，防止 ReDoS 与语义错误
+        const pattern = new RegExp(escapeRegExp(keyword), "i");
+        const condition = {
+          $or: [
+            { label: { $regex: pattern } },
+            { cardName: { $regex: pattern } },
+          ],
+        };
+
+        const collection = db.db(dbInfo.database).collection(tName);
+
+        // ✅ count 与分页查询并行执行，减少往返等待
+        const [total, result] = await Promise.all([
+          collection.countDocuments(condition),
+          collection
+            .find(condition)
+            .skip(size * (current - 1))
+            .limit(size)
+            .toArray(),
+        ]);
+
+        const elapsed = Date.now() - startTime;
+        WebTool.requestTool.sendData(
+          {
+            ret: 0,
+            pageSize: size,
+            current: current,
+            total,
+            elapsedMs: elapsed,
+            data: result,
+          },
+          req,
+          res
+        );
+
+        if (elapsed > 2000) {
+          console.warn(`⚠️ searchPluginList 查询耗时 ${elapsed}ms，keyword: ${keyword}`);
+        }
+      } catch (err) {
+        console.error("❌ searchPluginList 查询异常：", err);
+        WebTool.requestTool.sendData(
+          { ret: 1, message: "查询出现异常。" },
+          req,
+          res
+        );
+      } finally {
+        try {
+          db.close();
+        } catch (e) {
+          console.warn("数据库连接关闭异常:", e);
+        }
+      }
     },
   },
   updatePluginGroup: {
@@ -907,6 +907,61 @@ let data = {
       } finally {
         db.close();
       }
+    },
+  },
+  deleteQuestionData: {
+    method: "post",
+    dbItem: "visualTool",
+    callback: function (req, res, dbInfo, db) {
+      let data = req.session.data || {};
+      let admin = req.body.admin;
+      const isAdmin = admin === commonData.powerAdmin && commonData.adminSwitch;
+      const send = (payload) => WebTool.requestTool.sendData(payload, req, res);
+
+      // 1. 登录与身份校验
+      if (!isAdmin && !data.folderName) {
+        db.close();
+        return send({ ret: 1, message: "删除失败，未登录。" });
+      }
+
+      // 2. 解析删除条件：支持 _id / documentId / versionId
+      const id = req.body.id || req.body._id || req.query.id || req.query._id;
+      const documentId = req.body.documentId || req.query.documentId;
+      const versionId = req.body.versionId || req.query.versionId;
+      const type = req.body.type || req.query.type || "";
+
+      let condition = {};
+      if (id) {
+        condition._id = /^[0-9a-fA-F]{24}$/.test(id) ? ObjectId(id) : id;
+      } else if (documentId) {
+        condition.documentId = documentId;
+      } else if (versionId) {
+        condition.versionId = versionId;
+      }
+
+      if (Object.keys(condition).length === 0) {
+        db.close();
+        return send({ ret: 1, message: "删除条件不可为空（_id / documentId / versionId）。" });
+      }
+
+      // 3. 非管理员按会话 folderName 收敛，防止越权删除他人数据
+      if (!isAdmin) {
+        condition.folderName = data.folderName;
+      }
+
+      // 4. 执行删除
+      const dbItem = db.db(dbInfo.database);
+      const tObject = dbItem.collection("questionData");
+      const method = type === "single" ? "deleteOne" : "deleteMany";
+
+      tObject[method](condition, function (err, d) {
+        db.close();
+        if (err) {
+          return send({ ret: 1, message: "删除失败。", error: err.message });
+        }
+        console.log("questionData 删除成功, condition: ", condition);
+        send({ ret: 0, data: d.result });
+      });
     },
   },
   traceVersions: {
@@ -1172,7 +1227,13 @@ let data = {
           root: documentId,
         };
 
-        findItems(db, "pptItem", condition, null, function (err, result, db) {
+        // ✅ 仅投影返回所需字段，避免拉取 document 等重量级字段
+        findItems(
+          db,
+          "pptItem",
+          condition,
+          { projection: { folderName: 1, documentId: 1 } },
+          function (err, result, db) {
           if (err) {
             WebTool.requestTool.sendData(
               {
@@ -1562,6 +1623,7 @@ let data = {
     method: "post",
     dbItem: "visualTool",
     callback: async function queryDocuments(req, res, dbInfo, db) {
+      const startTime = Date.now();
       try {
         // ---------- 1️⃣ Session & 登录验证 ----------
         const userData = req.session?.data;
@@ -1576,13 +1638,13 @@ let data = {
         const method = req.method.toUpperCase();
         const body = method === "GET" ? req.query : req.body;
 
+        const pageSize = Math.max(1, Math.min(Number(body.pageSize) || 10, 100));
         const pageNo = Math.max(Number(body.pageNo) || 1, 1);
-        const pageSize = Math.min(
-          Math.max(Number(body.pageSize) || 10, 1),
-          100
-        );
         const _delete = body._delete === "true" || body._delete === true;
         const table = body.table || "pptItem";
+        // ✅ 游标分页起点：基于 time 字段的 keyset 分页，避免深翻页 skip 扫描
+        const lastTime = body.lastTime ? Number(body.lastTime) : null;
+        const explainNeeded = body.explain === "true";
 
         // ---------- 3️⃣ 条件安全解析 ----------
         let tCondition = {};
@@ -1604,59 +1666,132 @@ let data = {
         delete tCondition.admin;
 
         // ---------- 4️⃣ 构建查询条件 ----------
-        let query = {
+        const query = {
           folderName: String(userData.folderName),
-          $or: [
-            { _delete: { $exists: false } }, // 字段不存在/未定义
-            { _delete: { $ne: true } }       // 字段存在但不等于 true
-          ],
           ...tCondition,
         };
 
+        // ✅ 简化 _delete 过滤：$ne:true 本身即覆盖"字段缺失"与"不等于 true"两种情况，
+        //    避免 $or + $exists 组合导致无法有效利用索引
+        if (!_delete) {
+          query._delete = { $ne: true };
+        }
+
         console.log("@query: ", query);
 
+        // ---------- 5️⃣ 投影：仅取列表所需字段，剔除重量级 document 字段 ----------
+        const projection = {
+          _id: 1,
+          name: 1,
+          title: 1,
+          description: 1,
+          introduce: 1,
+          category: 1,
+          grades: 1,
+          tags: 1,
+          type: 1,
+          icon: 1,
+          time: 1,
+          appLabel: 1,
+          appOwner: 1,
+          folderName: 1,
+          publishStatus: 1,
+          documentId: 1,
+          _delete: 1
+        };
 
-        // ---------- 5️⃣ 执行分页查询 ----------
+        // ---------- 6️⃣ 数据库访问与分页模式 ----------
         const dbItem = db.db(dbInfo.database);
         const collection = dbItem.collection(table);
+        const sort = { time: -1 };
 
-        const total = await collection.countDocuments(query);
-        const cursor = collection
-          .find(query, {
-            projection: {
-              _id: 1,
-              name: 1,
-              title: 1,
-              description: 1,
-              introduce: 1,
-              category: 1,
-              grades: 1,
-              tags: 1,
-              type: 1,
-              icon: 1,
-              time: 1,
-              appLabel: 1,
-              appOwner: 1,
-              folderName: 1,
-              publishStatus: 1,
-              document: 1,
-              documentId: 1,
-              _delete: 1
-            },
-          })
-          .sort({ time: -1 })
-          .skip((pageNo - 1) * pageSize)
-          .limit(pageSize);
+        let data = [];
+        let total = 0;
+        let mode = "seek";
+        let isEnd = false;
+        let queryPlan = null;
 
-        const data = await cursor.toArray();
+        if (lastTime && !body.pageNo) {
+          // ✅ Seek 分页模式（keyset）：按 time 游标深翻页，避免 skip 扫描
+          query.time = { $lt: lastTime };
 
-        // ---------- 6️⃣ 响应统一输出 ----------
-        return res.status(200).json({
+          // 多取一条，用于判断是否到末尾
+          const cursor = collection
+            .find(query, { projection })
+            .sort(sort)
+            .limit(pageSize + 1);
+          if (explainNeeded) queryPlan = await cursor.explain("executionStats");
+          const result = await cursor.toArray();
+
+          isEnd = result.length <= pageSize;
+          data = result.slice(0, pageSize);
+        } else {
+          // ✅ Skip 模式（支持跳页）
+          mode = "skip";
+          const skip = (pageNo - 1) * pageSize;
+
+          const cursor = collection
+            .find(query, { projection })
+            .sort(sort)
+            .skip(skip)
+            .limit(pageSize);
+          if (explainNeeded) queryPlan = await cursor.explain("executionStats");
+
+          // ✅ count 与分页查询并行执行，减少往返等待时间
+          const [count, result] = await Promise.all([
+            collection.countDocuments(query),
+            cursor.toArray(),
+          ]);
+          total = count;
+          data = result;
+
+          isEnd = skip + data.length >= total;
+        }
+
+        const elapsed = Date.now() - startTime;
+        const nextCursor =
+          data.length > 0 ? String(data[data.length - 1].time) : null;
+
+        // ---------- 7️⃣ 响应统一输出 ----------
+        const payload = {
           code: 0,
           message: "success",
           pagination: { total, pageNo, pageSize },
+          mode,
+          isEnd,
+          nextCursor,
+          elapsedMs: elapsed,
           data,
-        });
+        };
+
+        // ✅ Debug 模式：返回执行计划，COLLSCAN 时给出索引建议
+        if (explainNeeded && queryPlan) {
+          const stats = queryPlan.executionStats;
+          payload.explain = {
+            stage: stats?.executionStages?.stage,
+            totalDocsExamined: stats?.totalDocsExamined,
+            totalKeysExamined: stats?.totalKeysExamined,
+            executionTimeMillis: stats?.executionTimeMillis,
+            indexUsed: stats?.executionStages?.inputStage?.indexName || null,
+          };
+          if (
+            stats?.executionStages &&
+            stats.executionStages.stage === "COLLSCAN"
+          ) {
+            payload.indexSuggestion = detectIndexHint(query, sort);
+          }
+        }
+
+        // ✅ 性能告警
+        if (elapsed > 2000) {
+          console.warn(
+            `⚠️ getLoginedData 查询耗时 ${elapsed}ms (${table})，模式：${mode}，条件：${JSON.stringify(
+              query
+            )}`
+          );
+        }
+
+        return res.status(200).json(payload);
       } catch (err) {
         console.error("[queryDocuments Error]", err);
         return res.status(500).json({
@@ -1665,7 +1800,7 @@ let data = {
           error: err.message,
         });
       } finally {
-        // ---------- 7️⃣ 确保数据库连接关闭 ----------
+        // ---------- 8️⃣ 确保数据库连接关闭 ----------
         try {
           db.close();
         } catch (e) {
@@ -1677,9 +1812,19 @@ let data = {
   getSubscriptionsData: {
     method: "post",
     dbItem: "visualTool",
-    callback: function (req, res, dbInfo, db) {
-      let data = req.session.data;
-      let pageSize = req.body.pageSize;
+    callback: async function (req, res, dbInfo, db) {
+      const startTime = Date.now();
+      const data = req.session.data;
+
+      if (!data || !data.folderName) {
+        db.close();
+        return WebTool.requestTool.sendData(
+          { ret: 1, message: "获取失败, 需要登录。" },
+          req,
+          res
+        );
+      }
+
       let tCondition = {};
       try {
         tCondition =
@@ -1689,100 +1834,99 @@ let data = {
       } catch (e) {
         tCondition = {};
       }
-      let pageNo = req.body.pageNo;
-      let _delete = req.body._delete;
 
-      if (data && data.folderName) {
-        let condition = {
-          students: {
-            $in: [data.folderName + ""],
-          },
-        };
-        if (!_delete) {
-          condition._delete = {
-            $ne: true,
-          };
+      const pageSize = Math.max(
+        1,
+        Math.min(Number(req.body.pageSize) || 10, 100)
+      );
+      const pageNo = Math.max(Number(req.body.pageNo) || 1, 1);
+      const _delete = req.body._delete;
+      const tName = req.body.table || "document";
+
+      const condition = {
+        students: { $in: [data.folderName + ""] },
+      };
+      if (!_delete) {
+        condition._delete = { $ne: true };
+      }
+
+      // 净化操作符并防止客户端覆盖 students 租户隔离条件
+      tCondition = WebTool.mongoTool.sanitizeQuery(tCondition);
+      delete tCondition.students;
+      delete tCondition._delete;
+      for (let k in tCondition) {
+        try {
+          condition[k] = JSON.parse(tCondition[k]);
+        } catch (e) {
+          condition[k] = tCondition[k];
         }
-        // 净化操作符并防止客户端覆盖 students 租户隔离条件
-        tCondition = WebTool.mongoTool.sanitizeQuery(tCondition);
-        delete tCondition.students;
-        delete tCondition._delete;
-        for (let k in tCondition) {
-          try {
-            condition[k] = JSON.parse(tCondition[k]);
-          } catch (e) {
-            condition[k] = tCondition[k];
-          }
-        }
+      }
 
-        let config = {
-          pageSize: pageSize || 10,
-          pageNo: pageNo || 1,
-        };
-        let tName = req.body.table || "document";
-        let tObject = db.db(dbInfo.database).collection(tName);
-        let temp = tObject.find(condition);
+      // ✅ 投影：仅取响应所需字段，避免拉取 document 等重量级字段
+      const projection = {
+        _id: 1,
+        name: 1,
+        time: 1,
+        appLabel: 1,
+        appOwner: 1,
+        folderName: 1,
+        documentId: 1,
+      };
 
-        temp.count((err, count) => {
-          let size = Number(config.pageSize || config.size) || 10;
-          let sort = config.sort || {
-            time: -1,
-          };
-          let current = Number(config.pageNo) || 1;
-          if (current < 0) {
-            current = 0;
-          }
-          temp
-            .skip(size * (current - 1))
-            .sort(sort)
-            .limit(size)
-            .toArray(function (err, result) {
-              db.close();
-              if (err) {
-                WebTool.requestTool.sendData(
-                  {
-                    ret: 1,
-                    message: "查询出现异常。",
-                  },
-                  req,
-                  res
-                );
-                throw err;
-              } else {
-                WebTool.requestTool.sendData(
-                  {
-                    ret: 0,
-                    pageSize: size,
-                    current: current,
-                    total: count,
-                    data: result.map((item) => {
-                      return {
-                        _id: item._id,
-                        name: item.name,
-                        time: item.time,
-                        appLabel: item.appLabel,
-                        appOwner: item.appOwner,
-                        folderName: item.folderName,
-                        documentId: item.documentId,
-                      };
-                    }),
-                  },
-                  req,
-                  res
-                );
-              }
-            });
-        });
-      } else {
-        db.close();
+      try {
+        const collection = db.db(dbInfo.database).collection(tName);
+
+        // ✅ count 与分页查询并行执行，减少往返等待
+        const [total, result] = await Promise.all([
+          collection.countDocuments(condition),
+          collection
+            .find(condition, { projection })
+            .sort({ time: -1 })
+            .skip((pageNo - 1) * pageSize)
+            .limit(pageSize)
+            .toArray(),
+        ]);
+
+        const elapsed = Date.now() - startTime;
         WebTool.requestTool.sendData(
           {
-            ret: 1,
-            message: "获取失败, 需要登录。",
+            ret: 0,
+            pageSize,
+            current: pageNo,
+            total,
+            elapsedMs: elapsed,
+            data: result.map((item) => ({
+              _id: item._id,
+              name: item.name,
+              time: item.time,
+              appLabel: item.appLabel,
+              appOwner: item.appOwner,
+              folderName: item.folderName,
+              documentId: item.documentId,
+            })),
           },
           req,
           res
         );
+
+        if (elapsed > 2000) {
+          console.warn(
+            `⚠️ getSubscriptionsData 查询耗时 ${elapsed}ms，folderName: ${data.folderName}`
+          );
+        }
+      } catch (err) {
+        console.error("❌ getSubscriptionsData 查询异常：", err);
+        WebTool.requestTool.sendData(
+          { ret: 1, message: "查询出现异常。" },
+          req,
+          res
+        );
+      } finally {
+        try {
+          db.close();
+        } catch (e) {
+          console.warn("数据库连接关闭异常:", e);
+        }
       }
     },
   },
@@ -2332,28 +2476,65 @@ let data = {
   getDocumentData: {
     method: "get",
     dbItem: "visualTool",
-    callback: function (req, res, dbInfo, db) {
-      let key = req.query.key || "productId";
-      let id = req.query[key];
-      if (id) {
-        let config = {
-          pageSize: req.query.pageSize || 10,
-          pageNo: req.query.pageNo || 1,
-        };
-        let dbItem = db.db();
-        let tName = req.query.table || "document";
-        // 表名白名单：仅允许读取文档类集合，防止任意表读取扩大越权面
-        const ALLOWED_TABLES = ["document", "pptItem"];
-        if (ALLOWED_TABLES.indexOf(tName) === -1) {
-          return WebTool.requestTool.sendData({ ret: 1, message: "不支持的表名" }, req, res);
-        }
-        let tObject = dbItem.collection(tName);
-        let condition = {
-          [key]: id,
-        };
-        const userData = req.session?.data || {};
+    callback: async function (req, res, dbInfo, db) {
+      const key = req.query.key || "productId";
+      const id = req.query[key];
+      if (!id) {
+        db.close();
+        return WebTool.requestTool.sendData(
+          { ret: 1, message: "获取失败, 缺少参数。" },
+          req,
+          res
+        );
+      }
 
-        let projection = {
+      const size = Math.max(1, Math.min(Number(req.query.pageSize) || 10, 100));
+      const current = Math.max(Number(req.query.pageNo) || 1, 1);
+      const tName = req.query.table || "document";
+
+      // 表名白名单：仅允许读取文档类集合，防止任意表读取扩大越权面
+      const ALLOWED_TABLES = ["document", "pptItem"];
+      if (ALLOWED_TABLES.indexOf(tName) === -1) {
+        db.close();
+        return WebTool.requestTool.sendData(
+          { ret: 1, message: "不支持的表名" },
+          req,
+          res
+        );
+      }
+
+      const condition = { [key]: id };
+      const userData = req.session?.data || {};
+
+      let projection = {
+        name: 1,
+        title: 1,
+        time: 1,
+        price: 1,
+        appLabel: 1,
+        appOwner: 1,
+        creator: 1,
+        folderName: 1,
+        publishStatus: 1,
+        document: 1,
+        usageCount: 1,
+        taxRate: 1,
+        type: 1,
+        tags: 1,
+        category: 1,
+        subject: 1,
+        grades: 1,
+        description: 1,
+        introduce: 1,
+        icon: 1,
+        documentId: 1,
+        model: 1,
+        apiName: 1,
+        publishTime: 1,
+      };
+
+      if (userData.folderName) {
+        projection = {
           name: 1,
           title: 1,
           time: 1,
@@ -2365,7 +2546,7 @@ let data = {
           publishStatus: 1,
           document: 1,
           usageCount: 1,
-          price: 1,
+          knowledges: 1,
           taxRate: 1,
           type: 1,
           tags: 1,
@@ -2376,129 +2557,82 @@ let data = {
           introduce: 1,
           icon: 1,
           documentId: 1,
-          model: 1,
-          apiName: 1,
           publishTime: 1,
+          prompt: 1,
+          apiName: 1,
+          apiKey: 1,
+          apiSecret: 1,
+          inputPrice: 1,
+          outputPrice: 1,
+          appId: 1,
+          platformUrl: 1,
+          model: 1
         };
+      }
 
-        if (userData.folderName) {
-          projection = {
-            name: 1,
-            title: 1,
-            time: 1,
-            price: 1,
-            appLabel: 1,
-            appOwner: 1,
-            creator: 1,
-            folderName: 1,
-            publishStatus: 1,
-            document: 1,
-            usageCount: 1,
-            knowledges: 1,
-            price: 1,
-            taxRate: 1,
-            type: 1,
-            tags: 1,
-            category: 1,
-            subject: 1,
-            grades: 1,
-            description: 1,
-            introduce: 1,
-            icon: 1,
-            documentId: 1,
-            publishTime: 1,
-            prompt: 1,
-            apiName: 1,
-            apiKey: 1,
-            apiSecret: 1,
-            inputPrice: 1,
-            outputPrice: 1,
-            appId: 1,
-            platformUrl: 1,
-            model: 1
-          }
-        }
+      try {
+        const collection = db.db().collection(tName);
 
-        let temp = tObject.find(condition, { projection });
-        temp.count((err, count) => {
-          let size = config.pageSize || config.size || 10;
-          let sort = config.sort || {
-            time: -1,
-          };
-
-          let current = config.current || config.pageNo || 1;
-          if (current < 0) {
-            current = 0;
-          }
-          temp
+        // ✅ count 与分页查询并行执行，替代废弃的 cursor.count()
+        const [total, list] = await Promise.all([
+          collection.countDocuments(condition),
+          collection
+            .find(condition, { projection })
+            .sort({ time: -1 })
             .skip(size * (current - 1))
-            .sort(sort)
             .limit(size)
-            .toArray(function (err, result) {
-              if (err) {
-                WebTool.requestTool.sendData(
-                  {
-                    ret: 1,
-                    message: "查询出现异常。",
-                  },
-                  req,
-                  res
-                );
-                db.close();
-                throw err;
-              } else {
-                const SENSITIVE_FIELDS = [
-                  "apiKey", "apiSecret", "platformUrl",
-                  "inputPrice", "outputPrice", "appId", "prompt", "knowledges",
-                ];
-                result = result.map(item => {
-                  if ((item.folderName + '') !== (userData.folderName + '')) {
-                    SENSITIVE_FIELDS.forEach(k => { delete item[k]; });
-                  }
-                  return item;
-                });
+            .toArray(),
+        ]);
 
-                WebTool.requestTool.sendData(
-                  {
-                    ret: 0,
-                    pageSize: size,
-                    current: current,
-                    total: count,
-                    data: result,
-                  },
-                  req,
-                  res
-                );
-                if (result[0]) {
-                  result[0].usageCount = result[0].usageCount || 0;
-                  result[0].usageCount++;
-                  WebTool.objectTool.dbUpdate(
-                    db,
-                    tName,
-                    condition,
-                    "set",
-                    {
-                      usageCount: result[0].usageCount,
-                    },
-                    function (tRet) {
-                      db.close();
-                    }
-                  );
-                } else {
-                  db.close();
-                }
-              }
-            });
+        const SENSITIVE_FIELDS = [
+          "apiKey", "apiSecret", "platformUrl",
+          "inputPrice", "outputPrice", "appId", "prompt", "knowledges",
+        ];
+        const result = list.map((item) => {
+          if ((item.folderName + "") !== (userData.folderName + "")) {
+            SENSITIVE_FIELDS.forEach((k) => { delete item[k]; });
+          }
+          return item;
         });
-      } else {
+
         WebTool.requestTool.sendData(
           {
-            ret: 1,
-            message: "获取失败, 缺少参数。",
+            ret: 0,
+            pageSize: size,
+            current,
+            total,
+            data: result,
           },
           req,
           res
         );
+
+        if (result[0]) {
+          result[0].usageCount = result[0].usageCount || 0;
+          result[0].usageCount++;
+          WebTool.objectTool.dbUpdate(
+            db,
+            tName,
+            condition,
+            "set",
+            {
+              usageCount: result[0].usageCount,
+            },
+            function () {
+              db.close();
+            }
+          );
+        } else {
+          db.close();
+        }
+      } catch (err) {
+        console.error("❌ getDocumentData 查询异常：", err);
+        WebTool.requestTool.sendData(
+          { ret: 1, message: "查询出现异常。" },
+          req,
+          res
+        );
+        db.close();
       }
     },
   },
@@ -2703,7 +2837,7 @@ let data = {
         // 非管理员始终按会话 folderName 收敛，防止越权更新他人数据
         let c = {};
         if (!isAdmin) {
-          c.folderName = data.folderName;
+          c.folderName = tableName === "questionData" ? data.folderName : (data.folderName + "");
         }
         let productId = req.body[cKey];
         if (tableName !== "account" && cKey) {
@@ -2723,7 +2857,7 @@ let data = {
           attr[timeKey] = new Date().getTime();
         }
 
-        console.log("update attr and condition: ", attr, c);
+        console.log("update attr / condition / tableName: ", attr, c, tableName);
 
         findItems(db, tableName, c, null, function (err, result, db) {
           let doc = result[0];
@@ -4031,7 +4165,22 @@ let data = {
       let condition = {
         folderName: Number(agent),
       };
-      findItems(db, "account", condition, null, function (err, result, tDB) {
+      // ✅ 投影：仅取所需字段，避免拉取 password 等敏感字段
+      findItems(
+        db,
+        "account",
+        condition,
+        {
+          projection: {
+            tokenLimit: 1,
+            tokenUsed: 1,
+            folderName: 1,
+            subscription: 1,
+            name: 1,
+            role: 1,
+          },
+        },
+        function (err, result, tDB) {
         if (err) {
           tDB.close();
           WebTool.requestTool.sendData(
@@ -4090,7 +4239,25 @@ let data = {
         folderName: Number(data.folderName),
       };
 
-      findItems(db, "account", condition, null, function (err, result, tDB) {
+      // ✅ 投影：仅取所需字段，避免拉取 password 等敏感字段
+      findItems(
+        db,
+        "account",
+        condition,
+        {
+          projection: {
+            tokenLimit: 1,
+            tokenUsed: 1,
+            folderName: 1,
+            subscription: 1,
+            name: 1,
+            role: 1,
+            introduce: 1,
+            image: 1,
+            account: 1,
+          },
+        },
+        function (err, result, tDB) {
         if (err) {
           tDB.close();
           WebTool.requestTool.sendData(

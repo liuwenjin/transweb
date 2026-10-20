@@ -237,7 +237,7 @@ var I18N = {
 
 var LS_KEY = "appLang";
 var EN_URL = "./i18n/en.json";
-var EN_CACHE_KEY = "i18n_en_v1";
+var EN_CACHE_KEY = "i18n_en_v4";
 
 var lang = "zh";
 try {

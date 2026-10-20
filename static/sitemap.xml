@@ -13,17 +13,6 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://transweb.cn/index.html" />
   </url>
 
-  <!-- AI 助教生成器（Trans-Agent，中英双语） -->
-  <url>
-    <loc>https://transweb.cn/creator.html</loc>
-    <lastmod>2026-10-06</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://transweb.cn/creator.html" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://transweb.cn/creator.html?lang=en" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://transweb.cn/creator.html" />
-  </url>
-
   <!-- AI Skill 工具导航 -->
   <url>
     <loc>https://transweb.cn/skillHub.html</loc>

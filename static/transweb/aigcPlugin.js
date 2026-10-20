@@ -320,6 +320,11 @@
         method: "post",
         dataType: "json",
       },
+      deleteDocumentData: {
+        url: "/user/deleteDocumentData",
+        method: "post",
+        dataType: "json",
+      },
       setAppConfig: {
         url: "/admin/setAppConfig",
         method: "get",
@@ -550,21 +555,53 @@
         }
       });
     },
+    removeAgentItem(d) {
+      let query = {
+        _id: d._id,
+        key: "_id",
+        table: "pptItem",
+      };
+      let _self = this;
+      this.adapter.deleteDocumentData(query, function (rData) {
+        if (_self.currentListApp.card) {
+          webCpu.fresh(_self.currentListApp.card.task);
+        }
+      });
+      if (d.document) {
+        let arr = d.document.split("/");
+        this.adapter.removeDocumentItem(
+          {},
+          function (tData) {
+            if (tData.code === 0) {
+              _self.$message({
+                type: "success",
+                message: webCpu.messages[lang].removeSuccessTips,
+              });
+            }
+          },
+          {
+            folderName: localStorage.folderName,
+            name: arr[arr.length - 1],
+          }
+        );
+      }
+    },
     openAgentListDialog: function (app) {
       app = app || webCpu.appConfig.agentListApp;
+      this.currentListApp = app;
       let _self = this;
       app.dsl = app.dsl || {};
       app.dsl.methods = app.dsl.methods || {};
       app.dsl.methods.handleClickButton = function (d, config) {
         if (config.label === "删除") {
-          _self
+          this
             .$confirm("确认删除吗？", "确认提示", {
               confirmButtonText: "确认",
               cancelButtonText: "取消",
               type: "warning",
             })
             .then(() => {
-              _self.removeShareItem(d);
+              _self.removeAgentItem(d);
             });
         } else if (config.label === "编辑") {
           let params = WebTool.getQueryParams(location.href);
@@ -2333,7 +2370,7 @@ ${typeof json0.example === "object"
             (rData) => {
               try {
                 if (typeof rData === "string") {
-                   rData = eval(
+                  rData = eval(
                     `(${WebTool.extractContentInBrackets(rData)})`
                   );
                 }

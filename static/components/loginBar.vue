@@ -992,6 +992,7 @@ export default {
   letter-spacing: 0.04em;
   color: var(--ash-2);
   min-width: 80px;
+  white-space: nowrap;
 }
 
 .itemContent {
@@ -1080,6 +1081,8 @@ export default {
   font-weight: 500 !important;
   font-size: 13px !important;
   box-shadow: none !important;
+  padding: 0 10px !important;
+  overflow: hidden;
   transition: all 0.25s var(--ease-out) !important;
 }
 
@@ -1093,6 +1096,14 @@ export default {
 
 .actionGridBtn.el-button:active {
   transform: translateY(1px) !important;
+}
+
+/* 长英文文案（如 "AIGC History"）超长时优雅省略，避免溢出 */
+.actionGridBtn.el-button :deep(.el-button__text) {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 /* ==========================================================================
@@ -1207,6 +1218,12 @@ export default {
 @media (max-width: 767px) {
   .mySpaceInfo {
     padding: 20px 16px;
+  }
+
+  /* 移动端按钮更紧凑，保证 "AIGC History" 等英文完整显示 */
+  .actionGridBtn.el-button {
+    padding: 0 8px !important;
+    font-size: 12px !important;
   }
 }
 
