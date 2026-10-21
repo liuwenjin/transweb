@@ -46,12 +46,17 @@ async function getOrCreateClient(d) {
 
   // 拼接连接 URL
   let url = `mongodb://${d.host}:${d.port}/${d.database}`;
-  
 
   if (d.username && d.password) {
-    const user = d.username;
-    const pwd = d.password;
+    // 凭据需 URL 编码，避免含 @ : / # 等特殊字符时解析出错
+    const user = encodeURIComponent(d.username);
+    const pwd = encodeURIComponent(d.password);
     url = `mongodb://${user}:${pwd}@${d.host}:${d.port}/${d.database}`;
+  }
+
+  // 可选 authSource：用户创建在 admin 库时需配置 MONGO_AUTH_SOURCE=admin
+  if (d.authSource) {
+    url += (url.indexOf("?") === -1 ? "?" : "&") + "authSource=" + encodeURIComponent(d.authSource);
   }
 
   console.log("###mongodb url: ", url);
@@ -107,6 +112,12 @@ var data = {
     }
   } catch (err) {
     console.error("MongoDB 复用连接池获取/连接失败:", err.message);
+    if (err.codeName === "AuthenticationFailed" || /Authentication failed/i.test(err.message || "")) {
+      console.error(
+        "提示：MongoDB 鉴权失败。请检查 .env 中 MONGO_USERNAME / MONGO_APP_PWD 是否与 MongoDB 中创建的用户一致；" +
+          "若 MongoDB 未开启鉴权，请将这两项留空；若用户创建在 admin 库，请设置 MONGO_AUTH_SOURCE=admin。"
+      );
+    }
     WebTool.requestTool.sendData({
       ret: 1,
       message: "数据库连接失败。"
@@ -176,5 +187,8 @@ var data = {
     }
   }
 }
+
+// 暴露给鉴权中间件复用同一个 MongoClient 单例
+data.getClient = getOrCreateClient;
 
 module.exports = data;

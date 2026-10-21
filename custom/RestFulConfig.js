@@ -1,6 +1,7 @@
 var WebTool = require("./WebTool.js");
 var ConnectDB = require("./ConnectDB.js");
 var ConfigObject = require("./ConfigObject.js");
+var ApiKeyTool = require("./ApiKeyTool.js");
 var xmlParser = require('fast-xml-parser')
 var DbQuery = require("./DbQuery.js");
 var fs = require("fs");
@@ -97,7 +98,7 @@ var RestFulConfig = function (data, expendApi, prefix, config) {
       }
 
       if (dbQuery) {
-        this.addCardData(url, dbQuery, method, d);
+        this.addCardData(url, dbQuery, method, d, this.api[k][j]);
       }
     }
   }
@@ -125,7 +126,7 @@ RestFulConfig.prototype.check =function(url, method) {
   return ret;
 }
 
-RestFulConfig.prototype.addCardData = function (url, dbQuery, method, d) {
+RestFulConfig.prototype.addCardData = function (url, dbQuery, method, d, meta) {
   var k = url.replace(/\//g, "_");
   k = k.slice(1) || k;
   var task = {
@@ -144,6 +145,27 @@ RestFulConfig.prototype.addCardData = function (url, dbQuery, method, d) {
         }, req, res);
         return false;
       }
+
+      // ---- Scope 权限控制（仅对标注 requiredScope 的接口生效）----
+      var requiredScope = (meta && meta.requiredScope) || (d && d.requiredScope);
+      if (requiredScope) {
+        var authSession = (req.session && req.session.data) || {};
+        if (!authSession.logined) {
+          WebTool.requestTool.sendData({
+            ret: 1,
+            message: "请先登录账号。",
+          }, req, res);
+          return false;
+        }
+        if (!ApiKeyTool.authorize(req, requiredScope)) {
+          WebTool.requestTool.sendData({
+            ret: 3,
+            message: "无权限（缺少 scope）。",
+          }, req, res);
+          return false;
+        }
+      }
+
       var dbInfo = JSON.parse(JSON.stringify(d)) || {};
       var type = dbInfo.type;
       if (type && typeof (ConnectDB[type]) === "function") {

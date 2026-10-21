@@ -195,7 +195,7 @@ var WebRequest = function (url, type, options) {
 
   if (
     type !== "jsonp" &&
-    url &&
+    typeof url === "string" &&
     url.search(location.origin) === -1 &&
     options.proxy === undefined
   ) {
@@ -2162,7 +2162,7 @@ WebCpu.prototype.updateView = function (elem, option, data, flag) {
       };
       tCard.className =
         option.className ||
-        (option.url.search(/\.vue$/i) === -1
+        (typeof option.url === "string" && option.url.search(/\.vue$/i) === -1
           ? "TemplateItem"
           : "ElementVueItem");
       tCard.cardName = option.cardName;
@@ -8168,9 +8168,9 @@ WebTool.extractTextFromFile = (function () {
    * 1. 解析 PDF (.pdf)
    */
   async function parsePdfBrowser(arrayBuffer) {
-    await loadScript('https://transweb.cn/common/pdf.min.js');
+    await loadScript('/common/pdf.min.js');
     const pdfjsLib = window['pdfjs-dist/build/pdf'];
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://transweb.cn/common/pdf.worker.min.js';
+    pdfjsLib.GlobalWorkerOptions.workerSrc = '/common/pdf.worker.min.js';
 
     const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
     const pdf = await loadingTask.promise;
@@ -8192,7 +8192,7 @@ WebTool.extractTextFromFile = (function () {
    * 2. 解析 Word (.docx)
    */
   async function parseDocxBrowser(arrayBuffer) {
-    await loadScript('https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js');
+    await loadScript('/common/mammoth.browser.min.js');
     const result = await window.mammoth.extractRawText({ arrayBuffer });
     return result.value;
   }
@@ -8201,7 +8201,7 @@ WebTool.extractTextFromFile = (function () {
    * 3. 解析 PPT (.pptx)
    */
   async function parsePptxBrowser(arrayBuffer) {
-    await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js');
+    await loadScript('/common/jszip.min.js');
     const zip = await window.JSZip.loadAsync(arrayBuffer);
 
     const slideRegex = /^ppt\/slides\/slide\d+\.xml$/;
@@ -8229,7 +8229,7 @@ WebTool.extractTextFromFile = (function () {
    */
   async function parseExcelBrowser(arrayBuffer) {
     // 动态加载 SheetJS (xlsx)
-    await loadScript('https://transweb.cn/common/xlsx.full.min.js');
+    await loadScript('/common/xlsx.full.min.js');
     const XLSX = window.XLSX;
 
     const workbook = XLSX.read(arrayBuffer, { type: 'array' });

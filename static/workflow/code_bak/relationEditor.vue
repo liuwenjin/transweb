@@ -1,13 +1,13 @@
 <template>
-  <div id="rootContainerItem" class="tw-relative tw-w-full tw-min-h-screen tw-bg-[#f8fafc] tw-py-10 tw-px-4 sm:tw-px-8 tw-font-sans tw-antialiased tw-text-slate-900">
+  <div id="rootContainerItem" class="tw-relative tw-w-full tw-min-h-screen tw-bg-[#EEF3F0] tw-py-10 tw-px-4 sm:tw-px-8 tw-font-sans tw-antialiased tw-text-slate-900">
     <!-- 背景柔和渐变光斑点缀 -->
-    <div class="tw-pointer-events-none tw-absolute tw-top-0 tw-left-1/2 -tw-translate-x-1/2 tw-w-full tw-max-w-7xl tw-h-[500px] tw-bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] tw-from-indigo-100/50 tw-via-sky-50/30 tw-to-transparent tw-blur-3xl tw-opacity-80"></div>
+    <div class="tw-pointer-events-none tw-absolute tw-top-0 tw-left-1/2 -tw-translate-x-1/2 tw-w-full tw-max-w-7xl tw-h-[500px] tw-bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] tw-from-blue-100/50 tw-via-blue-50/30 tw-to-transparent tw-blur-3xl tw-opacity-80"></div>
 
-    <el-card class="tw-relative tw-z-10 tw-max-w-6xl tw-mx-auto !tw-rounded-3xl !tw-border-slate-200/80 !tw-bg-white/80 tw-backdrop-blur-2xl !tw-shadow-[0_20px_50px_rgba(15,23,42,0.03)] tw-transition-all tw-duration-500 hover:!tw-shadow-[0_25px_60px_rgba(15,23,42,0.06)] !tw-overflow-visible">
+    <el-card class="tw-relative tw-z-10 tw-max-w-6xl tw-mx-auto !tw-rounded-2xl !tw-border-slate-200 !tw-bg-white !tw-shadow-[0_12px_32px_rgba(15,23,42,0.06)] tw-transition-all tw-duration-300 hover:!tw-shadow-[0_16px_40px_rgba(15,23,42,0.08)] !tw-overflow-visible">
       <!-- Card Header / Hero Area -->
       <div class="tw-mb-8 tw-flex tw-flex-col sm:tw-flex-row sm:tw-items-center tw-justify-between tw-gap-4 tw-p-1">
         <div class="tw-flex tw-items-center tw-gap-4">
-          <div class="tw-flex tw-h-12 tw-w-12 tw-items-center tw-justify-center tw-rounded-2xl tw-bg-slate-900 tw-text-white tw-shadow-lg tw-shadow-slate-900/15 tw-transition-transform tw-duration-300 hover:tw-scale-105">
+          <div class="tw-flex tw-h-12 tw-w-12 tw-items-center tw-justify-center tw-rounded-2xl tw-bg-[#0066CC] tw-text-white tw-shadow-lg tw-shadow-[#0066CC]/25 tw-transition-transform tw-duration-300 hover:tw-scale-105">
             <i class="bi bi-diagram-3 tw-text-xl"></i>
           </div>
           <div>
@@ -22,7 +22,7 @@
         <el-button
           type="primary"
           size="large"
-          class="custom-primary-btn !tw-rounded-xl !tw-px-5 !tw-py-2.5 !tw-font-medium !tw-shadow-sm tw-transition-all tw-duration-300 hover:!tw-shadow-md"
+          class="custom-primary-btn !tw-rounded-full !tw-px-6 !tw-py-2.5 !tw-font-medium !tw-shadow-sm tw-transition-all tw-duration-300 hover:!tw-shadow-md"
           @click="showAddLineDialog = true"
           :disabled="isAddLineDisabled"
         >
@@ -34,7 +34,7 @@
       <!-- Canvas Area -->
       <div
         ref="canvasContainer"
-        class="tw-relative tw-overflow-x-auto tw-bg-slate-50/50 tw-border tw-border-slate-200/70 tw-rounded-2xl tw-p-8 tw-pb-28 canvas-container tw-transition-all"
+        class="tw-relative tw-overflow-x-auto tw-bg-[#F6F9F7] tw-border tw-border-slate-200 tw-rounded-2xl tw-p-8 tw-pb-28 canvas-container tw-transition-all"
         style="min-height: 380px"
       >
         <svg
@@ -65,14 +65,14 @@
             "
             :d="line.path"
             stroke-dasharray="6,6"
-            class="tw-stroke-indigo-400 tw-stroke-2 tw-fill-none tw-cursor-pointer tw-pointer-events-auto tw-transition-all tw-duration-300 extra-path-dashed"
-            marker-end="url(#arrowpurple)"
+            class="tw-stroke-blue-400 tw-stroke-2 tw-fill-none tw-cursor-pointer tw-pointer-events-auto tw-transition-all tw-duration-300 extra-path-dashed"
+            marker-end="url(#arrowbrand)"
             @click="selectExtraLine(idx)"
             @mouseenter="hoveredLineIdx = idx"
             @mouseleave="hoveredLineIdx = -1"
             :class="{
               'tw-stroke-amber-500 !tw-stroke-[2.5px]': selectedLineIdx === idx,
-              'tw-stroke-indigo-600 !tw-stroke-[2.5px]':
+              'tw-stroke-blue-600 !tw-stroke-[2.5px]':
                 hoveredLineIdx === idx && selectedLineIdx !== idx,
             }"
           />
@@ -90,7 +90,7 @@
               <path d="M0,0 L0,7 L7,3.5 z" fill="#cbd5e1" />
             </marker>
             <marker
-              id="arrowpurple"
+              id="arrowbrand"
               markerWidth="8"
               markerHeight="8"
               refX="7"
@@ -98,7 +98,7 @@
               orient="auto"
               markerUnits="strokeWidth"
             >
-              <path d="M0,0 L0,7 L7,3.5 z" fill="#818cf8" />
+              <path d="M0,0 L0,7 L7,3.5 z" fill="#38BDF8" />
             </marker>
           </defs>
         </svg>
@@ -119,9 +119,9 @@
             class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-flex-shrink-0"
           >
             <div
-              class="node-card tw-rounded-2xl tw-border tw-border-slate-200/80 tw-bg-white tw-shadow-[0_4px_16px_rgba(15,23,42,0.04)] tw-p-5 tw-w-44 tw-text-center tw-transition-all tw-duration-300 hover:-tw-translate-y-1"
+              class="node-card tw-rounded-2xl tw-border tw-border-slate-200 tw-bg-white tw-shadow-[0_2px_10px_rgba(15,23,42,0.05)] tw-p-5 tw-w-44 tw-text-center tw-transition-all tw-duration-300 hover:-tw-translate-y-1"
               :class="{
-                '!tw-border-indigo-500 !tw-shadow-[0_12px_28px_rgba(99,102,241,0.15)] tw-ring-4 tw-ring-indigo-500/10': hoveredNodeIdx === idx,
+                '!tw-border-blue-500 !tw-shadow-[0_12px_28px_rgba(0,102,204,0.15)] tw-ring-4 tw-ring-blue-500/10': hoveredNodeIdx === idx,
               }"
               @mouseenter="hoveredNodeIdx = idx"
               @mouseleave="hoveredNodeIdx = -1"
@@ -178,8 +178,8 @@
               selectedLineIdx === idx
                 ? '!tw-border-amber-500 !tw-bg-amber-500 !tw-text-white'
                 : hoveredLineIdx === idx
-                ? '!tw-border-indigo-600 tw-scale-110 !tw-bg-indigo-50 !tw-text-indigo-600'
-                : '!tw-border-slate-200 !tw-bg-white !tw-text-indigo-500 hover:!tw-border-indigo-300',
+                ? '!tw-border-blue-600 tw-scale-110 !tw-bg-blue-50 !tw-text-blue-600'
+                : '!tw-border-slate-200 !tw-bg-white !tw-text-blue-500 hover:!tw-border-blue-300',
               'line-menu-btn',
             ]"
             :title="`连线 ${nodes[line.from].id}#${nodes[line.from].name} → ${
@@ -301,8 +301,8 @@
       </div>
       <template #footer>
         <div class="tw-flex tw-gap-3 tw-justify-end tw-pt-3">
-          <el-button size="large" class="!tw-rounded-xl" @click="showAddLineDialog = false">取消</el-button>
-          <el-button size="large" type="primary" class="custom-primary-btn !tw-rounded-xl" @click="confirmAddLine">添加</el-button>
+          <el-button size="large" class="!tw-rounded-full" @click="showAddLineDialog = false">取消</el-button>
+          <el-button size="large" type="primary" class="custom-primary-btn !tw-rounded-full" @click="confirmAddLine">添加</el-button>
         </div>
       </template>
     </el-dialog>
@@ -377,8 +377,8 @@
       </div>
       <template #footer>
         <div class="tw-flex tw-gap-3 tw-justify-end tw-pt-3">
-          <el-button size="large" class="!tw-rounded-xl" @click="showEditLineDialog = false">取消</el-button>
-          <el-button size="large" type="primary" class="custom-primary-btn !tw-rounded-xl" @click="confirmEditLine">更新</el-button>
+          <el-button size="large" class="!tw-rounded-full" @click="showEditLineDialog = false">取消</el-button>
+          <el-button size="large" type="primary" class="custom-primary-btn !tw-rounded-full" @click="confirmEditLine">更新</el-button>
         </div>
       </template>
     </el-dialog>
@@ -768,13 +768,13 @@ export default {
 <style scoped>
 /* 按钮基础定制 */
 .custom-primary-btn {
-  background-color: #0f172a !important;
-  border-color: #0f172a !important;
+  background-color: #0066CC !important;
+  border-color: #0066CC !important;
   color: #ffffff !important;
 }
 .custom-primary-btn:hover {
-  background-color: #1e293b !important;
-  border-color: #1e293b !important;
+  background-color: #0052A3 !important;
+  border-color: #0052A3 !important;
 }
 
 .line-menu-btn {
@@ -808,7 +808,7 @@ export default {
 
 /* 弹窗圆角与阴影全局改写 */
 :deep(.premium-dialog) {
-  border-radius: 20px !important;
+  border-radius: 16px !important;
   overflow: hidden;
   box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.18) !important;
 }
@@ -816,7 +816,7 @@ export default {
 :deep(.premium-dialog .el-dialog__header) {
   margin-right: 0;
   padding: 20px 24px 12px;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid #f6f9f7;
 }
 
 :deep(.premium-dialog .el-dialog__title) {
@@ -831,6 +831,15 @@ export default {
 
 :deep(.premium-dialog .el-dialog__footer) {
   padding: 12px 24px 20px;
-  border-top: 1px solid #f1f5f9;
+  border-top: 1px solid #f6f9f7;
+}
+
+:deep(.premium-dialog .el-button) {
+  border-radius: 999px !important;
+}
+
+:deep(.premium-dialog .el-select__wrapper),
+:deep(.premium-dialog .el-input__wrapper) {
+  border-radius: 10px !important;
 }
 </style>

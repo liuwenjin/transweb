@@ -22,6 +22,8 @@ let RestFulConfig = require("./custom/RestFulConfig.js");
 let BucketDealer = require("./custom/BucketDealer.js");
 let multer = require('multer');
 let Adapter = require("./custom/Adapter.js");
+let ConnectDB = require("./custom/ConnectDB.js");
+let ApiKeyTool = require("./custom/ApiKeyTool.js");
 
 
 let t = path.resolve(__dirname, '.');
@@ -340,6 +342,85 @@ function checkRequestToken(req) {
   }
 }
 
+
+// ---- API Key 自动登录：复用 session.data 体系 ----
+let visualToolDbConfig = null;
+function getVisualToolDb() {
+  if (visualToolDbConfig) return visualToolDbConfig;
+  visualToolDbConfig = require("./interface/index.js").dbConfig.visualTool;
+  return visualToolDbConfig;
+}
+
+async function resolveApiKeyAuth(req) {
+  // 已有 Cookie 会话（人类用户）优先，不覆盖
+  if (req.session && req.session.data && req.session.data.logined) return;
+
+  let raw = "";
+  const auth = req.headers["authorization"] || "";
+  if (/^Bearer\s+/i.test(auth)) {
+    raw = auth.replace(/^Bearer\s+/i, "").trim();
+  } else {
+    raw = (req.headers["x-api-key"] || "").trim();
+  }
+  // 非 API Key 形态直接跳过，避免无谓的 DB 查询
+  if (!raw || raw.indexOf("ak_live_") !== 0) return;
+
+  try {
+    const dbCfg = getVisualToolDb();
+    if (!dbCfg || !dbCfg.database) return;
+
+    const client = await ConnectDB.getClient(dbCfg);
+    const apiKeyCol = client.db(dbCfg.database).collection("apiKey");
+
+    const key = await ApiKeyTool.verifyApiKey(raw, apiKeyCol);
+    if (!key) return;
+
+    const now = Date.now();
+    if (key.expiresAt && now > Number(key.expiresAt)) return;
+
+    const ip = WebTool.requestTool.getClientIp(req) || "";
+    if (!ApiKeyTool.ipAllowed(key, ip)) return;
+    if (!ApiKeyTool.rateLimitOk(key, now)) return;
+
+    // 容忍历史 folderName 类型不一致：同时按字符串/数字匹配
+    const fn = key.folderName;
+    const accountCol = client.db(dbCfg.database).collection("account");
+    const account = await accountCol.findOne(
+      { folderName: { $in: [String(fn), Number(fn)] } },
+      {
+        projection: {
+          account: 1,
+          folderName: 1,
+          tokenLimit: 1,
+          tokenUsed: 1,
+          subscription: 1,
+        },
+      }
+    );
+    if (!account) return;
+
+    req.session = req.session || {};
+    req.session.data = ApiKeyTool.buildSessionSnapshot(account, key);
+    req.apiKey = {
+      keyId: key.keyId,
+      name: key.name,
+      scopes: key.scopes,
+    };
+
+    // 异步更新 lastUsedAt，不阻塞请求
+    apiKeyCol
+      .updateOne({ keyId: key.keyId }, { $set: { lastUsedAt: now } })
+      .catch(function () {});
+  } catch (e) {
+    console.warn("resolveApiKeyAuth error:", e && e.message);
+  }
+}
+
+// 在进入桶/租户中间件之前完成自动登录
+app.use(async function (req, res, next) {
+  await resolveApiKeyAuth(req);
+  next();
+});
 
 let dbLimit = ["document", "account", "pluginList"];
 // let dbLimit = [];

@@ -392,20 +392,20 @@ document.addEventListener("DOMContentLoaded", function () {
           dataType: "text",
         },
         login: {
-          url: webCpu.documentPrefix + "/user/check",
+          url: "/user/check",
           method: "get",
           dataType: "json",
         },
         getDocumentData: {
-          url: webCpu.documentPrefix + "/user/getDocumentData",
+          url: "/user/getDocumentData",
           method: "get",
         },
         getDocumentFile: {
-          url: webCpu.documentPrefix + "/user/getDocumentFile",
+          url: "/user/getDocumentFile",
           method: "get",
         },
         setDocumentAttribute: {
-          url: webCpu.documentPrefix + "/user/setDocumentStatus",
+          url: "/user/setDocumentStatus",
           method: "post",
           dataType: "json",
         },
@@ -429,7 +429,7 @@ document.addEventListener("DOMContentLoaded", function () {
           style: {
             paddingTop: "10px",
           },
-          url: webCpu.documentPrefix + "/mainApp/app/loginReg.js",
+          url: "/mainApp/app/loginReg.js",
           key: "transweb_loginReg",
         };
         app.callback = function (cc, dd, tt) {
@@ -500,7 +500,7 @@ document.addEventListener("DOMContentLoaded", function () {
         openLoginDialog: openLoginDialog,
         newAppDialog() {
           let app = {
-            url: webCpu.documentPrefix + "/mainApp/app/personalInfo.js",
+            url: "/mainApp/app/personalInfo.js",
             key: "transweb_personalInfo",
             dsl: {
               about: {
@@ -644,11 +644,10 @@ document.addEventListener("DOMContentLoaded", function () {
       };
 
       let _appData = {
-        url: webCpu.documentPrefix + "/webApps/document/agent.vue",
+        url: "/webApps/document/agent.vue",
         cardName: "documentEditor",
         dsl: {
           url:
-            webCpu.documentPrefix +
             `/webApps/document/agentList/agents_${lang}.js`,
           method: "jsonp",
           query: {
@@ -905,7 +904,7 @@ document.addEventListener("DOMContentLoaded", function () {
       };
 
       if (agent) {
-        _appData.dsl.url = webCpu.documentPrefix + "/user/getAgentData";
+        _appData.dsl.url = "/user/getAgentData";
         _appData.dsl.query = {
           agent: agent,
           lang: lang,
@@ -1123,7 +1122,7 @@ document.addEventListener("DOMContentLoaded", function () {
                   doc.pUser = pInfo.user;
                   doc.avater =
                     pInfo.avater ||
-                    webCpu.documentPrefix + "/assets/images/logo.png";
+                    "/assets/images/logo.png";
                   let pApp = {
                     url: "/webApps/document/permissions.vue",
                     className: "ElementVueItem",

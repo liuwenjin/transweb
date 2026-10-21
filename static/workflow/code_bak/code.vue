@@ -6,7 +6,7 @@
           <div class="tw-flex tw-items-center tw-justify-center tw-w-9 tw-h-9">
             <img
               class="tw-w-9 tw-h-9"
-              src="https://transweb.cn/assets/logo.png"
+              src="https://transweb.cn/assets/images/logo-brand.png"
             />
           </div>
           <h3
@@ -112,7 +112,7 @@
             'tw-w-full tw-transition-all tw-duration-300',
             flag
               ? 'tw-flex tw-flex-col tw-gap-3 tw-bg-transparent'
-              : 'tw-flex tw-flex-col tw-gap-2 tw-bg-white tw-p-4 tw-rounded-2xl tw-border tw-border-indigo-50 tw-shadow-card configuration-wrapper',
+              : 'tw-flex tw-flex-col tw-gap-2 tw-bg-white tw-p-4 tw-rounded-2xl tw-border tw-border-slate-200 tw-shadow-card configuration-wrapper',
           ]"
         >
           <!-- 节点流标题 / 数量统计 / 折叠控制栏 -->
@@ -120,7 +120,7 @@
             class="tw-text-xs tw-text-slate-400 tw-flex tw-justify-between tw-items-center tw-select-none"
           >
             <div
-              class="tw-flex tw-items-center tw-gap-1.5 tw-cursor-pointer hover:tw-text-indigo-600 tw-transition-colors"
+              class="tw-flex tw-items-center tw-gap-1.5 tw-cursor-pointer hover:tw-text-blue-600 tw-transition-colors"
               @click="isExpanded = !isExpanded"
             >
               <span class="tw-font-medium">工作流节点链路：</span>
@@ -163,10 +163,10 @@
             >
               <!-- 主 Agent 卡片 -->
               <div
-                class="tw-flex tw-items-center tw-gap-2 tw-bg-indigo-50/70 tw-border tw-border-indigo-200 tw-px-3 tw-py-1.5 tw-rounded-lg tw-shrink-0"
+                class="tw-flex tw-items-center tw-gap-2 tw-bg-[#F6F9F7] tw-border tw-border-slate-200 tw-px-3 tw-py-1.5 tw-rounded-lg tw-shrink-0"
               >
                 <div
-                  class="tw-flex tw-items-center tw-gap-1 tw-text-indigo-600 tw-font-semibold tw-text-sm"
+                  class="tw-flex tw-items-center tw-gap-1 tw-text-blue-600 tw-font-semibold tw-text-sm"
                 >
                   <i class="bi bi-robot tw-text-base"></i>
                 </div>
@@ -189,7 +189,7 @@
 
               <!-- 主 Agent 指向后续节点的连接箭头 -->
               <div
-                class="tw-flex tw-items-center tw-justify-center tw-text-indigo-500 tw-shrink-0"
+                class="tw-flex tw-items-center tw-justify-center tw-text-blue-500 tw-shrink-0"
               >
                 <i
                   :class="[
@@ -211,9 +211,9 @@
             >
               <!-- 单个工作流节点卡片 -->
               <div
-                class="tw-group tw-relative tw-flex tw-items-center tw-gap-1.5 tw-bg-slate-50 tw-hover:bg-indigo-50/50 tw-border tw-border-slate-200 tw-hover:border-indigo-200 tw-px-3 tw-py-1.5 tw-rounded-lg tw-transition-all tw-shrink-0"
+                class="tw-group tw-relative tw-flex tw-items-center tw-gap-1.5 tw-bg-slate-50 tw-hover:bg-blue-50/50 tw-border tw-border-slate-200 tw-hover:border-blue-200 tw-px-3 tw-py-1.5 tw-rounded-lg tw-transition-all tw-shrink-0"
               >
-                <span class="tw-text-xs tw-font-bold tw-text-indigo-400">
+                <span class="tw-text-xs tw-font-bold tw-text-blue-400">
                   #{{ index + 1 }}
                 </span>
                 <span class="tw-text-sm tw-text-slate-700 tw-font-medium">
@@ -229,7 +229,7 @@
                     v-if="index > 0"
                     @click="moveNode(index, -1)"
                     title="前移节点"
-                    class="tw-p-0.5 tw-text-slate-400 hover:tw-text-indigo-600 tw-rounded hover:tw-bg-white"
+                    class="tw-p-0.5 tw-text-slate-400 hover:tw-text-blue-600 tw-rounded hover:tw-bg-white"
                   >
                     <i
                       :class="flag ? 'bi bi-chevron-up' : 'bi bi-chevron-left'"
@@ -241,7 +241,7 @@
                     v-if="index < accountData.workflow.length - 1"
                     @click="moveNode(index, 1)"
                     title="后移节点"
-                    class="tw-p-0.5 tw-text-slate-400 hover:tw-text-indigo-600 tw-rounded hover:tw-bg-white"
+                    class="tw-p-0.5 tw-text-slate-400 hover:tw-text-blue-600 tw-rounded hover:tw-bg-white"
                   >
                     <i
                       :class="
@@ -263,7 +263,7 @@
 
               <!-- 节点卡片后的连接箭头 -->
               <div
-                class="tw-flex tw-items-center tw-justify-center tw-text-indigo-400 tw-shrink-0"
+                class="tw-flex tw-items-center tw-justify-center tw-text-blue-400 tw-shrink-0"
               >
                 <i
                   :class="[
@@ -307,7 +307,7 @@
 
       <div
         v-if="accountData.appId"
-        class="tw-mt-6 tw-relative tw-pr-12 tw-w-full tw-bg-white tw-p-6 tw-rounded-2xl tw-shadow-card tw-border tw-border-indigo-50 steps-panel"
+        class="tw-mt-6 tw-relative tw-pr-12 tw-w-full tw-bg-white tw-p-6 tw-rounded-2xl tw-shadow-card tw-border tw-border-slate-200 steps-panel"
       >
         <el-steps
           class="tw-w-full tw-relative custom-cyber-steps"
@@ -371,7 +371,7 @@
 
     <div
       v-if="accountData.appId"
-      class="tw-bg-white tw-max-w-5xl tw-mx-auto tw-h-viewer tw-rounded-2xl tw-shadow-iframe tw-overflow-hidden tw-border tw-border-indigo-50 tw-mt-6 iframe-glow"
+      class="tw-bg-white tw-max-w-5xl tw-mx-auto tw-h-viewer tw-rounded-2xl tw-shadow-iframe tw-overflow-hidden tw-border tw-border-slate-200 tw-mt-6 iframe-glow"
     >
       <iframe
         ref="workflowFrame"
@@ -379,21 +379,21 @@
         class="tw-w-full tw-h-full tw-border-none"
         sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"
         loading="lazy"
-        @load="initIframeMonitor"
+        @load="onWorkflowFrameLoad"
       >
       </iframe>
     </div>
 
     <div
       v-else
-      class="tw-py-16 tw-px-5 tw-max-w-5xl tw-mx-auto tw-bg-white tw-rounded-2xl tw-border-2 tw-border-dashed tw-border-indigo-100 tw-mt-6 empty-panel"
+      class="tw-py-16 tw-px-5 tw-max-w-5xl tw-mx-auto tw-bg-white tw-rounded-2xl tw-border-2 tw-border-dashed tw-border-slate-300 tw-mt-6 empty-panel"
     >
       <el-empty description="请在上方输入 Skill ID 以加载工作流">
         <template #image>
           <div
-            class="tw-flex tw-items-center tw-justify-center tw-w-20 tw-h-20 tw-rounded-full tw-bg-indigo-50 tw-mx-auto"
+            class="tw-flex tw-items-center tw-justify-center tw-w-20 tw-h-20 tw-rounded-full tw-bg-[#F0F9FF] tw-mx-auto"
           >
-            <i class="bi bi-diagram-3 tw-text-indigo-300 tw-text-4xl"></i>
+            <i class="bi bi-diagram-3 tw-text-blue-300 tw-text-4xl"></i>
           </div>
         </template>
       </el-empty>
@@ -527,6 +527,8 @@ export default {
       selectedNewNode: {
         value: "",
       },
+      // 待转发给子 iframe 的消息缓存（子 iframe 尚未就绪时暂存，加载完成后统一下发）
+      pendingChildMessages: [],
     };
   },
   watch: {
@@ -594,7 +596,7 @@ export default {
           maxWidth: "900px",
           height: this.flag ? "100%" : "90%",
           borderRadius: "12px",
-          boxShadow: "0 4px 12px rgba(99, 102, 241, 0.08)",
+          boxShadow: "0 4px 12px rgba(0, 102, 204, 0.08)",
         }
       );
     },
@@ -874,89 +876,134 @@ export default {
         ? WebTool.attachParams(url, params)
         : url;
     },
-    initIframeMonitor() {
-      const iframe = this.$refs.workflowFrame;
-      console.log("iframe DOM 节点: ", iframe);
-      if (!iframe) return;
+    initMessageBridge() {
+      // 统一消息监听（初始化时注册一次，卸载时移除）：
+      // 1) 子 iframe → 本组件：IFRAME_URL_CHANGE，同步工作流步骤状态
+      // 2) 父窗口 → 子 iframe：转发父窗口消息（如 AGENT_INPUT）
+      if (this._iframeMessageCallback) {
+        window.removeEventListener("message", this._iframeMessageCallback);
+        this._iframeMessageCallback = null;
+      }
+      const callback = (event) => {
+        const data = event.data;
+        if (!data) return;
 
-      const checkUrl = (currentUrl) => {
-        try {
-          if (!iframe.contentWindow) return;
+        if (data.type === "IFRAME_URL_CHANGE") {
+          this.handleIframeUrlChange(data.url);
+          return;
+        }
 
-          let params = WebTool.urlQuery(currentUrl);
-
-          let inputItem = params.inputItem;
-          let dataId = params.dataId;
-
-          let stepIndex = Number(params.index) + 1;
-
-          this.activeStepIndex = stepIndex;
-
-          console.log("当前 URL: ", currentUrl, "stepIndex: ", stepIndex);
-
-          if (stepIndex < this.stepData.length + 1) {
-            this.activeStepIndex = stepIndex;
-            let node = this.stepData[stepIndex - 1] || {};
-            let url = webCpu.documentPrefix;
-            if (inputItem) {
-              params.id = node.appId;
-              params.dataId = inputItem;
-              delete params.inputItem;
-              params.index = stepIndex - 1;
-              node.resultUrl = WebTool.attachParams(url, params);
-            } else if (dataId) {
-              params.id = this.stepData[stepIndex - 1].appId;
-              params.index = stepIndex - 1;
-              this.stepData[stepIndex - 1].resultUrl = WebTool.attachParams(
-                url,
-                params
-              );
-            }
-             let tParams = WebTool.urlQuery(currentUrl);
-            if (inputItem) {
-              this.updateInputData(stepIndex - 1, inputItem);
-              tParams.index = stepIndex;
-              tParams.id = this.stepData[stepIndex].appId;
-              if (this.stepData[stepIndex].inputData) {
-                let tParams = WebTool.urlQuery(currentUrl);
-                tParams.inputData = JSON.stringify(
-                  this.stepData[stepIndex].inputData
-                );
-                delete tParams.inputItem;
-                console.log(
-                  "this.stepData[stepIndex].inputData: ",
-                  this.stepData[stepIndex].inputData
-                );
-              }
-
-              currentUrl = WebTool.attachParams(webCpu.documentPrefix, tParams);
-              iframe.src = currentUrl;
-            }
-
-            console.log("上一步数据 (node): ", node);
-            console.log("当前步数据: ", this.stepData[stepIndex]);
-            console.log("步骤数据: ", this.stepData);
-          }
-        } catch (e) {
-          console.warn("捕获异常: ", e);
+        // 仅当本组件被嵌入父窗口时，才把父窗口发来的特定类型消息转发给子 iframe
+        if (
+          window.parent !== window &&
+          event.source === window.parent &&
+          data.type === "AGENT_INPUT"
+        ) {
+          this.relayToChildIframe(data);
         }
       };
-
-      let callback = function (event) {
-        if (event.data && event.data.type === "IFRAME_URL_CHANGE") {
-          const latestIframeUrl = event.data.url;
-
-          checkUrl(latestIframeUrl);
-          console.log("获取到 iframe 最新的 URL:", latestIframeUrl);
-        }
-      };
-      window.removeEventListener("message", callback);
       window.addEventListener("message", callback);
       this._iframeMessageCallback = callback;
     },
+    handleIframeUrlChange(currentUrl) {
+      const iframe = this.$refs.workflowFrame;
+      try {
+        if (!iframe || !iframe.contentWindow) return;
+
+        let params = WebTool.urlQuery(currentUrl);
+        const inputItem = params.inputItem;
+        const dataId = params.dataId;
+        const stepIndex = Number(params.index) + 1;
+
+        this.activeStepIndex = stepIndex;
+
+        if (stepIndex < this.stepData.length + 1) {
+          this.activeStepIndex = stepIndex;
+          const node = this.stepData[stepIndex - 1] || {};
+          const url = webCpu.documentPrefix;
+
+          if (inputItem) {
+            params.id = node.appId;
+            params.dataId = inputItem;
+            delete params.inputItem;
+            params.index = stepIndex - 1;
+            node.resultUrl = WebTool.attachParams(url, params);
+          } else if (dataId) {
+            params.id = this.stepData[stepIndex - 1].appId;
+            params.index = stepIndex - 1;
+            this.stepData[stepIndex - 1].resultUrl = WebTool.attachParams(
+              url,
+              params
+            );
+          }
+
+          const tParams = WebTool.urlQuery(currentUrl);
+          if (inputItem) {
+            this.updateInputData(stepIndex - 1, inputItem);
+            tParams.index = stepIndex;
+            tParams.id = this.stepData[stepIndex].appId;
+            if (this.stepData[stepIndex].inputData) {
+              // 修复：直接写外层 tParams，避免此前内层 let 遮蔽导致 inputData 丢失
+              tParams.inputData = JSON.stringify(
+                this.stepData[stepIndex].inputData
+              );
+              delete tParams.inputItem;
+            }
+            currentUrl = WebTool.attachParams(webCpu.documentPrefix, tParams);
+            iframe.src = currentUrl;
+          }
+        }
+      } catch (e) {
+        console.warn("捕获异常: ", e);
+      }
+    },
+    workflowFrameOrigin() {
+      const iframe = this.$refs.workflowFrame;
+      const src = (iframe && iframe.src) || this.currentNodeUrl || "";
+      try {
+        return new URL(src, window.location.origin).origin;
+      } catch (e) {
+        return "*";
+      }
+    },
+    relayToChildIframe(data) {
+      const iframe = this.$refs.workflowFrame;
+      if (!iframe || !iframe.contentWindow) {
+        // 子 iframe 尚未就绪，先缓存，待 load 后统一下发
+        this.pendingChildMessages.push(data);
+        return;
+      }
+      try {
+        iframe.contentWindow.postMessage(data, this.workflowFrameOrigin());
+      } catch (e) {
+        this.pendingChildMessages.push(data);
+      }
+    },
+    flushPendingChildMessages() {
+      const iframe = this.$refs.workflowFrame;
+      if (
+        !iframe ||
+        !iframe.contentWindow ||
+        !this.pendingChildMessages.length
+      ) {
+        return;
+      }
+      const pending = this.pendingChildMessages;
+      this.pendingChildMessages = [];
+      pending.forEach((msg) => {
+        try {
+          iframe.contentWindow.postMessage(msg, this.workflowFrameOrigin());
+        } catch (e) {
+          this.pendingChildMessages.push(msg);
+        }
+      });
+    },
+    onWorkflowFrameLoad() {
+      this.flushPendingChildMessages();
+    },
   },
   mounted() {
-    this.initIframeMonitor();
+    this.initMessageBridge();
     this.initStepData();
   },
   beforeUnmount() {
@@ -974,24 +1021,24 @@ export default {
 
 <style scoped>
 .tw-bg-page-gradient {
-  background: linear-gradient(160deg, #f8f9ff 0%, #f1f4fe 40%, #f5f3ff 100%);
+  background: linear-gradient(160deg, #f0f9ff 0%, #EEF3F0 45%, #F6F9F7 100%);
   min-height: 100vh;
 }
 
-.tw-bg-indigo-gradient {
-  background: linear-gradient(135deg, #6366f1 0%, #818cf8 100%);
+.tw-bg-blue-gradient {
+  background: linear-gradient(135deg, #0066CC 0%, #38BDF8 100%);
 }
 
 .tw-shadow-icon {
-  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
 }
 
 .tw-shadow-card {
-  box-shadow: 0 2px 16px rgba(99, 102, 241, 0.07), 0 1px 4px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 2px 16px rgba(0, 102, 204, 0.07), 0 1px 4px rgba(0, 0, 0, 0.04);
 }
 
 .tw-shadow-iframe {
-  box-shadow: 0 8px 40px rgba(99, 102, 241, 0.12), 0 2px 8px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 8px 40px rgba(0, 102, 204, 0.12), 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
 .tw-w-custom-160 {
@@ -1017,17 +1064,17 @@ export default {
 }
 
 .header-action-btn {
-  border-color: #e0e7ff !important;
-  color: #6366f1 !important;
+  border-color: #BAE6FD !important;
+  color: #0066CC !important;
   background: rgba(255, 255, 255, 0.9) !important;
   backdrop-filter: blur(8px);
   transition: all 0.2s ease !important;
 }
 
 .header-action-btn:hover {
-  border-color: #a5b4fc !important;
-  background: #eef2ff !important;
-  box-shadow: 0 0 0 3px rgba(165, 180, 252, 0.18) !important;
+  border-color: #7DD3FC !important;
+  background: #f0f9ff !important;
+  box-shadow: 0 0 0 3px rgba(125, 211, 252, 0.18) !important;
   transform: translateY(-1px) !important;
 }
 
@@ -1038,11 +1085,11 @@ export default {
   border-radius: 50%;
   background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
   box-shadow: inset 0 2px 5px rgba(255, 255, 255, 0.4),
-    inset 0 -3px 6px rgba(0, 0, 0, 0.6), 0 4px 10px rgba(20, 184, 166, 0.5);
+    inset 0 -3px 6px rgba(0, 0, 0, 0.6), 0 4px 10px rgba(56, 189, 248, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(45, 212, 191, 0.6);
+  border: 1px solid rgba(56, 189, 248, 0.6);
   position: relative;
   overflow: hidden;
 }
@@ -1064,44 +1111,44 @@ export default {
 }
 
 .tw-bot-icon-inner {
-  color: #2dd4bf;
+  color: #38BDF8;
   font-size: 18px;
-  text-shadow: 0 0 8px #2dd4bf, 0 0 15px #5eead4;
+  text-shadow: 0 0 8px #38BDF8, 0 0 15px #7DD3FC;
   z-index: 1;
 }
 
 .tw-drop-shadow-glow {
-  filter: drop-shadow(0 0 4px rgba(45, 212, 191, 0.8));
+  filter: drop-shadow(0 0 4px rgba(56, 189, 248, 0.8));
 }
 
 /* Input Fields with Soft Inner Shadows and Glow */
 .configuration-wrapper {
   background: #ffffff;
-  border: 1px solid rgba(45, 212, 191, 0.3) !important;
+  border: 1px solid rgba(56, 189, 248, 0.3) !important;
   box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.04),
-    0 0 15px rgba(45, 212, 191, 0.1) !important;
+    0 0 15px rgba(56, 189, 248, 0.1) !important;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   min-height: 50px;
 }
 
 .configuration-wrapper:hover {
-  border-color: rgba(168, 85, 247, 0.5) !important;
+  border-color: rgba(0, 102, 204, 0.5) !important;
   box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.04),
     0 0 20px rgba(168, 85, 247, 0.15) !important;
 }
 
 .configuration-wrapper:focus-within {
-  border-color: #a855f7 !important;
+  border-color: #0066CC !important;
   box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.04),
-    0 0 0 3px rgba(168, 85, 247, 0.2), 0 0 25px rgba(168, 85, 247, 0.25) !important;
+    0 0 0 3px rgba(0, 102, 204, 0.2), 0 0 25px rgba(168, 85, 247, 0.25) !important;
 }
 
 /* Select Dropdown Tags Enhancement */
 :deep(.el-select__tags .el-tag) {
-  background: linear-gradient(135deg, #f0fdfa, #faf5ff) !important;
-  border: 1px solid rgba(45, 212, 191, 0.4) !important;
+  background: linear-gradient(135deg, #f0f9ff, #f6f9f7) !important;
+  border: 1px solid rgba(56, 189, 248, 0.4) !important;
   box-shadow: inset 0 1px 3px rgba(255, 255, 255, 0.9),
-    0 2px 5px rgba(168, 85, 247, 0.1) !important;
+    0 2px 5px rgba(0, 102, 204, 0.1) !important;
   color: #1e293b !important;
   border-radius: 8px !important;
   font-weight: 500;
@@ -1110,7 +1157,7 @@ export default {
 
 :deep(.el-select__tags .el-tag:hover) {
   box-shadow: inset 0 1px 3px rgba(255, 255, 255, 0.9),
-    0 3px 8px rgba(168, 85, 247, 0.2) !important;
+    0 3px 8px rgba(0, 102, 204, 0.2) !important;
   transform: translateY(-1px);
 }
 
@@ -1122,12 +1169,12 @@ export default {
 }
 
 .custom-select-no-border :deep(.el-select__wrapper:hover) {
-  background: rgba(240, 253, 250, 0.5) !important;
+  background: rgba(240, 249, 255, 0.5) !important;
   border-radius: 10px !important;
 }
 
 .mobile-select-bordered :deep(.el-select__wrapper) {
-  border: 1px solid #ccfbf1 !important;
+  border: 1px solid #e0f2fe !important;
   border-radius: 12px !important;
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02) !important;
   padding: 6px 10px !important;
@@ -1135,26 +1182,26 @@ export default {
 }
 
 .mobile-select-bordered :deep(.el-select__wrapper:hover) {
-  border-color: #5eead4 !important;
-  box-shadow: 0 0 0 3px rgba(94, 234, 212, 0.2) !important;
+  border-color: #7DD3FC !important;
+  box-shadow: 0 0 0 3px rgba(125, 211, 252, 0.2) !important;
 }
 
 .mobile-select-bordered :deep(.el-select__wrapper.is-focused) {
-  border-color: #a855f7 !important;
-  box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.2) !important;
+  border-color: #0066CC !important;
+  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.2) !important;
 }
 
 .steps-panel {
-  background: linear-gradient(135deg, #ffffff 0%, #fafbff 100%) !important;
+  background: linear-gradient(135deg, #ffffff 0%, #f6f9f7 100%) !important;
 }
 
 /* --- Cyber/Neon Timeline & Milestones --- */
 .custom-cyber-steps :deep(.el-step__line) {
-  background: linear-gradient(90deg, #14b8a6, #a855f7) !important;
+  background: linear-gradient(90deg, #0066CC, #0066CC) !important;
   height: 6px !important;
   top: 13px !important;
   border-radius: 3px !important;
-  box-shadow: 0 0 12px rgba(20, 184, 166, 0.5), 0 0 12px rgba(168, 85, 247, 0.5) !important;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.5), 0 0 12px rgba(0, 102, 204, 0.5) !important;
   opacity: 0.15;
   transition: opacity 0.5s ease;
 }
@@ -1168,7 +1215,7 @@ export default {
   width: 32px !important;
   height: 32px !important;
   border-radius: 50% !important;
-  background: #f8fafc !important;
+  background: #f6f9f7 !important;
   border: 2px solid #cbd5e1 !important;
   color: transparent !important;
   position: relative;
@@ -1181,9 +1228,9 @@ export default {
 }
 
 .custom-cyber-steps :deep(.el-step__head.is-success .el-step__icon) {
-  background: linear-gradient(135deg, #14b8a6, #0d9488) !important;
+  background: linear-gradient(135deg, #0066CC, #0052A3) !important;
   border: none !important;
-  box-shadow: 0 0 15px rgba(20, 184, 166, 0.6),
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.6),
     inset 0 2px 4px rgba(255, 255, 255, 0.4) !important;
 }
 
@@ -1201,7 +1248,7 @@ export default {
 }
 
 .custom-cyber-steps :deep(.el-step__head.is-process .el-step__icon) {
-  background: linear-gradient(135deg, #a855f7, #7e22ce) !important;
+  background: linear-gradient(135deg, #0066CC, #004C99) !important;
   border: none !important;
   box-shadow: 0 0 20px rgba(168, 85, 247, 0.7),
     inset 0 2px 4px rgba(255, 255, 255, 0.4) !important;
@@ -1222,7 +1269,7 @@ export default {
 
 @keyframes pulse-glow {
   0% {
-    box-shadow: 0 0 15px rgba(168, 85, 247, 0.6),
+    box-shadow: 0 0 15px rgba(0, 102, 204, 0.6),
       inset 0 2px 4px rgba(255, 255, 255, 0.4);
   }
 
@@ -1232,13 +1279,13 @@ export default {
   }
 
   100% {
-    box-shadow: 0 0 15px rgba(168, 85, 247, 0.6),
+    box-shadow: 0 0 15px rgba(0, 102, 204, 0.6),
       inset 0 2px 4px rgba(255, 255, 255, 0.4);
   }
 }
 
 .activeStepItem .el-step__title {
-  color: #9333ea !important;
+  color: #0052A3 !important;
   font-weight: 700 !important;
   text-shadow: 0 0 8px rgba(168, 85, 247, 0.3);
 }
@@ -1255,7 +1302,7 @@ export default {
   background: linear-gradient(
     135deg,
     rgba(20, 184, 166, 0.15),
-    rgba(168, 85, 247, 0.1),
+    rgba(0, 102, 204, 0.1),
     rgba(20, 184, 166, 0.08)
   );
   z-index: -1;
@@ -1263,12 +1310,12 @@ export default {
 }
 
 .empty-panel {
-  background: linear-gradient(135deg, #ffffff 0%, #fafbff 100%) !important;
+  background: linear-gradient(135deg, #ffffff 0%, #f6f9f7 100%) !important;
   transition: border-color 0.3s ease;
 }
 
 .empty-panel:hover {
-  border-color: #c7d2fe !important;
+  border-color: #BAE6FD !important;
 }
 
 .optionsBtnArea {
@@ -1281,45 +1328,94 @@ export default {
   top: 0px;
   background: linear-gradient(
     180deg,
-    rgba(240, 253, 250, 0.9) 0%,
-    rgba(250, 245, 255, 0.7) 100%
+    rgba(240, 249, 255, 0.9) 0%,
+    rgba(246, 249, 247, 0.7) 100%
   ) !important;
   border-radius: 0 16px 16px 0 !important;
   backdrop-filter: blur(8px);
-  border-left: 1px solid rgba(45, 212, 191, 0.2);
+  border-left: 1px solid rgba(56, 189, 248, 0.2);
 }
 
 .reset-btn,
 .continue-btn {
   transition: transform 0.2s ease, box-shadow 0.2s ease !important;
-  border-color: #ccfbf1 !important;
-  color: #14b8a6 !important;
+  border-color: #e0f2fe !important;
+  color: #0066CC !important;
   background: rgba(255, 255, 255, 0.9) !important;
 }
 
 .el-button[disabled] {
-  border-color: #f1f5f9 !important;
+  border-color: #f6f9f7 !important;
   color: #cbd5e1 !important;
-  background: #f8fafc !important;
+  background: #f6f9f7 !important;
   box-shadow: none !important;
   cursor: not-allowed !important;
 }
 
 .continue-btn:hover {
   transform: scale(1.1) !important;
-  border-color: #a855f7 !important;
-  color: #9333ea !important;
-  box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.2),
-    0 4px 12px rgba(168, 85, 247, 0.2) !important;
-  background: #faf5ff !important;
+  border-color: #0066CC !important;
+  color: #0052A3 !important;
+  box-shadow: 0 0 0 4px rgba(0, 102, 204, 0.2),
+    0 4px 12px rgba(0, 102, 204, 0.2) !important;
+  background: #f6f9f7 !important;
 }
 
 .reset-btn:hover {
   transform: rotate(30deg) scale(1.1) !important;
-  border-color: #5eead4 !important;
-  color: #0d9488 !important;
-  box-shadow: 0 0 0 4px rgba(45, 212, 191, 0.2),
-    0 4px 12px rgba(20, 184, 166, 0.2) !important;
-  background: #f0fdfa !important;
+  border-color: #7DD3FC !important;
+  color: #0052A3 !important;
+  box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.2),
+    0 4px 12px rgba(56, 189, 248, 0.2) !important;
+  background: #f0f9ff !important;
+}
+
+/* Muse 风格统一：弹窗、主按钮、表单控件 */
+:deep(.el-dialog) {
+  border-radius: 16px !important;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.18) !important;
+}
+
+:deep(.el-dialog__header) {
+  margin-right: 0;
+  padding: 20px 24px 12px;
+  border-bottom: 1px solid #EEF3F0;
+}
+
+:deep(.el-dialog__title) {
+  font-weight: 700;
+  font-size: 1.125rem;
+  color: #0f172a;
+}
+
+:deep(.el-dialog__body) {
+  padding: 20px 24px;
+}
+
+:deep(.el-dialog__footer) {
+  padding: 12px 24px 20px;
+  border-top: 1px solid #EEF3F0;
+}
+
+:deep(.el-button--primary) {
+  --el-button-bg-color: #0066CC;
+  --el-button-border-color: #0066CC;
+  --el-button-hover-bg-color: #0052A3;
+  --el-button-hover-border-color: #0052A3;
+  --el-button-active-bg-color: #004C99;
+  --el-button-active-border-color: #004C99;
+  border-radius: 999px;
+}
+
+:deep(.el-select__wrapper),
+:deep(.el-input__wrapper) {
+  border-radius: 10px;
+}
+
+:deep(.el-tag) {
+  --el-tag-bg-color: #f0f9ff;
+  --el-tag-border-color: #BAE6FD;
+  --el-tag-text-color: #0052A3;
 }
 </style>

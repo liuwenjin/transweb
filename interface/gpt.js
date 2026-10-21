@@ -1030,6 +1030,7 @@ let data = {
     method: "post",
     dbItem: "visualTool",
     CORS: true,
+    requiredScope: "ai:chat",
     callback: async function (req, res, dbInfo, db) {
       // ─────────────────────────────────────────────
       // 0. 基础校验
@@ -1474,6 +1475,7 @@ let data = {
   aiGatewayRequest: {
     method: "post",
     dbItem: "visualTool",
+    requiredScope: "ai:chat",
     callback: async function (req, res, dbInfo, db) {
       let data = req.session.data || {};
       let tData = req.body;

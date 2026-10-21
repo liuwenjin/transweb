@@ -322,12 +322,19 @@
 </head>
 
 <body>
+  <script>
+    window.__PAGE_TITLE__ = {
+      zh: "TransWeb AI Skill 生成器（初始化界面）",
+      en: "TransWeb AI Skill Generator (Initialize)"
+    };
+  </script>
   <script src="/index.js"></script>
+  <script defer src="admin/getAppConfig?callback=webCpu.appConfigCallback"></script>
+  <script src="/i18n/loader.js"></script>
 </body>
 <script>
-  window.lang = "zh";
-  aigcInterface.init();
   document.addEventListener('DOMContentLoaded', function () {
+    aigcInterface.init();
     webCpu.updateView(document.body, {
       url: "/webApps/document/cloneAppItem.vue",
       className: "ElementVueItem",

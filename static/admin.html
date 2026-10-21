@@ -322,10 +322,16 @@
 </head>
 
 <body>
+  <script>
+    window.__PAGE_TITLE__ = {
+      zh: "TransWeb AI Skill 生成器（管理员界面）",
+      en: "TransWeb AI Skill Generator (Admin)"
+    };
+  </script>
   <script src="/index.js"></script>
+  <script src="/i18n/loader.js"></script>
 </body>
 <script>
-  window.lang = "zh";
   aigcInterface.init();
   document.addEventListener('DOMContentLoaded', function () {
     webCpu.updateView(document.body, {

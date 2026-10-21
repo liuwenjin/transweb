@@ -308,6 +308,14 @@ objectTool.dbUpdate = function (
   param,
   callback
 ) {
+  // 防御：空更新对象会导致 MongoDB 抛出 "'$set' is empty" 崩溃，直接跳过
+  if (!param || typeof param !== "object" || Array.isArray(param) || Object.keys(param).length === 0) {
+    console.warn("dbUpdate 跳过空更新对象:", collection, type);
+    if (typeof callback === "function") {
+      callback({ result: { n: 0, nModified: 0, ok: 1 } });
+    }
+    return;
+  }
   var dbItem = db.db();
   var tObject = dbItem.collection(collection);
   let op = {};

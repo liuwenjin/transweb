@@ -833,6 +833,7 @@ let data = {
   getQuestionData: {
     method: "get",
     dbItem: "visualTool",
+    requiredScope: "doc:read",
     callback: async function (req, res, dbInfo, db) {
       const startTime = Date.now();
       try {
@@ -1217,6 +1218,7 @@ let data = {
   getInteractionList: {
     method: "get",
     dbItem: "visualTool",
+    requiredScope: "doc:read",
     callback: function (req, res, dbInfo, db) {
       let data = req.session.data || {};
       let folderName = data.folderName;
@@ -1284,6 +1286,7 @@ let data = {
   getAgentData: {
     method: "get",
     dbItem: "visualTool",
+    requiredScope: "account:read",
     callback: function (req, res, dbInfo, db) {
       let folderName = req.query.agent;
       let lang = req.query.lang || "zh";
@@ -1622,6 +1625,7 @@ let data = {
   getLoginedData: {
     method: "post",
     dbItem: "visualTool",
+    requiredScope: "doc:read",
     callback: async function queryDocuments(req, res, dbInfo, db) {
       const startTime = Date.now();
       try {
@@ -1812,6 +1816,7 @@ let data = {
   getSubscriptionsData: {
     method: "post",
     dbItem: "visualTool",
+    requiredScope: "doc:read",
     callback: async function (req, res, dbInfo, db) {
       const startTime = Date.now();
       const data = req.session.data;
@@ -1933,6 +1938,7 @@ let data = {
   getPublishedList: {
     method: "get",
     dbItem: "visualTool",
+    requiredScope: "doc:read",
     callback: async function queryItems(req, res, dbInfo, db) {
       const startTime = Date.now();
       try {
@@ -2476,6 +2482,7 @@ let data = {
   getDocumentData: {
     method: "get",
     dbItem: "visualTool",
+    requiredScope: "doc:read",
     callback: async function (req, res, dbInfo, db) {
       const key = req.query.key || "productId";
       const id = req.query[key];
@@ -3250,6 +3257,7 @@ let data = {
   getUserData: {
     method: "get",
     dbItem: "visualTool",
+    requiredScope: "account:read",
     callback: function (req, res, dbInfo, db) {
       let data = req.session.data;
       let lang = req.query.lang || "zh";
@@ -3339,7 +3347,6 @@ let data = {
           account: 1,
           tokenUsed: 1,
           tokenLimit: 1,
-          ["name_" + lang]: 1,
         },
       };
       if (query.account !== undefined && query.password) {
@@ -3971,12 +3978,25 @@ let data = {
           }
           // 白名单：仅允许更新个人资料字段，禁止 tokenLimit/tokenUsed/subscription/role 等计费与权限字段
           const ALLOWED_FIELDS = [
-            "name", "nickname", "avatar", "avatarUrl", "icon", "slogan",
-            "password", "phone", "email", "introduce", "signature", "creator",
+            "name", "name_zh", "name_en", "nickname",
+            "avatar", "avatarUrl", "icon", "image",
+            "slogan", "slogan_zh", "slogan_en", "slogan1", "slogan1_zh", "slogan1_en",
+            "introduce", "introduce_zh", "introduce_en",
+            "agent", "agent_zh", "agent_en",
+            "agentList", "agentList_zh", "agentList_en",
+            "password", "phone", "email", "signature", "creator",
           ];
           const safeSet = {};
           for (const k of ALLOWED_FIELDS) {
             if (set[k] !== undefined) safeSet[k] = set[k];
+          }
+          // 防止 $set 为空导致 MongoDB 崩溃
+          if (Object.keys(safeSet).length === 0) {
+            return WebTool.requestTool.sendData(
+              { ret: 1, data: "无可更新的字段（set 中无合法字段）。" },
+              req,
+              res
+            );
           }
           tObject.updateOne(
             {
@@ -4147,6 +4167,7 @@ let data = {
   getPartnerData: {
     method: "get",
     dbItem: "visualTool",
+    requiredScope: "account:read",
     callback: function (req, res, dbInfo, db) {
       let data = JSON.parse(JSON.stringify(req.session.data)) || {};
       if (data.account !== commonData.adminAccount) {
@@ -4221,6 +4242,7 @@ let data = {
   getLoginInfo: {
     method: "get",
     dbItem: "visualTool",
+    requiredScope: "account:read",
     callback: function (req, res, dbInfo, db) {
       let data = req.session.data || {};
       data = JSON.parse(JSON.stringify(data));

@@ -236,5 +236,12 @@
   "toolbar.agentLoading": "Loading AI Customer…",
   "myApps.more": "More",
   "myAgentSkill.title": "My Agent/Skill",
-  "myApps.updated": "Updated"
+  "myApps.updated": "Updated",
+  "loginBar.apiKey": "API Key",
+  "loginBar.apiKeyManage": "Manage",
+  "loginBar.apiKeyCollapse": "Collapse",
+  "loginBar.apiKeyAdd": "Add",
+  "loginBar.apiKeyDelete": "Delete",
+  "loginBar.apiKeyNamePlaceholder": "Enter key name",
+  "loginBar.apiKeyEmpty": "No API keys"
 }

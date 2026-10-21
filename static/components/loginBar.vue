@@ -140,6 +140,83 @@
               >
             </div>
             <div
+              class="apiKeySection personalInfoItem"
+              style="border-bottom: none"
+            >
+              <span class="itemLabel">{{ apiKeyLabel("loginBar.apiKey", "API Key") }}</span>
+              <el-button
+                class="optionBtn subtleBtn"
+                size="small"
+                @click="toggleApiKeyList"
+                round
+                >{{
+                  apiKeyShow
+                    ? apiKeyLabel("loginBar.apiKeyCollapse", "收起")
+                    : apiKeyLabel("loginBar.apiKeyManage", "管理")
+                }}</el-button
+              >
+            </div>
+            <div v-if="apiKeyShow" ref="apiKeyPanel" class="apiKeyPanel">
+              <div class="apiKeyAddRow">
+                <div class="apiKeyField">
+                  <svg
+                    class="fieldIcon"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"
+                    />
+                  </svg>
+                  <input
+                    v-model="apiKeyName"
+                    class="apiKeyNameInput"
+                    type="text"
+                    :placeholder="apiKeyLabel('loginBar.apiKeyNamePlaceholder', '输入 Key 名称')"
+                    maxlength="64"
+                    spellcheck="false"
+                    autocomplete="off"
+                    @keyup.enter="createApiKey"
+                  />
+                </div>
+                <el-button
+                  size="small"
+                  class="apiKeyAddBtn"
+                  :loading="apiKeyCreating"
+                  @click="createApiKey"
+                  >{{ apiKeyLabel("loginBar.apiKeyAdd", "添加") }}</el-button
+                >
+              </div>
+              <div class="apiKeyList" v-loading="apiKeyLoading">
+                <div v-if="!apiKeyList.length" class="apiKeyEmpty">
+                  {{ apiKeyLabel("loginBar.apiKeyEmpty", "暂无 API Key") }}
+                </div>
+                <div
+                  v-for="k in apiKeyList"
+                  :key="k.keyId"
+                  class="apiKeyItem"
+                >
+                  <div class="apiKeyInfo">
+                    <div class="apiKeyName">{{ k.name }}</div>
+                    <div class="apiKeyMask">{{ k.maskedKey }}</div>
+                    <div class="apiKeyTime">{{ timeToString(k.createdAt) }}</div>
+                  </div>
+                  <el-button
+                    size="small"
+                    text
+                    class="apiKeyDeleteBtn"
+                    @click="removeApiKey(k)"
+                    >{{ apiKeyLabel("loginBar.apiKeyDelete", "删除") }}</el-button
+                  >
+                </div>
+              </div>
+            </div>
+            <div
               style="border-bottom: none"
               class="exitLogined personalInfoItem"
             >
@@ -343,6 +420,11 @@ export default {
         role: [],
       },
       loginedMenu: [],
+      apiKeyShow: false,
+      apiKeyLoading: false,
+      apiKeyCreating: false,
+      apiKeyName: "",
+      apiKeyList: [],
     };
   },
   beforeMount() {},
@@ -795,6 +877,160 @@ export default {
       var dateString = `${year}-${month}-${day}`;
       return dateString;
     },
+    toggleApiKeyList() {
+      this.apiKeyShow = !this.apiKeyShow;
+      if (this.apiKeyShow && !this.apiKeyList.length) {
+        this.loadApiKeys();
+      }
+      // 展开时把浮窗滚动条定位到 API Key 列表，让完整列表可见
+      if (this.apiKeyShow) {
+        this.$nextTick(() => {
+          this.scrollToApiKeyList();
+        });
+      }
+    },
+    scrollToApiKeyList() {
+      const panel = this.$refs.apiKeyPanel;
+      if (!panel) return;
+      const popover =
+        panel.closest(".el-popper") ||
+        (this.$el && this.$el.querySelector(".el-popper"));
+      if (!popover) return;
+      const panelTop = panel.getBoundingClientRect().top;
+      const popTop = popover.getBoundingClientRect().top;
+      const target = popover.scrollTop + (panelTop - popTop) - 8;
+      try {
+        popover.scrollTo({ top: Math.max(0, target), behavior: "smooth" });
+      } catch (e) {
+        popover.scrollTop = Math.max(0, target);
+      }
+    },
+    apiKeyHeaders() {
+      return {
+        "Content-Type": "application/json",
+        "transweb-token": localStorage["transweb-token"] || "",
+      };
+    },
+    // 中文兜底：i18n 词表未加载/缺失时，保证中文版标签不显示原始 key
+    apiKeyLabel(key, zh) {
+      const v = this.t(key);
+      return v === key ? zh : v;
+    },
+    // HTML 转义：防注入（虽然 API Key 是服务端生成的 hex，仍做防御）
+    escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, (c) => {
+        const map = {
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#39;",
+        };
+        return map[c];
+      });
+    },
+    loadApiKeys() {
+      this.apiKeyLoading = true;
+      fetch(webCpu.documentPrefix + "/apiKey/listApiKeys", {
+        method: "GET",
+        credentials: "same-origin",
+        headers: { "transweb-token": localStorage["transweb-token"] || "" },
+      })
+        .then((r) => {
+          if (!r.ok) throw new Error("HTTP " + r.status);
+          return r.json();
+        })
+        .then((d) => {
+          this.apiKeyList = d && d.ret === 0 ? d.data || [] : [];
+        })
+        .catch(() => {
+          this.apiKeyList = [];
+        })
+        .finally(() => {
+          this.apiKeyLoading = false;
+        });
+    },
+    createApiKey() {
+      // 防重复提交
+      if (this.apiKeyCreating) return;
+      const name = (this.apiKeyName || "").trim();
+      if (!name) {
+        return this.$message({ type: "warning", message: "请输入 API Key 名称" });
+      }
+      this.apiKeyCreating = true;
+      fetch(webCpu.documentPrefix + "/apiKey/createApiKey", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: this.apiKeyHeaders(),
+        body: JSON.stringify({ name, scopes: ["doc:read", "ai:chat"] }),
+      })
+        .then((r) => {
+          if (!r.ok) throw new Error("HTTP " + r.status);
+          return r.json();
+        })
+        .then((d) => {
+          if (d && d.ret === 0 && d.data && d.data.apiKey) {
+            this.apiKeyName = "";
+            this.showNewApiKey(d.data.apiKey);
+            this.loadApiKeys();
+          } else {
+            this.$message({ type: "error", message: (d && d.message) || "创建失败" });
+          }
+        })
+        .catch(() => {
+          this.$message({ type: "error", message: "创建失败" });
+        })
+        .finally(() => {
+          this.apiKeyCreating = false;
+        });
+    },
+    // 展示新建的 Key：换行不越界 + 一键复制
+    showNewApiKey(apiKey) {
+      const safeKey = this.escapeHtml(apiKey);
+      const message =
+        '<div style="word-break:break-all;font-family:Menlo,Consolas,monospace;font-size:12px;line-height:1.6;background:#f8f8fa;padding:10px 12px;border:1px solid #e7e7eb;user-select:all;">' +
+        safeKey +
+        "</div>" +
+        '<div style="margin-top:8px;font-size:12px;color:#999;">本 Key 仅显示一次，请立即保存。</div>';
+      this.$confirm(message, "API Key 创建成功", {
+        dangerouslyUseHTMLString: true,
+        confirmButtonText: "复制",
+        cancelButtonText: "关闭",
+        type: "success",
+      })
+        .then(() => {
+          WebTool.copyString(apiKey);
+          this.$message({ type: "success", message: "已复制" });
+        })
+        .catch(() => {});
+    },
+    removeApiKey(key) {
+      this.$confirm("删除后该 Key 将立即失效，确定删除？", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          return fetch(webCpu.documentPrefix + "/apiKey/revokeApiKey", {
+            method: "POST",
+            credentials: "same-origin",
+            headers: this.apiKeyHeaders(),
+            body: JSON.stringify({ keyId: key.keyId }),
+          }).then((r) => {
+            if (!r.ok) throw new Error("HTTP " + r.status);
+            return r.json();
+          });
+        })
+        .then((d) => {
+          if (d && d.ret === 0) {
+            this.$message({ type: "success", message: "已删除" });
+            this.loadApiKeys();
+          } else {
+            this.$message({ type: "error", message: (d && d.message) || "删除失败" });
+          }
+        })
+        .catch(() => {});
+    },
     handleClickMenu(d) {
       let callback = d.callback || d.action;
       d.loading = true;
@@ -895,7 +1131,7 @@ export default {
   border-radius: 0px !important;
   right: 0px !important;
   box-shadow: var(--shadow-card) !important;
-  overflow: hidden;
+  overflow: auto;
   transition: all 0.35s var(--ease-out);
 }
 
@@ -1213,6 +1449,190 @@ export default {
 }
 
 /* ==========================================================================
+   API Key 管理
+   ========================================================================== */
+.apiKeyPanel {
+  padding: 14px 0 6px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.apiKeyAddRow {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+/* 输入框：内嵌图标 + 墨色聚焦，对齐 loginDialog 设计标准 */
+.apiKeyField {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+
+.apiKeyField .fieldIcon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  color: var(--ash-2);
+  pointer-events: none;
+  z-index: 1;
+  transition: color 0.3s ease;
+}
+
+.apiKeyField input {
+  width: 100%;
+  height: 32px;
+  padding: 0 12px 0 38px;
+  background-color: var(--field) !important;
+  color: var(--ink) !important;
+  font-size: 13px !important;
+  letter-spacing: 0.02em;
+  border: 1px solid var(--line);
+  border-radius: 0px !important;
+  box-shadow: inset 0 1px 3px rgba(20, 20, 30, 0.03);
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.apiKeyField input::placeholder {
+  color: var(--ash-2);
+  font-size: 13px;
+}
+
+.apiKeyField input:focus {
+  border-color: var(--ink);
+  background-color: var(--card) !important;
+  box-shadow: 0 0 0 1px var(--ink);
+}
+
+.apiKeyField:focus-within .fieldIcon {
+  color: var(--ink);
+}
+
+/* 添加按钮：松烟墨色，与主操作一致 */
+.apiKeyAddBtn.el-button {
+  height: 32px !important;
+  padding: 0 14px !important;
+  border-radius: 0px !important;
+  background: var(--ink) !important;
+  border: 1px solid var(--ink) !important;
+  color: #ffffff !important;
+  font-weight: 500 !important;
+  font-size: 13px !important;
+  letter-spacing: 0.04em;
+  box-shadow: none !important;
+  transition: all 0.25s var(--ease-out) !important;
+}
+
+.apiKeyAddBtn.el-button:hover {
+  background: #2b2b31 !important;
+  border-color: #2b2b31 !important;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(20, 20, 30, 0.16) !important;
+}
+
+.apiKeyAddBtn.el-button:active {
+  transform: translateY(1px) !important;
+}
+
+/* 删除按钮：淡墨红，非高饱和 */
+.apiKeyDeleteBtn.el-button {
+  padding: 0 2px !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.04em;
+  color: var(--ash-2) !important;
+  background: transparent !important;
+  transition: all 0.2s ease !important;
+}
+
+.apiKeyDeleteBtn.el-button:hover {
+  color: var(--red) !important;
+  background: transparent !important;
+}
+
+.apiKeyDeleteBtn.el-button:active {
+  transform: translateY(1px) !important;
+}
+
+.apiKeyList {
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.apiKeyItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 11px 2px;
+  border-top: 1px solid var(--line);
+  transition: background-color 0.2s ease;
+}
+
+.apiKeyItem:first-child {
+  border-top: none;
+}
+
+.apiKeyItem:hover {
+  background: var(--field);
+}
+
+.apiKeyItem .el-button {
+  flex: 0 0 auto;
+  flex-shrink: 0;
+}
+
+.apiKeyInfo {
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+}
+
+.apiKeyName {
+  font-weight: 600;
+  color: var(--ink);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.apiKeyMask {
+  font-size: 12px;
+  color: var(--ash-2);
+  margin-top: 4px;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  user-select: all;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI",
+    Roboto, monospace;
+}
+
+.apiKeyTime {
+  font-size: 11px;
+  color: var(--ash-2);
+  margin-top: 3px;
+  letter-spacing: 0.02em;
+}
+
+.apiKeyEmpty {
+  font-size: 12px;
+  color: var(--ash-2);
+  padding: 16px 0;
+  text-align: center;
+  letter-spacing: 0.04em;
+}
+
+/* ==========================================================================
    移动端适配：浮窗宽度与内容布局
    ========================================================================== */
 @media (max-width: 767px) {
@@ -1236,7 +1656,11 @@ export default {
   .user-large-avatar,
   .actionGridBtn.el-button,
   .subtleBtn.el-button,
-  .primaryGradientBtn.el-button {
+  .primaryGradientBtn.el-button,
+  .apiKeyAddBtn.el-button,
+  .apiKeyDeleteBtn.el-button,
+  .apiKeyField input,
+  .apiKeyField .fieldIcon {
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;

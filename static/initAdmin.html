@@ -177,6 +177,15 @@
       }
     }
   </style>
+  <!-- ===== i18n 语言引导（自动检测中英文并加载 static/i18n/ 文案） ===== -->
+  <script>
+    window.__PAGE_TITLE__ = {
+      zh: "初始化管理员账号 | TransWeb 管理后台",
+      en: "Initialize Admin Account | TransWeb Admin"
+    };
+  </script>
+  <script src="/i18n/loader.js"></script>
+
   <!-- ===== Tailwind CSS ===== -->
   <script src="https://cdn.tailwindcss.com"></script>
  
@@ -211,8 +220,19 @@
 
 <body>
   
-  <iframe src="/admin.html?aScript=assets/animationScripts/initAdmin.js" style="width: 100%; height: 100%; border: 0;"></iframe>
+  <iframe id="adminFrame" style="width: 100%; height: 100%; border: 0;"></iframe>
  
 </body>
+
+<script>
+  // 将检测到的语言透传给 iframe，确保内部 admin.html 使用一致语言
+  (function () {
+    var frame = document.getElementById("adminFrame");
+    if (frame) {
+      var lang = window.__APP_LANG__ || window.lang || "zh";
+      frame.src = "/admin.html?aScript=assets/animationScripts/initAdmin.js&lang=" + lang;
+    }
+  })();
+</script>
 
 </html>

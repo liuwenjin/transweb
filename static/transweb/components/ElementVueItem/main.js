@@ -236,7 +236,7 @@ webCpu.regComponent("ElementVueItem", {
   }
   task.template = task.template || "";
 
-  if (task.template && task.template && -1 != task.template.search("<") || task.html) {
+  if (task.template && typeof task.template === "string" && -1 != task.template.search("<") || task.html) {
     //update content
     _updateContent(task);
 
@@ -252,9 +252,9 @@ webCpu.regComponent("ElementVueItem", {
     // }
 
     let re = `^${location.origin}`;
-    if (task.template && task.template.search(/^http/) !== -1 && task.tProxy === undefined && task.template.search(re) === -1) {
+    if (typeof task.template === "string" && task.template.search(/^http/) !== -1 && task.tProxy === undefined && task.template.search(re) === -1) {
       task.tProxy = true;
-    } else if (task.template.search(/^http/) === -1) {
+    } else if (typeof task.template === "string" && task.template.search(/^http/) === -1) {
       task.tProxy = false
     }
     // var htmlFetch = new WebRequest(task.template, "GET", "html/text", null, task.tProxy);

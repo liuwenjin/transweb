@@ -1,27 +1,2 @@
-var data = {
-  pointsBillApp: "7ebfb19ee8946e708786c4879a0e4a71",
-  aigcHistory: "d0ab346709c0a8d2bf31a6ca7ea2c8d7",
-  vueCodeEditor: "b94d49f647d27b1fb50648a7cdb9bf0a",
-  promptEditor: "4779cf6c820ef7c8dc2e735cad6fa6b5",
-  adminPoints: "b35c3950e3a2b475fe31e71d6fbdc46d",
-  agentExample: "cc3af21ea811b02ad10e7719cc933f75",
-  pptDocument: "260d88f92196c728dd7081ff4d2b089f",
-  text2chart: "de9496baa1f132de86703877444bd5eb",
-  knowledgeApp: "e1cc02d291dc495858e1bd6eb1d0269c",
-  characterProfile: "45fd4a7443bc806b11f6659b1540aca1",
-  aigcAppFlow: {
-    requirement: "c6f90f7d40537e296b135f88f17c2238",
-    contentQuality: "ba599bbce137674c47bb0a3b0c0ee626",
-    pageTemplate: "b141631dc1f1c59b22f13311e3521b06",
-    improveTemplate: "f7133e56af3a19a648042bffd92c3bc4",
-  },
-  publishInfo: {
-    folderName: "132516497",
-    appName: "appGenerator",
-    user: "创博",
-    avatar: "https://transweb.cn/webApps/document/logo.png",
-  },
-  defaultModel: { apiName: "深度求索", model: "deepseek-v4-flash" },
-  defaultImageModel: { apiName: "modelRouter", model: "gemini-3.5-flash-lite" },
-};
-module.exports = data;
+var data={pointsBillApp:'268406a23d0f4612230a540a8269275e',aigcHistory:'a2e6dd9296685c5e2e18e045a3171b4a',vueCodeEditor:'1e2bc04dd68b53fa360e8d5eb114068a',promptEditor:'0566b3defdd728f440f5d30547016d34',adminPoints:'3467dd3efe60ef51f2017a2b44e97cda',agentExample:'d11ac57c0a6387cb982806d0eddaa9a9',pptDocument:'a6311cc43c339d38f9a6bf31eb680bc8',text2chart:'200508800f21f60a3c99d6c4c19d5535',knowledgeApp:'c7d2d64a10875da0822151f9214660df',characterProfile:'86e268ab4fb0d172f44635ece36abd0a',aigcAppFlow:{requirement:'d5adf2be873897c2eb125ccdd5148a72',contentQuality:'0c4f75af4127c7beff44dc7ab6ef864a',pageTemplate:'92238d38e5a55c04118ddcb2587565c0',improveTemplate:'1dce80eda505cf79f78048d4bea2653d'},publishInfo:{folderName:'132516497',appName:'appGenerator',user:'创博',avatar:'https://transweb.cn/webApps/document/logo.png'},defaultModel:{apiName:'深度求索',model:'deepseek-v4-flash'},defaultImageModel:{apiName:'modelRouter',model:'gemini-3.5-flash-lite'},agentCreator:'0c3d30b7702dd2bb14e0491e3dd135da'}
+ module.exports = data;

@@ -39,7 +39,7 @@
       >
         <svg
           ref="svgCanvas"
-          class="tw-absolute tw-top-0 tw-left-0 tw-pointer-events-none tw-z-10 tw-w-full tw-h-full"
+          class="tw-absolute tw-top-0 tw-left-0 tw-pointer-events-none tw-z-10"
           :width="svgWidth"
           :height="svgHeight"
         >
@@ -581,10 +581,28 @@ export default {
     },
     updateSvgDimensions() {
       const container = this.$refs.canvasContainer;
-      if (container) {
-        this.svgWidth = container.scrollWidth;
-        this.svgHeight = Math.max(360, container.scrollHeight);
+      if (!container) return;
+
+      this.svgWidth = container.scrollWidth;
+
+      // 基础高度：以可滚动内容高度为准，至少 360px
+      let svgHeight = Math.max(360, container.scrollHeight);
+
+      // 非相邻节点的曲线会向下延伸，按最深的曲线预留高度，避免线条被裁剪
+      if (this.nodePositions.length) {
+        const nodeYCenter =
+          this.nodePositions[0].y + this.nodePositions[0].height / 2;
+        this.allLines.forEach((line) => {
+          const step = line.to - line.from;
+          if (step > 1) {
+            const curveHeight = 35 + step * 20;
+            const required = nodeYCenter + curveHeight + 24;
+            if (required > svgHeight) svgHeight = required;
+          }
+        });
       }
+
+      this.svgHeight = svgHeight;
     },
     handlePropertyChange() {
       if (this.lineForm.property.indexOf("(none)") !== -1) {

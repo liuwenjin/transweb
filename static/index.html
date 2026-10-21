@@ -4055,6 +4055,8 @@
   </div>
 
   <script defer src="https://transweb.cn/index.js"></script>
+  <script defer src="admin/getAppConfig?callback=webCpu.appConfigCallback"></script>
+  
   <script>
     document.addEventListener("DOMContentLoaded", function () {
       let tRadio = Number(WebTool.urlQuery(location.href, "transformRadio"));
@@ -4308,6 +4310,13 @@
           "loginBar.unitMillion": "百万+",
           "loginBar.unitTenThousand": "万+",
           "loginBar.unitThousand": "千+",
+          "loginBar.apiKey": "API Key",
+          "loginBar.apiKeyManage": "管理",
+          "loginBar.apiKeyCollapse": "收起",
+          "loginBar.apiKeyAdd": "添加",
+          "loginBar.apiKeyDelete": "删除",
+          "loginBar.apiKeyNamePlaceholder": "输入 Key 名称",
+          "loginBar.apiKeyEmpty": "暂无 API Key",
           "toolbar.wechat": "微信",
           "toolbar.wechatAria": "显示微信二维码",
           "toolbar.wechatTitle": "添加微信",

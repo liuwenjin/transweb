@@ -330,6 +330,11 @@
         method: "get",
         dataType: "json",
       },
+      getAgentData: {
+        url: "/user/getAgentData",
+        method: "get",
+        dataType: "json",
+      },
       updateAccountInfo: {
         url: "/admin/updateCollectionInfo",
         method: "post",
@@ -2328,6 +2333,25 @@ ${typeof json0.example === "object"
         // 否则保持监听，等待父窗口 postMessage 送达
       }
     },
+    getCurrentApp() {
+      this.adapter.getAgentData({
+        agent: webCpu.appConfig.publishInfo.folderName
+      }, (tData) => {
+        tData = tData.data || tData;
+        let agentMap = {};
+        tData.agentList = tData.agentList_zh || tData.agentList || [];
+        tData.appList = WebTool.stringToObject(tData.agentList);
+        tData.appList = WebTool.copyObject(tData.appList, true);
+        tData.appList.map((item) => {
+          agentMap[item.name] = item;
+          return item;
+        });
+        let app = agentMap[webCpu.appConfig.publishInfo.appName];
+        if (typeof webCpu !== "undefined" && webCpu.mitt) {
+          webCpu.mitt.emit("currentApp", app);
+        }
+      })
+    },
     getAppData(id, callback, errCallback) {
       this.getAgentCode(
         id,
@@ -2547,6 +2571,8 @@ ${typeof json0.example === "object"
         data.documentMeta.rootFlag = 0;
       }
 
+      data.app = data.app || {};
+
       if (
         data.app.contentApp &&
         data.app.contentApp.dsl &&
@@ -2646,7 +2672,7 @@ ${typeof json0.example === "object"
         root: data.documentMeta.root,
         rootUser: data.documentMeta.rootUser,
         appName: data.app.name,
-        appLabel: data.app.meta.label || this.$t("anonymous"),
+        appLabel: data.app.meta.label || "(none)",
         appAgent: data.app.publishInfo.folderName,
         appOwner: data.app.publishInfo.user,
         folderName: localStorage.folderName,

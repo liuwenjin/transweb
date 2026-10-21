@@ -52,7 +52,11 @@ transweb_events({
       callback: function (elem) {
         webCpu.cards.loadScriptCard.task.vueItem._confirmLoadScript(()=>{
           webCpu.CardItem.dismissMask(webCpu.cards.personalInfoCard);
-          let folderName = webCpu.cards.aboutInfoCard.task.vueItem.info.folderName;
+          let folderName = localStorage.folderName;
+          if(webCpu.cards.aboutInfoCard && webCpu.cards.aboutInfoCard.task && webCpu.cards.aboutInfoCard.task.vueItem && webCpu.cards.aboutInfoCard.task.vueItem.info){
+            folderName = webCpu.cards.aboutInfoCard.task.vueItem.info.folderName;
+          }
+          
           aigcInterface.adapter.setAppConfig({
             docName: "publishInfo.folderName",
             documentId: folderName + ""

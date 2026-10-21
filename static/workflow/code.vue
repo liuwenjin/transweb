@@ -305,43 +305,32 @@
         </el-button>
       </div>
 
+    </div>
+
+    <!-- 步骤条 + iframe 组合区域：节点较多时步骤条纵向排列，与 iframe 同排同高 -->
+    <div
+      v-if="accountData.appId"
+      :class="[
+        'tw-mt-6 tw-w-full tw-max-w-5xl tw-mx-auto workflow-stage',
+        isVerticalSteps ? 'workflow-stage-vertical' : 'workflow-stage-horizontal',
+      ]"
+    >
       <div
-        v-if="accountData.appId"
-        class="tw-mt-6 tw-relative tw-pr-12 tw-w-full tw-bg-white tw-p-6 tw-rounded-2xl tw-shadow-card tw-border tw-border-slate-200 steps-panel"
+        class="steps-panel tw-relative tw-bg-white tw-p-6 tw-rounded-2xl tw-shadow-card tw-border tw-border-slate-200"
       >
-        <el-steps
-          class="tw-w-full tw-relative custom-cyber-steps"
-          :active="activeStepIndex"
-          finish-status="success"
-          align-center
-        >
-          <el-step
-            :class="[
-              'tw-cursor-pointer',
-              index === Number(activeStepIndex) ? 'activeStepItem' : '',
-            ]"
-            @click="refreshCurrentWorkflow(index)"
-            v-for="(wf, index) in stepData"
-            :key="index"
-            :active="index === Number(activeStepIndex)"
-            :status="getStepStuts(index)"
-            :title="getLabel(wf.appId).slice(0, 5)"
-          ></el-step>
-        </el-steps>
-        <div
-          class="optionsBtnArea tw-flex-shrink-0 tw-flex tw-flex-col tw-items-center"
-        >
+        <div class="optionsBtnArea tw-flex tw-flex-col tw-items-center">
           <el-button
             circle
             @click="resetWorkflow()"
-            class="tw-shadow-sm reset-btn tw-mt-4"
+            class="tw-shadow-sm reset-btn"
+            title="重置"
           >
             <el-icon>
               <refresh-right />
             </el-icon>
           </el-button>
           <span
-            class="tw-shadow-sm tw-mt-2"
+            class="tw-shadow-sm"
             v-if="
               true ||
               (stepData[activeStepIndex] && stepData[activeStepIndex].resultUrl)
@@ -357,6 +346,7 @@
               class="continue-btn"
               circle
               @click="continueWorkflow()"
+              title="继续"
             >
               <el-icon>
                 <el-icon>
@@ -366,22 +356,43 @@
             </el-button>
           </span>
         </div>
+        <div class="steps-scroll" ref="stepsScroll">
+          <el-steps
+            class="tw-w-full tw-relative custom-cyber-steps"
+            :active="activeStepIndex"
+            finish-status="success"
+            :direction="isVerticalSteps ? 'vertical' : 'horizontal'"
+            :align-center="!isVerticalSteps"
+          >
+            <el-step
+              :class="[
+                'tw-cursor-pointer',
+                index === Number(activeStepIndex) ? 'activeStepItem' : '',
+              ]"
+              @click="refreshCurrentWorkflow(index)"
+              v-for="(wf, index) in stepData"
+              :key="index"
+              :active="index === Number(activeStepIndex)"
+              :status="getStepStuts(index)"
+              :title="getLabel(wf.appId).slice(0, 5)"
+            ></el-step>
+          </el-steps>
+        </div>
       </div>
-    </div>
 
-    <div
-      v-if="accountData.appId"
-      class="tw-bg-white tw-max-w-5xl tw-mx-auto tw-h-viewer tw-rounded-2xl tw-shadow-iframe tw-overflow-hidden tw-border tw-border-slate-200 tw-mt-6 iframe-glow"
-    >
-      <iframe
-        ref="workflowFrame"
-        :src="currentNodeUrl"
-        class="tw-w-full tw-h-full tw-border-none"
-        sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"
-        loading="lazy"
-        @load="onWorkflowFrameLoad"
+      <div
+        class="iframe-shell tw-bg-white tw-rounded-2xl tw-shadow-iframe tw-overflow-hidden tw-border tw-border-slate-200 iframe-glow"
       >
-      </iframe>
+        <iframe
+          ref="workflowFrame"
+          :src="currentNodeUrl"
+          class="tw-w-full tw-h-full tw-border-none"
+          sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"
+          loading="lazy"
+          @load="onWorkflowFrameLoad"
+        >
+        </iframe>
+      </div>
     </div>
 
     <div
@@ -524,9 +535,7 @@ export default {
       agentResults: [],
       editingApps: [],
       isExpanded: true,
-      selectedNewNode: {
-        value: "",
-      },
+      selectedNewNode: "",
       // 待转发给子 iframe 的消息缓存（子 iframe 尚未就绪时暂存，加载完成后统一下发）
       pendingChildMessages: [],
     };
@@ -539,6 +548,18 @@ export default {
     "accountData.appId": function (newValue, older) {
       this.currentNodeUrl = this.getUrl();
       this.initStepData();
+    },
+    // 切换步骤后，在纵向布局下保证当前步骤始终可见
+    activeStepIndex: function () {
+      this.scrollActiveStepIntoView();
+    },
+  },
+  computed: {
+    // 编辑区域可调整节点（workflow）数量达到阈值时，步骤条切换为纵向布局：
+    // PC 端阈值为 8（≥8 即切换），移动端（flag 为 true）阈值为 4（≥4 即切换）
+    isVerticalSteps() {
+      const threshold = this.flag ? 4 : 8;
+      return (this.accountData.workflow || []).length >= threshold;
     },
   },
   methods: {
@@ -606,7 +627,7 @@ export default {
     handleAddNode(val) {
       if (!val) return;
       this.accountData.workflow.push(val);
-      this.selectedNewNode.value = ""; // 清空选择框以便下一次添加
+      this.selectedNewNode = ""; // 清空选择框，允许再次选择相同 ID 的节点
 
       this.initStepData();
     },
@@ -776,21 +797,23 @@ export default {
       let arr = this.accountData.workflow || [];
       this.stepData = [];
       this.agentResults = this.agentResults || [];
-      let temp = [this.accountData.appId];
+      // 与节点链路编辑区一致：按数组顺序逐一生成步骤，允许相同 ID 节点重复出现
       for (let i = 0; i < arr.length; i++) {
         let item = arr[i];
-        if (temp.indexOf(item) === -1) {
-          temp.push(item);
-          this.stepData.push({
-            appId: item,
-            currentNodeUrl: this.getUrl(item, i + 1),
-            resultUrl: this.isViewer
-              ? this.agentResults[i + 1]
-                ? this.agentResults[i + 1].resultUrl
-                : ""
-              : "",
-          });
-        }
+        this.stepData.push({
+          appId: item,
+          currentNodeUrl: this.getUrl(item, i + 1),
+          resultUrl: this.isViewer
+            ? this.agentResults[i + 1]
+              ? this.agentResults[i + 1].resultUrl
+              : ""
+            : "",
+          inputData: this.isViewer
+            ? this.agentResults[i + 1]
+              ? this.agentResults[i + 1].inputData || {}
+              : {}
+            : {},
+        });
       }
       this.activeStepIndex = 0;
       this.stepData.unshift({
@@ -801,6 +824,11 @@ export default {
             ? this.agentResults[0].resultUrl
             : ""
           : "",
+        inputData: this.isViewer
+          ? this.agentResults[0]
+            ? this.agentResults[0].inputData || {}
+            : {}
+          : {},
       });
       this.currentNodeUrl = this.isViewer
         ? this.stepData[0].resultUrl || this.getUrl()
@@ -809,6 +837,7 @@ export default {
       //this.accountData.allLines = [];
     },
     exportWorkflow(type, isViewer) {
+      // 导出时保持 accountData.workflow / stepData 的原始顺序与重复项，不做去重
       let config = {
         title: this.title,
         accountData: this.accountData,
@@ -816,10 +845,12 @@ export default {
       };
       if (type === "record") {
         config.isViewer = true;
+        // 预览模式：agentResults 与 stepData 一一对应，同样保留重复节点
         config.agentResults = this.stepData.map((item) => {
           return {
             appId: item.appId,
             resultUrl: item.resultUrl,
+            inputData: item.inputData || {},
           };
         });
       } else {
@@ -853,6 +884,22 @@ export default {
 
       this.activeStepIndex = index || 0;
     },
+    // 纵向步骤条：将当前激活节点滚动到可视区域内（避免带动整个页面滚动）
+    scrollActiveStepIntoView() {
+      if (!this.isVerticalSteps) return;
+      this.$nextTick(() => {
+        const container = this.$refs.stepsScroll;
+        if (!container) return;
+        const activeEl = container.querySelector(".activeStepItem");
+        if (!activeEl) return;
+        const containerRect = container.getBoundingClientRect();
+        const elRect = activeEl.getBoundingClientRect();
+        if (elRect.top < containerRect.top || elRect.bottom > containerRect.bottom) {
+          container.scrollTop +=
+            elRect.top - containerRect.top - containerRect.height / 2 + elRect.height / 2;
+        }
+      });
+    },
     getLabel(val) {
       val = val || "";
       const item = this.apps.find((a) => a.value === val);
@@ -867,9 +914,7 @@ export default {
       };
 
       params.index =
-        index !== undefined
-          ? index
-          : this.accountData.workflow.indexOf(params.id) + 1 || 0;
+        index !== undefined ? index : 0;
 
       let url = webCpu.documentPrefix;
       return typeof WebTool !== "undefined"
@@ -1191,103 +1236,205 @@ export default {
   box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.2) !important;
 }
 
+/* 步骤面板：干净白底 + 发丝边框 + 柔和弥散阴影（Apple 风格） */
 .steps-panel {
-  background: linear-gradient(135deg, #ffffff 0%, #f6f9f7 100%) !important;
+  background: #ffffff !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06) !important;
 }
 
-/* --- Cyber/Neon Timeline & Milestones --- */
+/* 步骤条（el-steps）左边距 */
+.custom-cyber-steps {
+  margin-left: 5px;
+}
+
+/* ===== 步骤条 + iframe 组合区域的响应式布局 ===== */
+.workflow-stage {
+  display: flex;
+}
+
+.workflow-stage-horizontal {
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.workflow-stage-vertical {
+  flex-direction: row;
+  align-items: stretch;
+  gap: 1rem;
+  height: 105vh;
+}
+
+/* 横向模式：步骤面板右侧为绝对定位按钮区预留空间 */
+.workflow-stage-horizontal .steps-panel {
+  padding-right: 3rem;
+}
+
+/* 纵向模式：步骤面板固定宽度 140px，上边距为 0，与 iframe 同高，内部纵向滚动 */
+.workflow-stage-vertical .steps-panel {
+  width: 140px;
+  flex-shrink: 0;
+  height: 100%;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.steps-scroll {
+  width: 100%;
+}
+
+.workflow-stage-vertical .steps-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 4px;
+}
+
+/* iframe 外壳：横向模式固定高度，纵向模式占满剩余空间 */
+.iframe-shell {
+  position: relative;
+}
+
+.workflow-stage-horizontal .iframe-shell {
+  height: 105vh;
+}
+
+.workflow-stage-vertical .iframe-shell {
+  flex: 1 1 auto;
+  height: 100%;
+  min-width: 0;
+}
+
+/* 纵向模式：操作按钮区改为顶部横向工具条（按钮同一行，上边距为 0） */
+.workflow-stage-vertical .optionsBtnArea {
+  position: static;
+  height: auto;
+  width: auto;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  border-radius: 0;
+  border-left: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  padding: 8px 0 8px 0;
+  margin-bottom: 8px;
+}
+
+/* 纵向步骤条：图标容器与连接线适配竖排 */
+.workflow-stage-vertical .custom-cyber-steps :deep(.el-step.is-vertical) {
+  min-height: 44px;
+  justify-content: center;
+}
+
+.workflow-stage-vertical .custom-cyber-steps :deep(.el-step__main) {
+  display: none;
+}
+
+.workflow-stage-vertical .custom-cyber-steps :deep(.el-step.is-vertical .el-step__head) {
+  width: 32px !important;
+}
+
+.workflow-stage-vertical .custom-cyber-steps :deep(.el-step.is-vertical .el-step__line) {
+  width: 2px !important;
+  height: auto !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  left: 15px !important;
+  background: #E8E8ED !important;
+}
+
+.workflow-stage-vertical .custom-cyber-steps :deep(.el-step.is-vertical .el-step__head.is-success .el-step__line),
+.workflow-stage-vertical .custom-cyber-steps :deep(.el-step.is-vertical .el-step__head.is-process .el-step__line) {
+  background: #0071E3 !important;
+}
+
+/* --- Apple 风格 Timeline & Milestones（克制、清晰、柔和） --- */
 .custom-cyber-steps :deep(.el-step__line) {
-  background: linear-gradient(90deg, #0066CC, #0066CC) !important;
-  height: 6px !important;
-  top: 13px !important;
-  border-radius: 3px !important;
-  box-shadow: 0 0 12px rgba(56, 189, 248, 0.5), 0 0 12px rgba(0, 102, 204, 0.5) !important;
-  opacity: 0.15;
-  transition: opacity 0.5s ease;
+  background: #E8E8ED !important;
+  height: 2px !important;
+  top: 15px !important;
+  border-radius: 1px !important;
+  box-shadow: none !important;
+  opacity: 1;
+  transition: background 0.3s ease;
 }
 
 .custom-cyber-steps :deep(.el-step__head.is-success .el-step__line),
 .custom-cyber-steps :deep(.el-step__head.is-process .el-step__line) {
-  opacity: 1;
+  background: #0071E3 !important;
 }
 
 .custom-cyber-steps :deep(.el-step__icon) {
   width: 32px !important;
   height: 32px !important;
   border-radius: 50% !important;
-  background: #f6f9f7 !important;
-  border: 2px solid #cbd5e1 !important;
+  background: #ffffff !important;
+  border: 1.5px solid #D2D2D7 !important;
   color: transparent !important;
   position: relative;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+  box-shadow: none !important;
 }
 
 .custom-cyber-steps :deep(.el-step__icon-inner) {
   display: none !important;
 }
 
+/* 已完成：填充系统蓝 + 白色对勾 */
 .custom-cyber-steps :deep(.el-step__head.is-success .el-step__icon) {
-  background: linear-gradient(135deg, #0066CC, #0052A3) !important;
-  border: none !important;
-  box-shadow: 0 0 15px rgba(56, 189, 248, 0.6),
-    inset 0 2px 4px rgba(255, 255, 255, 0.4) !important;
+  background: #0071E3 !important;
+  border-color: #0071E3 !important;
+  box-shadow: 0 2px 6px rgba(0, 113, 227, 0.28) !important;
 }
 
 .custom-cyber-steps :deep(.el-step__head.is-success .el-step__icon::before) {
   content: "\F26A";
   font-family: "bootstrap-icons";
   color: #ffffff !important;
-  font-size: 18px;
+  font-size: 15px;
   font-weight: bold;
-  text-shadow: 0 0 8px rgba(255, 255, 255, 0.9);
+  text-shadow: none;
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
 }
 
+/* 进行中：白色圆圈 + 蓝色描边 + 中心蓝点 */
 .custom-cyber-steps :deep(.el-step__head.is-process .el-step__icon) {
-  background: linear-gradient(135deg, #0066CC, #004C99) !important;
-  border: none !important;
-  box-shadow: 0 0 20px rgba(168, 85, 247, 0.7),
-    inset 0 2px 4px rgba(255, 255, 255, 0.4) !important;
-  animation: pulse-glow 2s infinite;
+  background: #ffffff !important;
+  border-color: #0071E3 !important;
+  box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.12) !important;
+  animation: none;
 }
 
 .custom-cyber-steps :deep(.el-step__head.is-process .el-step__icon::before) {
-  content: "\F4E1";
-  font-family: "bootstrap-icons";
-  color: #ffffff !important;
-  font-size: 16px;
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.9);
+  content: "";
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #0071E3;
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
 }
 
-@keyframes pulse-glow {
-  0% {
-    box-shadow: 0 0 15px rgba(0, 102, 204, 0.6),
-      inset 0 2px 4px rgba(255, 255, 255, 0.4);
-  }
-
-  50% {
-    box-shadow: 0 0 25px rgba(168, 85, 247, 0.9),
-      inset 0 2px 4px rgba(255, 255, 255, 0.4);
-  }
-
-  100% {
-    box-shadow: 0 0 15px rgba(0, 102, 204, 0.6),
-      inset 0 2px 4px rgba(255, 255, 255, 0.4);
-  }
+/* 步骤标题：次要灰 / 当前步近黑加粗 */
+.custom-cyber-steps :deep(.el-step__title) {
+  color: #6E6E73 !important;
+  font-weight: 500 !important;
+  font-size: 14px !important;
+  transition: color 0.3s ease;
 }
 
-.activeStepItem .el-step__title {
-  color: #0052A3 !important;
-  font-weight: 700 !important;
-  text-shadow: 0 0 8px rgba(168, 85, 247, 0.3);
+.custom-cyber-steps :deep(.activeStepItem .el-step__title) {
+  color: #1D1D1F !important;
+  font-weight: 600 !important;
 }
 
 .iframe-glow {
@@ -1326,48 +1473,47 @@ export default {
   width: 50px;
   text-align: center;
   top: 0px;
-  background: linear-gradient(
-    180deg,
-    rgba(240, 249, 255, 0.9) 0%,
-    rgba(246, 249, 247, 0.7) 100%
-  ) !important;
+  gap: 8px;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.72) !important;
   border-radius: 0 16px 16px 0 !important;
-  backdrop-filter: blur(8px);
-  border-left: 1px solid rgba(56, 189, 248, 0.2);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border-left: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 .reset-btn,
 .continue-btn {
-  transition: transform 0.2s ease, box-shadow 0.2s ease !important;
-  border-color: #e0f2fe !important;
-  color: #0066CC !important;
-  background: rgba(255, 255, 255, 0.9) !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease,
+    background-color 0.2s ease, border-color 0.2s ease !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+  color: #0071E3 !important;
+  background: #ffffff !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
 }
 
 .el-button[disabled] {
-  border-color: #f6f9f7 !important;
-  color: #cbd5e1 !important;
-  background: #f6f9f7 !important;
+  border-color: rgba(0, 0, 0, 0.05) !important;
+  color: #C7C7CC !important;
+  background: #F5F5F7 !important;
   box-shadow: none !important;
   cursor: not-allowed !important;
 }
 
 .continue-btn:hover {
-  transform: scale(1.1) !important;
-  border-color: #0066CC !important;
-  color: #0052A3 !important;
-  box-shadow: 0 0 0 4px rgba(0, 102, 204, 0.2),
-    0 4px 12px rgba(0, 102, 204, 0.2) !important;
-  background: #f6f9f7 !important;
+  transform: translateY(-1px) !important;
+  border-color: #0071E3 !important;
+  color: #0071E3 !important;
+  box-shadow: 0 4px 14px rgba(0, 113, 227, 0.2) !important;
+  background: #f5f9ff !important;
 }
 
 .reset-btn:hover {
-  transform: rotate(30deg) scale(1.1) !important;
-  border-color: #7DD3FC !important;
-  color: #0052A3 !important;
-  box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.2),
-    0 4px 12px rgba(56, 189, 248, 0.2) !important;
-  background: #f0f9ff !important;
+  transform: translateY(-1px) !important;
+  border-color: rgba(0, 0, 0, 0.16) !important;
+  color: #0071E3 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+  background: #f5f5f7 !important;
 }
 
 /* Muse 风格统一：弹窗、主按钮、表单控件 */

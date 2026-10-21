@@ -5,7 +5,7 @@ const manualCors = (req, res, next) => {
   // 允许的源（生产环境建议将 '*' 换成具体域名）
   res.header('Access-Control-Allow-Origin', "*");
   // 允许的 Header 种类（如 Content-Type, Authorization 等）
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Api-Key');
   // 允许的方法
   res.header('Access-Control-Allow-Methods', 'POST, OPTIONS');
 
