@@ -1,7 +1,7 @@
 localStorage.clear();
 let isLogined = false;
 let agentScriptUrl = "/webApps/document/agentList/TransWeb.agentScript.js";
-let nextStepUrl = "/initialize.html?aScript=assets/animationScripts/initTools.js";
+let nextStepUrl = "/clone.html?aScript=assets/animationScripts/initTools.js";
 
 transweb_events({
   timeEvents: [

@@ -205,6 +205,68 @@ const Billing = {
       return false;
     }
   },
+  // 将 token 数换算为应扣积分（cost），与 _aiRequestConfirm 中 tokenCount 的计算逻辑保持一致
+  tokensToCost: (promptTokens, completionTokens, tQuery, folderName) => {
+    const model = ((tQuery && tQuery.model) || "api").toLocaleLowerCase();
+    let exRate =
+      commonData.tokenRateMap[model] || commonData.exchangeRate || 1;
+
+    if (typeof exRate === "number") {
+      exRate = {
+        input: exRate,
+        output: exRate,
+      };
+    }
+
+    if (tQuery && tQuery.apiName === "custom") {
+      exRate.input = (tQuery.inputPrice || 0) / 1000000 || 0.1;
+      exRate.output = (tQuery.outputPrice || 0) / 1000000 || 0.4;
+    } else {
+      exRate.input = exRate.input || 1;
+      exRate.output = exRate.output || 1;
+    }
+
+    let tokenCount = Math.floor(
+      (promptTokens || 0) * exRate.input +
+        (completionTokens || 0) * exRate.output
+    );
+
+    tokenCount =
+      Math.max(commonData.minCost, tokenCount) * (commonData.discount || 1);
+    tokenCount = Math.floor(tokenCount);
+
+    const apiName = tQuery && tQuery.apiName;
+    const documentId = tQuery && tQuery.documentId;
+    const root =
+      (tQuery && (tQuery.rootAccount || tQuery.agentId)) || "1714628260";
+
+    let tRate = undefined;
+    if (documentId) {
+      tRate = commonData.marginMap[documentId];
+    }
+
+    let taxRate =
+      tRate !== undefined
+        ? tRate
+        : commonData.taxRateMap[apiName] || commonData.marginRate || 0;
+
+    if (tQuery && tQuery.taxRate) {
+      taxRate = tQuery.taxRate;
+    }
+
+    let margin = tokenCount * taxRate;
+    if (
+      apiName === "custom" &&
+      ((!documentId && !root) || root === String(folderName))
+    ) {
+      margin = 100;
+    }
+
+    tokenCount += margin;
+    tokenCount = Math.floor(tokenCount);
+
+    return tokenCount;
+  },
   recordUsage: async (data, params, status, db) => {
     /* 写入数据库记录 */
     let rateMap = commonData.tokenRateMap[params.model] || {
@@ -1320,9 +1382,16 @@ let data = {
             // 动态余额检查：超过阈值时检查一次，并指数退避减少 DB 压力
             if (currentTotal >= nextBalanceCheckAt) {
               nextBalanceCheckAt = currentTotal + Math.min(currentTotal, 500); // 退避增长
+              // currentTotal 是 token 数，需按 _aiRequestConfirm 的 tokenCount 逻辑换算为积分成本
+              const cost = Billing.tokensToCost(
+                promptTokensLocal,
+                currentCompletion,
+                tQuery,
+                sessionData.folderName
+              );
               const stillOk = await Billing.checkBalance(
                 sessionData,
-                currentTotal,
+                cost,
                 db
               );
               if (!stillOk) {

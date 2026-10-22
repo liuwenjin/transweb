@@ -1286,7 +1286,6 @@ let data = {
   getAgentData: {
     method: "get",
     dbItem: "visualTool",
-    requiredScope: "account:read",
     callback: function (req, res, dbInfo, db) {
       let folderName = req.query.agent;
       let lang = req.query.lang || "zh";
@@ -1938,7 +1937,6 @@ let data = {
   getPublishedList: {
     method: "get",
     dbItem: "visualTool",
-    requiredScope: "doc:read",
     callback: async function queryItems(req, res, dbInfo, db) {
       const startTime = Date.now();
       try {
@@ -2482,7 +2480,6 @@ let data = {
   getDocumentData: {
     method: "get",
     dbItem: "visualTool",
-    requiredScope: "doc:read",
     callback: async function (req, res, dbInfo, db) {
       const key = req.query.key || "productId";
       const id = req.query[key];
