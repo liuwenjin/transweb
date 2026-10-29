@@ -367,7 +367,9 @@
       },
       getDocumentItem: {
         url: "{{url}}",
-        method: "jsonp",
+        // 改用 GET/XHR 加载文档文件：桶存储返回 application/octet-stream，
+        // 以 <script> 方式(jsonp)加载会被浏览器严格 MIME 检查拒绝执行
+        method: "get",
         dataType: "text",
       },
       saveDocumentData: {
@@ -2245,6 +2247,14 @@ ${typeof json0.example === "object"
         }
       };
 
+      // 将 localStorage.agentInput 追加到输入末尾，以 "\n-----\n" 分隔（一次性消费后清空）
+      const appendAgentInput = (value) => {
+        const agentInput = localStorage.agentInput;
+        if (!agentInput) return value;
+        localStorage.agentInput = "";
+        return value + "\n-----\n" + agentInput;
+      };
+
       const onMessage = (event) => {
         // 仅接受同源（或显式配置的可信源）消息，防止跨域注入
         const trustedOrigins = [
@@ -2278,7 +2288,7 @@ ${typeof json0.example === "object"
         aigcInterface.getDataItem(inputItem, (result, tData) => {
           try {
             const t = WebTool.extractJSON(tData && tData.result);
-            finish(JSON.stringify(t));
+            finish(appendAgentInput(JSON.stringify(t)));
           } catch (e) {
             reportError(e);
           }
@@ -2313,7 +2323,7 @@ ${typeof json0.example === "object"
                 }
               });
               if (t && t.length !== 0) {
-                finish(JSON.stringify(t));
+                finish(appendAgentInput(JSON.stringify(t)));
               }
             } catch (e) {
               reportError(e);
@@ -2323,7 +2333,7 @@ ${typeof json0.example === "object"
           reportError(e);
         }
       } else if (input) {
-        finish(input);
+        finish(appendAgentInput(input));
       } else {
         const agentInput = localStorage.agentInput;
         if (agentInput) {

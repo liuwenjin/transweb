@@ -1243,12 +1243,17 @@
     margin: 10px 0;
     font-size: var(--font-size-sm);
     line-height: var(--line-height-base);
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-wrap: break-word;
   }
 
   .bubble-content pre.md-code code {
     font-family: "JetBrains Mono", "Fira Code", Menlo, Consolas, monospace;
     background: transparent;
     color: inherit;
+    white-space: pre-wrap;
+    word-break: break-word;
   }
 
   .bubble-content blockquote {
@@ -1266,6 +1271,30 @@
 
   .bubble-content a:hover {
     color: var(--muse-primary-hover);
+  }
+
+  /* 表格样式：表格之间/单元格之间有明显间隙 */
+  .bubble-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0 22px;
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-base);
+  }
+
+  .bubble-content th,
+  .bubble-content td {
+    padding: 10px 14px;
+    border: 1px solid var(--muse-border);
+    text-align: left;
+    vertical-align: top;
+    word-break: break-word;
+  }
+
+  .bubble-content th {
+    background: var(--muse-card, #f6f9f7);
+    font-weight: 600;
+    color: var(--muse-text);
   }
 
   .bubble--user .bubble-content code.md-inline {

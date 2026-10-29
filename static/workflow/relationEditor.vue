@@ -103,8 +103,9 @@
           </defs>
         </svg>
 
-        <!-- Nodes Display Area -->
+        <!-- Nodes Display Area：节点渲染与连线解耦，即使没有任何连线也始终可见 -->
         <div
+          v-if="nodes && nodes.length"
           class="tw-relative tw-flex tw-gap-28 tw-justify-start tw-items-center tw-z-20"
           style="min-height: 200px; padding: 24px 0"
         >
@@ -138,6 +139,16 @@
               </div>
             </div>
           </div>
+        </div>
+
+        <!-- 无节点空状态：即便没有任何连线，也保持画布可读，避免节点区域消失 -->
+        <div
+          v-else
+          class="tw-relative tw-z-20 tw-flex tw-items-center tw-justify-center tw-rounded-xl tw-border tw-border-dashed tw-border-slate-300 tw-bg-slate-50/60 tw-text-slate-400 tw-text-sm tw-select-none"
+          style="min-height: 200px"
+        >
+          <i class="bi bi-diagram-3 tw-mr-2 tw-text-lg"></i>
+          暂无 Skill 节点，请先在工作流中添加节点
         </div>
 
         <!-- Serial Line Button Menu -->
@@ -465,6 +476,16 @@ export default {
     },
   },
   watch: {
+    // 节点数据变化（含异步注入）时，重新补全相邻连线并重算坐标，保证节点与连线始终可见
+    nodes: {
+      handler() {
+        if (Array.isArray(this.nodes) && this.nodes.length) {
+          this.initDefaultLines();
+          this.calculateNodePositions();
+        }
+      },
+      deep: true,
+    },
     nodePositions: {
       handler() {
         this.updateSvgDimensions();
@@ -546,9 +567,18 @@ export default {
       );
     },
     calculateNodePositions() {
-      const action = () => {
+      let attempts = 0;
+      const maxAttempts = 10;
+
+      const measure = () => {
         const container = this.$refs.canvasContainer;
-        if (!container) return;
+        if (!container) {
+          if (attempts < maxAttempts) {
+            attempts++;
+            requestAnimationFrame(measure);
+          }
+          return;
+        }
 
         const containerRect = container.getBoundingClientRect();
         const newPositions = [];
@@ -569,15 +599,17 @@ export default {
             valid = false;
           }
         }
+
         if (valid && newPositions.length === this.nodes.length) {
           this.nodePositions = newPositions;
+        } else if (attempts < maxAttempts) {
+          // 节点 ref 尚未就绪时重试，避免 allLines 为空时因坐标缺失导致连线不渲染
+          attempts++;
+          requestAnimationFrame(measure);
         }
       };
 
-      this.$nextTick(() => {
-        action();
-        requestAnimationFrame(action);
-      });
+      this.$nextTick(measure);
     },
     updateSvgDimensions() {
       const container = this.$refs.canvasContainer;
@@ -733,36 +765,37 @@ export default {
       };
       this.editingLineRawIdx = -1;
     },
+    initDefaultLines() {
+      const nodeCount = Array.isArray(this.nodes) ? this.nodes.length : 0;
+      const existingLines = Array.isArray(this.allLines) ? this.allLines : [];
+      const mergedLines = [...existingLines];
+
+      // 初始化左右相邻节点（i -> i+1）之间的默认连线，仅在缺失时补充，避免覆盖已有关系
+      for (let i = 0; i < nodeCount - 1; i++) {
+        const alreadyExists = mergedLines.some(
+          (line) => line && line.from === i && line.to === i + 1
+        );
+        if (!alreadyExists) {
+          mergedLines.push({
+            from: i,
+            to: i + 1,
+            property: [],
+            remark: "",
+          });
+        }
+      }
+
+      mergedLines.sort((a, b) => {
+        if (a.from === b.from) return a.to - b.to;
+        return a.from - b.from;
+      });
+
+      this.allLines = mergedLines;
+    },
   },
   mounted() {
-    const baseLines = [];
-    for (let i = 0; i < this.nodes.length - 1; i++) {
-      baseLines.push({
-        from: i,
-        to: i + 1,
-        property: [],
-        remark: "",
-      });
-    }
-
-    const existingLines = this.allLines || [];
-    const mergedLines = [...existingLines];
-
-    baseLines.forEach((baseLine) => {
-      const isAlreadyExists = mergedLines.some(
-        (line) => line.from === baseLine.from && line.to === baseLine.to
-      );
-      if (!isAlreadyExists) {
-        mergedLines.push(baseLine);
-      }
-    });
-
-    mergedLines.sort((a, b) => {
-      if (a.from === b.from) return a.to - b.to;
-      return a.from - b.from;
-    });
-
-    this.allLines = mergedLines;
+    // 初始化左右相邻节点之间的默认连线；即便没有连线，节点区域也由模板独立渲染
+    this.initDefaultLines();
     this.calculateNodePositions();
 
     // 监听窗口与容器尺寸变化，动态纠正坐标

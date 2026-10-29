@@ -4067,7 +4067,7 @@
       
       let qParams = WebTool.getQueryParams();
       let documentId = qParams.id;
-      if (documentId) {
+      if (documentId || qParams.input || qParams.url || qParams.inputData || qParams.inputItem) {
         let url = WebTool.attachParams("/agent.html", qParams);
         location.href = url;
       }

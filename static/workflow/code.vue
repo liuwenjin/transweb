@@ -81,6 +81,15 @@
               </el-dropdown-menu>
             </template>
           </el-dropdown>
+          <el-button
+            circle
+            class="tw-ml-1 header-action-btn"
+            size="small"
+            title="切换到预览模式"
+            @click="switchViewerMode()"
+          >
+            <el-icon :size="12"><component :is="'View'" /></el-icon>
+          </el-button>
         </span>
         <span v-else>
           <el-button
@@ -92,9 +101,7 @@
             @click="switchEditMode()"
           >
             <el-icon>
-              <el-icon>
-                <edit />
-              </el-icon>
+              <edit />
             </el-icon>
           </el-button>
         </span>
@@ -194,7 +201,7 @@
                 <i
                   :class="[
                     flag ? 'bi bi-arrow-down' : 'bi bi-arrow-right',
-                    'tw-text-sm tw-drop-shadow-glow',
+                    'tw-text-sm',
                   ]"
                 ></i>
               </div>
@@ -268,7 +275,7 @@
                 <i
                   :class="[
                     flag ? 'bi bi-arrow-down' : 'bi bi-arrow-right',
-                    'tw-text-sm tw-drop-shadow-glow',
+                    'tw-text-sm',
                   ]"
                 ></i>
               </div>
@@ -349,9 +356,7 @@
               title="继续"
             >
               <el-icon>
-                <el-icon>
-                  <caret-right />
-                </el-icon>
+                <caret-right />
               </el-icon>
             </el-button>
           </span>
@@ -381,7 +386,7 @@
       </div>
 
       <div
-        class="iframe-shell tw-bg-white tw-rounded-2xl tw-shadow-iframe tw-overflow-hidden tw-border tw-border-slate-200 iframe-glow"
+        class="iframe-shell tw-bg-white tw-rounded-2xl tw-shadow-iframe tw-overflow-hidden tw-border tw-border-slate-200"
       >
         <iframe
           ref="workflowFrame"
@@ -392,6 +397,12 @@
           @load="onWorkflowFrameLoad"
         >
         </iframe>
+        <transition name="tw-fade">
+          <div v-if="iframeLoading" class="iframe-loading" aria-hidden="true">
+            <div class="iframe-loading__spinner"></div>
+            <span class="iframe-loading__text">正在加载工作流…</span>
+          </div>
+        </transition>
       </div>
     </div>
 
@@ -518,9 +529,15 @@ export default {
         appId: "2d233c906f091e2f17385e4494fdd05f",
         allLines: [],
       },
+      // 各节点额外数据：{ [节点索引]: { ... } }，进入节点时合并进 agentInput（通用能力，由父组件控制）
+      lastLevelInput: {},
+      // 初始展示的节点索引：0 为首节点，负数（如 -1）表示最后一个节点（通用能力，由父组件控制）
+      initialStepIndex: 0,
       isViewer: WebTool.urlQuery(location.href).isView === "1",
       stepData: [],
-      currentNodeUrl: "",
+      currentNodeUrl: "about:blank",
+      // iframe 加载遮罩：切换地址时显示，加载完成后隐藏，避免切换瞬间白屏闪烁
+      iframeLoading: false,
       relationEditor: {
         tips: "编辑 Skill 节点依赖关系",
         url: "",
@@ -541,17 +558,23 @@ export default {
     };
   },
   watch: {
-    "accountData.workflow": function (newValue, older) {
-      this.currentNodeUrl = this.getUrl();
+    // 工作流拓扑或主 Skill 变更时，统一交给 initStepData 重建步骤并计算 iframe 地址，
+    // 避免一处变更触发多次重复重建与重复加载导致的卡顿
+    "accountData.workflow": function () {
       this.initStepData();
     },
-    "accountData.appId": function (newValue, older) {
-      this.currentNodeUrl = this.getUrl();
+    "accountData.appId": function () {
       this.initStepData();
     },
     // 切换步骤后，在纵向布局下保证当前步骤始终可见
     activeStepIndex: function () {
       this.scrollActiveStepIntoView();
+    },
+    // iframe 地址变更时标记加载中，配合加载遮罩避免白屏闪烁
+    currentNodeUrl: function (newUrl, oldUrl) {
+      if (newUrl && newUrl !== oldUrl) {
+        this.iframeLoading = true;
+      }
     },
   },
   computed: {
@@ -568,7 +591,7 @@ export default {
         className: "ElementVueItem",
         task: {
           template: `<div class='tw-w-full tw-h-full'>
-                  <iframe class='tw-w-full tw-h-full' src='https://agent.transweb.cn?headerHidden=true'></iframe>
+                  <iframe class='tw-w-full tw-h-full' src='https://transweb.cn/skill.html?headerHidden=true'></iframe>
                 </div>`,
         },
       };
@@ -617,34 +640,44 @@ export default {
           maxWidth: "900px",
           height: this.flag ? "100%" : "90%",
           borderRadius: "12px",
-          boxShadow: "0 4px 12px rgba(0, 102, 204, 0.08)",
+          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.08)",
         }
       );
     },
     switchEditMode() {
       this.isViewer = false;
     },
+    switchViewerMode() {
+      // 快照当前运行结果，切换到预览模式（只读查看，右上角可切回编辑）
+      this.agentResults = this.stepData.map((item) => {
+        return {
+          appId: item.appId,
+          resultUrl: item.resultUrl,
+          inputData: item.inputData || item.skillInput || {},
+        };
+      });
+      this.isViewer = true;
+      this.initStepData();
+    },
     handleAddNode(val) {
       if (!val) return;
       this.accountData.workflow.push(val);
       this.selectedNewNode = ""; // 清空选择框，允许再次选择相同 ID 的节点
-
-      this.initStepData();
+      // push 会触发 "accountData.workflow" 监听器统一重建步骤，避免此处重复重建
     },
     removeNode(index) {
+      // splice 会触发 "accountData.workflow" 监听器统一重建步骤
       this.accountData.workflow.splice(index, 1);
-      this.initStepData();
     },
     moveNode(index, step) {
       const targetIndex = index + step;
       if (targetIndex < 0 || targetIndex >= this.accountData.workflow.length)
         return;
 
-      // 交换位置
-      const temp = this.accountData.workflow[index];
-      this.accountData.workflow[index] = this.accountData.workflow[targetIndex];
-      this.accountData.workflow[targetIndex] = temp;
-      this.initStepData();
+      // 使用 splice 交换位置：Vue 2 对数组下标的直接赋值不具备响应式，
+      // 改用 splice 既保证视图与监听器更新，又避免重复重建
+      const [item] = this.accountData.workflow.splice(index, 1);
+      this.accountData.workflow.splice(targetIndex, 0, item);
     },
     getStepStuts(index) {
       let ret = "";
@@ -659,7 +692,7 @@ export default {
     },
     openAppItem(item) {
       let appId = item.value;
-      window.open(`https://transweb.cn?id=${appId}`, "_blank");
+      window.open(`https://transweb.cn/skill.html?id=${appId}`, "_blank");
     },
     updateInputData(stepIndex, dataId) {
       let arr = this.accountData.allLines;
@@ -681,16 +714,27 @@ export default {
     },
     startEditRelation() {
       let app = JSON.parse(JSON.stringify(this.relationEditor));
-      // console.log("this.stepData: ", this.stepData);
+
+      // 兜底构造节点列表：stepData 尚未就绪时，回退到 accountData.appId + workflow，
+      // 确保 allLines 为空（尚未配置关系）时关系编辑器依然能拿到并显示工作流节点
+      const stepList =
+        Array.isArray(this.stepData) && this.stepData.length
+          ? this.stepData
+          : [{ appId: this.accountData.appId }].concat(
+              (this.accountData.workflow || []).map((appId) => ({ appId }))
+            );
+
       app.dsl = {
         data: {
-          nodes: this.stepData.map((item) => {
-            return {
+          nodes: stepList
+            .filter((item) => item && item.appId)
+            .map((item) => ({
               id: item.appId,
               name: this.getLabel(item.appId).slice(0, 5),
-            };
-          }),
-          allLines: this.accountData.allLines,
+            })),
+          allLines: Array.isArray(this.accountData.allLines)
+            ? this.accountData.allLines
+            : [],
         },
       };
       let callback = () => {
@@ -749,27 +793,51 @@ export default {
         this.$message.warning("没有更多步骤了");
         return;
       }
-      let currentNode = this.stepData[this.activeStepIndex];
-      if (currentNode.resultUrl) {
-        let params = WebTool.urlQuery(currentNode.resultUrl);
-        let dataId = params.dataId;
-        if (dataId) {
-          let nextNode = this.stepData[Number(this.activeStepIndex) + 1];
-          if (nextNode) {
-            this.currentNodeUrl = WebTool.attachParams(
-              nextNode.currentNodeUrl,
-              {
-                inputItem: dataId,
-                auto: true,
-              }
-            );
-          }
-        }
-      } else {
+      const currentNode = this.stepData[this.activeStepIndex];
+      if (!currentNode || !currentNode.resultUrl) {
         this.$message.warning(
           "当前步骤没有结果可展示，请先在下方完成当前步骤的操作"
         );
+        return;
       }
+      const dataId = WebTool.urlQuery(currentNode.resultUrl).dataId;
+      if (!dataId) return;
+      const nextIndex = Number(this.activeStepIndex) + 1;
+      const nextNode = this.stepData[nextIndex];
+      if (!nextNode) return;
+      // 进入节点前，合并父组件为该节点提供的额外数据到 agentInput
+      this.mergeAgentInput(nextIndex);
+      this.loadIframe(
+        WebTool.attachParams(nextNode.currentNodeUrl, {
+          inputItem: dataId,
+          auto: true,
+        })
+      );
+    },
+    // 将父组件为某节点配置的额外数据合并进 agentInput（通用机制）
+    // lastLevelInput 结构：{ [节点索引]: { ...额外数据 } }
+    // 已有 agentInput 为 JSON 对象时按对象浅合并（额外数据优先），否则原始文本挂到 input 字段
+    mergeAgentInput(index) {
+      const map = this.lastLevelInput;
+      if (index == null || !map || typeof map !== "object") return;
+      const extra = map[index];
+      if (extra == null) return;
+
+      let base = {};
+      const existing = localStorage.agentInput;
+      if (existing) {
+        try {
+          const parsed = JSON.parse(existing);
+          if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+            base = parsed;
+          } else {
+            base = { input: existing };
+          }
+        } catch (e) {
+          base = { input: existing };
+        }
+      }
+      localStorage.agentInput = JSON.stringify(Object.assign({}, base, extra));
     },
     handleTitleChange(e) {
       let elem = e.currentTarget;
@@ -790,10 +858,15 @@ export default {
           item.resultUrl = "";
           return item;
         });
-        this.refreshCurrentWorkflow(0, "currentNodeUrl");
+        // 重置后回到首步并强制刷新（force 追加时间戳，跳过缓存重新执行）
+        this.activeStepIndex = 0;
+        const first = this.stepData[0];
+        this.loadIframe(first ? first.currentNodeUrl : "", true);
       });
     },
     initStepData() {
+      // 合并首节点（索引 0）的额外数据到 agentInput（其余节点在进入对应节点时合并）
+      this.mergeAgentInput(0);
       let arr = this.accountData.workflow || [];
       this.stepData = [];
       this.agentResults = this.agentResults || [];
@@ -808,14 +881,13 @@ export default {
               ? this.agentResults[i + 1].resultUrl
               : ""
             : "",
-          inputData: this.isViewer
+          skillInput: this.isViewer
             ? this.agentResults[i + 1]
               ? this.agentResults[i + 1].inputData || {}
               : {}
             : {},
         });
       }
-      this.activeStepIndex = 0;
       this.stepData.unshift({
         appId: this.accountData.appId,
         currentNodeUrl: this.getUrl(this.accountData.appId, 0),
@@ -824,17 +896,26 @@ export default {
             ? this.agentResults[0].resultUrl
             : ""
           : "",
-        inputData: this.isViewer
+        skillInput: this.isViewer
           ? this.agentResults[0]
             ? this.agentResults[0].inputData || {}
             : {}
           : {},
       });
+      this.activeStepIndex = this.resolveInitialStepIndex();
       this.currentNodeUrl = this.isViewer
-        ? this.stepData[0].resultUrl || this.getUrl()
+        ? this.stepData[this.activeStepIndex].resultUrl || this.getUrl()
         : this.getUrl();
 
       //this.accountData.allLines = [];
+    },
+    // 解析初始展示节点：0 为首节点，负数（如 -1）为最后一个节点，超出范围自动收敛
+    resolveInitialStepIndex() {
+      const max = this.stepData.length - 1;
+      let idx = Number(this.initialStepIndex);
+      if (!Number.isFinite(idx)) idx = 0;
+      if (idx < 0) idx = max;
+      return Math.max(0, Math.min(idx, max));
     },
     exportWorkflow(type, isViewer) {
       // 导出时保持 accountData.workflow / stepData 的原始顺序与重复项，不做去重
@@ -850,7 +931,7 @@ export default {
           return {
             appId: item.appId,
             resultUrl: item.resultUrl,
-            inputData: item.inputData || {},
+            skillInput: item.inputData || {},
           };
         });
       } else {
@@ -870,19 +951,22 @@ export default {
         config.isViewer ? tName : ""
       );
     },
-    refreshCurrentWorkflow(index, flag) {
-      let url = "";
-      if (!flag) {
-        url =
-          this.stepData[index].resultUrl || this.stepData[index].currentNodeUrl;
-      } else {
-        url = this.stepData[index][flag] || this.stepData[index].currentNodeUrl;
-      }
-      this.currentNodeUrl = WebTool.attachParams(url, {
-        _t: new Date().getTime(),
-      });
-
+    refreshCurrentWorkflow(index, urlKey) {
+      const step = this.stepData[index];
+      if (!step) return;
+      const url = urlKey
+        ? step[urlKey] || step.currentNodeUrl
+        : step.resultUrl || step.currentNodeUrl;
       this.activeStepIndex = index || 0;
+      // 普通步骤切换不再追加时间戳，复用浏览器缓存，避免反复切换时整页重载卡顿
+      this.loadIframe(url);
+    },
+    // 统一 iframe 加载入口：相同地址不重复加载；force 为 true 时追加时间戳强制刷新
+    loadIframe(url, force) {
+      if (!url) return;
+      const target = force ? WebTool.attachParams(url, { _t: Date.now() }) : url;
+      if (target === this.currentNodeUrl) return;
+      this.currentNodeUrl = target;
     },
     // 纵向步骤条：将当前激活节点滚动到可视区域内（避免带动整个页面滚动）
     scrollActiveStepIntoView() {
@@ -916,7 +1000,24 @@ export default {
       params.index =
         index !== undefined ? index : 0;
 
-      let url = webCpu.documentPrefix;
+      // 第一个节点（index=0）已有执行记录（resultUrl）时优先展示结果，忽略自动执行；
+      // 否则，若有输入（localStorage.agentInput）则携带 auto=true 自动执行
+      const firstNodeHasResult = !!(
+        this.isViewer &&
+        this.agentResults &&
+        this.agentResults[0] &&
+        this.agentResults[0].resultUrl
+      );
+      if (
+        params.index === 0 &&
+        !firstNodeHasResult &&
+        typeof localStorage !== "undefined" &&
+        localStorage.agentInput
+      ) {
+        params.auto = true;
+      }
+
+      let url = webCpu.documentPrefix + "/skill.html";
       return typeof WebTool !== "undefined"
         ? WebTool.attachParams(url, params)
         : url;
@@ -960,12 +1061,10 @@ export default {
         const dataId = params.dataId;
         const stepIndex = Number(params.index) + 1;
 
-        this.activeStepIndex = stepIndex;
-
         if (stepIndex < this.stepData.length + 1) {
           this.activeStepIndex = stepIndex;
           const node = this.stepData[stepIndex - 1] || {};
-          const url = webCpu.documentPrefix;
+          const url = webCpu.documentPrefix + "/skill.html";
 
           if (inputItem) {
             params.id = node.appId;
@@ -982,9 +1081,25 @@ export default {
             );
           }
 
+          // 节点完成（resultUrl 已生成）：通过 mitt 通知外层容器监听工作流执行状态
+          if (
+            webCpu &&
+            webCpu.mitt &&
+            this.stepData[stepIndex - 1] &&
+            this.stepData[stepIndex - 1].resultUrl
+          ) {
+            webCpu.mitt.emit("workflowNodeCompleted", {
+              appId: this.stepData[stepIndex - 1].appId,
+              resultUrl: this.stepData[stepIndex - 1].resultUrl,
+              stepData: this.stepData,
+            });
+          }
+
           const tParams = WebTool.urlQuery(currentUrl);
           if (inputItem) {
             this.updateInputData(stepIndex - 1, inputItem);
+            // 进入节点前，合并父组件为该节点提供的额外数据到 agentInput
+            this.mergeAgentInput(stepIndex);
             tParams.index = stepIndex;
             tParams.id = this.stepData[stepIndex].appId;
             if (this.stepData[stepIndex].inputData) {
@@ -995,7 +1110,7 @@ export default {
               delete tParams.inputItem;
             }
             currentUrl = WebTool.attachParams(webCpu.documentPrefix, tParams);
-            iframe.src = currentUrl;
+            this.loadIframe(currentUrl);
           }
         }
       } catch (e) {
@@ -1044,12 +1159,14 @@ export default {
       });
     },
     onWorkflowFrameLoad() {
+      this.iframeLoading = false;
       this.flushPendingChildMessages();
     },
   },
   mounted() {
     this.initMessageBridge();
     this.initStepData();
+    this.iframeLoading = true;
   },
   beforeUnmount() {
     if (this._iframeMessageCallback) {
@@ -1065,25 +1182,28 @@ export default {
 </script>
 
 <style scoped>
+/* 补齐 Tailwind 任意值类样式声明（运行时 SFC 不会被 JIT 扫描到） */
+.tw-bg-\[\#F0F9FF\] {
+  background-color: #f0f9ff;
+}
+.tw-bg-\[\#F6F9F7\] {
+  background-color: #f6f9f7;
+}
+.tw-text-\[11px\] {
+  font-size: 11px;
+}
+
 .tw-bg-page-gradient {
-  background: linear-gradient(160deg, #f0f9ff 0%, #EEF3F0 45%, #F6F9F7 100%);
+  background: #f5f5f7;
   min-height: 100vh;
 }
 
-.tw-bg-blue-gradient {
-  background: linear-gradient(135deg, #0066CC 0%, #38BDF8 100%);
-}
-
-.tw-shadow-icon {
-  box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
-}
-
 .tw-shadow-card {
-  box-shadow: 0 2px 16px rgba(0, 102, 204, 0.07), 0 1px 4px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
 }
 
 .tw-shadow-iframe {
-  box-shadow: 0 8px 40px rgba(0, 102, 204, 0.12), 0 2px 8px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
 .tw-w-custom-160 {
@@ -1109,138 +1229,75 @@ export default {
 }
 
 .header-action-btn {
-  border-color: #BAE6FD !important;
+  border-color: #e5e5e7 !important;
   color: #0066CC !important;
-  background: rgba(255, 255, 255, 0.9) !important;
-  backdrop-filter: blur(8px);
-  transition: all 0.2s ease !important;
+  background: #ffffff !important;
+  transition: background-color 0.15s ease, border-color 0.15s ease !important;
 }
 
 .header-action-btn:hover {
-  border-color: #7DD3FC !important;
-  background: #f0f9ff !important;
-  box-shadow: 0 0 0 3px rgba(125, 211, 252, 0.18) !important;
-  transform: translateY(-1px) !important;
+  border-color: #0066CC !important;
+  background: #f5f7fa !important;
 }
 
-/* 3D Glossy Metallic AI Bot Head */
-.tw-ai-bot-icon {
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-  box-shadow: inset 0 2px 5px rgba(255, 255, 255, 0.4),
-    inset 0 -3px 6px rgba(0, 0, 0, 0.6), 0 4px 10px rgba(56, 189, 248, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid rgba(56, 189, 248, 0.6);
-  position: relative;
-  overflow: hidden;
-}
-
-.tw-ai-bot-icon::after {
-  content: "";
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(
-    circle,
-    rgba(255, 255, 255, 0.1) 0%,
-    transparent 60%
-  );
-  transform: rotate(45deg);
-  pointer-events: none;
-}
-
-.tw-bot-icon-inner {
-  color: #38BDF8;
-  font-size: 18px;
-  text-shadow: 0 0 8px #38BDF8, 0 0 15px #7DD3FC;
-  z-index: 1;
-}
-
-.tw-drop-shadow-glow {
-  filter: drop-shadow(0 0 4px rgba(56, 189, 248, 0.8));
-}
-
-/* Input Fields with Soft Inner Shadows and Glow */
+/* 配置容器：克制的边框与焦点环 */
 .configuration-wrapper {
   background: #ffffff;
-  border: 1px solid rgba(56, 189, 248, 0.3) !important;
-  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.04),
-    0 0 15px rgba(56, 189, 248, 0.1) !important;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid #e5e5e7 !important;
+  transition: border-color 0.15s ease;
   min-height: 50px;
 }
 
 .configuration-wrapper:hover {
-  border-color: rgba(0, 102, 204, 0.5) !important;
-  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.04),
-    0 0 20px rgba(168, 85, 247, 0.15) !important;
+  border-color: #d0d0d4 !important;
 }
 
 .configuration-wrapper:focus-within {
   border-color: #0066CC !important;
-  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.04),
-    0 0 0 3px rgba(0, 102, 204, 0.2), 0 0 25px rgba(168, 85, 247, 0.25) !important;
+  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.12) !important;
 }
 
-/* Select Dropdown Tags Enhancement */
-:deep(.el-select__tags .el-tag) {
-  background: linear-gradient(135deg, #f0f9ff, #f6f9f7) !important;
-  border: 1px solid rgba(56, 189, 248, 0.4) !important;
-  box-shadow: inset 0 1px 3px rgba(255, 255, 255, 0.9),
-    0 2px 5px rgba(0, 102, 204, 0.1) !important;
+/* 下拉选择标签：扁平、克制 */
+.el-select__tags .el-tag {
+  background: #f5f7fa !important;
+  border: 1px solid #e5e5e7 !important;
   color: #1e293b !important;
   border-radius: 8px !important;
   font-weight: 500;
-  transition: all 0.2s ease;
 }
 
-:deep(.el-select__tags .el-tag:hover) {
-  box-shadow: inset 0 1px 3px rgba(255, 255, 255, 0.9),
-    0 3px 8px rgba(0, 102, 204, 0.2) !important;
-  transform: translateY(-1px);
-}
-
-.custom-select-no-border :deep(.el-select__wrapper) {
+.custom-select-no-border .el-select__wrapper {
   box-shadow: none !important;
   border: none !important;
   background: transparent !important;
   padding: 6px 8px !important;
 }
 
-.custom-select-no-border :deep(.el-select__wrapper:hover) {
+.custom-select-no-border .el-select__wrapper:hover {
   background: rgba(240, 249, 255, 0.5) !important;
   border-radius: 10px !important;
 }
 
-.mobile-select-bordered :deep(.el-select__wrapper) {
-  border: 1px solid #e0f2fe !important;
+.mobile-select-bordered .el-select__wrapper {
+  border: 1px solid #e5e5e7 !important;
   border-radius: 12px !important;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02) !important;
   padding: 6px 10px !important;
-  transition: all 0.3s ease !important;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
 }
 
-.mobile-select-bordered :deep(.el-select__wrapper:hover) {
-  border-color: #7DD3FC !important;
-  box-shadow: 0 0 0 3px rgba(125, 211, 252, 0.2) !important;
-}
-
-.mobile-select-bordered :deep(.el-select__wrapper.is-focused) {
+.mobile-select-bordered .el-select__wrapper:hover {
   border-color: #0066CC !important;
-  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.2) !important;
 }
 
-/* 步骤面板：干净白底 + 发丝边框 + 柔和弥散阴影（Apple 风格） */
+.mobile-select-bordered .el-select__wrapper.is-focused {
+  border-color: #0066CC !important;
+  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.12) !important;
+}
+
+/* 步骤面板：白底 + 发丝边框 + 柔和阴影（由 tw-shadow-card 提供） */
 .steps-panel {
   background: #ffffff !important;
   border-color: rgba(0, 0, 0, 0.08) !important;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06) !important;
 }
 
 /* 步骤条（el-steps）左边距 */
@@ -1298,6 +1355,51 @@ export default {
   position: relative;
 }
 
+/* iframe 加载遮罩：覆盖区域上半部分，提示在上下/左右居中显示，掩盖重载白屏 */
+.iframe-loading {
+  position: absolute;
+  inset: 0 0 50% 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.92);
+  pointer-events: none;
+}
+
+.iframe-loading__spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid rgba(0, 102, 204, 0.15);
+  border-top-color: #0066cc;
+  border-radius: 50%;
+  animation: iframe-loading-spin 0.8s linear infinite;
+}
+
+.iframe-loading__text {
+  font-size: 13px;
+  color: #6e6e73;
+  letter-spacing: 0.5px;
+}
+
+@keyframes iframe-loading-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.tw-fade-enter-active,
+.tw-fade-leave-active {
+  transition: opacity 0.25s ease;
+}
+
+.tw-fade-enter,
+.tw-fade-leave-to {
+  opacity: 0;
+}
+
 .workflow-stage-horizontal .iframe-shell {
   height: 105vh;
 }
@@ -1325,36 +1427,36 @@ export default {
 }
 
 /* 纵向步骤条：图标容器与连接线适配竖排 */
-.workflow-stage-vertical .custom-cyber-steps :deep(.el-step.is-vertical) {
+.workflow-stage-vertical .custom-cyber-steps .el-step.is-vertical {
   min-height: 44px;
   justify-content: center;
 }
 
-.workflow-stage-vertical .custom-cyber-steps :deep(.el-step__main) {
+.workflow-stage-vertical .custom-cyber-steps .el-step__main {
   display: none;
 }
 
-.workflow-stage-vertical .custom-cyber-steps :deep(.el-step.is-vertical .el-step__head) {
+.workflow-stage-vertical .custom-cyber-steps .el-step.is-vertical .el-step__head {
   width: 32px !important;
 }
 
-.workflow-stage-vertical .custom-cyber-steps :deep(.el-step.is-vertical .el-step__line) {
+.workflow-stage-vertical .custom-cyber-steps .el-step.is-vertical .el-step__line {
   width: 2px !important;
   height: auto !important;
   top: 0 !important;
   bottom: 0 !important;
   left: 15px !important;
-  background: #E8E8ED !important;
+  background: #e2e8f0 !important;
 }
 
-.workflow-stage-vertical .custom-cyber-steps :deep(.el-step.is-vertical .el-step__head.is-success .el-step__line),
-.workflow-stage-vertical .custom-cyber-steps :deep(.el-step.is-vertical .el-step__head.is-process .el-step__line) {
-  background: #0071E3 !important;
+.workflow-stage-vertical .custom-cyber-steps .el-step.is-vertical .el-step__head.is-success .el-step__line,
+.workflow-stage-vertical .custom-cyber-steps .el-step.is-vertical .el-step__head.is-process .el-step__line {
+  background: #0066CC !important;
 }
 
 /* --- Apple 风格 Timeline & Milestones（克制、清晰、柔和） --- */
-.custom-cyber-steps :deep(.el-step__line) {
-  background: #E8E8ED !important;
+.custom-cyber-steps .el-step__line {
+  background: #e2e8f0 !important;
   height: 2px !important;
   top: 15px !important;
   border-radius: 1px !important;
@@ -1363,35 +1465,35 @@ export default {
   transition: background 0.3s ease;
 }
 
-.custom-cyber-steps :deep(.el-step__head.is-success .el-step__line),
-.custom-cyber-steps :deep(.el-step__head.is-process .el-step__line) {
-  background: #0071E3 !important;
+.custom-cyber-steps .el-step__head.is-success .el-step__line,
+.custom-cyber-steps .el-step__head.is-process .el-step__line {
+  background: #0066CC !important;
 }
 
-.custom-cyber-steps :deep(.el-step__icon) {
+.custom-cyber-steps .el-step__icon {
   width: 32px !important;
   height: 32px !important;
   border-radius: 50% !important;
   background: #ffffff !important;
-  border: 1.5px solid #D2D2D7 !important;
+  border: 1.5px solid #cbd5e1 !important;
   color: transparent !important;
   position: relative;
   transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
   box-shadow: none !important;
 }
 
-.custom-cyber-steps :deep(.el-step__icon-inner) {
+.custom-cyber-steps .el-step__icon-inner {
   display: none !important;
 }
 
 /* 已完成：填充系统蓝 + 白色对勾 */
-.custom-cyber-steps :deep(.el-step__head.is-success .el-step__icon) {
-  background: #0071E3 !important;
-  border-color: #0071E3 !important;
-  box-shadow: 0 2px 6px rgba(0, 113, 227, 0.28) !important;
+.custom-cyber-steps .el-step__head.is-success .el-step__icon {
+  background: #0066CC !important;
+  border-color: #0066CC !important;
+  box-shadow: 0 2px 6px rgba(0, 102, 204, 0.28) !important;
 }
 
-.custom-cyber-steps :deep(.el-step__head.is-success .el-step__icon::before) {
+.custom-cyber-steps .el-step__head.is-success .el-step__icon::before {
   content: "\F26A";
   font-family: "bootstrap-icons";
   color: #ffffff !important;
@@ -1405,19 +1507,19 @@ export default {
 }
 
 /* 进行中：白色圆圈 + 蓝色描边 + 中心蓝点 */
-.custom-cyber-steps :deep(.el-step__head.is-process .el-step__icon) {
+.custom-cyber-steps .el-step__head.is-process .el-step__icon {
   background: #ffffff !important;
-  border-color: #0071E3 !important;
-  box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.12) !important;
+  border-color: #0066CC !important;
+  box-shadow: 0 0 0 4px rgba(0, 102, 204, 0.12) !important;
   animation: none;
 }
 
-.custom-cyber-steps :deep(.el-step__head.is-process .el-step__icon::before) {
+.custom-cyber-steps .el-step__head.is-process .el-step__icon::before {
   content: "";
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background: #0071E3;
+  background: #0066CC;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -1425,60 +1527,39 @@ export default {
 }
 
 /* 步骤标题：次要灰 / 当前步近黑加粗 */
-.custom-cyber-steps :deep(.el-step__title) {
-  color: #6E6E73 !important;
+.custom-cyber-steps .el-step__title {
+  color: #475569 !important;
   font-weight: 500 !important;
   font-size: 14px !important;
   transition: color 0.3s ease;
 }
 
-.custom-cyber-steps :deep(.activeStepItem .el-step__title) {
-  color: #1D1D1F !important;
+.custom-cyber-steps .activeStepItem .el-step__title {
+  color: #0f172a !important;
   font-weight: 600 !important;
 }
 
-.iframe-glow {
-  position: relative;
-}
-
-.iframe-glow::before {
-  content: "";
-  position: absolute;
-  inset: -1px;
-  border-radius: 18px;
-  background: linear-gradient(
-    135deg,
-    rgba(20, 184, 166, 0.15),
-    rgba(0, 102, 204, 0.1),
-    rgba(20, 184, 166, 0.08)
-  );
-  z-index: -1;
-  pointer-events: none;
-}
-
 .empty-panel {
-  background: linear-gradient(135deg, #ffffff 0%, #f6f9f7 100%) !important;
-  transition: border-color 0.3s ease;
+  background: #ffffff !important;
+  transition: border-color 0.15s ease;
 }
 
 .empty-panel:hover {
-  border-color: #BAE6FD !important;
+  border-color: #cbd5e1 !important;
 }
 
 .optionsBtnArea {
   position: absolute;
   z-index: 1000;
   right: 0px;
-  height: 108px;
+  height: 119px;
   width: 50px;
   text-align: center;
   top: 0px;
   gap: 8px;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.72) !important;
+  background: #ffffff !important;
   border-radius: 0 16px 16px 0 !important;
-  backdrop-filter: blur(16px) saturate(180%);
-  -webkit-backdrop-filter: blur(16px) saturate(180%);
   border-left: 1px solid rgba(0, 0, 0, 0.06);
 }
 
@@ -1487,7 +1568,7 @@ export default {
   transition: transform 0.2s ease, box-shadow 0.2s ease,
     background-color 0.2s ease, border-color 0.2s ease !important;
   border-color: rgba(0, 0, 0, 0.1) !important;
-  color: #0071E3 !important;
+  color: #0066CC !important;
   background: #ffffff !important;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
 }
@@ -1501,50 +1582,46 @@ export default {
 }
 
 .continue-btn:hover {
-  transform: translateY(-1px) !important;
-  border-color: #0071E3 !important;
-  color: #0071E3 !important;
-  box-shadow: 0 4px 14px rgba(0, 113, 227, 0.2) !important;
-  background: #f5f9ff !important;
+  border-color: #0066CC !important;
+  color: #0066CC !important;
+  background: #f5f7fa !important;
 }
 
 .reset-btn:hover {
-  transform: translateY(-1px) !important;
   border-color: rgba(0, 0, 0, 0.16) !important;
-  color: #0071E3 !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+  color: #0066CC !important;
   background: #f5f5f7 !important;
 }
 
-/* Muse 风格统一：弹窗、主按钮、表单控件 */
-:deep(.el-dialog) {
+/* 弹窗：圆角 + 柔和阴影 */
+.el-dialog {
   border-radius: 16px !important;
   overflow: hidden;
-  box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.18) !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12) !important;
 }
 
-:deep(.el-dialog__header) {
+.el-dialog__header {
   margin-right: 0;
   padding: 20px 24px 12px;
-  border-bottom: 1px solid #EEF3F0;
+  border-bottom: 1px solid #e5e5e7;
 }
 
-:deep(.el-dialog__title) {
+.el-dialog__title {
   font-weight: 700;
   font-size: 1.125rem;
   color: #0f172a;
 }
 
-:deep(.el-dialog__body) {
+.el-dialog__body {
   padding: 20px 24px;
 }
 
-:deep(.el-dialog__footer) {
+.el-dialog__footer {
   padding: 12px 24px 20px;
-  border-top: 1px solid #EEF3F0;
+  border-top: 1px solid #e5e5e7;
 }
 
-:deep(.el-button--primary) {
+.el-button--primary {
   --el-button-bg-color: #0066CC;
   --el-button-border-color: #0066CC;
   --el-button-hover-bg-color: #0052A3;
@@ -1554,14 +1631,14 @@ export default {
   border-radius: 999px;
 }
 
-:deep(.el-select__wrapper),
-:deep(.el-input__wrapper) {
+.el-select__wrapper,
+.el-input__wrapper {
   border-radius: 10px;
 }
 
-:deep(.el-tag) {
-  --el-tag-bg-color: #f0f9ff;
-  --el-tag-border-color: #BAE6FD;
-  --el-tag-text-color: #0052A3;
+.el-tag {
+  --el-tag-bg-color: #f5f7fa;
+  --el-tag-border-color: #e5e5e7;
+  --el-tag-text-color: #334155;
 }
 </style>

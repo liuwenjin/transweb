@@ -43,6 +43,8 @@ const triggerPackDownload = async (btnElement, name) => {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
+  aigcInterface.init();
+  
   const mobileMenuBtn = document.getElementById('mobileMenuBtn');
   const mobileNavPanel = document.getElementById('mobileNavPanel');
 

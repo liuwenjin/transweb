@@ -182,7 +182,7 @@
                 </template>
               </el-dropdown>
               <span v-if="!flag" class="versionLabel">{{
-                getVersionLabel(versionList[currentVersionIndex])
+                getVersionLabel(versionList[currentVersionIndex]).slice(0, 5)
               }}</span>
             </span>
           </slot>

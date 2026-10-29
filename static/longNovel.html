@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>长篇小说创作工作台 - TransWeb</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="description"
+    content="长篇小说创作工作台：文档选择 → 小说规划 → 分集生成，一站式完成长篇小说创作。" />
+  <meta name="author" content="TransWeb" />
+  <meta name="theme-color" content="#eef3f0" />
+  <meta name="format-detection" content="telephone=no" />
+  <link rel="canonical" href="https://transweb.cn/longNovel.html" />
+  <link rel="icon" type="image/png" href="https://transweb.cn/assets/logo.png" />
+  <link rel="apple-touch-icon" href="https://transweb.cn/assets/logo.png" />
+
+  <!-- ==================== 白与空 设计 tokens（参考 index.html） ==================== -->
+  <style>
+    :root {
+      --paper: #fafafc;
+      --ink: #1a1a1e;
+      --gray: #6e6e73;
+      --light: #a5a5aa;
+      --line: #e7e7eb;
+
+      --muse-bg: #eef3f0;
+      --muse-primary: #0066cc;
+
+      --sans: Inter, -apple-system, BlinkMacSystemFont, "Helvetica Neue",
+        "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif;
+      --serif: "Source Han Serif SC", "Noto Serif SC", "Songti SC", "STSong", serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    /* 横屏功能页：锁定 100vh，禁止外层滚动 */
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      color: var(--ink);
+      font-family: var(--sans);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      background-color: var(--muse-bg);
+      background-image:
+        radial-gradient(ellipse 70% 55% at 15% 0%, rgba(0, 102, 204, 0.06) 0%, transparent 55%),
+        radial-gradient(ellipse 55% 45% at 100% 100%, rgba(0, 102, 204, 0.04) 0%, transparent 55%),
+        radial-gradient(circle at 1px 1px, rgba(148, 163, 184, 0.22) 1px, transparent 0);
+      background-size: auto, auto, 26px 26px;
+    }
+
+    /* 应用挂载根节点：占满视口，供 ElementVueItem 渲染 longNovel.vue */
+    #app-root {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* =========================
+       agentCreator.vue 组件加载等待提示（渲染前与渲染过程中显示）
+       —— 参考 index.html 的 .ac-loading
+    ========================= */
+    .ac-loading {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      background: var(--muse-bg);
+      transition: opacity 0.3s ease;
+    }
+
+    .ac-loading.is-done {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .ac-loading__spinner {
+      width: 40px;
+      height: 40px;
+      margin-bottom: 24px;
+      border-radius: 50%;
+      border: 1px solid var(--line);
+      border-top-color: var(--muse-primary);
+      animation: acSpin 1s linear infinite;
+    }
+
+    @keyframes acSpin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .ac-loading__title {
+      margin: 0 0 8px;
+      font-family: var(--serif);
+      font-size: 22px;
+      letter-spacing: 0.04em;
+      color: var(--ink);
+    }
+
+    .ac-loading__desc {
+      margin: 0;
+      font-size: 13px;
+      line-height: 1.8;
+      letter-spacing: 0.02em;
+      color: var(--gray);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .ac-loading__spinner {
+        animation: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- 应用挂载根节点：longNovel.vue 渲染于此 -->
+  <div id="app-root"></div>
+
+  <!-- 加载等待提示：渲染完成后淡出移除 -->
+  <div class="ac-loading" id="app-loading" role="status" aria-live="polite">
+    <div class="ac-loading__spinner"></div>
+    <p class="ac-loading__title">长篇小说创作工作台</p>
+    <p class="ac-loading__desc">正在加载创作引擎…</p>
+  </div>
+
+  <!-- ==================== 运行态引导（参考 clone.html / index.html） ==================== -->
+  <script src="/index.js"></script>
+  <script defer src="admin/getAppConfig?callback=webCpu.appConfigCallback"></script>
+  <script src="/i18n/loader.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      aigcInterface.init();
+
+      var elem = document.getElementById("app-root");
+      var loading = document.getElementById("app-loading");
+
+      webCpu.updateView(elem, {
+        url: "/webApps/document/longNovel.vue",
+        className: "ElementVueItem",
+        cardName: "longNovel"
+      }, function () {
+        // longNovel.vue 组件渲染完成：淡出并移除加载等待提示
+        if (loading) {
+          loading.classList.add("is-done");
+          setTimeout(function () {
+            if (loading.parentNode) loading.parentNode.removeChild(loading);
+          }, 320);
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>
