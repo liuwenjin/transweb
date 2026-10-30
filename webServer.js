@@ -228,6 +228,15 @@ app.use(compression({
     !req.path.startsWith('/gpt/aiStreamRequest') && compression.filter(req, res)
 }));
 
+// SEO：将 /index.html 规范化 301 到 /，避免与首页产生重复内容（保留查询参数以支持深链）
+app.use(function (req, res, next) {
+  if (req.path === "/index.html") {
+    var qs = (req.originalUrl || "").split("?")[1] || "";
+    return res.redirect(301, "/" + (qs ? "?" + qs : ""));
+  }
+  next();
+});
+
 app.use(express.static("static", {}));
 app.use(session({
   secret: env.get("SESSION_SECRET"), // 从环境变量读取（见 .env）

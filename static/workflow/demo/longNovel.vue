@@ -67,15 +67,23 @@
           <i class="el-icon-download"></i> 导出项目
         </el-button>
 
-        <!-- 读取：初始化选文件界面时展示 -->
+        <!-- 初始化界面右上角：配置 + 读取 作为二级下拉列表操作项 -->
         <template v-if="!started">
-          <el-button
-            size="small"
-            title="读取项目数据（JSON）"
-            @click="importProject"
-          >
-            <i class="el-icon-upload2"></i> 读取
-          </el-button>
+          <el-dropdown trigger="click" @command="handleHeaderMenuCommand">
+            <el-button size="small" title="更多操作">
+              <i class="el-icon-more"></i> 操作
+            </el-button>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item command="config">
+                  <i class="el-icon-setting"></i> 配置
+                </el-dropdown-item>
+                <el-dropdown-item command="read" divided>
+                  <i class="el-icon-upload2"></i> 读取
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
           <input
             ref="projectFileInput"
             type="file"
@@ -94,43 +102,82 @@
           <span class="novel-setup-card__title">
             <i class="bi bi-sliders2"></i>创作设定
           </span>
-          <span class="novel-setup-card__badge">上传素材 · 设定集数 · 一键生成</span>
         </div>
         <div class="novel-setup-card__body">
-        <!-- 本地文档选择（类似 agentCreator 的点击选择 + 拖拽） -->
-        <div
-          class="doc-dropzone"
-          :class="{
-            'doc-dropzone--active': !!selectedDoc,
-            'doc-dropzone--dragging': dragDepth > 0,
-          }"
-          :disabled="confirming"
-          @click="triggerFilePicker"
-          @dragenter.prevent="onDragEnter"
-          @dragover.prevent
-          @dragleave.prevent="onDragLeave"
-          @drop.prevent="onDrop"
-        >
-          <i
-            class="el-icon-upload2 doc-dropzone__icon"
-            :class="{ 'is-active': !!selectedDoc }"
-          ></i>
+        <!-- 组合输入：文档选择 + 集数 + 确认（一体化） -->
+        <div class="setup-combo">
+          <!-- 本地文档选择（类似 agentCreator 的点击选择 + 拖拽） -->
+          <div
+            class="doc-dropzone"
+            :class="{
+              'doc-dropzone--active': !!selectedDoc,
+              'doc-dropzone--dragging': dragDepth > 0,
+            }"
+            :disabled="confirming"
+            @click="triggerFilePicker"
+            @dragenter.prevent="onDragEnter"
+            @dragover.prevent
+            @dragleave.prevent="onDragLeave"
+            @drop.prevent="onDrop"
+          >
+            <i
+              class="el-icon-upload2 doc-dropzone__icon"
+              :class="{ 'is-active': !!selectedDoc }"
+            ></i>
 
-          <div v-if="parsingFile" class="doc-dropzone__text">
-            <span class="doc-dropzone__action">正在解析文档…</span>
+            <div v-if="parsingFile" class="doc-dropzone__text">
+              <span class="doc-dropzone__action">正在解析文档…</span>
+            </div>
+            <div v-else-if="!selectedDoc" class="doc-dropzone__text">
+              <span class="doc-dropzone__action">点击选择本地文档</span>
+              <span class="doc-dropzone__hint"
+                >支持 .md / .txt / .pdf / .docx，≤20MB</span
+              >
+            </div>
+            <div v-else class="doc-dropzone__text">
+              <span class="doc-dropzone__name">{{ selectedDoc.name }}</span>
+              <span class="doc-dropzone__hint">
+                ({{ formatSize(selectedDoc.size) }}) · 点击重新选择
+              </span>
+            </div>
           </div>
-          <div v-else-if="!selectedDoc" class="doc-dropzone__text">
-            <span class="doc-dropzone__action">点击选择本地文档</span>
-            <span class="doc-dropzone__hint"
-              >支持 .md / .txt / .pdf / .docx，≤20MB</span
-            >
+
+          <!-- 集数设定 -->
+          <div class="episode-field">
+            <span class="episode-field__label">集数</span>
+            <el-input-number
+              v-model="episodeCount"
+              :min="1"
+              :max="200"
+              :step="1"
+              size="small"
+              controls-position="right"
+              :disabled="confirming"
+              class="num-input"
+            />
           </div>
-          <div v-else class="doc-dropzone__text">
-            <span class="doc-dropzone__name">{{ selectedDoc.name }}</span>
-            <span class="doc-dropzone__hint">
-              ({{ formatSize(selectedDoc.size) }}) · 点击重新选择
-            </span>
-          </div>
+
+          <el-button
+            type="primary"
+            size="small"
+            :loading="confirming"
+            :disabled="!canConfirm"
+            class="!tw-px-6 !tw-font-medium confirmNovelBtn"
+            @click="handleConfirm"
+          >
+            确认
+          </el-button>
+        </div>
+
+        <!-- 自动生成开关：当前工作流结束后自动执行下一工作流（逐集连续生成） -->
+        <div
+          class="auto-toggle"
+          title="开启后，当前工作流执行结束将自动执行下一个工作流（逐集连续生成）"
+        >
+          <i class="bi bi-arrow-repeat"></i>
+          <span class="auto-toggle__label">自动接力</span>
+          <el-switch v-model="autoGenerate" size="small" />
+          <span class="auto-toggle__hint">工作流结束后自动执行下一工作流</span>
         </div>
 
         <!-- 隐藏的原生文件输入 -->
@@ -141,49 +188,6 @@
           accept=".md,.txt,.pdf,.docx"
           @change="handleFileChange"
         />
-
-        <!-- 集数设定 -->
-        <div class="tw-flex tw-items-center tw-gap-1.5">
-          <span class="tw-text-xs tw-text-slate-500 tw-whitespace-nowrap"
-            >集数</span
-          >
-          <el-input-number
-            v-model="episodeCount"
-            :min="1"
-            :max="200"
-            :step="1"
-            size="small"
-            :disabled="confirming"
-            class="num-input"
-          />
-        </div>
-
-        <!-- 每集字数设定 -->
-        <!-- <div class="tw-flex tw-items-center tw-gap-1.5">
-          <span class="tw-text-xs tw-text-slate-500 tw-whitespace-nowrap"
-            >每集字数</span
-          >
-          <el-input-number
-            v-model="wordsPerEpisode"
-            :min="500"
-            :max="20000"
-            :step="500"
-            size="small"
-            :disabled="confirming"
-            class="num-input"
-          />
-        </div> -->
-
-        <el-button
-          type="primary"
-          size="small"
-          :loading="confirming"
-          :disabled="!canConfirm"
-          class="!tw-px-6 !tw-font-medium confirmNovelBtn"
-          @click="handleConfirm"
-        >
-          确认
-        </el-button>
         </div>
       </div>
     </div>
@@ -212,15 +216,29 @@
         <span>{{ statusMessage }}</span>
       </div>
 
-      <el-button
-        v-if="planningDone && activeMainStep === 0"
-        type="primary"
-        size="small"
-        class="!tw-px-4 !tw-font-medium continueNovelBtn"
-        @click="handleContinue"
+      <div
+        v-if="started && activeMainStep === 0"
+        class="tw-ml-auto tw-flex tw-items-center tw-gap-2 tw-shrink-0"
       >
-        继续 <i class="el-icon-right"></i>
-      </el-button>
+        <div
+          v-if="!planningDone"
+          class="auto-toggle"
+          title="开启后，当前工作流执行结束将自动执行下一个工作流"
+        >
+          <i class="bi bi-arrow-repeat"></i>
+          <span class="auto-toggle__label">自动接力</span>
+          <el-switch v-model="autoGenerate" size="small" />
+        </div>
+        <el-button
+          v-if="planningDone"
+          type="primary"
+          size="small"
+          class="!tw-px-4 !tw-font-medium continueNovelBtn"
+          @click="handleContinue"
+        >
+          继续 <i class="el-icon-right"></i>
+        </el-button>
+      </div>
 
       <div
         v-if="activeMainStep === 1"
@@ -361,6 +379,14 @@
                 <div
                   class="tw-ml-auto tw-flex tw-items-center tw-gap-2 tw-shrink-0"
                 >
+                  <div
+                    class="auto-toggle"
+                    title="开启后，当前分集生成结束将自动生成下一分集"
+                  >
+                    <i class="bi bi-arrow-repeat"></i>
+                    <span class="auto-toggle__label">自动接力</span>
+                    <el-switch v-model="autoGenerate" size="small" />
+                  </div>
                   <el-button
                     size="small"
                     type="primary"
@@ -388,6 +414,39 @@
         </div>
       </div>
     </div>
+
+    <!-- 工作流配置对话框：小说规划 / 分集生成 两条工作流节点列表（code.vue 编辑模式） -->
+    <el-dialog
+      v-model="workflowConfigVisible"
+      title="工作流配置"
+      width="960px"
+      top="4vh"
+      :close-on-click-modal="false"
+      destroy-on-close
+      @opened="onConfigDialogOpened"
+      @closed="onConfigDialogClosed"
+    >
+      <el-tabs v-model="activeConfigTab" type="border-card" class="config-tabs">
+        <el-tab-pane label="小说规划" name="planning">
+          <div ref="configPlanningWorkflow" class="config-workflow-host"></div>
+        </el-tab-pane>
+        <el-tab-pane label="分集生成" name="episode">
+          <div ref="configEpisodeWorkflow" class="config-workflow-host"></div>
+        </el-tab-pane>
+      </el-tabs>
+      <template #footer>
+        <span class="config-dialog-tip">
+          <i class="el-icon-info"></i>
+          在下方节点链中增删 / 排序 Skill，点击「保存」后写入本地存储
+        </span>
+        <div class="dialog-footer">
+          <el-button @click="workflowConfigVisible = false">取消</el-button>
+          <el-button type="primary" @click="confirmWorkflowConfig">
+            保存配置
+          </el-button>
+        </div>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -414,6 +473,65 @@ export default {
       SKILL[item.key] = item.value;
     });
 
+    // 局部变量：两条工作流（小说规划 / 分集生成）的默认节点配置
+    const DEFAULT_WORKFLOWS = {
+      planning: {
+        appId: SKILL.material,
+        workflow: [SKILL.structure, SKILL.taskBook],
+        allLines: [],
+      },
+      episode: {
+        appId: SKILL.chapter,
+        workflow: [SKILL.quality, SKILL.polish],
+        allLines: [
+          { from: 0, to: 2, property: [] },
+          { from: 1, to: 2, property: [] },
+        ],
+      },
+    };
+
+    // 单条工作流配置规范化：逐字段回退到默认值，兼容旧数据 / 脏数据
+    const normalizeWorkflowConfig = (saved, def) => {
+      const s = saved && typeof saved === "object" ? saved : {};
+      return {
+        appId:
+          typeof s.appId === "string" && s.appId ? s.appId : def.appId,
+        workflow: Array.isArray(s.workflow)
+          ? s.workflow.filter((id) => typeof id === "string" && id)
+          : def.workflow.slice(),
+        allLines: Array.isArray(s.allLines)
+          ? JSON.parse(JSON.stringify(s.allLines))
+          : JSON.parse(JSON.stringify(def.allLines)),
+      };
+    };
+
+    // 初始化时读取 localStorage 中保存的工作流配置，否则使用默认值
+    const loadWorkflowConfigs = () => {
+      if (typeof localStorage !== "undefined") {
+        try {
+          const raw = localStorage.getItem("longNovelWorkflows");
+          if (raw) {
+            const saved = JSON.parse(raw);
+            if (saved && typeof saved === "object") {
+              return {
+                planning: normalizeWorkflowConfig(
+                  saved.planning,
+                  DEFAULT_WORKFLOWS.planning
+                ),
+                episode: normalizeWorkflowConfig(
+                  saved.episode,
+                  DEFAULT_WORKFLOWS.episode
+                ),
+              };
+            }
+          }
+        } catch (e) {
+          console.warn("[longNovel] 读取工作流配置失败，使用默认配置:", e);
+        }
+      }
+      return JSON.parse(JSON.stringify(DEFAULT_WORKFLOWS));
+    };
+
     return {
       // —— 输入区 ——
       // 本地文档（类似 agentCreator）：{ name, size, rawFile, content }
@@ -424,6 +542,8 @@ export default {
       wordsPerEpisode: 3000,
       confirming: false,
       started: false,
+      // 自动生成：当前工作流执行结束后是否自动执行下一个工作流（逐集连续生成）
+      autoGenerate: false,
 
       // —— 状态提示 ——
       statusMessage: "",
@@ -450,18 +570,27 @@ export default {
         taskBook: null, // 分集任务书（完整）
       },
 
-      // —— Skill 配置（局部变量，SKILL 由 NOVEL_SKILLS 初始化）——
+      // —— Skill 库（用于 code.vue 下拉选择与节点标签展示）——
       NOVEL_SKILLS,
-      SKILL,
 
-      // 分集生成工作流节点依赖：润色节点(索引2)同时接收章节正文(索引0)与质检(索引1)结果
-      episodeAllLines: [
-        { from: 0, to: 2, property: [] },
-        { from: 1, to: 2, property: [] },
-      ],
+      // —— 工作流配置（初始化界面右上角「配置」可编辑，持久化到 localStorage）——
+      // 结构：{ planning: { appId, workflow, allLines }, episode: { ... } }
+      workflowConfigs: loadWorkflowConfigs(),
+      // 工作流配置对话框状态
+      workflowConfigVisible: false,
+      activeConfigTab: "planning",
 
       // —— 工作流实例引用（挂载后的 code.vue Vue 实例）——
       workflowRefs: {
+        planning: null,
+        episode: null,
+      },
+      // 配置对话框内挂载的 code.vue 实例引用（编辑模式）
+      configWorkflowRefs: {
+        planning: null,
+        episode: null,
+      },
+      configWorkflowApps: {
         planning: null,
         episode: null,
       },
@@ -497,13 +626,7 @@ export default {
 
     // 当前分集是否已完成生成（有结果 → 显示「重新生成」，否则「开始生成」）
     isActiveEpisodeDone() {
-      const ep = this.activeEpisode;
-      return !!(
-        ep &&
-        ep.results &&
-        Array.isArray(ep.results.agentResults) &&
-        ep.results.agentResults.length
-      );
+      return this.hasEpisodeResults(this.activeEpisode);
     },
 
     canGoPrevEpisode() {
@@ -761,7 +884,12 @@ export default {
       this.activeMainStep = index;
       if (index === 0) {
         // 切回小说规划：有执行记录则还原显示（强制重挂载），无记录则走首次渲染
-        this.renderPlanningWorkflow(this.planningAgentResults.length > 0);
+        const hasPlanningRecords = this.hasAgentResults(this.planningAgentResults);
+        if (hasPlanningRecords) {
+          // 显示执行记录时切回非自动模式（隐藏开关、关闭自动生成）
+          this.autoGenerate = false;
+        }
+        this.renderPlanningWorkflow(hasPlanningRecords);
       } else if (index === 1) {
         this.activateCurrentEpisode();
       }
@@ -802,10 +930,11 @@ export default {
     // 无执行记录时以编辑态渲染并自动执行；有执行记录时还原记录并定位到最后节点（不触发自动生成）
     renderPlanningWorkflow(force) {
       if (this.rendered.planning && !force) return;
-      const hasRecords = !!(
-        Array.isArray(this.planningAgentResults) &&
-        this.planningAgentResults.length
-      );
+      // 有「可展示结果」（至少一个节点含 resultUrl）才按执行记录还原，否则按空记录自动执行
+      const hasRecords = this.hasAgentResults(this.planningAgentResults);
+      const cfg = this.workflowConfigs.planning;
+      // 分集任务书为规划工作流的最后一个节点（stepData 索引 = workflow.length），注入集数参照
+      const taskBookIndex = (cfg.workflow || []).length;
       this.renderWorkflow(
         "planning",
         {
@@ -814,15 +943,16 @@ export default {
           isViewer: true,
           // 有执行记录时还原显示（不自动生成），否则为空以自动执行
           agentResults: hasRecords ? this.planningAgentResults : [],
-          initialStepIndex: hasRecords ? -1 : 0,
-          // 第三个节点（分集任务书生成，节点索引 2）的集数参照，以 episode_count 属性的值注入输入
+          initialStepIndex: hasRecords
+            ? this.lastResultStepIndex(this.planningAgentResults)
+            : 0,
           lastLevelInput: {
-            2: { episode_count: this.episodeCount },
+            [taskBookIndex]: { episode_count: this.episodeCount },
           },
           accountData: {
-            appId: this.SKILL.material,
-            workflow: [this.SKILL.structure, this.SKILL.taskBook],
-            allLines: [],
+            appId: cfg.appId,
+            workflow: cfg.workflow.slice(),
+            allLines: JSON.parse(JSON.stringify(cfg.allLines)),
           },
         },
         force
@@ -846,6 +976,7 @@ export default {
 
       // 已完成的分集：以预览模式还原结果并定位到最后一个节点；否则编辑态
       const hasResults = this.hasEpisodeResults(episode);
+      const cfg = this.workflowConfigs.episode;
 
       this.renderWorkflow(
         "episode",
@@ -854,12 +985,14 @@ export default {
           apps: this.NOVEL_SKILLS,
           isViewer: true,
           agentResults: hasResults ? episode.results.agentResults : [],
-          // 有执行记录时初始展示最后一个节点（润色章节正文）
-          initialStepIndex: hasResults ? -1 : 0,
+          // 有执行记录时定位到最后一个「有结果」的节点（通常为润色章节正文）
+          initialStepIndex: hasResults
+            ? this.lastResultStepIndex(episode.results.agentResults)
+            : 0,
           accountData: {
-            appId: this.SKILL.chapter,
-            workflow: [this.SKILL.quality, this.SKILL.polish],
-            allLines: this.episodeAllLines,
+            appId: cfg.appId,
+            workflow: cfg.workflow.slice(),
+            allLines: JSON.parse(JSON.stringify(cfg.allLines)),
           },
         },
         force
@@ -867,13 +1000,10 @@ export default {
       this.episodeRenderedFor = index;
     },
 
-    // 判断某分集是否存在执行记录
+    // 判断某分集是否存在可展示的执行结果
     hasEpisodeResults(episode) {
-      return !!(
-        episode &&
-        episode.results &&
-        Array.isArray(episode.results.agentResults) &&
-        episode.results.agentResults.length
+      return this.hasAgentResults(
+        episode && episode.results && episode.results.agentResults
       );
     },
 
@@ -910,7 +1040,7 @@ export default {
       container.__novelRendered = true;
 
       const option = {
-        url: webCpu.documentPrefix + "/workflow/code.vue",
+        url:  "https://transweb.cn/workflow/code.vue",
         data: config,
         callback: (c, d, t) => {
           // 捕获 code.vue 的 Vue 实例与应用实例，供后续读取状态与卸载清理
@@ -950,6 +1080,166 @@ export default {
     },
 
     /* ============================================================
+     * 工作流配置（初始化界面右上角「配置」→ code.vue 编辑模式）
+     * ============================================================ */
+
+    // 配置对话框容器 ref 名：planning → configPlanningWorkflow
+    configWorkflowRefName(key) {
+      return "config" + key.charAt(0).toUpperCase() + key.slice(1) + "Workflow";
+    },
+
+    // 工作流最后一个节点 appId（用于识别「该工作流已执行结束」）
+    getWorkflowLastNodeAppId(key) {
+      const cfg = this.workflowConfigs[key];
+      if (!cfg) return "";
+      const wf = cfg.workflow || [];
+      return wf.length ? wf[wf.length - 1] : cfg.appId;
+    },
+
+    // 右上角「操作」下拉命令分发
+    handleHeaderMenuCommand(command) {
+      if (command === "config") {
+        this.openWorkflowConfig();
+      } else if (command === "read") {
+        this.importProject();
+      }
+    },
+
+    openWorkflowConfig() {
+      this.activeConfigTab = "planning";
+      this.workflowConfigVisible = true;
+    },
+
+    onConfigDialogOpened() {
+      // 清理残留输入，避免配置对话框内的 skill iframe 读到旧输入自动执行
+      if (typeof localStorage !== "undefined") {
+        localStorage.removeItem("agentInput");
+      }
+      this.mountConfigEditors(0);
+    },
+
+    // 对话框打开动画结束后，两个 tab 容器已渲染，挂载编辑态 code.vue；
+    // 若 ref 尚未就绪则轮询若干 tick 兜底，避免因渲染时序导致漏挂载
+    mountConfigEditors(attempt) {
+      const plan = this.$refs.configPlanningWorkflow;
+      const ep = this.$refs.configEpisodeWorkflow;
+      if (plan && ep) {
+        this.renderConfigWorkflow("planning");
+        this.renderConfigWorkflow("episode");
+        return;
+      }
+      if (attempt < 12) {
+        this.$nextTick(() => this.mountConfigEditors(attempt + 1));
+      }
+    },
+
+    onConfigDialogClosed() {
+      // 对话框关闭时卸载两个编辑态 code.vue 实例（释放 window 消息监听）
+      this.destroyConfigWorkflow("planning");
+      this.destroyConfigWorkflow("episode");
+    },
+
+    // 以编辑模式（isViewer=false）挂载 code.vue，编辑单条工作流的节点链路
+    renderConfigWorkflow(key) {
+      if (
+        typeof webCpu === "undefined" ||
+        typeof webCpu.updateView !== "function"
+      ) {
+        this.setStatus("运行环境缺少 webCpu，无法加载工作流配置编辑器", "error");
+        return;
+      }
+      const container = this.$refs[this.configWorkflowRefName(key)];
+      if (!container || container.__configRendered) return;
+      container.__configRendered = true;
+
+      const cfg = this.workflowConfigs[key];
+      const title = key === "planning" ? "小说规划" : "分集生成";
+
+      const option = {
+        url: "https://transweb.cn/workflow/code.vue",
+        data: {
+          title,
+          // 传入副本，避免编辑态对 apps / accountData 的原地修改污染本地配置
+          apps: this.NOVEL_SKILLS.map((s) => ({ ...s })),
+          isViewer: false,
+          agentResults: [],
+          initialStepIndex: 0,
+          accountData: {
+            appId: cfg.appId,
+            workflow: cfg.workflow.slice(),
+            allLines: JSON.parse(JSON.stringify(cfg.allLines)),
+          },
+        },
+        callback: (c, d, t) => {
+          const vm =
+            (t && t.vueItem) || (d && d.task && d.task.vueItem) || null;
+          const app =
+            (t && t.currentApp) || (d && d.task && d.task.currentApp) || null;
+          this.configWorkflowRefs[key] = vm;
+          this.configWorkflowApps[key] = app;
+        },
+      };
+      webCpu.updateView(container, option);
+    },
+
+    // 卸载某个编辑态 code.vue 实例
+    destroyConfigWorkflow(key) {
+      const app = this.configWorkflowApps[key];
+      if (app && typeof app.unmount === "function") {
+        try {
+          app.unmount();
+        } catch (e) {
+          console.warn("[longNovel] 卸载配置工作流实例失败:", key, e);
+        }
+      }
+      this.configWorkflowApps[key] = null;
+      this.configWorkflowRefs[key] = null;
+
+      const container = this.$refs[this.configWorkflowRefName(key)];
+      if (container) {
+        container.innerHTML = "";
+        delete container.__configRendered;
+      }
+    },
+
+    // 从编辑态 code.vue 实例读取当前节点配置（accountData）
+    readConfigFromEditor(key) {
+      const vm = this.configWorkflowRefs[key];
+      if (!vm || !vm.accountData) return;
+      const ad = vm.accountData;
+      this.workflowConfigs[key] = {
+        appId: typeof ad.appId === "string" ? ad.appId : "",
+        workflow: Array.isArray(ad.workflow)
+          ? ad.workflow.filter((id) => typeof id === "string" && id)
+          : [],
+        allLines: Array.isArray(ad.allLines)
+          ? JSON.parse(JSON.stringify(ad.allLines))
+          : [],
+      };
+    },
+
+    confirmWorkflowConfig() {
+      this.readConfigFromEditor("planning");
+      this.readConfigFromEditor("episode");
+      this.saveWorkflowConfigs();
+      this.workflowConfigVisible = false;
+      this.setStatus("工作流配置已保存并写入本地存储", "success");
+    },
+
+    // 将两条工作流配置写入 localStorage，供下次初始化读取
+    saveWorkflowConfigs() {
+      if (typeof localStorage === "undefined") return;
+      try {
+        localStorage.setItem(
+          "longNovelWorkflows",
+          JSON.stringify(this.workflowConfigs)
+        );
+      } catch (e) {
+        console.warn("[longNovel] 保存工作流配置失败:", e);
+      }
+    },
+
+    /* ============================================================
      * 分集任务书 / 分集列表
      * ============================================================ */
 
@@ -970,6 +1260,13 @@ export default {
       this.episodeRenderedFor = -1;
     },
 
+    // 保证分集列表存在：已有列表（如读取项目数据恢复的）优先保留，否则按集数生成占位
+    ensureEpisodeList() {
+      if (!Array.isArray(this.episodeList) || !this.episodeList.length) {
+        this.buildEpisodeListFromCount();
+      }
+    },
+
     /**
      * 依据「分集任务书」输出结构同步分集步骤节点。
      * 分集任务书生成 Skill 输出形如：
@@ -982,14 +1279,22 @@ export default {
         this.buildEpisodeListFromCount();
         return;
       }
+      // 保留已有分集执行记录（读取项目数据后再次同步任务书时，避免丢失已生成的分集结果）
+      const existingByKey = {};
+      (this.episodeList || []).forEach((ep) => {
+        if (ep && ep.id) existingByKey[ep.id] = ep;
+      });
       this.episodeList = episodes.map((ep, i) => {
         const seq = String(i + 1).padStart(3, "0");
+        const id = ep.episode_id || "EP" + seq;
+        const existing = existingByKey[id];
         return {
-          id: ep.episode_id || "EP" + seq,
+          id,
           title: ep.title || ep.episode_id || "第 " + (i + 1) + " 集",
           raw: ep,
-          status: i === 0 ? "process" : "wait",
-          results: null,
+          // 已有记录时保留其结果与状态；否则首集为 process、其余为 wait
+          status: existing ? existing.status : i === 0 ? "process" : "wait",
+          results: existing ? existing.results : null,
         };
       });
       this.activeEpisodeIndex = 0;
@@ -1014,21 +1319,30 @@ export default {
       if (!last || !last.resultUrl) return;
 
       // 小说规划：最后一个节点为「分集任务书生成」
-      if (last.appId === this.SKILL.taskBook) {
+      if (last.appId === this.getWorkflowLastNodeAppId("planning")) {
         if (this.planningDone) return;
         this.planningDone = true;
         this.planningResultUrl = last.resultUrl;
         // 捕获规划工作流的执行记录，供切回规划面板时还原显示（避免重新自动生成）
         this.planningAgentResults = this.buildAgentResults(stepData);
-        this.setStatus(
-          "「小说规划」工作流已执行结束，点击「继续」进入「分集生成」",
-          "success"
-        );
+        if (this.autoGenerate) {
+          this.setStatus(
+            "「小说规划」工作流已执行结束，自动进入「分集生成」...",
+            "success"
+          );
+          // 自动执行下一个工作流：拉取规划结果并切换到分集生成
+          this.handleContinue();
+        } else {
+          this.setStatus(
+            "「小说规划」工作流已执行结束，点击「继续」进入「分集生成」",
+            "success"
+          );
+        }
         return;
       }
 
       // 分集生成：最后一个节点为「润色章节正文」
-      if (last.appId === this.SKILL.polish) {
+      if (last.appId === this.getWorkflowLastNodeAppId("episode")) {
         this.onEpisodeCompleted(stepData);
       }
     },
@@ -1069,6 +1383,19 @@ export default {
         next.status = "process";
       }
 
+      // 自动生成：当前分集完成后自动切换到下一集继续生成（逐集连续生成）
+      if (this.autoGenerate) {
+        if (next) {
+          this.switchEpisode(index + 1);
+        } else {
+          this.setStatus(
+            "全部「" + this.episodeList.length + "」个分集已自动生成完成",
+            "success"
+          );
+        }
+        return;
+      }
+
       this.setStatus(
         "「" + episode.id + "」生成完成，可切换到下一集或重新生成",
         "success"
@@ -1082,6 +1409,55 @@ export default {
         resultUrl: item.resultUrl,
         inputData: item.inputData || item.skillInput || {},
       }));
+    },
+
+    /**
+     * 将历史执行记录按 appId 对齐到当前工作流节点顺序。
+     * 读取项目数据时，旧记录是按旧配置节点顺序排列的；节点增删改 / 重排后，
+     * 若仍按数组下标对位，会导致 resultUrl / inputData 错位到错误的节点。
+     * 此处以「当前 accountData 的 appId + workflow」为基准，逐个按 appId 匹配旧记录，
+     * 匹配不到的节点补空记录，重复节点按出现顺序依次消费，保证一一对应。
+     */
+    alignAgentResults(rawRecords, accountData) {
+      const records = Array.isArray(rawRecords) ? rawRecords : [];
+      const cfg = accountData || {};
+      const stepAppIds = [cfg.appId].concat(
+        Array.isArray(cfg.workflow) ? cfg.workflow : []
+      );
+      // 待匹配记录池：仅保留携带有效 appId 的记录，供按序消费
+      const pool = records.filter(
+        (r) => r && typeof r.appId === "string" && r.appId
+      );
+      return stepAppIds.map((appId) => {
+        const idx = pool.findIndex((r) => r.appId === appId);
+        if (idx >= 0) {
+          const rec = pool.splice(idx, 1)[0];
+          return {
+            appId,
+            resultUrl: rec.resultUrl || "",
+            inputData: rec.inputData || rec.skillInput || {},
+          };
+        }
+        return { appId, resultUrl: "", inputData: {} };
+      });
+    },
+
+    // 是否存在可展示的执行结果（至少一个节点含 resultUrl）
+    hasAgentResults(agentResults) {
+      return !!(
+        Array.isArray(agentResults) &&
+        agentResults.some((r) => r && r.resultUrl)
+      );
+    },
+
+    // 返回最后一个含有 resultUrl 的节点索引（无结果返回 -1），
+    // 用于还原执行记录时定位到最后一个「真正有结果」的节点，避免落到新增的空节点上
+    lastResultStepIndex(agentResults) {
+      if (!Array.isArray(agentResults)) return -1;
+      for (let i = agentResults.length - 1; i >= 0; i--) {
+        if (agentResults[i] && agentResults[i].resultUrl) return i;
+      }
+      return -1;
     },
 
     // 点击「继续」：取小说规划各节点结果 → 缓存 → 初始化分集步骤 → 切换到分集生成
@@ -1128,13 +1504,18 @@ export default {
           }
         };
 
-        // 第1节点=素材知识库、第2节点=小说结构规划、第3节点=分集任务书生成
+        // 按已配置的规划工作流节点归位结果：
+        // 主节点 = appId（素材知识库）、workflow[0]（结构规划）、workflow[1]（分集任务书）
+        const planningCfg = this.workflowConfigs.planning;
+        const materialAppId = planningCfg.appId;
+        const structureAppId = planningCfg.workflow[0];
+        const taskBookAppId = planningCfg.workflow[1];
         this.planningResults.material =
-          parseJson(byId[dataIdByAppId[this.SKILL.material]]) || null;
+          parseJson(byId[dataIdByAppId[materialAppId]]) || null;
         this.planningResults.structure =
-          parseJson(byId[dataIdByAppId[this.SKILL.structure]]) || null;
+          parseJson(byId[dataIdByAppId[structureAppId]]) || null;
         const taskBook =
-          parseJson(byId[dataIdByAppId[this.SKILL.taskBook]]) || null;
+          parseJson(byId[dataIdByAppId[taskBookAppId]]) || null;
         this.planningResults.taskBook = taskBook;
 
         if (
@@ -1144,7 +1525,7 @@ export default {
         ) {
           this.syncEpisodesFromTaskBook(taskBook);
         } else {
-          this.buildEpisodeListFromCount();
+          this.ensureEpisodeList();
         }
         this.switchToEpisodeStep();
       };
@@ -1154,13 +1535,13 @@ export default {
         typeof aigcInterface.getDataItem === "function"
       ) {
         aigcInterface.getDataItem(dataIds, applyPlanningResults, () => {
-          // 获取失败：用集数设定兜底并切入分集生成
-          this.buildEpisodeListFromCount();
+          // 获取失败：保留已恢复的分集列表（读取项目数据场景），否则用集数设定兜底
+          this.ensureEpisodeList();
           this.switchToEpisodeStep();
         });
       } else {
-        // 运行环境缺少 getDataItem：用集数设定兜底
-        this.buildEpisodeListFromCount();
+        // 运行环境缺少 getDataItem：保留已有分集列表，否则用集数设定兜底
+        this.ensureEpisodeList();
         this.switchToEpisodeStep();
       }
     },
@@ -1195,6 +1576,7 @@ export default {
 
       this.composeEpisodeInput(index);
 
+      const cfg = this.workflowConfigs.episode;
       this.renderWorkflow(
         "episode",
         {
@@ -1203,9 +1585,9 @@ export default {
           isViewer: true,
           agentResults: [],
           accountData: {
-            appId: this.SKILL.chapter,
-            workflow: [this.SKILL.quality, this.SKILL.polish],
-            allLines: this.episodeAllLines,
+            appId: cfg.appId,
+            workflow: cfg.workflow.slice(),
+            allLines: JSON.parse(JSON.stringify(cfg.allLines)),
           },
         },
         true
@@ -1366,6 +1748,7 @@ export default {
         docName: this.selectedDoc ? this.selectedDoc.name : "",
         episodeCount: this.episodeCount,
         wordsPerEpisode: this.wordsPerEpisode,
+        autoGenerate: this.autoGenerate,
         planningResultUrl: this.planningResultUrl,
         planningAgentResults: Array.isArray(this.planningAgentResults)
           ? this.planningAgentResults
@@ -1436,6 +1819,9 @@ export default {
       ) {
         this.wordsPerEpisode = data.wordsPerEpisode;
       }
+      if (typeof data.autoGenerate === "boolean") {
+        this.autoGenerate = data.autoGenerate;
+      }
       if (data.docName) {
         this.selectedDoc = {
           name: data.docName,
@@ -1445,10 +1831,11 @@ export default {
         };
       }
 
-      // 规划执行记录与结果
-      this.planningAgentResults = Array.isArray(data.planningAgentResults)
-        ? data.planningAgentResults
-        : [];
+      // 规划执行记录与结果：旧记录按旧配置节点顺序排列，需按 appId 对齐到当前规划工作流
+      this.planningAgentResults = this.alignAgentResults(
+        data.planningAgentResults,
+        this.workflowConfigs.planning
+      );
       this.planningResultUrl =
         typeof data.planningResultUrl === "string" ? data.planningResultUrl : "";
       const pr =
@@ -1461,22 +1848,40 @@ export default {
         taskBook: pr.taskBook || null,
       };
 
-      // 分集列表（含每集执行记录）
+      // 分集列表（含每集执行记录）：同样按 appId 对齐到当前分集生成工作流
       if (Array.isArray(data.episodeList) && data.episodeList.length) {
-        this.episodeList = data.episodeList.map((ep) => ({
-          id: ep && ep.id ? ep.id : "",
-          title: ep && ep.title ? ep.title : "",
-          raw: (ep && ep.raw) || null,
-          status: (ep && ep.status) || "wait",
-          results: (ep && ep.results) || null,
-        }));
+        this.episodeList = data.episodeList.map((ep) => {
+          const results = ep && ep.results;
+          return {
+            id: ep && ep.id ? ep.id : "",
+            title: ep && ep.title ? ep.title : "",
+            raw: (ep && ep.raw) || null,
+            status: (ep && ep.status) || "wait",
+            results: results
+              ? {
+                  agentResults: this.alignAgentResults(
+                    results.agentResults,
+                    this.workflowConfigs.episode
+                  ),
+                  finalContent:
+                    typeof results.finalContent === "string"
+                      ? results.finalContent
+                      : "",
+                }
+              : null,
+          };
+        });
       } else {
         this.buildEpisodeListFromCount();
       }
 
       // 状态恢复
       this.started = true;
-      this.planningDone = this.planningAgentResults.length > 0;
+      this.planningDone = this.hasAgentResults(this.planningAgentResults);
+      if (this.planningDone) {
+        // 显示执行记录时切回非自动模式（隐藏开关、关闭自动生成）
+        this.autoGenerate = false;
+      }
       this.activeMainStep = 0;
       this.activeEpisodeIndex = 0;
       this.activeEpisode = this.episodeList[0] || null;
@@ -1578,6 +1983,11 @@ export default {
       webCpu.mitt.off("workflowNodeCompleted", this._onWorkflowNodeCompleted);
       this._onWorkflowNodeCompleted = null;
     }
+    // 清理可能仍挂载的工作流与配置编辑实例，释放 code.vue 的消息监听
+    this.destroyWorkflow("planning");
+    this.destroyWorkflow("episode");
+    this.destroyConfigWorkflow("planning");
+    this.destroyConfigWorkflow("episode");
   },
 };
 </script>
@@ -1712,6 +2122,103 @@ export default {
   align-items: center;
   gap: 12px;
   padding: 14px 16px;
+}
+
+/* ============================================
+   组合输入：文档选择 + 集数 + 确认（一体化容器）
+   ============================================ */
+.setup-combo {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 5px;
+  border: 1px solid #e5e5e7;
+  border-radius: 12px;
+  background: #f8fafc;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.setup-combo:focus-within {
+  border-color: var(--muse-primary, #0066cc);
+  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.12);
+}
+
+/* 文档选择段：去掉虚线边框，融入组合容器 */
+.setup-combo .doc-dropzone {
+  flex: 1 1 260px;
+  min-width: 0;
+  max-width: none;
+  border: none;
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 9px 12px;
+}
+
+.setup-combo .doc-dropzone:hover {
+  background: #f5f7fa;
+}
+
+.setup-combo .doc-dropzone--dragging {
+  box-shadow: inset 0 0 0 2px var(--muse-primary, #0066cc);
+  background: #ffffff;
+}
+
+/* 集数段：白色内嵌字段 */
+.episode-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  padding: 0 6px 0 12px;
+  background: #ffffff;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.episode-field__label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #475569;
+  white-space: nowrap;
+}
+
+.episode-field .num-input {
+  width: 88px;
+}
+
+.episode-field .el-input__wrapper {
+  box-shadow: none !important;
+  background: transparent !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.episode-field .el-input__inner {
+  text-align: center;
+}
+
+.episode-field .el-input-number__decrease,
+.episode-field .el-input-number__increase {
+  border: none !important;
+  background: #f5f7fa !important;
+  color: #64748b !important;
+  border-radius: 6px !important;
+}
+
+.episode-field .el-input-number__decrease:hover,
+.episode-field .el-input-number__increase:hover {
+  color: var(--muse-primary, #0066cc) !important;
+  background: #eef2f7 !important;
+}
+
+/* 确认按钮：组合容器内右对齐 */
+.setup-combo .confirmNovelBtn {
+  height: 32px;
+  border-radius: 8px !important;
+  margin-left: auto;
+  flex-shrink: 0;
 }
 
 /* ============================================
@@ -1881,6 +2388,25 @@ export default {
   width: 120px;
 }
 
+/* 集数输入：边框、圆角与「选择文件」「确认」按钮保持一体 */
+.num-input .el-input__wrapper {
+  box-shadow: 0 0 0 1px #e5e5e7 inset;
+  transition: box-shadow 0.15s ease;
+}
+
+.num-input .el-input__wrapper:hover {
+  box-shadow: 0 0 0 1px #cbd5e1 inset;
+}
+
+.num-input .el-input__wrapper.is-focus {
+  box-shadow: 0 0 0 1px var(--muse-primary, #0066cc) inset !important;
+}
+
+/* 确认按钮：与输入框、选择文件框统一圆角（10px），替代胶囊圆角 */
+.confirmNovelBtn {
+  border-radius: 10px !important;
+}
+
 /* 返回按钮：贴合 Muse 主题的文本按钮 */
 .back-btn {
   color: var(--muse-text-secondary, #475569) !important;
@@ -1974,6 +2500,37 @@ export default {
 
 .doc-hidden-input {
   display: none;
+}
+
+/* ============================================
+   自动生成开关（初始输入 / 小说规划 / 分集生成三处共用）
+   ============================================ */
+.auto-toggle {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  color: #475569;
+  user-select: none;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.auto-toggle i {
+  color: var(--muse-primary, #0066cc);
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.auto-toggle__label {
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.auto-toggle__hint {
+  font-size: 11px;
+  color: #94a3b8;
+  white-space: nowrap;
 }
 
 /* ============================================
@@ -2157,6 +2714,36 @@ export default {
 }
 
 /* ============================================
+   工作流配置对话框（code.vue 编辑模式宿主）
+   ============================================ */
+.config-tabs {
+  --el-tabs-header-height: 40px;
+}
+
+/* 编辑态 code.vue 根节点自带 min-height:100vh，用固定高度 + 滚动容器收敛 */
+.config-workflow-host {
+  height: 64vh;
+  min-height: 460px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  border: 1px solid #e5e5e7;
+  border-radius: 10px;
+  background: #f5f5f7;
+}
+
+.config-dialog-tip {
+  float: left;
+  font-size: 12px;
+  line-height: 32px;
+  color: #94a3b8;
+}
+
+.config-dialog-tip i {
+  color: #0066cc;
+  margin-right: 4px;
+}
+
+/* ============================================
    响应式适配（Apple 标准：移动端 / 平板 / PC）
    ============================================ */
 
@@ -2206,14 +2793,14 @@ export default {
     min-height: 40px;
   }
 
-  /* 输入区：文档选择占满一行，数值控件更紧凑 */
-  .doc-dropzone {
+  /* 组合输入：文档选择占满一行，集数与确认换行 */
+  .setup-combo .doc-dropzone {
     min-width: 0;
     flex-basis: 100%;
     max-width: 100%;
   }
-  .num-input {
-    width: 96px;
+  .episode-field {
+    flex: 1 1 auto;
   }
 
   /* Hero 空状态：步骤提示纵向堆叠，隐藏连接箭头 */

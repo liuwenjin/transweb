@@ -18,5 +18,11 @@ Allow: /static/
 Allow: /public/
 
 
+# 🔒 后台 / 初始化 / 敏感页面：禁止收录（上线前更应直接删除这些文件）
+Disallow: /admin.html
+Disallow: /initAdmin.html
+Disallow: /initialize.html
+Disallow: /proxy.html
+
 # 🗺️ 指向 Sitemap
 Sitemap: https://transweb.cn/sitemap.xml

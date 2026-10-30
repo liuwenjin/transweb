@@ -8,9 +8,9 @@
     <lastmod>2026-10-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://transweb.cn/index.html" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://transweb.cn/index.html?lang=en" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://transweb.cn/index.html" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://transweb.cn/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://transweb.cn/?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://transweb.cn/" />
   </url>
 
   <!-- AI Skill 工具导航 -->

@@ -1,5 +1,8 @@
 {
   "title": "Digital Employee Generator | No-code AI agents — upload documents, get your own AI assistant in 3 minutes - TransWeb",
+  "description": "TransWeb no-code AI agent platform: upload PDF, Word, or Markdown documents and generate a dedicated digital employee / AI assistant in 3 minutes. Supports knowledge-base Q&A, AI customer service, and AI tutoring, ready to hand to others. Pay-as-you-go, zero cost when idle, data encrypted and never used for training.",
+  "ogTitle": "Digital Employee Generator | Upload documents, get your own AI assistant in 3 minutes",
+  "ogDescription": "Upload PDF, Word, or Markdown and generate a dedicated digital employee — no code. Knowledge-base Q&A, AI customer service, and AI tutoring in one place. Share by link or QR code, pay-as-you-go, zero cost when idle.",
   "logo": "Trans-Agent",
   "nav.create": "Create Agent",
   "nav.how": "How it works",
@@ -11,7 +14,7 @@
   "nav.skills.workflow": "Workflow",
   "nav.skills.hub": "SkillHub",
   "hero.title.1": "Turn your existing materials, in 3 minutes",
-  "hero.title.2": "into an always-on digital employee",
+  "hero.title.2": "into your own dedicated digital employee / AI assistant",
   "hero.subtitle.1": "No need to start from scratch — no prompts, no workflows to build.",
   "hero.subtitle.2": "Upload a textbook, manual, or report and it's on duty right away — answering professionally, ready to hand to others.",
   "social.proof": "12,000+ digital employees already built for educators, researchers, and enterprise teams",

@@ -1,5 +1,8 @@
 {
-  "title": "数字员工生成器｜无代码AI智能体，上传资料3分钟打造专属AI助手 - TransWeb",
+  "title": "数字员工生成器｜上传资料3分钟生成专属AI助手 - TransWeb",
+  "description": "TransWeb 无代码AI智能体平台：上传 PDF、Word、Markdown 资料，3分钟生成专属数字员工/AI助手，支持知识库问答、AI客服、AI助教，一键交付他人使用。按量计费、闲置零成本，资料加密隔离、不用于模型训练。",
+  "ogTitle": "数字员工生成器｜上传资料，3分钟生成专属AI助手",
+  "ogDescription": "上传 PDF、Word 或 Markdown，无代码生成专属数字员工。知识库问答、AI客服、AI助教一键到位，链接二维码分享，按量计费、闲置零成本。",
   "logo": "Trans-Agent",
   "nav.create": "创建 Agent",
   "nav.how": "功能阐释",
@@ -11,7 +14,7 @@
   "nav.skills.workflow": "工作流",
   "nav.skills.hub": "Skill 广场",
   "hero.title.1": "把已有资料，3 分钟",
-  "hero.title.2": "变成持续在岗的数字员工",
+  "hero.title.2": "生成你的专属数字员工 / AI 助手",
   "hero.subtitle.1": "无需从零准备内容，不用写 Prompt、搭工作流。",
   "hero.subtitle.2": "上传教材、手册或研报，它即刻上岗、随时专业应答，还能一键交给别人使用。",
   "social.proof": "已为教育者、研究员与企业团队构建了 12,000+ 个专属数字员工",

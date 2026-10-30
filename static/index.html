@@ -35,7 +35,7 @@
     })(window, document, "clarity", "script", "xejk2rx33f");
   </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>数字员工生成器｜无代码AI智能体，上传资料3分钟打造专属AI助手 - TransWeb</title>
+  <title>数字员工生成器｜上传资料3分钟生成专属AI助手 - TransWeb</title>
 
   <!-- ==================== 基础 SEO ==================== -->
   <meta name="description"
@@ -60,7 +60,10 @@
   <meta property="og:description"
     content="上传 PDF、Word 或 Markdown，无代码生成专属数字员工。知识库问答、AI客服、AI助教一键到位，链接二维码分享，按量计费、闲置零成本。" />
   <meta property="og:url" content="https://transweb.cn/" />
-  <meta property="og:image" content="https://transweb.cn/assets/logo.png" />
+  <meta property="og:image" content="https://transweb.cn/assets/share.jpg" />
+  <meta property="og:image:width" content="2858" />
+  <meta property="og:image:height" content="1404" />
+  <meta property="og:image:type" content="image/jpeg" />
   <meta property="og:image:alt" content="数字员工生成器 - 上传资料，3分钟生成专属AI助手" />
   <meta property="og:locale" content="zh_CN" />
   <meta property="og:locale:alternate" content="en_US" />
@@ -69,7 +72,7 @@
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="数字员工生成器｜上传资料，3分钟生成专属AI助手" />
   <meta name="twitter:description" content="上传 PDF、Word 或 Markdown，无代码生成专属数字员工。知识库问答、AI客服、AI助教一键到位，链接二维码分享，按量计费、闲置零成本。" />
-  <meta name="twitter:image" content="https://transweb.cn/assets/logo.png" />
+  <meta name="twitter:image" content="https://transweb.cn/assets/share.jpg" />
   <meta name="twitter:image:alt" content="数字员工生成器 - 上传资料，3分钟生成专属AI助手" />
 
   <!-- 图标 -->
@@ -101,14 +104,6 @@
         "inLanguage": "zh-CN",
         "publisher": {
           "@id": "https://transweb.cn/#organization"
-        },
-        "potentialAction": {
-          "@type": "SearchAction",
-          "target": {
-            "@type": "EntryPoint",
-            "urlTemplate": "https://transweb.cn/?q={search_term_string}"
-          },
-          "query-input": "required name=search_term_string"
         }
       },
       {
@@ -3001,12 +2996,12 @@
 
       <section class="hero">
 
-        <h1 class="hero-title reveal">
+        <h1 class="hero-title">
           <span data-i18n="hero.title.1">把已有资料，3 分钟</span>
-          <span data-i18n="hero.title.2">变成持续在岗的数字员工</span>
+          <span data-i18n="hero.title.2">生成你的专属数字员工 / AI 助手</span>
         </h1>
 
-        <p class="hero-subtitle reveal">
+        <p class="hero-subtitle">
           <span data-i18n="hero.subtitle.1">无需从零准备内容，不用写 Prompt、搭工作流。</span><br>
           <span data-i18n="hero.subtitle.2">上传教材、手册或研报，它即刻上岗、随时专业应答，还能一键交给别人使用。</span>
         </p>
@@ -4080,7 +4075,10 @@
     (function () {
       var I18N = {
         zh: {
-          "title": "数字员工生成器｜无代码AI智能体，上传资料3分钟打造专属AI助手 - TransWeb",
+          "title": "数字员工生成器｜上传资料3分钟生成专属AI助手 - TransWeb",
+          "description": "TransWeb 无代码AI智能体平台：上传 PDF、Word、Markdown 资料，3分钟生成专属数字员工/AI助手，支持知识库问答、AI客服、AI助教，一键交付他人使用。按量计费、闲置零成本，资料加密隔离、不用于模型训练。",
+          "ogTitle": "数字员工生成器｜上传资料，3分钟生成专属AI助手",
+          "ogDescription": "上传 PDF、Word 或 Markdown，无代码生成专属数字员工。知识库问答、AI客服、AI助教一键到位，链接二维码分享，按量计费、闲置零成本。",
           "logo": "Trans-Agent",
           "nav.create": "创建 Agent",
           "nav.how": "功能阐释",
@@ -4092,7 +4090,7 @@
           "nav.skills.workflow": "工作流",
           "nav.skills.hub": "Skill 广场",
           "hero.title.1": "把已有资料，3 分钟",
-          "hero.title.2": "变成持续在岗的数字员工",
+          "hero.title.2": "生成你的专属数字员工 / AI 助手",
           "hero.subtitle.1": "无需从零准备内容，不用写 Prompt、搭工作流。",
           "hero.subtitle.2": "上传教材、手册或研报，它即刻上岗、随时专业应答，还能一键交给别人使用。",
           "social.proof": "已为教育者、研究员与企业团队构建了 12,000+ 个专属数字员工",
@@ -4335,7 +4333,9 @@
 
       var lang = "zh";
       try {
-        lang = localStorage.getItem(LS_KEY) || "zh";
+        // 优先读取 URL ?lang= 参数（英文版 hreflang 入口），其次读取本地记忆
+        var qLang = (window.location.search.match(/[?&]lang=([a-zA-Z-]+)/) || [])[1];
+        lang = qLang || localStorage.getItem(LS_KEY) || "zh";
       } catch (e) { }
       if (lang !== "en" && lang !== "zh") lang = "zh";
 
@@ -4354,6 +4354,24 @@
         var dict = I18N[l] || I18N.zh;
 
         document.title = dict.title;
+
+        // 同步 SEO 元信息（描述 / OG / Twitter），避免切换语言后残留中文
+        if (dict.description) {
+          var metaDesc = document.querySelector('meta[name="description"]');
+          if (metaDesc) metaDesc.setAttribute("content", dict.description);
+        }
+        if (dict.ogTitle) {
+          var ogTitle = document.querySelector('meta[property="og:title"]');
+          if (ogTitle) ogTitle.setAttribute("content", dict.ogTitle);
+          var twTitle = document.querySelector('meta[name="twitter:title"]');
+          if (twTitle) twTitle.setAttribute("content", dict.ogTitle);
+        }
+        if (dict.ogDescription) {
+          var ogDesc = document.querySelector('meta[property="og:description"]');
+          if (ogDesc) ogDesc.setAttribute("content", dict.ogDescription);
+          var twDesc = document.querySelector('meta[name="twitter:description"]');
+          if (twDesc) twDesc.setAttribute("content", dict.ogDescription);
+        }
 
         var nodes = document.querySelectorAll("[data-i18n]");
         for (var i = 0; i < nodes.length; i++) {
