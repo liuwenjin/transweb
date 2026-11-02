@@ -1,5 +1,4 @@
-const ffmpeg = require("fluent-ffmpeg");
-const { Readable } = require("stream");
+
 let ConfigObject = require("../../custom/ConfigObject.js");
 let path = require("path");
 let t = path.resolve(__dirname, ".");
@@ -105,48 +104,6 @@ function base64ToFile(base64, filename) {
   const file = new File([blob], filename, { type: mimeType });
 
   return file;
-}
-
-// 将 Buffer 转为可读流
-function bufferToStream(buffer) {
-  const stream = new Readable();
-  stream.push(buffer);
-  stream.push(null);
-  return stream;
-}
-
-// 将 WebM Buffer 转为 WAV Buffer（通过 ffmpeg）
-function convertWebMBufferToWAVBuffer(webmBuffer) {
-  const { PassThrough } = require("stream");
-  const stream = bufferToStream(webmBuffer);
-  return new Promise((resolve, reject) => {
-    const chunks = [];
-    const out = new PassThrough();
-    out.on("data", (chunk) => chunks.push(chunk));
-    out.on("end", () => resolve(Buffer.concat(chunks)));
-    out.on("error", (err) => reject(err));
-    ffmpeg(stream)
-      .inputFormat("webm")
-      .audioCodec("pcm_s16le")
-      .audioFrequency(16000)
-      .audioChannels(1)
-      .format("wav")
-      .on("error", (err) => reject(err))
-      .pipe(out, { end: true });
-  });
-}
-
-// 将 WAV Buffer 转为 base64（带前缀）
-function bufferToBase64WAV(buffer) {
-  return buffer.toString("base64");
-}
-
-// 封装为完整函数
-async function convertWebMBase64ToWAVBase64(webmBase64) {
-  const webmBuffer = base64ToBuffer(webmBase64);
-  const wavBuffer = await convertWebMBufferToWAVBuffer(webmBuffer);
-  console.log("wavBuffer.length", wavBuffer.length);
-  return bufferToBase64WAV(wavBuffer);
 }
 
 
@@ -1156,63 +1113,6 @@ let data = {
       usage.tokenRateMap = this.tokenRateMap || {};
       return usage;
     },
-  },
-  "gpt-audio2text": {
-    url: "https://api.openxs.top/v1/audio/transcriptions",
-    method: "post",
-    contentType: "multipart/form-data",
-    dataType: "json",
-    qCallback: async function (query) {
-      query = query || {};
-      const base64Str = query.content;
-      const matches = base64Str.match(/^data:(.*);base64,(.*)$/);
-
-      if (!matches) throw new Error("Invalid base64 string");
-
-      const mimeType = matches[1]; //
-      let base64 = matches[2]; // base64纯数据
-      console.log("mimeType", mimeType);
-      console.log("base64.length", base64.length);
-      // let arr = mimeType.split("/");
-      let tMap = {
-        "audio/wav": "wav",
-        "audio/mpeg": "mp3",
-        "audio/mp4": "mp4",
-        "audio/x-m4a": "mp4",
-        "audio/webm": "webm",
-      };
-
-      if (mimeType === "audio/webm") {
-        base64 = await convertWebMBase64ToWAVBase64(base64);
-      }
-
-      const binaryData = Uint8Array.from(atob(base64), (c) => c.charCodeAt(0));
-      const file = new File(
-        [binaryData],
-        "audio." + (tMap[mimeType] || "wav"),
-        { type: mimeType }
-      );
-
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("model", "whisper-1");
-      formData.append("response_format", query.format || "srt");
-      formData.append("language", query.language || "zh");
-      this.query = formData;
-      return this.query;
-    },
-    query: {
-      model: "whisper-1",
-    },
-    rCallback: function (rData) {
-      rData.usage = rData.usage || {};
-      rData.usage.result = rData.data;
-      const usage = rData.usage || {};
-      usage.total_tokens = usage.total_tokens || 3000;
-      return usage;
-    },
-    authorization:
-      "Bearer " + env.opt("API_KEY_AUDIO2TEXT"),
   },
   "gpt-text2audio": {
     url: "https://api.gptsapi.net/v1/audio/speech",
