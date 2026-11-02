@@ -3,6 +3,7 @@ let ConfigObject = require("../custom/ConfigObject.js");
 let mmh3 = require("murmurhash3js");
 let path = require("path");
 let Adapter = require("../custom/Adapter.js");
+let ModelRate = require("../custom/ModelRate.js");
 let t = path.resolve(__dirname, ".");
 let tPath = t + "/config/" + "interface.js";
 let loginedPath = t + "/config/" + "logined.js";
@@ -209,7 +210,7 @@ const Billing = {
   tokensToCost: (promptTokens, completionTokens, tQuery, folderName) => {
     const model = ((tQuery && tQuery.model) || "api").toLocaleLowerCase();
     let exRate =
-      commonData.tokenRateMap[model] || commonData.exchangeRate || 1;
+      ModelRate.getTokenRateMap()[model] || commonData.exchangeRate || 1;
 
     if (typeof exRate === "number") {
       exRate = {
@@ -269,7 +270,7 @@ const Billing = {
   },
   recordUsage: async (data, params, status, db) => {
     /* 写入数据库记录 */
-    let rateMap = commonData.tokenRateMap[params.model] || {
+    let rateMap = ModelRate.getTokenRateMap()[params.model] || {
       input: 0.1,
       output: 0.1,
     };
@@ -453,7 +454,7 @@ let _aiRequestConfirm = function (query, req, res, db) {
           rData.model = tQuery.model.toLocaleLowerCase();
           let exRate =
             usage.tokenRateMap[rData.model] ||
-            commonData.tokenRateMap[rData.model] ||
+            ModelRate.getTokenRateMap()[rData.model] ||
             commonData.exchangeRate ||
             1;
 

@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<!--
+  {{NAME}}.console.html — AutoFlow Playwright 运行控制台
+  ⚠️ 内部页面：noindex；需要本地 Node 服务时用 serve-{{NAME}}.mjs 打开。
+-->
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>{{TITLE_HTML}} · 运行控制台</title>
+  <style>
+    :root {
+      --bg: #f4f6fb;
+      --panel: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --primary: #2563eb;
+      --danger: #dc2626;
+      --ok: #059669;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font: 14px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", sans-serif;
+    }
+
+    .wrap {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 28px 20px 60px;
+    }
+
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      margin: 0 0 4px;
+      font-size: 24px;
+      letter-spacing: -0.02em;
+    }
+
+    .sub {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: #e0e7ff;
+      color: #3730a3;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .stat .k {
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .stat .v {
+      font-size: 20px;
+      font-weight: 700;
+      margin-top: 4px;
+      word-break: break-all;
+    }
+
+    .bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin: 16px 0;
+    }
+
+    button {
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--text);
+      border-radius: 9px;
+      padding: 9px 16px;
+      font: 600 13px/1 inherit;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    button:hover {
+      border-color: #cbd5e1;
+      background: #f8fafc;
+    }
+
+    button.primary {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+
+    button.primary:hover {
+      filter: brightness(1.08);
+    }
+
+    button.danger {
+      background: var(--danger);
+      border-color: var(--danger);
+      color: #fff;
+    }
+
+    button:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #94a3b8;
+      display: inline-block;
+    }
+
+    .dot.running {
+      background: #f59e0b;
+      animation: pulse 1.2s infinite;
+    }
+
+    .dot.ok {
+      background: var(--ok);
+    }
+
+    .dot.err {
+      background: var(--danger);
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.35; }
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    pre.log {
+      margin: 0;
+      min-height: 220px;
+      max-height: 420px;
+      overflow: auto;
+      background: #020617;
+      color: #cbd5e1;
+      border-radius: 12px;
+      padding: 14px;
+      font: 12px/1.6 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    code.cmd {
+      display: block;
+      background: #0f172a;
+      color: #e2e8f0;
+      border-radius: 10px;
+      padding: 12px 14px;
+      overflow: auto;
+      font: 12px/1.7 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    th,
+    td {
+      text-align: left;
+      padding: 9px 10px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    th {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 600;
+      background: #f8fafc;
+    }
+
+    td.num {
+      color: var(--muted);
+      width: 48px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .tag {
+      background: #f1f5f9;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 2px 8px;
+      font-size: 12px;
+      color: #334155;
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 8px;
+    }
+
+    .warn {
+      border-left: 3px solid #f59e0b;
+      background: #fffbeb;
+      color: #92400e;
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      margin: 12px 0;
+    }
+
+    @media (max-width: 640px) {
+      .wrap { padding: 18px 14px 40px; }
+      h1 { font-size: 20px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>{{TITLE_HTML}}</h1>
+        <div class="sub" id="subtitle">AutoFlow · Playwright 运行控制台</div>
+      </div>
+      <div class="badge">playwright</div>
+    </header>
+
+    <div class="grid">
+      <div class="card stat">
+        <div class="k">步骤</div>
+        <div class="v" id="stepCount">-</div>
+      </div>
+      <div class="card stat">
+        <div class="k">目标页面</div>
+        <div class="v" id="targetCount">-</div>
+      </div>
+      <div class="card stat">
+        <div class="k">运行方式</div>
+        <div class="v" style="font-size:14px;font-weight:600" id="modeText">本地 Node + Playwright</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="bar">
+        <button class="primary" id="runBtn" type="button">运行</button>
+        <button class="danger" id="stopBtn" type="button" disabled>停止</button>
+        <button id="copyBtn" type="button">复制命令</button>
+        <button id="downloadBtn" type="button">下载 flow.json</button>
+        <span class="status"><span class="dot" id="dot"></span><span id="statusText">未连接运行服务</span></span>
+      </div>
+
+      <div class="warn">
+        浏览器同源策略禁止页面直接操作跨域站点。本控制台通过本地 Node 服务启动 Playwright 来驱动任意页面；
+        若未启动服务，请复制下方命令在终端运行。
+      </div>
+
+      <code class="cmd" id="cmd">{{RUN_CMD_HTML}}</code>
+      <div class="hint" id="secretHint" hidden></div>
+
+      <h3 style="margin:18px 0 8px;font-size:14px">运行日志</h3>
+      <pre class="log" id="log">等待运行…</pre>
+    </div>
+
+    <div class="card" style="margin-top:18px">
+      <h3 style="margin:0 0 10px;font-size:14px">步骤</h3>
+      <table>
+        <thead>
+          <tr><th>#</th><th>动作</th><th>目标</th><th>说明</th></tr>
+        </thead>
+        <tbody id="steps"></tbody>
+      </table>
+      <div class="hint" id="pagesHint"></div>
+    </div>
+  </div>
+
+  <script>
+    var SPEC = {{SPEC_JSON}};
+    var RUN_CMD = "{{RUN_CMD_JS}}";
+    var HAS_SERVER = {{HAS_SERVER}};
+
+    var logEl = document.getElementById("log");
+    var dot = document.getElementById("dot");
+    var statusText = document.getElementById("statusText");
+    var runBtn = document.getElementById("runBtn");
+    var stopBtn = document.getElementById("stopBtn");
+    var source = null;
+
+    function appendLog(line) {
+      var text = logEl.textContent;
+      if (text === "等待运行…" || text === "") text = "";
+      logEl.textContent = text + (text ? "\n" : "") + line;
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    function setStatus(text, kind) {
+      statusText.textContent = text;
+      dot.className = "dot" + (kind ? " " + kind : "");
+    }
+
+    function renderSummary() {
+      document.getElementById("stepCount").textContent = SPEC.steps.length + " 步";
+      var pages = SPEC.pages && SPEC.pages.length ? SPEC.pages : [{ id: "main", url: SPEC.baseUrl || "-" }];
+      document.getElementById("targetCount").textContent = pages.length + " 个";
+      document.getElementById("subtitle").textContent = SPEC.description ||
+        "AutoFlow · Playwright 运行控制台";
+
+      var body = document.getElementById("steps");
+      SPEC.steps.forEach(function (step, index) {
+        var tr = document.createElement("tr");
+        var target = step.selector || step.url || step.text || step.path || "-";
+        var desc = step.description || "";
+        tr.innerHTML = "<td class='num'>" + (index + 1) + "</td>" +
+          "<td><span class='tag'>" + escapeHtml(step.action) + "</span></td>" +
+          "<td><code>" + escapeHtml(String(target)) + "</code></td>" +
+          "<td>" + escapeHtml(desc) + "</td>";
+        body.appendChild(tr);
+      });
+
+      document.getElementById("pagesHint").textContent = pages.map(function (page) {
+        return (page.id || "main") + ": " + (page.url || "(未设置)");
+      }).join(" · ");
+
+      if (SPEC.secrets && SPEC.secrets.length) {
+        var hint = document.getElementById("secretHint");
+        hint.hidden = false;
+        hint.textContent = "需要的环境变量（secret）：" + SPEC.secrets.join(", ");
+      }
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    async function refreshStatus() {
+      if (!HAS_SERVER) {
+        setStatus("未生成运行服务：请复制命令在终端运行", "");
+        return false;
+      }
+      try {
+        var response = await fetch("/api/status", { cache: "no-store" });
+        if (!response.ok) throw new Error("HTTP " + response.status);
+        var data = await response.json();
+        if (data.running) {
+          setStatus("运行中…", "running");
+          runBtn.disabled = true;
+          stopBtn.disabled = false;
+        } else {
+          setStatus("就绪", "ok");
+          runBtn.disabled = false;
+          stopBtn.disabled = true;
+        }
+        return true;
+      } catch (error) {
+        setStatus("未连接运行服务：请复制命令在终端运行", "");
+        return false;
+      }
+    }
+
+    function connectEvents() {
+      if (!HAS_SERVER || typeof EventSource === "undefined") return;
+      source = new EventSource("/api/events");
+      source.onmessage = function (event) {
+        var payload;
+        try { payload = JSON.parse(event.data); } catch (e) { return; }
+        if (payload.type === "snapshot" && Array.isArray(payload.logs)) {
+          logEl.textContent = payload.logs.join("\n") || "等待运行…";
+        } else if (payload.type === "log") {
+          appendLog(payload.line);
+        } else if (payload.type === "start") {
+          setStatus("运行中…", "running");
+          runBtn.disabled = true;
+          stopBtn.disabled = false;
+        } else if (payload.type === "done") {
+          var ok = payload.result && payload.result.ok;
+          setStatus(ok ? "运行完成" : "运行失败", ok ? "ok" : "err");
+          runBtn.disabled = false;
+          stopBtn.disabled = true;
+        }
+      };
+      source.onerror = function () {
+        setStatus("运行服务连接中断", "");
+      };
+    }
+
+    runBtn.addEventListener("click", async function () {
+      if (!HAS_SERVER) {
+        setStatus("请先运行命令启动本地服务", "err");
+        return;
+      }
+      runBtn.disabled = true;
+      logEl.textContent = "";
+      try {
+        var response = await fetch("/api/run", { method: "POST" });
+        var data = await response.json();
+        if (!response.ok) throw new Error(data.message || ("HTTP " + response.status));
+        setStatus("运行中…", "running");
+        stopBtn.disabled = false;
+      } catch (error) {
+        setStatus("启动失败：" + error.message, "err");
+        runBtn.disabled = false;
+      }
+    });
+
+    stopBtn.addEventListener("click", async function () {
+      if (!HAS_SERVER) return;
+      try {
+        await fetch("/api/stop", { method: "POST" });
+        setStatus("正在停止…", "running");
+      } catch (error) {
+        setStatus("停止失败：" + error.message, "err");
+      }
+    });
+
+    document.getElementById("copyBtn").addEventListener("click", async function () {
+      try {
+        await navigator.clipboard.writeText(RUN_CMD);
+        setStatus("命令已复制", "ok");
+      } catch (error) {
+        setStatus("复制失败，请手动选择命令", "err");
+      }
+    });
+
+    document.getElementById("downloadBtn").addEventListener("click", function () {
+      var blob = new Blob([JSON.stringify(SPEC, null, 2)], { type: "application/json" });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement("a");
+      a.href = url;
+      a.download = SPEC.name + ".flow.json";
+      a.click();
+      setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+    });
+
+    renderSummary();
+    refreshStatus();
+    connectEvents();
+    setInterval(refreshStatus, 5000);
+  </script>
+</body>
+
+</html>

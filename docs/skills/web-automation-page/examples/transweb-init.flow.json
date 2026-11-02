@@ -1,0 +1,59 @@
+{
+  "version": 2,
+  "name": "transwebInitCase",
+  "title": {
+    "zh": "TransWeb 初始化（案例）",
+    "en": "TransWeb Init Case"
+  },
+  "description": "案例：用 eval 调用页面自身的 webCpu / aigcInterface，演示 app-specific 自动化。",
+  "mode": "inpage",
+  "baseUrl": "/",
+  "vars": {
+    "email": "transweb",
+    "agentScript": "/webApps/document/agentList/TransWeb.agentScript.js"
+  },
+  "secrets": [
+    "ADMIN_PASSWORD"
+  ],
+  "defaultTimeout": 30000,
+  "pages": [
+    {
+      "id": "main",
+      "url": "/admin.html"
+    }
+  ],
+  "steps": [
+    {
+      "action": "goto",
+      "url": "/admin.html"
+    },
+    {
+      "action": "waitFor",
+      "selector": "body"
+    },
+    {
+      "action": "eval",
+      "description": "自动登录（调用页面自身的 confirmCallback）",
+      "script": "var w = ctx.win;\nvar card = w.webCpu && w.webCpu.cards && w.webCpu.cards.loginRegCard;\nif (!card || !card.task || typeof card.task.confirmCallback !== 'function') return 'already';\ncard.task.confirmCallback({ account: ctx.vars.email, checkNumber: ctx.secrets.ADMIN_PASSWORD });\nfor (var i = 0; i < 40; i++) {\n  if (w.localStorage.logined === 'true') return 'ok';\n  await new Promise(function (r) { w.setTimeout(r, 500); });\n}\nthrow new Error('登录超时');"
+    },
+    {
+      "action": "eval",
+      "description": "打开加载脚本弹窗",
+      "script": "var w = ctx.win;\nw.webCpu.cards.personalInfoCard.task.loadAgentScript();\nreturn true;"
+    },
+    {
+      "action": "eval",
+      "description": "设置 webScript 与脚本地址",
+      "script": "var w = ctx.win;\nfor (var i = 0; i < 40; i++) {\n  var c = w.webCpu.cards.loadScriptCard;\n  if (c && c.task && c.task.vueItem) {\n    c.task.vueItem.type = 'webScript';\n    c.task.vueItem.valueMap['webScript'] = ctx.vars.agentScript;\n    return true;\n  }\n  await new Promise(function (r) { w.setTimeout(r, 500); });\n}\nthrow new Error('弹窗未出现');"
+    },
+    {
+      "action": "click",
+      "selector": ".loadScriptBtn"
+    },
+    {
+      "action": "eval",
+      "description": "确认写入并跳转",
+      "script": "var w = ctx.win;\nfor (var i = 0; i < 60; i++) {\n  var c = w.webCpu.cards.loadScriptCard;\n  var vm = c && c.task && c.task.vueItem;\n  if (vm && vm.currentList && vm.currentList.length) {\n    await new Promise(function (resolve) {\n      vm._confirmLoadScript(function () { resolve(); });\n    });\n    w.location.href = '/clone.html?aScript=assets/animationScripts/initTools.js';\n    return true;\n  }\n  await new Promise(function (r) { w.setTimeout(r, 500); });\n}\nthrow new Error('脚本列表为空');"
+    }
+  ]
+}

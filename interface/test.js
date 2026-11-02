@@ -14,6 +14,7 @@ let cPath = t + "/config/" + "common.js";
 let commonData = new ConfigObject(cPath).data;
 let loginedPath = t + "/config/" + "logined.js";
 let Adapter = require("../custom/Adapter.js");
+let ModelRate = require("../custom/ModelRate.js");
 let tPath = t + "/config/" + "interface.js";
 let interface = new ConfigObject(tPath);
 let adapter = new Adapter(interface.data);
@@ -2468,12 +2469,9 @@ let data = {
   getModelList: {
     method: "get",
     callback: function (req, res, dbInfo, db) {
-      let cData = new ConfigObject(cPath).data;
-      cData = cData || {};
-      cData.tokenRateMap = cData.tokenRateMap || {};
       WebTool.requestTool.sendData({
         ret: 0,
-        data: cData.tokenRateMap
+        data: ModelRate.getTokenRateMap()
       }, req, res);
     }
   },

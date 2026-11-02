@@ -5,6 +5,13 @@ let path = require("path");
 let t = path.resolve(__dirname, ".");
 let cPath = t + "/common.js";
 let commonData = new ConfigObject(cPath).data;
+let appConfigPath = t + "/appConfig.js";
+let appConfigData = {};
+try {
+  appConfigData = require(appConfigPath) || {};
+} catch (e) {
+  appConfigData = {};
+}
 let env = require("../../custom/env.js");
 // 将 base64 字符串转为 Buffer（去掉前缀）
 function base64ToBuffer(base64Str) {
@@ -1320,8 +1327,17 @@ let data = {
   }
 };
 
-let tConfig = commonData.apiConfig || {};
+// common.js 内置 apiConfig + appConfig.js 中由 `transweb api` 维护的条目
+let tConfig = Object.assign({}, commonData.apiConfig || {}, (appConfigData && appConfigData.apiConfig) || {});
 for (let k in tConfig) {
+  // appConfig 条目只保存 apiKey 的环境变量名，密钥值在 .env 中，这里通过 env.opt 取出
+  let apiEntry = tConfig[k] || {};
+  if (apiEntry.apiKey && !apiEntry.authorization) {
+    const apiKeyValue = env.opt(apiEntry.apiKey);
+    if (apiKeyValue) {
+      apiEntry = Object.assign({}, apiEntry, { authorization: "Bearer " + apiKeyValue });
+    }
+  }
   let commonConfig = {
     url: "",
     method: "post",
@@ -1362,7 +1378,7 @@ for (let k in tConfig) {
     }
   }
   data[k] = data[k] || commonConfig || {};
-  data[k] = Object.assign({}, data[k], tConfig[k]);
+  data[k] = Object.assign({}, data[k], apiEntry);
 }
 
 module.exports = data;

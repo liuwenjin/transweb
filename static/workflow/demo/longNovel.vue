@@ -779,6 +779,12 @@ export default {
         return;
       }
 
+      this.startWorkflow();
+    },
+
+    // 启动工作流核心逻辑：初始化分集列表 → 渲染小说规划工作流并自动执行
+    // 「确认」按钮与初始化自动启动共用此方法，避免重复代码
+    startWorkflow() {
       this.confirming = true;
       this.setStatus("正在初始化创作工作台...", "info");
 
@@ -789,6 +795,14 @@ export default {
         this.activeMainStep = 0;
         this.started = true;
 
+        // 先写入素材输入，确保 code.vue 渲染时能读到并自动执行（auto=true）
+        const docContent = this.selectedDoc
+          ? this.selectedDoc.content || ""
+          : "";
+        if (typeof localStorage !== "undefined") {
+          localStorage.agentInput = docContent;
+        }
+
         this.$nextTick(() => {
           this.renderPlanningWorkflow();
           this.confirming = false;
@@ -796,11 +810,10 @@ export default {
             "创作工作台已就绪，正在执行「小说规划」工作流...",
             "info"
           );
-          localStorage.agentInput = this.selectedDoc.content || "";
           this.$emit("confirm", {
-            docName: this.selectedDoc.name,
-            docSize: this.selectedDoc.size,
-            docContent: this.selectedDoc.content,
+            docName: this.selectedDoc ? this.selectedDoc.name : "",
+            docSize: this.selectedDoc ? this.selectedDoc.size : 0,
+            docContent: docContent,
             episodeCount: this.episodeCount,
             wordsPerEpisode: this.wordsPerEpisode,
           });
@@ -815,6 +828,29 @@ export default {
             : "未知错误";
         this.setStatus("初始化失败：" + msg, "error");
       }
+    },
+
+    // 初始化时检查 localStorage.agentInput：存在且非空则自动启动工作流
+    maybeAutoStart() {
+      if (this.started) return;
+      let content = "";
+      if (typeof localStorage !== "undefined") {
+        try {
+          content = localStorage.getItem("agentInput") || "";
+        } catch (e) {
+          content = "";
+        }
+      }
+      if (!content) return;
+
+      // 用读取到的输入作为素材，直接进入创作工作台（无需手动选择文档）
+      this.selectedDoc = {
+        name: "本地输入",
+        size: content.length,
+        rawFile: null,
+        content: content,
+      };
+      this.startWorkflow();
     },
 
     /* ============================================================
@@ -1972,6 +2008,9 @@ export default {
     if (typeof webCpu !== "undefined" && webCpu.mitt) {
       webCpu.mitt.on("workflowNodeCompleted", this._onWorkflowNodeCompleted);
     }
+
+    // 初始化时若已有素材输入（localStorage.agentInput），自动启动工作流
+    this.maybeAutoStart();
   },
 
   beforeUnmount() {

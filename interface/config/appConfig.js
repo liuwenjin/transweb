@@ -1,2 +1,28 @@
-var data={pointsBillApp:'89257fcc38bdfbca5a2b445b3cd674ae',aigcHistory:'62981757241ca958a06b7d5cc03824c5',vueCodeEditor:'9ac0dd48648332a62ec104880bb8685f',promptEditor:'9c891cfdd8105d8743a8013333e8538a',adminPoints:'4487f583088f639d9538e83b0ef4e904',agentExample:'bf9cec1c8dffbe6b9b0521ef812bfc47',pptDocument:'fc85a0921af9194631bf68284cefae6d',text2chart:'885d991ecd728ff6e49d34b91316ea98',knowledgeApp:'e89d20137ae705450b5ca00c470027c2',characterProfile:'652d1ee2212f63952ecadfe79cf74ffb',aigcAppFlow:{requirement:'854a920a6f9261527778db4e0460ef06',contentQuality:'bcee6c0cd6f108f28ca0e1377466e91e',pageTemplate:'c1ad5b50b7ef4b41e559f7aa0456acd4',improveTemplate:'81ee10f731b7881665f853aa09ba3bf5'},publishInfo:{folderName:'132516497',appName:'appGenerator',user:'创博',avatar:'https://transweb.cn/webApps/document/logo.png'},defaultModel:{apiName:'深度求索',model:'deepseek-v4-flash'},defaultImageModel:{apiName:'modelRouter',model:'gemini-3.5-flash-lite'},agentCreator:'a03447885c6b0e10a2edc1e80addd18c'}
- module.exports = data;
+var data = {
+  pointsBillApp: "064a83da6a6161cc17e637b0d88bb04a",
+  aigcHistory: "08b09b73f4569d68911a692df08d4eec",
+  vueCodeEditor: "ba6a6d8d04c4b8d204436757177d7736",
+  promptEditor: "861a03275c5306b1ecefbab8b3d53dd6",
+  adminPoints: "3fe397373eaee28741a1d6ec2ee881cb",
+  agentExample: "2dc37fb85343d96846b01123688ce396",
+  pptDocument: "c854763382a022e1f5c22d546b9a41f0",
+  text2chart: "9f5c27afb053bf6bd13c463cfaee03d8",
+  knowledgeApp: "4346d5b35d48c5a020f549f96806d262",
+  characterProfile: "dac048fbb19f48dc420792de1b98c702",
+  aigcAppFlow: {
+    requirement: "7f376477faf8e90033582e9e701ec678",
+    contentQuality: "d3b0470c51217c491e3675e4c2686ae3",
+    pageTemplate: "656260f424bcd390a3ae1b6edbde6814",
+    improveTemplate: "eaadb1ce02b1e0bb07c3fe646364fd47",
+  },
+  publishInfo: {
+    folderName: "132516497",
+    appName: "appGenerator",
+    user: "创博",
+    avatar: "https://transweb.cn/webApps/document/logo.png",
+  },
+  defaultModel: { apiName: "深度求索", model: "deepseek-v4-flash" },
+  defaultImageModel: { apiName: "modelRouter", model: "gemini-3.5-flash-lite" },
+  agentCreator: "fe19c6dcfab5c7e4e875f8b1164f6334",
+};
+module.exports = data;
