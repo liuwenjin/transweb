@@ -6,6 +6,10 @@ temp_uploads/
 temp/
 tmp/
 
+# ---- 构建产物（勿提交）----
+# 安装包体积过大（单文件约 130MB，超过 GitHub 100MB 限制），请通过 Releases 分发
+dist/*.tgz
+
 # ---- 敏感 / 运行时数据（勿提交）----
 # HTTPS 证书与私钥
 ca/
