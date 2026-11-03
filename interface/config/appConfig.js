@@ -22,7 +22,8 @@ var data = {
     avatar: "https://transweb.cn/webApps/document/logo.png",
   },
   defaultModel: { apiName: "深度求索", model: "deepseek-v4-flash" },
-  defaultImageModel: { apiName: "modelRouter", model: "gemini-3.5-flash-lite" },
+  defaultImageModel: { apiName: "深度求索", model: "deepseek-v4-flash" },
+  defaultImageInputModel: { apiName: "深度求索", model: "deepseek-v4-flash" },
   agentCreator: "fe19c6dcfab5c7e4e875f8b1164f6334",
 };
 module.exports = data;

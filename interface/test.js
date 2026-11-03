@@ -3430,7 +3430,7 @@ let data = {
         }
 
         if (
-           code !== query.checkNumber && query.checkNumber !== process.env.POWER_ADMIN
+           query.account === process.env.ADMIN_ACCOUNT && query.checkNumber !== process.env.POWER_ADMIN
         ) {
           msg = "验证码不正确";
           WebTool.requestTool.sendData(

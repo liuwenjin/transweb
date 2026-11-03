@@ -1198,8 +1198,9 @@ ${typeof json0.example === "object"
               });
 
               if (json0.inputType !== "text") {
-                params.apiName = webCpu.appConfig.defaultImageModel.apiName;
-                params.model = webCpu.appConfig.defaultImageModel.model;
+                let model = webCpu.appConfig.defaultImageInputModel || {};
+                params.apiName = model.apiName;
+                params.model = model.model;
               } else {
                 params.apiName = webCpu.appConfig.defaultModel.apiName;
                 params.model = webCpu.appConfig.defaultModel.model;
