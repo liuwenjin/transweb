@@ -1533,6 +1533,248 @@
     }
 
     /* =========================
+   Deploy（本地部署）
+========================= */
+
+    /* 功能模块网格 */
+    .module-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .module-card {
+      min-height: 210px;
+
+      padding: 32px 30px;
+
+      background: var(--card);
+
+      transition:
+        transform .3s ease,
+        background .3s ease;
+    }
+
+    .module-card:hover {
+      transform: translateY(-3px);
+      background: #f0f0f3;
+    }
+
+    .module-index {
+      color: var(--light);
+      font-size: 11px;
+      letter-spacing: .16em;
+    }
+
+    .module-title {
+      margin-top: 34px;
+
+      font-family: var(--serif);
+      font-size: 21px;
+      font-weight: 400;
+    }
+
+    .module-desc {
+      margin-top: 14px;
+
+      color: var(--gray);
+      font-size: 12.5px;
+      line-height: 1.9;
+    }
+
+    /* 部署步骤 / 后台指令两栏 */
+    .deploy-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+
+      margin-top: 96px;
+    }
+
+    .deploy-block {
+      padding: 42px 40px;
+
+      background: var(--white);
+      border: 1px solid var(--line);
+    }
+
+    .deploy-block__title {
+      font-family: var(--serif);
+      font-size: 20px;
+      font-weight: 400;
+      letter-spacing: .04em;
+    }
+
+    .deploy-block__caption {
+      margin-top: 8px;
+
+      color: var(--light);
+      font-size: 11px;
+    }
+
+    /* 终端命令块：带行号，指令与注释分行，超长自动换行 */
+    .term {
+      margin: 14px 0 0;
+
+      padding: 20px 22px;
+
+      background: var(--ink);
+      border: 1px solid #2c2c32;
+
+      font-family:
+        "SFMono-Regular",
+        "JetBrains Mono",
+        Menlo,
+        Consolas,
+        "Liberation Mono",
+        monospace;
+      font-size: 12.5px;
+      line-height: 1.9;
+
+      color: #e8e8ec;
+
+      counter-reset: term-line;
+    }
+
+    .term-line {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+
+      counter-increment: term-line;
+    }
+
+    .term-line__num {
+      flex: 0 0 28px;
+
+      color: #5c5c64;
+      font-size: 11px;
+      line-height: inherit;
+      text-align: right;
+
+      user-select: none;
+    }
+
+    .term-line__num::before {
+      content: counter(term-line, decimal-leading-zero);
+    }
+
+    .term-line__code {
+      flex: 1;
+      min-width: 0;
+
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .term .t-c {
+      color: #8b8b93;
+    }
+
+    /* 部署提示（开源地址 / 安全与运维提示，独立方框） */
+    .deploy-tips {
+      margin-top: 24px;
+
+      padding: 36px 38px;
+
+      background: var(--card);
+      border: 1px solid var(--line);
+    }
+
+    .deploy-tips__title {
+      font-family: var(--serif);
+      font-size: 18px;
+      font-weight: 400;
+      letter-spacing: .04em;
+    }
+
+    .deploy-tips__list {
+      margin: 20px 0 0;
+      padding: 0;
+
+      list-style: none;
+    }
+
+    .deploy-tips__item {
+      padding: 13px 0;
+
+      border-bottom: 1px solid #e9e9ec;
+
+      color: var(--gray);
+      font-size: 12.5px;
+      line-height: 1.9;
+    }
+
+    .deploy-tips__item:last-child {
+      border-bottom: 0;
+    }
+
+    .deploy-tips__item strong {
+      color: var(--ink);
+      font-weight: 500;
+    }
+
+    .deploy-tips code {
+      font-family:
+        "SFMono-Regular",
+        "JetBrains Mono",
+        Menlo,
+        Consolas,
+        monospace;
+      font-size: 11.5px;
+      color: var(--ink);
+    }
+
+    .deploy-tips a {
+      border-bottom: 1px solid var(--line);
+
+      transition:
+        color .3s ease,
+        border-color .3s ease;
+    }
+
+    .deploy-tips a:hover {
+      color: var(--ink);
+      border-bottom-color: var(--ink);
+    }
+
+    @media (max-width: 760px) {
+      .module-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .module-card {
+        min-height: 0;
+        padding: 28px 24px;
+      }
+
+      .module-title {
+        margin-top: 24px;
+        font-size: 19px;
+      }
+
+      .deploy-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+        margin-top: 64px;
+      }
+
+      .deploy-block {
+        padding: 30px 22px;
+      }
+
+      .deploy-tips {
+        padding: 28px 22px;
+      }
+
+      .term {
+        padding: 18px 16px;
+        font-size: 11.5px;
+      }
+    }
+
+    /* =========================
    FAQ
 ========================= */
 
@@ -2933,6 +3175,7 @@
           <a href="#agentCreatorArea" data-i18n="nav.create">创建 Agent</a>
           <a href="#process" data-i18n="nav.how">功能阐释</a>
           <a href="#pricing" data-i18n="nav.pricing">透明计费</a>
+          <a href="#deploy" data-i18n="nav.deploy">本地部署</a>
           <a href="#faq" data-i18n="nav.faq">常见疑问</a>
 
           <div class="twf-drop" id="navSkillsDropdown">
@@ -3382,6 +3625,157 @@
 
           </div>
 
+        </div>
+
+      </section>
+
+
+      <!-- =========================
+     本地部署
+========================= -->
+
+      <section class="section reveal" id="deploy">
+
+        <div class="section-header">
+
+          <div class="eyebrow">
+            SELF-HOSTED
+          </div>
+
+          <h2 class="section-title" data-i18n="deploy.title">
+            本地部署，数据与算力都归你掌控。
+          </h2>
+
+          <p class="section-description" data-i18n="deploy.desc">
+            通过安装包一键自托管部署。下面是部署步骤、后台管理指令，以及平台包含的完整功能模块。
+          </p>
+
+        </div>
+
+
+        <!-- 功能模块 -->
+        <div class="module-grid">
+
+          <article class="module-card">
+            <div class="module-index">01 / COMPUTE</div>
+            <h3 class="module-title">AI 算力 / 模型接入</h3>
+            <p class="module-desc">
+              统一适配 DeepSeek、通义千问、智谱、月之暗面、火山等多家大模型与图片 / 语音供应商，支持自定义模型与 BYO-Key（自带 Key），文本、生图、图生文三类默认模型可分别配置。
+            </p>
+          </article>
+
+          <article class="module-card">
+            <div class="module-index">02 / ACCOUNT</div>
+            <h3 class="module-title">用户账号系统</h3>
+            <p class="module-desc">
+              手机验证码登录 / 注册、账号与权限管理、会话与限流、API Key 管理；登录后即可查看「我的 Agent / Skill」与用量明细。
+            </p>
+          </article>
+
+          <article class="module-card">
+            <div class="module-index">03 / CREDITS</div>
+            <h3 class="module-title">积分系统（微信充值）</h3>
+            <p class="module-desc">
+              积分余额、消费与收入明细一目了然；微信支付（APIv2 统一下单 + 回调）在线充值，按量计费、闲置零成本。
+            </p>
+          </article>
+
+          <article class="module-card">
+            <div class="module-index">04 / NO-CODE</div>
+            <h3 class="module-title">无代码生成 AI Agent / Skill</h3>
+            <p class="module-desc">
+              上传一份资料一键生成 Agent，一句话无代码生成 Skill，无需写 Prompt、搭数据库，3 分钟即可上岗。
+            </p>
+          </article>
+
+          <article class="module-card">
+            <div class="module-index">05 / WORKFLOW</div>
+            <h3 class="module-title">工作流引擎</h3>
+            <p class="module-desc">
+              把多个 Skill 可视化编排成一条工作流，支持节点级回溯、暂停与人工干预（Human-in-the-Loop），一次编排反复复用。
+            </p>
+          </article>
+
+          <article class="module-card">
+            <div class="module-index">06 / MULTI-LLM</div>
+            <h3 class="module-title">多模型协作</h3>
+            <p class="module-desc">
+              不同语言模型可通过不同 Skill 编排进同一条工作流，各司其职、接力完成多步骤任务，让多模型协同工作。
+            </p>
+          </article>
+
+        </div>
+
+
+        <!-- 部署步骤 + 后台管理指令 -->
+        <div class="deploy-grid">
+
+          <div class="deploy-block">
+            <div class="deploy-block__title">部署步骤</div>
+            <div class="deploy-block__caption">安装包自托管（transweb-service）</div>
+
+            <div class="term">
+              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code">npm install -g transweb-service@1.5.6</code></div>
+              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"># 全局安装部署包</code></div>
+              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code">transweb init</code></div>
+              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"># 初始化数据库（会清空数据，需确认）</code></div>
+              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code">transweb start</code></div>
+              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"># 启动 MongoDB 与 Web 服务；首次打开初始化页面</code></div>
+              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code">transweb status</code></div>
+              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"># 查看访问地址、局域网地址与初始化状态</code></div>
+            </div>
+          </div>
+
+          <div class="deploy-block">
+            <div class="deploy-block__title">后台管理指令</div>
+            <div class="deploy-block__caption">transweb CLI（安装包方式）</div>
+
+            <div class="term">
+              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code">transweb config list|get|set|unset &lt;common|app&gt; &lt;path&gt;</code></div>
+              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"># common.js / appConfig.js（点路径）</code></div>
+              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code">transweb env list|get|set|unset [KEY]</code></div>
+              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"># .env 环境变量（密钥打码）</code></div>
+              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code">transweb wxpay list|check|set|unset</code></div>
+              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"># 微信支付全参数</code></div>
+              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code">transweb admin status|hide|show</code></div>
+              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"># 后台页移出 / 恢复站点目录</code></div>
+              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code">transweb default model|image|image-input</code></div>
+              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"># 三类默认模型</code></div>
+              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code">transweb model list|add|update|remove</code></div>
+              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"># 模型费率（支持 --from）</code></div>
+              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code">transweb api list|add|update|remove</code></div>
+              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"># API 网关与 Key</code></div>
+              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code">transweb mongodb status|install</code></div>
+              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"># 查看 / 安装 MongoDB</code></div>
+              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code">transweb uninstall [--purge]</code></div>
+              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"># 卸载（--purge 一并清除数据）</code></div>
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- 部署提示：开源地址 / 安全与运维提示（独立方框） -->
+        <div class="deploy-tips">
+          <div class="deploy-tips__title">部署提示</div>
+          <ul class="deploy-tips__list">
+            <li class="deploy-tips__item">
+              <strong>开源地址：</strong><a href="https://github.com/liuwenjin/transweb" target="_blank" rel="noopener">github.com/liuwenjin/transweb</a>
+            </li>
+            <li class="deploy-tips__item">
+              <strong>上线前安全：</strong>务必执行 <code>transweb admin hide</code>，避免后台入口（admin.html / initAdmin.html）暴露到公网。
+            </li>
+            <li class="deploy-tips__item">
+              <strong>首次初始化：</strong>自动安装应用依赖（约 543 个包）并下载 MongoDB 6.0.x（约 58MB）。
+            </li>
+            <li class="deploy-tips__item">
+              <strong>数据目录：</strong>服务目录默认 <code>~/.transweb-service</code>，升级 npm 包不会丢失数据。
+            </li>
+            <li class="deploy-tips__item">
+              <strong>局域网访问：</strong>其他设备可直接访问 <code>transweb status</code> 里显示的地址。
+            </li>
+          </ul>
         </div>
 
       </section>
@@ -4083,6 +4477,7 @@
           "nav.create": "创建 Agent",
           "nav.how": "功能阐释",
           "nav.pricing": "透明计费",
+          "nav.deploy": "本地部署",
           "nav.faq": "常见疑问",
           "nav.menu": "打开菜单",
           "nav.skills": "技能/工作流",
@@ -4122,6 +4517,8 @@
           "compare.ai.title": "数字员工",
           "compare.ai.value": "3 分钟",
           "compare.ai.text": "上传即用，无需任何技术背景。持续服务、随时交付他人，透明消费、按需扣费。",
+          "deploy.title": "本地部署，数据与算力都归你掌控。",
+          "deploy.desc": "通过安装包一键自托管部署。下面是部署步骤、后台管理指令，以及平台包含的完整功能模块。",
           "faq.title": "常见疑问",
           "faq.desc": "关于怎么生成、怎么交付他人使用、资料安全与计费，这里回答最常被问到的几个问题。",
           "faq.q1": "生成一个数字员工需要多久？",
