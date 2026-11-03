@@ -142,6 +142,9 @@ function generateSignature(ticket, nonceStr, timestamp, url) {
 
 let app = express();
 
+// 反向代理后需开启，否则 req.ip 全部变成代理地址（限流/支付取 IP 会失真）
+app.set("trust proxy", /^(1|true|yes)$/i.test(process.env.TRUST_PROXY || "") ? 1 : false);
+
 const limiter = rateLimit({
   windowMs: 1 * 60 * 1000,
   max: 1500,
@@ -237,7 +240,6 @@ app.use(function (req, res, next) {
   next();
 });
 
-app.use(express.static("static", {}));
 app.use(session({
   secret: env.get("SESSION_SECRET"), // 从环境变量读取（见 .env）
   resave: true,
@@ -249,6 +251,37 @@ app.use(session({
     secure: process.env.NODE_ENV === "production"
   } // 过期时间（毫秒）
 }));
+
+// 个人空间文件存放在 static/bucket/personal 下，必须先于 express.static 鉴权，
+// 否则静态中间件会绕过 BucketDealer 的 folderName 校验，造成越权下载。
+app.use(function (req, res, next) {
+  if (req.path.indexOf("/bucket/personal/") !== 0) return next();
+  checkRequestToken(req);
+  const sData = (req.session && req.session.data) || {};
+  const folderName = sData.folderName + "";
+  const allowed =
+    sData.logined === true &&
+    folderName &&
+    req.path.indexOf("/bucket/personal/" + folderName + "/") === 0;
+  if (!allowed) {
+    res.status(403).json({ ret: 1, message: "请先登录后再访问个人空间。" });
+    return;
+  }
+  next();
+});
+
+// 公网部署建议开启：TRANSWEB_DISABLE_ADMIN=1 时不再提供后台/初始化页面
+if (/^(1|true|yes)$/i.test(process.env.TRANSWEB_DISABLE_ADMIN || "")) {
+  app.use(function (req, res, next) {
+    if (/^\/(admin|initAdmin|initialize)\.html$/i.test(req.path)) {
+      res.status(404).end();
+      return;
+    }
+    next();
+  });
+}
+
+app.use(express.static("static", {}));
 
 
 // 2. 配置 Multer 存储引擎
@@ -520,58 +553,68 @@ let server = app.listen(port, function (a, b, c) {
 });
 
 // 加载多个证书
-const certificates = {
-  'transweb.cn': {
-    key: fs.readFileSync(prefix.ca + "/cn/key.pem"),
-    cert: fs.readFileSync(prefix.ca + "/cn/cert.pem"),
-  },
-  'transweb.com.cn': {
-    key: fs.readFileSync(prefix.ca + "/com.cn/ca.key"),
-    cert: fs.readFileSync(prefix.ca + "/com.cn/ca.crt")
+const certificates = {};
+function loadCertificate(dir, keyFile, certFile) {
+  try {
+    return {
+      key: fs.readFileSync(dir + "/" + keyFile),
+      cert: fs.readFileSync(dir + "/" + certFile)
+    };
+  } catch (err) {
+    return null;
   }
-};
-
-
+}
+[
+  ["transweb.cn", "cn", "key.pem", "cert.pem"],
+  ["transweb.com.cn", "com.cn", "ca.key", "ca.crt"]
+].forEach(function (item) {
+  const loaded = loadCertificate(prefix.ca + "/" + item[1], item[2], item[3]);
+  if (loaded) certificates[item[0]] = loaded;
+});
 
 let SSLPORT = env.opt("SSLPORT");
+let httpsServer = null;
 
-// SNI 回调：根据客户端请求的域名选择证书
-const httpsServer = https.createServer({
-  SNICallback: (domain, cb) => {
-    console.log("current domain: ", domain);
-    const cert = certificates[domain] || certificates["transweb.cn"];
-    if (cert) {
-      cb(null, require('tls').createSecureContext(cert));
-    } else {
-      cb(new Error('No certificate for domain: ' + domain));
-    }
-  },
-  // 默认证书（必须提供）
-  ...certificates['transweb.cn']
-}, app);
+// 证书是部署者私有的，不随安装包分发；缺失时只跳过 HTTPS，不影响 HTTP 启动
+if (certificates["transweb.cn"]) {
+  // SNI 回调：根据客户端请求的域名选择证书
+  httpsServer = https.createServer({
+    SNICallback: (domain, cb) => {
+      console.log("current domain: ", domain);
+      const cert = certificates[domain] || certificates["transweb.cn"];
+      if (cert) {
+        cb(null, require('tls').createSecureContext(cert));
+      } else {
+        cb(new Error('No certificate for domain: ' + domain));
+      }
+    },
+    // 默认证书（必须提供）
+    ...certificates['transweb.cn']
+  }, app);
 
+  httpsServer.listen(SSLPORT);
 
-httpsServer.listen(SSLPORT);
-
-
-httpsServer.on('error', function () {
-  console.log("https error")
-});
-httpsServer.on('listening', function (socket) {
-  console.log("listening:" + SSLPORT);
-});
-
-let currentConnections = 0;
-
-httpsServer.on('connection', (socket) => {
-  currentConnections++;
-  console.log('连接增加，当前连接数:', currentConnections);
-
-  socket.on('close', () => {
-    currentConnections--;
-    console.log('连接断开，当前连接数:', currentConnections);
+  httpsServer.on('error', function () {
+    console.log("https error")
   });
-});
+  httpsServer.on('listening', function (socket) {
+    console.log("listening:" + SSLPORT);
+  });
+
+  let currentConnections = 0;
+
+  httpsServer.on('connection', (socket) => {
+    currentConnections++;
+    console.log('连接增加，当前连接数:', currentConnections);
+
+    socket.on('close', () => {
+      currentConnections--;
+      console.log('连接断开，当前连接数:', currentConnections);
+    });
+  });
+} else {
+  console.log("未检测到 HTTPS 证书（app/ca/cn/key.pem），已跳过 HTTPS 端口 " + SSLPORT);
+}
 
 let interface = new ConfigObject(prefix.interface + "interface.js");
 let adapter = new Adapter(interface.data);
