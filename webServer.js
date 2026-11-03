@@ -41,7 +41,7 @@ let wxPayInfo = {
   appId: env.opt("WX_PAY_APP_ID"),
   mchId: env.opt("WX_PAY_MCH_ID"),
   key: env.get("WX_PAY_APP_KEY"),
-  notify: "https://transweb.cn/receiveWxNotify",
+  notify: env.opt("WX_PAY_NOTIFY") || "https://transweb.cn/receiveWxNotify",
   signType: "MD5",
   payOrderUrl: "https://api.mch.weixin.qq.com/pay/unifiedorder",
   queryOrderUrl: "https://api.mch.weixin.qq.com/pay/orderquery"
@@ -50,8 +50,8 @@ let wxPayInfo = {
 // 微信配置（建议从环境变量读取）
 const WECHAT_CONFIG = {
   wxApp: {
-    appId: env.opt("WX_PAY_APP_ID001"),
-    appSecret: env.opt("WX_PAY_APP_SECRET001"),
+    appId: env.opt("WX_PAY_APP_ID001") || env.opt("WX_PAY_APP_ID01"),
+    appSecret: env.opt("WX_PAY_APP_SECRET001") || env.opt("WX_PAY_APP_SECRET01"),
   },
   wxService: {
     appId: env.opt("WX_PAY_APP_ID"),
