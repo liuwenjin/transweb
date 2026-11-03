@@ -41,10 +41,10 @@ let wxPayInfo = {
   appId: env.opt("WX_PAY_APP_ID"),
   mchId: env.opt("WX_PAY_MCH_ID"),
   key: env.get("WX_PAY_APP_KEY"),
-  notify: env.opt("WX_PAY_NOTIFY") || "https://transweb.cn/receiveWxNotify",
+  notify: env.opt("WX_PAY_NOTIFY"),
   signType: "MD5",
-  payOrderUrl: "https://api.mch.weixin.qq.com/pay/unifiedorder",
-  queryOrderUrl: "https://api.mch.weixin.qq.com/pay/orderquery"
+  payOrderUrl: env.opt("WX_PAY_ORDER_URL"),
+  queryOrderUrl: env.opt("WX_PAY_QUERY_URL")
 }
 
 // 微信配置（建议从环境变量读取）
@@ -258,11 +258,8 @@ app.use(function (req, res, next) {
   if (req.path.indexOf("/bucket/personal/") !== 0) return next();
   checkRequestToken(req);
   const sData = (req.session && req.session.data) || {};
-  const folderName = sData.folderName + "";
-  const allowed =
-    sData.logined === true &&
-    folderName &&
-    req.path.indexOf("/bucket/personal/" + folderName + "/") === 0;
+  // 只要登录即可访问个人空间文件，不再限制 folderName
+  const allowed = sData.logined === true;
   if (!allowed) {
     res.status(403).json({ ret: 1, message: "请先登录后再访问个人空间。" });
     return;

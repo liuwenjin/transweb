@@ -509,6 +509,9 @@
     style="position: fixed; inset: 0; z-index: 100;  align-items: center; justify-content: center; flex-direction: column;">
   </div>
 
+  <!-- 403（登录态失效）自动弹出登录框 -->
+  <script defer src="common/authGuard.js"></script>
+
   <!-- 动态 JS 渲染逻辑维持不变 -->
   <script defer src="index.js"></script>
   <script defer src="admin/getAppConfig?callback=webCpu.appConfigCallback"></script>
