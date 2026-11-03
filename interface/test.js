@@ -253,112 +253,112 @@ let data = {
   queryQuestionData: {
     method: "get",
     dbItem: "visualTool",
-    callback: async function(req, res, dbInfo, db) {
-  const startTime = Date.now();
-  req.query.table = "questionData"; // 该接口固定限定集合
+    callback: async function (req, res, dbInfo, db) {
+      const startTime = Date.now();
+      req.query.table = "questionData"; // 该接口固定限定集合
 
-  try {
-    const sessionData = req.session.data || {};
-    const {
-      table = "questionData",
-      condition = "{}",
-      fields = "",
-      sort = "{}",
-      pageNo = 1,
-      pageSize = 10,
-      after,
-      debug = "false",
-      allowDiskUse = "true",
-    } = req.query;
+      try {
+        const sessionData = req.session.data || {};
+        const {
+          table = "questionData",
+          condition = "{}",
+          fields = "",
+          sort = "{}",
+          pageNo = 1,
+          pageSize = 10,
+          after,
+          debug = "false",
+          allowDiskUse = "true",
+        } = req.query;
 
-    const isDebug = debug === "true";
+        const isDebug = debug === "true";
 
-    // ----------- 1. 参数解析与标准化 -----------
-    let conditionObj = {};
-    try {
-      conditionObj = JSON.parse(condition);
-    } catch {
-      return res.status(400).json({ ret: 1, message: "Invalid JSON in 'condition'" });
-    }
-
-    conditionObj = WebTool.mongoTool.normalizeQuery(conditionObj);
-
-    // 正则表达式处理
-    for (const [key, value] of Object.entries(conditionObj)) {
-      if (typeof value === "string") {
-        if (value.startsWith("/") && value.endsWith("/i")) {
-          conditionObj[key] = new RegExp(value.slice(1, -2), "i");
-        } else if (value.startsWith("/") && value.endsWith("/")) {
-          conditionObj[key] = new RegExp(value.slice(1, -1));
+        // ----------- 1. 参数解析与标准化 -----------
+        let conditionObj = {};
+        try {
+          conditionObj = JSON.parse(condition);
+        } catch {
+          return res.status(400).json({ ret: 1, message: "Invalid JSON in 'condition'" });
         }
+
+        conditionObj = WebTool.mongoTool.normalizeQuery(conditionObj);
+
+        // 正则表达式处理
+        for (const [key, value] of Object.entries(conditionObj)) {
+          if (typeof value === "string") {
+            if (value.startsWith("/") && value.endsWith("/i")) {
+              conditionObj[key] = new RegExp(value.slice(1, -2), "i");
+            } else if (value.startsWith("/") && value.endsWith("/")) {
+              conditionObj[key] = new RegExp(value.slice(1, -1));
+            }
+          }
+        }
+        delete conditionObj.admin;
+        conditionObj = WebTool.mongoTool.sanitizeQuery(conditionObj);
+
+        // 解析排序字段
+        let sortField = {};
+        try {
+          sortField = JSON.parse(sort);
+        } catch {
+          console.warn("⚠️ Invalid sort JSON, ignored");
+        }
+
+        // 解析返回字段 (Projection)
+        const projection = {};
+        if (fields) {
+          fields.split(",").forEach((f) => (projection[f.trim()] = 1));
+        }
+
+        // ----------- 2. 调用解耦的数据库函数 -----------
+        const database = db.db(dbInfo.database);
+        const { list, total, explainInfo, current, size } = await WebTool.objectTool.fetchQuestionData(
+          {
+            db: database,
+            table,
+            condition: conditionObj,
+            sortField,
+            pageNo,
+            pageSize,
+          },
+          {
+            projection,
+            after,
+            allowDiskUse,
+            debug: isDebug,
+          }
+        );
+
+        // ----------- 3. 业务逻辑过滤 -----------
+        const filteredData = list.filter(
+          (item) => item.isShare === "true" || item.folderName === sessionData.folderName
+        );
+
+        // ----------- 4. 返回响应 -----------
+        res.setHeader("Cache-Control", "no-store");
+        return res.json({
+          ret: 0,
+          table,
+          total,
+          pageNo: current,
+          pageSize: size,
+          duration: `${Date.now() - startTime}ms`,
+          data: filteredData,
+          ...(isDebug ? { explain: explainInfo } : {}),
+        });
+      } catch (err) {
+        if (err.codeName === "QueryExceededMemoryLimitNoDiskUseAllowed") {
+          console.error("❌ 内存排序超限，建议：1) 添加索引 2) 缩小查询范围 3) 确认 allowDiskUse 已启用");
+          return res.status(500).json({
+            ret: 1,
+            message: "查询数据量过大，请添加排序字段索引或缩小查询范围",
+          });
+        }
+
+        console.error("❌ Mongo Query Error:", err);
+        return res.status(500).json({ ret: 1, message: err.message });
       }
-    }
-    delete conditionObj.admin;
-    conditionObj = WebTool.mongoTool.sanitizeQuery(conditionObj);
-
-    // 解析排序字段
-    let sortField = {};
-    try {
-      sortField = JSON.parse(sort);
-    } catch {
-      console.warn("⚠️ Invalid sort JSON, ignored");
-    }
-
-    // 解析返回字段 (Projection)
-    const projection = {};
-    if (fields) {
-      fields.split(",").forEach((f) => (projection[f.trim()] = 1));
-    }
-
-    // ----------- 2. 调用解耦的数据库函数 -----------
-    const database = db.db(dbInfo.database);
-    const { list, total, explainInfo, current, size } = await WebTool.objectTool.fetchQuestionData(
-      {
-        db: database,
-        table,
-        condition: conditionObj,
-        sortField,
-        pageNo,
-        pageSize,
-      },
-      {
-        projection,
-        after,
-        allowDiskUse,
-        debug: isDebug,
-      }
-    );
-
-    // ----------- 3. 业务逻辑过滤 -----------
-    const filteredData = list.filter(
-      (item) => item.isShare === "true" || item.folderName === sessionData.folderName
-    );
-
-    // ----------- 4. 返回响应 -----------
-    res.setHeader("Cache-Control", "no-store");
-    return res.json({
-      ret: 0,
-      table,
-      total,
-      pageNo: current,
-      pageSize: size,
-      duration: `${Date.now() - startTime}ms`,
-      data: filteredData,
-      ...(isDebug ? { explain: explainInfo } : {}),
-    });
-  } catch (err) {
-    if (err.codeName === "QueryExceededMemoryLimitNoDiskUseAllowed") {
-      console.error("❌ 内存排序超限，建议：1) 添加索引 2) 缩小查询范围 3) 确认 allowDiskUse 已启用");
-      return res.status(500).json({
-        ret: 1,
-        message: "查询数据量过大，请添加排序字段索引或缩小查询范围",
-      });
-    }
-
-    console.error("❌ Mongo Query Error:", err);
-    return res.status(500).json({ ret: 1, message: err.message });
-  }
-},
+    },
   },
   mongoQuery: {
     method: "get",
@@ -433,7 +433,7 @@ let data = {
 
         if (table === "pointsBill") {
           query.folderName = String(req.session.data.folderName);
-        } else if(table === "account" && req.session.data.account === commonData.adminAccount) {
+        } else if (table === "account" && req.session.data.account === commonData.adminAccount) {
           query.folderName = Number(query.folderName) || ""
         } else {
           query.folderName = Number(req.session.data.folderName) || req.session.data.folderName;
@@ -1237,40 +1237,40 @@ let data = {
           condition,
           { projection: { folderName: 1, documentId: 1 } },
           function (err, result, db) {
-          if (err) {
-            WebTool.requestTool.sendData(
-              {
-                ret: 1,
-                message: "数据库操作失败",
-              },
-              req,
-              res
-            );
-          } else {
-            let ret = "";
-            let msg = "查询成功。";
-            if (result.length === 0) {
-              ret = 1;
-              msg = "InteractionList 数据查询结果为空。";
+            if (err) {
+              WebTool.requestTool.sendData(
+                {
+                  ret: 1,
+                  message: "数据库操作失败",
+                },
+                req,
+                res
+              );
+            } else {
+              let ret = "";
+              let msg = "查询成功。";
+              if (result.length === 0) {
+                ret = 1;
+                msg = "InteractionList 数据查询结果为空。";
+              }
+              let list = result.map((item) => {
+                return {
+                  folderName: item.folderName,
+                  documentId: item.documentId,
+                };
+              });
+              WebTool.requestTool.sendData(
+                {
+                  ret: ret,
+                  data: list,
+                  message: msg,
+                },
+                req,
+                res
+              );
             }
-            let list = result.map((item) => {
-              return {
-                folderName: item.folderName,
-                documentId: item.documentId,
-              };
-            });
-            WebTool.requestTool.sendData(
-              {
-                ret: ret,
-                data: list,
-                message: msg,
-              },
-              req,
-              res
-            );
-          }
-          db.close();
-        });
+            db.close();
+          });
       } else {
         WebTool.requestTool.sendData(
           {
@@ -2250,113 +2250,113 @@ let data = {
     method: "get",
     dbItem: "visualTool",
     callback: async function (req, res, dbInfo, db) {
-          try {
-            const {
-              id,
-              condition,
-              key = "document",     // Mongo 字段名，存储文件路径
-              table = "pptItem",    // 数据表
-              mode = "text",      // 返回模式: stream | base64 | text
-              download = false,     // 是否触发下载
-              ...queryParams
-            } = req.query;
-    
-            // ----------- 安全字段白名单 -----------
-            const SAFE_FIELDS = ["_id", "id", "folderName", "appName", "documentId", "type"];
-    
-            const dbItem = db.db(dbInfo.database);
-            const collection = dbItem.collection(table);
-    
-            // ----------- 构建查询条件 -----------
-            const query = {};
-            if (condition) {
-              if (!SAFE_FIELDS.includes(condition)) {
-                return res.status(403).send(`Unsafe condition field: ${condition}`);
-              }
-              const value = queryParams[condition];
-              if (!value) return res.status(400).send(`Missing value for condition=${condition}`);
-              query[condition] = value;
-            } else if (id) {
-              try {
-                query._id = new ObjectId(id);
-              } catch {
-                query._id = id;
-              }
-            } else {
-              for (const safeKey of SAFE_FIELDS) {
-                if (queryParams[safeKey]) {
-                  query[safeKey] = queryParams[safeKey];
-                  break;
-                }
-              }
-            }
-    
-            if (Object.keys(query).length === 0) {
-              return res.status(400).send("Missing valid query condition");
-            }
-    
-            // ----------- 查询文档 -----------
-            const doc = await collection.findOne(query, { projection: { [key]: 1 } });
-            if (!doc || !doc[key]) {
-              return res.status(404).send("File path not found in document");
-            }
-    
-            const ROOT_DIR = path.resolve("./static"); // 限制根目录
-            // const resolvedPath = path.resolve(ROOT_DIR, doc[key]);
-            const resolvedPath = ROOT_DIR + doc[key];
-    
-            // if (!resolvedPath.startsWith(ROOT_DIR)) {
-            //   return res.status(403).send("Access denied: invalid file path");
-            // }
-            console.log("real path: ", resolvedPath);
-    
-            if (!fs.existsSync(resolvedPath)) {
-              return res.status(404).send("File not found on server");
-            }
-    
-            let mimeType = "application/octet-stream";
-            mimeType = mime.lookup(resolvedPath) || mimeType;
-            res.setHeader("Cache-Control", "public, max-age=86400");
-    
-            // ----------- 模式 1：直接流式输出 -----------
-            if (mode === "stream") {
-              res.setHeader("Content-Type", mimeType);
-              if (download) {
-                const fileName = path.basename(resolvedPath);
-                res.setHeader("Content-Disposition", `attachment; filename="${fileName}"`);
-              }
-              const stream = fs.createReadStream(resolvedPath);
-              return stream.pipe(res);
-            }
-    
-            // ----------- 模式 2：Base64 输出 -----------
-            if (mode === "base64") {
-              const fileBuffer = fs.readFileSync(resolvedPath);
-              const base64 = fileBuffer.toString("base64");
-              const result = {
-                mime: mimeType,
-                base64: `data:${mimeType};base64,${base64}`,
-                fileName: path.basename(resolvedPath),
-              };
-              return res.json(result);
-            }
-    
-            // ----------- 模式 3：文本内容输出 -----------
-            if (mode === "text") {
-              const encoding = mimeType.startsWith("text/") || mimeType.includes("json")
-                ? "utf-8"
-                : null;
-              const content = fs.readFileSync(resolvedPath, encoding || null);
-              return res.send(content);
-            }
-    
-            // ----------- 默认兜底 -----------
-            return res.status(400).send("Invalid mode. Use stream | base64 | text.");
-          } catch (err) {
-            console.error("❌ getDocumentFile error:", err);
-            res.status(500).send("Server error: " + err.message);
+      try {
+        const {
+          id,
+          condition,
+          key = "document",     // Mongo 字段名，存储文件路径
+          table = "pptItem",    // 数据表
+          mode = "text",      // 返回模式: stream | base64 | text
+          download = false,     // 是否触发下载
+          ...queryParams
+        } = req.query;
+
+        // ----------- 安全字段白名单 -----------
+        const SAFE_FIELDS = ["_id", "id", "folderName", "appName", "documentId", "type"];
+
+        const dbItem = db.db(dbInfo.database);
+        const collection = dbItem.collection(table);
+
+        // ----------- 构建查询条件 -----------
+        const query = {};
+        if (condition) {
+          if (!SAFE_FIELDS.includes(condition)) {
+            return res.status(403).send(`Unsafe condition field: ${condition}`);
           }
-        },
+          const value = queryParams[condition];
+          if (!value) return res.status(400).send(`Missing value for condition=${condition}`);
+          query[condition] = value;
+        } else if (id) {
+          try {
+            query._id = new ObjectId(id);
+          } catch {
+            query._id = id;
+          }
+        } else {
+          for (const safeKey of SAFE_FIELDS) {
+            if (queryParams[safeKey]) {
+              query[safeKey] = queryParams[safeKey];
+              break;
+            }
+          }
+        }
+
+        if (Object.keys(query).length === 0) {
+          return res.status(400).send("Missing valid query condition");
+        }
+
+        // ----------- 查询文档 -----------
+        const doc = await collection.findOne(query, { projection: { [key]: 1 } });
+        if (!doc || !doc[key]) {
+          return res.status(404).send("File path not found in document");
+        }
+
+        const ROOT_DIR = path.resolve("./static"); // 限制根目录
+        // const resolvedPath = path.resolve(ROOT_DIR, doc[key]);
+        const resolvedPath = ROOT_DIR + doc[key];
+
+        // if (!resolvedPath.startsWith(ROOT_DIR)) {
+        //   return res.status(403).send("Access denied: invalid file path");
+        // }
+        console.log("real path: ", resolvedPath);
+
+        if (!fs.existsSync(resolvedPath)) {
+          return res.status(404).send("File not found on server");
+        }
+
+        let mimeType = "application/octet-stream";
+        mimeType = mime.lookup(resolvedPath) || mimeType;
+        res.setHeader("Cache-Control", "public, max-age=86400");
+
+        // ----------- 模式 1：直接流式输出 -----------
+        if (mode === "stream") {
+          res.setHeader("Content-Type", mimeType);
+          if (download) {
+            const fileName = path.basename(resolvedPath);
+            res.setHeader("Content-Disposition", `attachment; filename="${fileName}"`);
+          }
+          const stream = fs.createReadStream(resolvedPath);
+          return stream.pipe(res);
+        }
+
+        // ----------- 模式 2：Base64 输出 -----------
+        if (mode === "base64") {
+          const fileBuffer = fs.readFileSync(resolvedPath);
+          const base64 = fileBuffer.toString("base64");
+          const result = {
+            mime: mimeType,
+            base64: `data:${mimeType};base64,${base64}`,
+            fileName: path.basename(resolvedPath),
+          };
+          return res.json(result);
+        }
+
+        // ----------- 模式 3：文本内容输出 -----------
+        if (mode === "text") {
+          const encoding = mimeType.startsWith("text/") || mimeType.includes("json")
+            ? "utf-8"
+            : null;
+          const content = fs.readFileSync(resolvedPath, encoding || null);
+          return res.send(content);
+        }
+
+        // ----------- 默认兜底 -----------
+        return res.status(400).send("Invalid mode. Use stream | base64 | text.");
+      } catch (err) {
+        console.error("❌ getDocumentFile error:", err);
+        res.status(500).send("Server error: " + err.message);
+      }
+    },
     // _callback: async function (req, res, dbInfo, db) {
     //   try {
     //     const {
@@ -3430,7 +3430,7 @@ let data = {
         }
 
         if (
-           query.account === process.env.ADMIN_ACCOUNT && query.checkNumber !== process.env.POWER_ADMIN
+          (query.account === process.env.ADMIN_ACCOUNT && query.checkNumber !== process.env.POWER_ADMIN) || (query.checkNumber !== code && query.account !== process.env.ADMIN_ACCOUNT)
         ) {
           msg = "验证码不正确";
           WebTool.requestTool.sendData(
@@ -4197,41 +4197,41 @@ let data = {
           },
         },
         function (err, result, tDB) {
-        if (err) {
-          tDB.close();
+          if (err) {
+            tDB.close();
+            WebTool.requestTool.sendData(
+              {
+                ret: 1,
+                message: "数据库操作失败",
+              },
+              req,
+              res
+            );
+            return false;
+          }
+
+          if (result.length !== 0) {
+            data.tokenLimit = result[0].tokenLimit || data.tokenLimit;
+            data.tokenUsed = result[0].tokenUsed || data.tokenUsed;
+            data.folderName = result[0].folderName + "";
+            //Todo: set subscription status
+
+            let now = new Date().getTime();
+            data.subscription = result[0].subscription || 0;
+            data.vipTimeout = now > data.subscription;
+            data.name = result[0].name;
+            data.role = result[0].role || [];
+            delete data.account;
+          }
           WebTool.requestTool.sendData(
             {
-              ret: 1,
-              message: "数据库操作失败",
+              ret: 0,
+              data: data,
             },
             req,
             res
           );
-          return false;
-        }
-
-        if (result.length !== 0) {
-          data.tokenLimit = result[0].tokenLimit || data.tokenLimit;
-          data.tokenUsed = result[0].tokenUsed || data.tokenUsed;
-          data.folderName = result[0].folderName + "";
-          //Todo: set subscription status
-
-          let now = new Date().getTime();
-          data.subscription = result[0].subscription || 0;
-          data.vipTimeout = now > data.subscription;
-          data.name = result[0].name;
-          data.role = result[0].role || [];
-          delete data.account;
-        }
-        WebTool.requestTool.sendData(
-          {
-            ret: 0,
-            data: data,
-          },
-          req,
-          res
-        );
-      });
+        });
     },
   },
   getLoginInfo: {
@@ -4275,48 +4275,48 @@ let data = {
           },
         },
         function (err, result, tDB) {
-        if (err) {
-          tDB.close();
+          if (err) {
+            tDB.close();
+            WebTool.requestTool.sendData(
+              {
+                ret: 1,
+                message: "数据库操作失败",
+              },
+              req,
+              res
+            );
+            return false;
+          }
+          if (result.length !== 0) {
+            data.tokenLimit = result[0].tokenLimit || data.tokenLimit;
+            data.tokenUsed = result[0].tokenUsed || data.tokenUsed;
+            data.folderName = result[0].folderName + "";
+            //Todo: set subscription status
+
+            let now = new Date().getTime();
+            data.subscription = result[0].subscription || 0;
+            data.vipTimeout = now > data.subscription;
+            data.name = result[0].name;
+            data.role = result[0].role || [];
+            data.introduce = result[0].introduce || "";
+            data.image = result[0].image;
+            data.account = result[0].account;
+            let hUrl = req.get("referer");
+            let id = WebTool.objectTool.urlQuery(hUrl, "id");
+            if (!id) {
+              id = WebTool.objectTool.urlQuery(hUrl, "agent");
+            }
+          }
+          delete data.account;
           WebTool.requestTool.sendData(
             {
-              ret: 1,
-              message: "数据库操作失败",
+              ret: 0,
+              data: data,
             },
             req,
             res
           );
-          return false;
-        }
-        if (result.length !== 0) {
-          data.tokenLimit = result[0].tokenLimit || data.tokenLimit;
-          data.tokenUsed = result[0].tokenUsed || data.tokenUsed;
-          data.folderName = result[0].folderName + "";
-          //Todo: set subscription status
-
-          let now = new Date().getTime();
-          data.subscription = result[0].subscription || 0;
-          data.vipTimeout = now > data.subscription;
-          data.name = result[0].name;
-          data.role = result[0].role || [];
-          data.introduce = result[0].introduce || "";
-          data.image = result[0].image;
-          data.account = result[0].account;
-          let hUrl = req.get("referer");
-          let id = WebTool.objectTool.urlQuery(hUrl, "id");
-          if (!id) {
-            id = WebTool.objectTool.urlQuery(hUrl, "agent");
-          }
-        }
-        delete data.account;
-        WebTool.requestTool.sendData(
-          {
-            ret: 0,
-            data: data,
-          },
-          req,
-          res
-        );
-      });
+        });
     },
   },
   setAppData: {
