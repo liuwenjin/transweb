@@ -225,7 +225,9 @@ TransWeb 是一个 **B/S 架构、无代码生成 AI Agent** 的在线平台：�
 - **数据层**：MongoDB（主）；MySQL / Neo4j 可选，通过 XML 配置自动生成 REST 接口。
 - **前端**：`static/` 目录下的纯 HTML + Vue 3（运行时编译 SFC），集成 ECharts、GeoGebra、MathBox、JSXGraph、Mermaid、Phaser、CodeMirror 等可视化组件。
 - **构建**：Gulp（`gulpfile.js`，terser 压缩合并组件脚本）。
-- **模型接入**：`interface/config/` 统一适配多家大模型与图片/语音供应商，支持自定义模型与 BYO-Key。
+- **模型接入**：`interface/config/` 统一适配多家大模型与图片/语音供应商，支持自定义模型与 BYO-Key；
+  文本、图片生成、图片输入三类默认模型可分别配置（`defaultModel` / `defaultImageModel` / `defaultImageInputModel`）。
+- **部署**：`transweb-service` 安装包（npm / GitHub Releases），提供 `transweb` CLI 管理初始化、启停、配置、模型与密钥。
 
 ### 目录结构
 
@@ -253,31 +255,50 @@ transweb/
 
 ### 快速开始
 
+**方式一：安装包（推荐，自托管部署）**
+
 ```bash
-# 1. 安装依赖
-npm install
+npm install -g transweb-service@1.5.6   # 或使用 GitHub Release 的 .tgz
 
-# 2. 初始化运行环境（创建运行时目录 + 生成 .env）
-npm run init           # 即 node scripts/init.js
-
-# 3. 配置环境变量
-#    编辑 .env，按注释填写 SESSION_SECRET、MongoDB、ADMIN_* 等必填项
-
-# 4. 启动服务
-node webServer.js      # HTTP: PORT（默认 80）；HTTPS: SSLPORT（默认 443）
-
-# 5.（可选）构建前端组件
-npm run test           # 即 gulp，压缩合并组件脚本
+transweb init        # 初始化数据库（会清空数据，需确认）
+transweb start       # 启动 MongoDB 与 Web 服务；首次会打开初始化页面
+transweb status      # 查看地址、局域网访问、初始化状态
 ```
 
-启动后访问 `http://localhost/`，前端由 `static/` 静态托管。
+- 首次初始化会自动安装应用依赖（约 543 个包）并下载 MongoDB 6.0.x（约 58MB）；
+- 服务目录默认 `~/.transweb-service`（配置、数据库、日志、证书都在这里），升级 npm 包不丢数据；
+- 局域网其他设备可直接访问 `transweb status` 里显示的地址；
+- HTTPS 证书不随包分发：把证书放到 `<npm 全局目录>/transweb-service/app/ca/cn/{key.pem,cert.pem}`，缺失时自动跳过 8443。
 
-> ⚠️ **上线前安全必做**：把服务对外发布到互联网之前，务必删除后台与初始化页面：
-> - `static/admin.html`
-> - `static/initAdmin.html`
-> - 同类页面如 `static/initialize.html` 也建议一并删除
->
-> 否则任何人无需登录即可访问初始化/管理入口，可创建管理员账号或操作后台。
+常用命令：
+
+```bash
+transweb config list|get|set|unset <common|app> <path>   # common.js / appConfig.js（点路径）
+transweb env list|get|set|unset [KEY]                    # .env 环境变量（密钥打码）
+transweb wxpay list|check|set|unset                      # 微信支付全参数（AppID/商户号/密钥/回调/接口地址）
+transweb admin status|hide|show                          # 后台页移出/恢复站点目录
+transweb default model|image|image-input                 # 三类默认模型
+transweb model list|add|update|remove                    # 模型费率（支持 --from）
+transweb api list|add|update|remove                      # API 网关与 Key
+transweb mongodb status|install
+transweb uninstall [--purge]
+```
+
+> `transweb model add ... -from 国内` 与 `--from 国内` 等价（单横线长参数会自动纠正）。
+
+**方式二：源码开发**
+
+```bash
+npm install            # 安装依赖
+npm run init           # 创建运行时目录 + 生成 .env
+# 编辑 .env，填写 SESSION_SECRET、MongoDB、ADMIN_* 等必填项
+node webServer.js      # HTTP: PORT（默认 80）；HTTPS: SSLPORT（默认 443）
+npm run test           # （可选）gulp 压缩合并组件脚本
+```
+
+> ⚠️ **上线前安全必做**：后台页面（`static/admin.html`、`static/initAdmin.html`）不能暴露到公网。
+> 安装包用户执行 `transweb admin hide`（`init` / 首次 `start` 会自动恢复，自动初始化完成后自动隐藏）；
+> 源码部署请手动删除或加访问控制。个人空间文件 `static/bucket/personal/` 已改为**登录后才能访问**（未登录 403）。
 
 ### 运行时目录与数据文件（已被 .gitignore 排除）
 
@@ -299,11 +320,12 @@ npm run test           # 即 gulp，压缩合并组件脚本
 
 | 分组 | 变量 |
 | --- | --- |
-| 服务 | `PORT`、`HOST`、`SSLPORT` |
+| 服务 | `PORT`、`HOST`、`SSLPORT`、`TRUST_PROXY`（反代后置 1）、`TRANSWEB_DISABLE_ADMIN`（1 = 关闭后台页） |
 | 数据库 | `MONGO_HOST`、`MONGO_PORT`、`MONGO_DATABASE`、`MONGO_USERNAME`、`MONGO_APP_PWD` |
 | 会话 | `SESSION_SECRET` |
 | 管理员 | `ADMIN_ACCOUNT`、`POWER_ADMIN`、`ADMIN_KEY` |
-| 微信支付 | `WX_PAY_APP_ID`、`WX_PAY_APP_SECRET`、`WX_PAY_APP_KEY`、`WX_PAY_MCH_ID` |
+| 微信支付 | `WX_PAY_APP_ID`、`WX_PAY_APP_SECRET`、`WX_PAY_APP_KEY`（APIv2 32 位）、`WX_PAY_MCH_ID`、`WX_PAY_NOTIFY`、`WX_PAY_ORDER_URL`、`WX_PAY_QUERY_URL`、`WX_PAY_APP_ID001` / `WX_PAY_APP_SECRET001`（小程序通道） |
+| 短信 / 系统接口 | `SEND_MESSAGE_API_KEY`（螺丝帽短信）、`JEV_API_ENDPOINT` |
 | 模型/语音/搜索 | `API_KEY_DEEPSEEK`、`API_KEY_TONGYI`、`API_KEY_ZHIPU_*`、`API_KEY_VOLCANO_*`、`API_KEY_SERPAPI`、`API_KEY_AZURE_SPEECH` 等 |
 
 > 密钥均通过 `custom/env.js` 从环境变量读取；生产部署请务必轮换历史默认值并妥善保管 `.env`。
