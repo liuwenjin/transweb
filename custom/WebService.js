@@ -1,21 +1,7 @@
 let mmh3 = require('murmurhash3js');
 let WebTool = require("./WebTool.js");
-// 1. 定义手动设置跨域头的“小助手”
-const manualCors = (req, res, next) => {
-  // 允许的源（生产环境建议将 '*' 换成具体域名）
-  res.header('Access-Control-Allow-Origin', "*");
-  // 允许的 Header 种类（如 Content-Type, Authorization 等）
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Api-Key');
-  // 允许的方法
-  res.header('Access-Control-Allow-Methods', 'POST, OPTIONS');
-
-  // 2. 关键：处理预检请求 (OPTIONS)
-  // 如果不处理它，POST 请求将永远无法到达后面的逻辑
-  if (req.method === 'OPTIONS') {
-    return res.sendStatus(200);
-  }
-  next();
-};
+// 跨域头统一由 custom/CrossOrigin.js（common.js 的 crossOrigin 配置）在入口处处理，
+// 这里不再单独写死 Access-Control-Allow-Origin: *
 
 let WebService = function (app, service, param) {
   this.app = app;
@@ -96,12 +82,8 @@ WebService.prototype.addItem = function (task, config) {
       _self.param.end(req, res, task);
     }
   };
-  if(task.CORS) {
-    this.app[method](task.url, manualCors, callback);
-  }
-  else {
-    this.app[method](task.url, callback);
-  }
+  // 跨域头由 custom/CrossOrigin.js 统一处理（task.CORS 已废弃）
+  this.app[method](task.url, callback);
 }
 WebService.prototype.getInterface = function () {
   var cData = this.service.data.cardData;

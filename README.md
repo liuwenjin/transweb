@@ -330,6 +330,23 @@ npm run test           # （可选）gulp 压缩合并组件脚本
 
 > 密钥均通过 `custom/env.js` 从环境变量读取；生产部署请务必轮换历史默认值并妥善保管 `.env`。
 
+### 应用配置（`interface/config/common.js`）
+
+| 字段 | 作用 |
+| --- | --- |
+| `crossOrigin` | 跨站请求许可（CORS）：`{ allow, origin, credentials }`。默认 `allow: true`（允许跨站）；改完需 `transweb restart` |
+| `documentAccess` | 文档读取权限：`public` / `login` / `owner`，可用 `tables` 按集合覆盖 |
+
+跨站开关可用命令修改，例如：
+
+```bash
+transweb cors on                                     # 允许全部来源（*）
+transweb cors on --origin "https://a.com,https://b.com"   # 只允许指定来源
+transweb cors off                                    # 关闭（默认）
+```
+
+默认允许跨站；执行 `transweb cors off` 后不再返回 CORS 头，并直接拒绝带外部 `Origin` 的跨站请求（同源页面、curl 与服务端调用不受影响）。
+
 ---
 
 ## License

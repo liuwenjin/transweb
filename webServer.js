@@ -221,6 +221,14 @@ app.use(function (req, res, next) {
   next();
 });
 
+// 跨站请求许可（CORS）：由 interface/config/common.js 的 crossOrigin 配置驱动，
+// 关闭时不返回 CORS 头并直接拒绝带外部 Origin 的跨站请求；开启时按来源白名单放行。
+// 放在最前面，预检 OPTIONS 不进入后续中间件（不改动 body 解析与业务路由）。
+const CrossOrigin = require("./custom/CrossOrigin.js");
+const commonConfig = new ConfigObject(prefix.interface + "common.js");
+const commonData = commonConfig.data || {};
+app.use(CrossOrigin.create(commonData.crossOrigin).middleware);
+
 
 app.use(express.json({ limit: '3mb' }));
 app.use(express.urlencoded({ limit: '3mb', extended: true }));

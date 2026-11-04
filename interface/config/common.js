@@ -27,6 +27,17 @@ let data = {
   adminSwitch: true,
   powerAdmin: env.get("POWER_ADMIN"),
   adminAccount: env.get("ADMIN_ACCOUNT"),
+  // 跨站请求许可（CORS），默认允许
+  // allow: true 允许其他站点跨站调用本站接口（返回 Access-Control-Allow-* 并放行预检 OPTIONS）；
+  //        false 关闭：不返回 CORS 头，并直接拒绝带外部 Origin 的跨站请求（同源与 curl 调用不受影响）。
+  // origin: 允许的来源，* 表示全部；也可写 "https://a.com,https://b.com" 或数组做白名单。
+  // credentials: 是否允许跨站请求携带 Cookie（origin 为 * 时会自动改为回显来源，仅放行匹配来源）。
+  // 开关命令：transweb cors on / transweb cors off
+  crossOrigin: {
+    allow: true,
+    origin: "*",
+    credentials: false
+  },
   // 文档读取访问权限（getDocumentData 接口使用）
   // level 取值：
   //   "public" — 免登陆获取：任何访问者均可读取（敏感字段对非发布者自动隐藏）
