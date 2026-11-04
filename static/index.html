@@ -1544,15 +1544,46 @@
     }
 
     .module-card {
-      min-height: 210px;
+      display: flex;
+      flex-direction: column;
 
-      padding: 32px 30px;
+      min-height: 236px;
+
+      padding: 30px 30px 32px;
 
       background: var(--card);
+
+      /* 每个模块一套低饱和强调色，仅用于插画线条 */
+      --module-accent: #4a4a52;
+      --module-ink: #3d3d45;
 
       transition:
         transform .3s ease,
         background .3s ease;
+    }
+
+    .module-card--agent {
+      --module-accent: #4f46e5;
+    }
+
+    .module-card--workflow {
+      --module-accent: #0f766e;
+    }
+
+    .module-card--multi-llm {
+      --module-accent: #b45309;
+    }
+
+    .module-card--compute {
+      --module-accent: #1d4ed8;
+    }
+
+    .module-card--account {
+      --module-accent: #7e22ce;
+    }
+
+    .module-card--credits {
+      --module-accent: #15803d;
     }
 
     .module-card:hover {
@@ -1560,24 +1591,79 @@
       background: #f0f0f3;
     }
 
+    /* 卡片顶部：编号 + 插画 */
+    .module-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    /* 编号文字原为 --light(#a5a5aa)，在 #f3f3f5 上对比度仅约 2.2:1；
+       改为深灰后约 7.9:1，满足 WCAG AA（小字号正文 4.5:1） */
     .module-index {
-      color: var(--light);
+      padding-top: 3px;
+
+      color: #4a4a52;
       font-size: 11px;
+      font-weight: 500;
       letter-spacing: .16em;
+      line-height: 1.5;
+      white-space: nowrap;
+    }
+
+    .module-illustration {
+      flex: none;
+      width: 52px;
+      height: 52px;
+
+      margin: -4px -2px 0 0;
+
+      color: var(--module-ink);
+      opacity: .92;
+
+      transition:
+        transform .3s ease,
+        opacity .3s ease;
+    }
+
+    .module-illustration svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* 插画强调色：用 class 而非内联 var()，
+       因为 SVG 呈现属性不解析 CSS 变量 */
+    .module-illustration .mi-accent {
+      stroke: var(--module-accent);
+    }
+
+    .module-illustration .mi-accent-fill {
+      fill: var(--module-accent);
+      stroke: none;
+    }
+
+    .module-card:hover .module-illustration {
+      transform: translateY(-2px);
+      opacity: 1;
     }
 
     .module-title {
-      margin-top: 34px;
+      margin: 20px 0 0;
 
+      color: var(--ink);
       font-family: var(--serif);
       font-size: 21px;
       font-weight: 400;
+      line-height: 1.45;
     }
 
     .module-desc {
-      margin-top: 14px;
+      margin-top: 12px;
 
-      color: var(--gray);
+      /* 原 --gray(#6e6e73) 对比度约 4.6:1，12.5px 小字偏弱，加深至约 6.7:1 */
+      color: #55555c;
       font-size: 12.5px;
       line-height: 1.9;
     }
@@ -1612,14 +1698,16 @@
       font-size: 11px;
     }
 
-    /* 终端命令块：带行号，指令与注释分行，超长自动换行 */
+    /* 终端命令块：带行号，指令与注释分行，超长自动换行
+       面板底色贴近页面白底（对 #fff 仅约 1.1:1），
+       代码文字用墨色（对面板约 15.8:1），做到「块更轻、字更清楚」 */
     .term {
       margin: 14px 0 0;
 
       padding: 20px 22px;
 
-      background: var(--ink);
-      border: 1px solid #2c2c32;
+      background: #f4f4f6;
+      border: 1px solid var(--line);
 
       font-family:
         "SFMono-Regular",
@@ -1631,7 +1719,7 @@
       font-size: 12.5px;
       line-height: 1.9;
 
-      color: #e8e8ec;
+      color: var(--ink);
 
       counter-reset: term-line;
     }
@@ -1647,7 +1735,8 @@
     .term-line__num {
       flex: 0 0 28px;
 
-      color: #5c5c64;
+      /* 行号属辅助信息，仍保持约 4.5:1 可读 */
+      color: #6f6f77;
       font-size: 11px;
       line-height: inherit;
       text-align: right;
@@ -1663,12 +1752,18 @@
       flex: 1;
       min-width: 0;
 
+      /* 站内基础样式表会给 code 上粉色（#e83e8c）并缩放字号，
+         这里显式覆盖：代码回到墨色，与面板形成约 15.8:1 的高对比 */
+      color: var(--ink);
+      font-size: inherit;
+
       white-space: pre-wrap;
       overflow-wrap: anywhere;
     }
 
+    /* 注释：比正文弱一档，但仍约 5.8:1 */
     .term .t-c {
-      color: #8b8b93;
+      color: #5f5f67;
     }
 
     /* 部署提示（开源地址 / 安全与运维提示，独立方框） */
@@ -1738,6 +1833,12 @@
       border-bottom-color: var(--ink);
     }
 
+    @media (max-width: 1024px) {
+      .module-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
     @media (max-width: 760px) {
       .module-grid {
         grid-template-columns: 1fr;
@@ -1746,11 +1847,16 @@
 
       .module-card {
         min-height: 0;
-        padding: 28px 24px;
+        padding: 26px 24px 28px;
+      }
+
+      .module-illustration {
+        width: 44px;
+        height: 44px;
       }
 
       .module-title {
-        margin-top: 24px;
+        margin-top: 16px;
         font-size: 19px;
       }
 
@@ -3656,52 +3762,165 @@
         <!-- 功能模块 -->
         <div class="module-grid">
 
-          <article class="module-card">
-            <div class="module-index">01 / COMPUTE</div>
-            <h3 class="module-title">AI 算力 / 模型接入</h3>
-            <p class="module-desc">
-              统一适配 DeepSeek、通义千问、智谱、月之暗面、火山等多家大模型与图片 / 语音供应商，支持自定义模型与 BYO-Key（自带 Key），文本、生图、图生文三类默认模型可分别配置。
-            </p>
-          </article>
+          <!-- 01 无代码生成 Agent / Skill -->
+          <article class="module-card module-card--agent">
 
-          <article class="module-card">
-            <div class="module-index">02 / ACCOUNT</div>
-            <h3 class="module-title">用户账号系统</h3>
-            <p class="module-desc">
-              手机验证码登录 / 注册、账号与权限管理、会话与限流、API Key 管理；登录后即可查看「我的 Agent / Skill」与用量明细。
-            </p>
-          </article>
+            <div class="module-head">
+              <div class="module-index">01 / NO-CODE</div>
 
-          <article class="module-card">
-            <div class="module-index">03 / CREDITS</div>
-            <h3 class="module-title">积分系统（微信充值）</h3>
-            <p class="module-desc">
-              积分余额、消费与收入明细一目了然；微信支付（APIv2 统一下单 + 回调）在线充值，按量计费、闲置零成本。
-            </p>
-          </article>
+              <div class="module-illustration" aria-hidden="true">
+                <!-- 文档 + 生成火花 -->
+                <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M10 9.5A2.5 2.5 0 0 1 12.5 7h12.7L33 14.8V36a2.5 2.5 0 0 1-2.5 2.5h-18A2.5 2.5 0 0 1 10 36V9.5Z" />
+                  <path d="M25.2 7v7.8H33" />
+                  <path d="M15.5 21.5h11M15.5 26.5h7" />
+                  <path class="mi-accent" d="M39.5 19.1l1.5 3.9 3.9 1.5-3.9 1.5-1.5 3.9-1.5-3.9-3.9-1.5 3.9-1.5z" />
+                </svg>
+              </div>
+            </div>
 
-          <article class="module-card">
-            <div class="module-index">04 / NO-CODE</div>
-            <h3 class="module-title">无代码生成 AI Agent / Skill</h3>
-            <p class="module-desc">
+            <h3 class="module-title" data-i18n="deploy.m1.title">无代码生成 AI Agent / Skill</h3>
+
+            <p class="module-desc" data-i18n="deploy.m1.desc">
               上传一份资料一键生成 Agent，一句话无代码生成 Skill，无需写 Prompt、搭数据库，3 分钟即可上岗。
             </p>
+
           </article>
 
-          <article class="module-card">
-            <div class="module-index">05 / WORKFLOW</div>
-            <h3 class="module-title">工作流引擎</h3>
-            <p class="module-desc">
+          <!-- 02 工作流引擎 -->
+          <article class="module-card module-card--workflow">
+
+            <div class="module-head">
+              <div class="module-index">02 / WORKFLOW</div>
+
+              <div class="module-illustration" aria-hidden="true">
+                <!-- 流程分支：一个节点分发到多条分支 -->
+                <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="15" y="6" width="18" height="9" rx="2.5" />
+                  <path d="M24 15v4a3 3 0 0 1-3 3h-3a3 3 0 0 0-3 3v6" />
+                  <path d="M24 15v4a3 3 0 0 0 3 3h3a3 3 0 0 1 3 3v6" />
+                  <rect x="7" y="31" width="16" height="10" rx="2.5" />
+                  <rect class="mi-accent" x="25" y="31" width="16" height="10" rx="2.5" />
+                </svg>
+              </div>
+            </div>
+
+            <h3 class="module-title" data-i18n="deploy.m2.title">工作流引擎</h3>
+
+            <p class="module-desc" data-i18n="deploy.m2.desc">
               把多个 Skill 可视化编排成一条工作流，支持节点级回溯、暂停与人工干预（Human-in-the-Loop），一次编排反复复用。
             </p>
+
           </article>
 
-          <article class="module-card">
-            <div class="module-index">06 / MULTI-LLM</div>
-            <h3 class="module-title">多模型协作</h3>
-            <p class="module-desc">
+          <!-- 03 多模型协作 -->
+          <article class="module-card module-card--multi-llm">
+
+            <div class="module-head">
+              <div class="module-index">03 / MULTI-LLM</div>
+
+              <div class="module-illustration" aria-hidden="true">
+                <!-- 多个模型相互协作 -->
+                <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="24" cy="16" r="10" />
+                  <circle cx="15.5" cy="32" r="10" />
+                  <circle class="mi-accent" cx="32.5" cy="32" r="10" />
+                </svg>
+              </div>
+            </div>
+
+            <h3 class="module-title" data-i18n="deploy.m3.title">多模型协作</h3>
+
+            <p class="module-desc" data-i18n="deploy.m3.desc">
               不同语言模型可通过不同 Skill 编排进同一条工作流，各司其职、接力完成多步骤任务，让多模型协同工作。
             </p>
+
+          </article>
+
+          <!-- 04 AI 算力 / 模型接入 -->
+          <article class="module-card module-card--compute">
+
+            <div class="module-head">
+              <div class="module-index">04 / COMPUTE</div>
+
+              <div class="module-illustration" aria-hidden="true">
+                <!-- 算力芯片 -->
+                <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="14" y="14" width="20" height="20" rx="3.5" />
+                  <rect class="mi-accent" x="20" y="20" width="8" height="8" rx="1.5" />
+                  <path d="M19 14V9.5M24 14V9.5M29 14V9.5" />
+                  <path d="M19 34v4.5M24 34v4.5M29 34v4.5" />
+                  <path d="M14 19H9.5M14 24H9.5M14 29H9.5" />
+                  <path d="M34 19h4.5M34 24h4.5M34 29h4.5" />
+                </svg>
+              </div>
+            </div>
+
+            <h3 class="module-title" data-i18n="deploy.m4.title">AI 算力 / 模型接入</h3>
+
+            <p class="module-desc" data-i18n="deploy.m4.desc">
+              统一适配 DeepSeek、通义千问、智谱、月之暗面、火山等多家大模型与图片 / 语音供应商，支持自定义模型与 BYO-Key（自带 Key），文本、生图、图生文三类默认模型可分别配置。
+            </p>
+
+          </article>
+
+          <!-- 05 用户账号系统 -->
+          <article class="module-card module-card--account">
+
+            <div class="module-head">
+              <div class="module-index">05 / ACCOUNT</div>
+
+              <div class="module-illustration" aria-hidden="true">
+                <!-- 账号 + 权限钥匙 -->
+                <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="15.5" cy="15" r="6" />
+                  <path d="M5.5 40c0-6 4.5-10 10-10s10 4 10 10" />
+                  <circle class="mi-accent" cx="35" cy="12.5" r="4.5" />
+                  <path class="mi-accent" d="M35 17v18" />
+                  <path class="mi-accent" d="M35 29h5.5M35 34h3.5" />
+                </svg>
+              </div>
+            </div>
+
+            <h3 class="module-title" data-i18n="deploy.m5.title">用户账号系统</h3>
+
+            <p class="module-desc" data-i18n="deploy.m5.desc">
+              手机验证码登录 / 注册、账号与权限管理、会话与限流、API Key 管理；登录后即可查看「我的 Agent / Skill」与用量明细。
+            </p>
+
+          </article>
+
+          <!-- 06 积分系统（微信充值） -->
+          <article class="module-card module-card--credits">
+
+            <div class="module-head">
+              <div class="module-index">06 / CREDITS</div>
+
+              <div class="module-illustration" aria-hidden="true">
+                <!-- 积分币 + 充值标记 -->
+                <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="22" cy="25.5" r="13.5" />
+                  <path d="M16.8 19.5L22 25.4l5.2-5.9" />
+                  <path d="M22 25.4v7.4" />
+                  <path d="M17.6 27.6h8.8M17.6 30.8h8.8" />
+                  <circle class="mi-accent" cx="38.5" cy="9.5" r="5.5" />
+                  <path class="mi-accent" d="M38.5 6.6v5.8M35.6 9.5h5.8" />
+                </svg>
+              </div>
+            </div>
+
+            <h3 class="module-title" data-i18n="deploy.m6.title">积分系统（微信充值）</h3>
+
+            <p class="module-desc" data-i18n="deploy.m6.desc">
+              积分余额、消费与收入明细一目了然；微信支付（APIv2 统一下单 + 回调）在线充值，按量计费、闲置零成本。
+            </p>
+
           </article>
 
         </div>
@@ -4521,6 +4740,18 @@
           "compare.ai.text": "上传即用，无需任何技术背景。持续服务、随时交付他人，透明消费、按需扣费。",
           "deploy.title": "本地部署，数据与算力都归你掌控。",
           "deploy.desc": "通过安装包一键自托管部署。下面是部署步骤、后台管理指令，以及平台包含的完整功能模块。",
+          "deploy.m1.title": "无代码生成 AI Agent / Skill",
+          "deploy.m1.desc": "上传一份资料一键生成 Agent，一句话无代码生成 Skill，无需写 Prompt、搭数据库，3 分钟即可上岗。",
+          "deploy.m2.title": "工作流引擎",
+          "deploy.m2.desc": "把多个 Skill 可视化编排成一条工作流，支持节点级回溯、暂停与人工干预（Human-in-the-Loop），一次编排反复复用。",
+          "deploy.m3.title": "多模型协作",
+          "deploy.m3.desc": "不同语言模型可通过不同 Skill 编排进同一条工作流，各司其职、接力完成多步骤任务，让多模型协同工作。",
+          "deploy.m4.title": "AI 算力 / 模型接入",
+          "deploy.m4.desc": "统一适配 DeepSeek、通义千问、智谱、月之暗面、火山等多家大模型与图片 / 语音供应商，支持自定义模型与 BYO-Key（自带 Key），文本、生图、图生文三类默认模型可分别配置。",
+          "deploy.m5.title": "用户账号系统",
+          "deploy.m5.desc": "手机验证码登录 / 注册、账号与权限管理、会话与限流、API Key 管理；登录后即可查看「我的 Agent / Skill」与用量明细。",
+          "deploy.m6.title": "积分系统（微信充值）",
+          "deploy.m6.desc": "积分余额、消费与收入明细一目了然；微信支付（APIv2 统一下单 + 回调）在线充值，按量计费、闲置零成本。",
           "faq.title": "常见疑问",
           "faq.desc": "关于怎么生成、怎么交付他人使用、资料安全与计费，这里回答最常被问到的几个问题。",
           "faq.q1": "生成一个数字员工需要多久？",
@@ -4728,7 +4959,7 @@
 
       var LS_KEY = "appLang";
       var EN_URL = "./i18n/en.json";
-      var EN_CACHE_KEY = "i18n_en_v4";
+      var EN_CACHE_KEY = "i18n_en_v5";
 
       var lang = "zh";
       try {
