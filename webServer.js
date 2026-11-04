@@ -227,7 +227,8 @@ app.use(function (req, res, next) {
 const CrossOrigin = require("./custom/CrossOrigin.js");
 const commonConfig = new ConfigObject(prefix.interface + "common.js");
 const commonData = commonConfig.data || {};
-app.use(CrossOrigin.create(commonData.crossOrigin).middleware);
+const crossOrigin = CrossOrigin.create(commonData.crossOrigin);
+app.use(crossOrigin.middleware);
 
 
 app.use(express.json({ limit: '3mb' }));
@@ -486,24 +487,20 @@ app.use(async function (req, res, next) {
   next();
 });
 
-// CSRF 防护：对非安全方法校验同源（浏览器场景）。
-// API Key 调用（非浏览器/无 Cookie）不受同源策略约束，跳过。
+// CSRF 防护：对非安全方法校验来源（浏览器场景）。
+// - 同源请求放行：比较 host + 端口（req.hostname 不含端口，不能直接比，否则 :8080 会被误杀）；
+// - 跨站请求交给 common.js 的 crossOrigin 策略：开启且来源允许时放行，与 CORS 行为保持一致；
+// - API Key 调用（非浏览器/无 Cookie）不受同源策略约束，跳过。
 app.use(function (req, res, next) {
   if (["POST", "PUT", "PATCH", "DELETE"].indexOf(req.method) === -1) return next();
   const auth = String(req.headers["authorization"] || "") + String(req.headers["x-api-key"] || "");
   if (auth.indexOf("ak_live_") !== -1) return next();
   const origin = req.get("origin") || req.get("referer");
-  if (origin) {
-    try {
-      const o = new URL(origin);
-      if (o.host !== req.hostname) {
-        return res.status(403).json({ ret: 1, message: "跨站请求被拒绝（CSRF）" });
-      }
-    } catch (e) {
-      return res.status(403).json({ ret: 1, message: "非法的来源地址" });
-    }
-  }
-  next();
+  if (!origin) return next();
+  if (crossOrigin.isSameOrigin(req, origin)) return next();
+  if (crossOrigin.allowsOrigin(origin)) return next();
+  const valid = /^https?:\/\//i.test(origin);
+  return res.status(403).json({ ret: 1, message: valid ? "跨站请求被拒绝（CSRF）" : "非法的来源地址" });
 });
 
 let dbLimit = ["document", "account", "pluginList"];

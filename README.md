@@ -346,6 +346,7 @@ transweb cors off                                    # 关闭（默认）
 ```
 
 默认允许跨站；执行 `transweb cors off` 后不再返回 CORS 头，并直接拒绝带外部 `Origin` 的跨站请求（同源页面、curl 与服务端调用不受影响）。
+`POST` / `PUT` / `PATCH` / `DELETE` 的 CSRF 同源校验共用这套策略与端口判定，避免「CORS 已放行、CSRF 仍 403」。
 
 ---
 

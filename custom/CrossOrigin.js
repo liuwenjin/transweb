@@ -14,6 +14,9 @@
 //   allow = false        ：不返回任何 CORS 头；带外部 Origin 的跨站请求直接 403，
 //                         同源请求与无 Origin 的请求（curl、服务端调用）不受影响。
 //
+// 同一份策略也供 webServer.js 的 CSRF 校验使用（isSameOrigin / allowsOrigin），
+// 保证「允许跨站」与「CSRF 防护」始终一致；也避免把 8080 端口的同源请求误判为跨站。
+//
 // 开关命令：transweb cors on / transweb cors off
 //
 // 说明：CORS 是浏览器侧机制，服务端之间的调用通常不带 Origin 头，因此始终放行。
@@ -52,6 +55,7 @@ function normalizeHost(value) {
     .replace(/:(80|443)$/, "");
 }
 
+// 取出 URL 的 host（含非默认端口），失败返回空串
 function hostOf(value) {
   try {
     return normalizeHost(new URL(String(value)).host);
@@ -60,23 +64,24 @@ function hostOf(value) {
   }
 }
 
-// 同源判定：比较 Origin 与 Host 的主机名+端口；无 Origin（GET 导航、curl）视为同源
-function isSameOrigin(req) {
-  const origin = req.headers.origin;
+// 规范化为 scheme://host，用于和 origin 白名单比较（Referer 会带路径）
+function toOrigin(value) {
+  try {
+    return new URL(String(value)).origin.toLowerCase();
+  } catch (e) {
+    return "";
+  }
+}
+
+// 同源判定：比较来源与 Host 的主机名 + 端口；无来源（GET 导航、curl）视为同源。
+// 必须带端口比较：Express 的 req.hostname 不含端口，直接比较会把 :8080 的同源请求误判为跨站。
+function isSameOrigin(req, value) {
+  const origin = value === undefined ? req.headers.origin : value;
   if (!origin) return true;
   if (String(origin).toLowerCase() === "null") return false;
   const originHost = hostOf(origin);
   if (!originHost) return false;
-  return originHost === normalizeHost(req.headers.host);
-}
-
-function matchOrigin(origin, list) {
-  if (!origin) return "";
-  const target = String(origin).toLowerCase().replace(/\/$/, "");
-  for (let i = 0; i < list.length; i += 1) {
-    if (list[i].toLowerCase() === target) return origin;
-  }
-  return "";
+  return originHost === normalizeHost(req.headers.host || req.hostname || "");
 }
 
 function create(rawConfig) {
@@ -86,10 +91,22 @@ function create(rawConfig) {
   // origin 为 * 时浏览器不允许携带 Cookie，需要改写为回显来源
   const echoOrigin = !allowAll || config.credentials;
 
+  // 来源是否在允许范围内（CORS 响应头与 CSRF 校验共用这套判断）
+  function allowsOrigin(value) {
+    if (!config.allow) return false;
+    if (value === undefined || value === null || value === "") return true;
+    const origin = String(value);
+    if (origin.toLowerCase() === "null") return false;
+    const normalized = toOrigin(origin);
+    if (!normalized) return false;
+    if (allowAll) return true;
+    return list.some((item) => item.toLowerCase() === normalized);
+  }
+
   function corsAllowedOrigin(req) {
     const origin = req.headers.origin;
     if (allowAll) return echoOrigin ? origin : "*";
-    return matchOrigin(origin, list);
+    return allowsOrigin(origin) ? origin : "";
   }
 
   function applyHeaders(req, res, allowedOrigin) {
@@ -143,7 +160,7 @@ function create(rawConfig) {
     next();
   }
 
-  return { config, middleware, allowAll, origins: list };
+  return { config, middleware, allowAll, origins: list, isSameOrigin, allowsOrigin };
 }
 
 module.exports = { create, normalizeConfig, isSameOrigin, DEFAULT_METHODS, DEFAULT_HEADERS };
