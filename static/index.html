@@ -3934,7 +3934,7 @@
             <div class="deploy-block__caption">安装包自托管（transweb-service）</div>
 
             <div class="term">
-              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code">npm install -g transweb-service@1.5.6</code></div>
+              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code">npm install -g transweb-service@1.5.11</code></div>
               <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"># 全局安装部署包</code></div>
               <div class="term-line"><span class="term-line__num"></span><code class="term-line__code">transweb init</code></div>
               <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"># 初始化数据库（会清空数据，需确认）</code></div>
@@ -3985,7 +3985,10 @@
               <strong>开源地址：</strong><a href="https://github.com/liuwenjin/transweb" target="_blank" rel="noopener">github.com/liuwenjin/transweb</a>
             </li>
             <li class="deploy-tips__item">
-              <strong>上线前安全：</strong>务必执行 <code>transweb admin hide</code>，避免后台入口（admin.html / initAdmin.html）暴露到公网。
+              <strong>上线前安全：</strong>务必执行 <code>transweb admin hide</code>，避免后台入口（admin.html / initAdmin.html）暴露到公网；公网部署再设 <code>TRANSWEB_DISABLE_ADMIN=1</code> 兜底。
+            </li>
+            <li class="deploy-tips__item">
+              <strong>初始化页面：</strong>初始化完成前 <code>/initAdmin.html</code> 自动可访问，初始化完成后自动返回 404；再次进入后台执行 <code>transweb admin show</code>。
             </li>
             <li class="deploy-tips__item">
               <strong>首次初始化：</strong>自动安装应用依赖（约 543 个包）并下载 MongoDB 6.0.x（约 58MB）。

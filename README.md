@@ -320,7 +320,7 @@ npm run test           # （可选）gulp 压缩合并组件脚本
 
 | 分组 | 变量 |
 | --- | --- |
-| 服务 | `PORT`、`HOST`、`SSLPORT`、`TRUST_PROXY`（反代后置 1）、`TRANSWEB_DISABLE_ADMIN`（1 = 关闭后台页） |
+| 服务 | `PORT`、`HOST`、`SSLPORT`、`TRUST_PROXY`（反代后置 1）、`TRANSWEB_DISABLE_ADMIN`（1 = 始终关闭后台页；留空 = 初始化前放行、初始化后自动关闭） |
 | 数据库 | `MONGO_HOST`、`MONGO_PORT`、`MONGO_DATABASE`、`MONGO_USERNAME`、`MONGO_APP_PWD` |
 | 会话 | `SESSION_SECRET` |
 | 管理员 | `ADMIN_ACCOUNT`、`POWER_ADMIN`、`ADMIN_KEY` |

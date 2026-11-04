@@ -272,18 +272,18 @@ app.use(function (req, res, next) {
   next();
 });
 
-// 后台/初始化页面默认关闭（fail-closed）：仅当显式设置 TRANSWEB_DISABLE_ADMIN=0/false/no 时才提供。
-// 旧行为是「默认开放、需手动关闭」，易被遗忘导致后台暴露到公网。
-const adminPagesEnabled = /^(0|false|no)$/i.test((process.env.TRANSWEB_DISABLE_ADMIN || "").trim());
-if (!adminPagesEnabled) {
-  app.use(function (req, res, next) {
-    if (/^\/(admin|initAdmin|initialize)\.html$/i.test(req.path)) {
-      res.status(404).end();
-      return;
-    }
+// 后台/初始化页面闸门（规则见 custom/AdminGate.js）：
+//   未初始化 → 放行（首次部署必须能打开初始化页面）
+//   已初始化 → 默认 404；TRANSWEB_DISABLE_ADMIN=0/false/no 可显式放行
+// 每个请求现算，初始化完成后无需重启即自动关闭。
+const adminGate = require("./custom/AdminGate.js");
+app.use(function (req, res, next) {
+  if (!adminGate.isAdminPage(req.path) || adminGate.enabled()) {
     next();
-  });
-}
+    return;
+  }
+  res.status(404).end();
+});
 
 app.use(express.static("static", {}));
 
