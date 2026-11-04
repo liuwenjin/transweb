@@ -27,6 +27,16 @@ let data = {
   adminSwitch: true,
   powerAdmin: env.get("POWER_ADMIN"),
   adminAccount: env.get("ADMIN_ACCOUNT"),
+  // 文档读取访问权限（getDocumentData 接口使用）
+  // level 取值：
+  //   "public" — 免登陆获取：任何访问者均可读取（敏感字段对非发布者自动隐藏）
+  //   "login"  — 所有人登录获取：仅登录用户可读取
+  //   "owner"  — 发布者登录获取：仅文档发布者本人可读取
+  // tables 可按集合名覆盖默认级别，例如：{ document: "owner", pptItem: "login" }
+  documentAccess: {
+    level: "public",
+    tables: {}
+  },
   apiConfig: {
     
   },

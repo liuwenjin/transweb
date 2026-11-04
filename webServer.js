@@ -8,7 +8,6 @@ require("body-parser-xml")(bodyParser);
 const findRemoveSync = require('find-remove');
 let WebTool = require("./custom/WebTool.js");
 let crypto = require('crypto');
-let murmurHash3 = require('murmurhash3js');
 let https = require('https');
 let request = require("request");
 let xml2js = require('xml2js');
@@ -24,6 +23,7 @@ let multer = require('multer');
 let Adapter = require("./custom/Adapter.js");
 let ConnectDB = require("./custom/ConnectDB.js");
 let ApiKeyTool = require("./custom/ApiKeyTool.js");
+let PaymentOrder = require("./custom/PaymentOrder.js");
 
 
 let t = path.resolve(__dirname, '.');
@@ -76,7 +76,6 @@ async function wechatRequest(url) {
     if (response.data.errcode) {
       throw new Error(`微信API错误: ${response.data.errmsg} (code: ${response.data.errcode})`);
     }
-    console.log("微信API data: ", response.data)
     return response.data;
   } catch (error) {
     console.error('微信API请求失败:', error.message);
@@ -242,33 +241,41 @@ app.use(function (req, res, next) {
 
 app.use(session({
   secret: env.get("SESSION_SECRET"), // 从环境变量读取（见 .env）
-  resave: true,
-  saveUninitialized: true,
+  resave: false,
+  saveUninitialized: false,
   cookie: {
     maxAge: 60 * 1000 * 60 * 24,
     httpOnly: true,
     sameSite: "lax",
-    secure: process.env.NODE_ENV === "production"
+    secure: "auto" // 依连接是否 HTTPS 自动决定，避免 HTTP 下 cookie 被拒
   } // 过期时间（毫秒）
 }));
 
 // 个人空间文件存放在 static/bucket/personal 下，必须先于 express.static 鉴权，
-// 否则静态中间件会绕过 BucketDealer 的 folderName 校验，造成越权下载。
+// 否则静态中间件会绕过 folderName 校验，造成越权下载。
+// 这里同时校验「已登录」与「目录归属」，杜绝跨用户读取（IDOR）。
 app.use(function (req, res, next) {
   if (req.path.indexOf("/bucket/personal/") !== 0) return next();
   checkRequestToken(req);
   const sData = (req.session && req.session.data) || {};
-  // 只要登录即可访问个人空间文件，不再限制 folderName
-  const allowed = sData.logined === true;
-  if (!allowed) {
+  if (sData.logined !== true) {
     res.status(403).json({ ret: 1, message: "请先登录后再访问个人空间。" });
+    return;
+  }
+  const owner = String(sData.folderName || "");
+  const sub = req.path.slice("/bucket/personal/".length);
+  const reqFolder = sub.split("/")[0];
+  if (!owner || reqFolder !== owner) {
+    res.status(403).json({ ret: 1, message: "无权访问该资源。" });
     return;
   }
   next();
 });
 
-// 公网部署建议开启：TRANSWEB_DISABLE_ADMIN=1 时不再提供后台/初始化页面
-if (/^(1|true|yes)$/i.test(process.env.TRANSWEB_DISABLE_ADMIN || "")) {
+// 后台/初始化页面默认关闭（fail-closed）：仅当显式设置 TRANSWEB_DISABLE_ADMIN=0/false/no 时才提供。
+// 旧行为是「默认开放、需手动关闭」，易被遗忘导致后台暴露到公网。
+const adminPagesEnabled = /^(0|false|no)$/i.test((process.env.TRANSWEB_DISABLE_ADMIN || "").trim());
+if (!adminPagesEnabled) {
   app.use(function (req, res, next) {
     if (/^\/(admin|initAdmin|initialize)\.html$/i.test(req.path)) {
       res.status(404).end();
@@ -306,6 +313,16 @@ const upload = multer({
     fileSize: 10 * 1024 * 1024 // 允许 10MB
   },
   fileFilter: (req, file, cb) => {
+    // 拦截可在服务端/客户端被执行的危险文件类型（本平台仅需文档/图片/网页/代码等）。
+    // .html/.js 等因「无代码导出网页」的核心能力而保留。
+    const ext = (path.extname(file.originalname) || "").toLowerCase();
+    const banned = [
+      ".php", ".jsp", ".asp", ".aspx", ".cgi", ".pl", ".py",
+      ".exe", ".dll", ".so", ".sh", ".bat", ".cmd", ".msi", ".scr",
+    ];
+    if (banned.indexOf(ext) !== -1) {
+      return cb(new Error("不支持的文件类型: " + ext));
+    }
     cb(null, true);
   }
 });
@@ -339,7 +356,7 @@ function checkRight(path, limit, prefix) {
   prefix = prefix || "/bucket/personal/";
   let ret = -1;
   limit = limit || [];
-  if (path.search(prefix) === 0) {
+  if (path.indexOf(prefix) === 0) {
     let t = path.replace(prefix, "");
     let arr = t.split("/");
     let fName = arr[0];
@@ -354,7 +371,7 @@ function checkRight(path, limit, prefix) {
 function checkPrefix(path, arr) {
   let ret = -1;
   for (let i = 0; i < arr.length; i++) {
-    if (path.search(arr[i]) === 0) {
+    if (path.indexOf(arr[i]) === 0) {
       ret = 0;
       break;
     }
@@ -461,6 +478,26 @@ app.use(async function (req, res, next) {
   next();
 });
 
+// CSRF 防护：对非安全方法校验同源（浏览器场景）。
+// API Key 调用（非浏览器/无 Cookie）不受同源策略约束，跳过。
+app.use(function (req, res, next) {
+  if (["POST", "PUT", "PATCH", "DELETE"].indexOf(req.method) === -1) return next();
+  const auth = String(req.headers["authorization"] || "") + String(req.headers["x-api-key"] || "");
+  if (auth.indexOf("ak_live_") !== -1) return next();
+  const origin = req.get("origin") || req.get("referer");
+  if (origin) {
+    try {
+      const o = new URL(origin);
+      if (o.host !== req.hostname) {
+        return res.status(403).json({ ret: 1, message: "跨站请求被拒绝（CSRF）" });
+      }
+    } catch (e) {
+      return res.status(403).json({ ret: 1, message: "非法的来源地址" });
+    }
+  }
+  next();
+});
+
 let dbLimit = ["document", "account", "pluginList"];
 // let dbLimit = [];
 let extraArray = ["/bucket/example/", "/bucket/sys/"]
@@ -473,9 +510,8 @@ app.use(function (req, res, next) {
   let sData = session.data || {};
   let ret = 1;
   let folderName = sData.folderName + "";
-  if (!req.query.bucketExtra) {
-    ret = checkRight(path, [folderName], "/bucket/personal/");
-  }
+  // 个人目录归属校验必须无条件执行，不得被 query 参数（如 bucketExtra）绕过
+  ret = checkRight(path, [folderName], "/bucket/personal/");
 
   let ret1 = checkRight(path, dbLimit, "/visualTool/");
   let ret3 = checkPrefix(path, extraArray);
@@ -631,6 +667,20 @@ let webService = new WebService(app, restfulConfig, {
 });
 console.log(urlPrefix + "/" + webService.id);
 
+// 启动对账：延迟数秒等待 DB 就绪后，恢复未完成的支付订单
+setTimeout(function () {
+  reconcilePayments();
+}, 5000);
+
+// 周期性重试「已支付但入账失败」的订单（自愈，无需重启）
+setInterval(function () {
+  PaymentOrder.getUncreditedOrders().then(function (orders) {
+    (orders || []).forEach(function (o) {
+      if (o.status === "paid") handleDeal(o.out_trade_no);
+    });
+  }).catch(function () {});
+}, 5 * 60 * 1000);
+
 let routes = app._router.stack;
 
 let tArr = [];
@@ -640,10 +690,6 @@ for (let i = 0; i < routes.length; i++) {
   }
 }
 
-
-
-let _time = WebTool.objectTool.getTime();
-let payLog = new ConfigObject(prefix.wxPayLog + _time + ".js", {}, 1);
 
 
 function generateOrderString(params) {
@@ -678,53 +724,127 @@ function generateXmlString(params, rootName) {
   return str;
 }
 
-function handleDeal(tradeNo) {
-  let tOrder = payLog.data[tradeNo] || {};
-  console.log("handleDeal: ", tradeNo, "tOrder.tradeFlag: ", tOrder.tradeFlag);
-  if (!tOrder.tradeFlag) {
-    tOrder.tokens = Number(tOrder.tokens) || 0;
-    tOrder.tradeFlag = true;
-    payLog.save();
-    adapter.updateCollectionInfo({
-      folderName: tOrder.folderName,
-      value: tOrder.tokens,
-      adminKey: env.opt("ADMIN_KEY")
-    }, function (tData) {
-      tOrder.tradeCompleted = true;
-      payLog.save();
-    })
+// 校验微信支付 APIv2 回调签名：剔除 sign 后按字典序拼串 + key，MD5 大写比对
+function verifyWxSign(p) {
+  if (!p || typeof p.sign !== "string") return false;
+  const sign = p.sign;
+  const copy = {};
+  for (const k in p) {
+    if (k !== "sign" && p[k] !== undefined && p[k] !== "") {
+      copy[k] = p[k];
+    }
+  }
+  const stringA = generateOrderString(copy);
+  const stringSignTemp = stringA + "&key=" + wxPayInfo.key;
+  const calc = crypto.createHash("md5").update(stringSignTemp).digest("hex").toUpperCase();
+  return calc === sign;
+}
+
+function wxPayReply(ok, msg) {
+  return "<xml><return_code><![CDATA[" + (ok ? "SUCCESS" : "FAIL") +
+    "]]></return_code><return_msg><![CDATA[" + (msg || (ok ? "OK" : "FAIL")) +
+    "]]></return_msg></xml>";
+}
+
+// 积分入账：直接操作 account 集合（$inc tokenLimit）并写 pointsBill 流水。
+// 不再经 adapter.updateCollectionInfo 做 HTTP 自调用（其相对 URL 在 Node 下无法解析），
+// 入账更可靠，且与 admin.js updateCollectionInfo 的落库语义保持一致。
+function creditTokens(order) {
+  return new Promise(function (resolve, reject) {
+    const dbCfg = getVisualToolDb();
+    ConnectDB.getClient(dbCfg).then(function (client) {
+      const db = client.db(dbCfg.database);
+      const tokens = Number(order.tokens) || 0;
+      const folderName = String(order.folderName || "");
+      db.collection("account").updateOne(
+        { folderName: { $in: [folderName, Number(folderName)] } },
+        { $inc: { tokenLimit: tokens } },
+        function (err) {
+          if (err) return reject(err);
+          db.collection("pointsBill").insertOne({
+            name: "积分充值",
+            value: tokens,
+            type: "income",
+            folderName: folderName,
+            time: new Date().getTime(),
+          }, function (err2) {
+            if (err2) return reject(err2);
+            resolve();
+          });
+        }
+      );
+    }).catch(reject);
+  });
+}
+
+// 幂等记账：认领（claimForCredit 原子翻转 tradeFlag）→ 入账 → 标记完成；失败回退供对账重试
+async function handleDeal(tradeNo) {
+  try {
+    const order = await PaymentOrder.getOrder(tradeNo);
+    if (!order || order.tradeFlag) return;
+    const claimed = await PaymentOrder.claimForCredit(tradeNo);
+    if (!claimed) return; // 已被其他通道认领
+    try {
+      await creditTokens(claimed);
+      await PaymentOrder.markCredited(tradeNo);
+    } catch (err) {
+      console.error("积分入账失败，订单将进入对账重试:", tradeNo, err && err.message);
+      await PaymentOrder.markCreditFailed(tradeNo).catch(function () {});
+    }
+  } catch (err) {
+    console.error("handleDeal 异常:", tradeNo, err && err.message);
   }
 }
 
+// 订单查询轮询（回调的兜底通道），状态全部落库，跨重启不丢
 function updateOrderStatus(tradeNo, s, n, appId) {
-  let timer = null;
   let count = 0;
-  let tOrder = payLog.data[tradeNo] || {};
-  let getOrderInfo = function (tNo, s) {
-    clearTimeout(timer);
-    count++
-    if (count < n && !tOrder.cancle) {
-      queryOrder(tNo, function (tData) {
-        console.log("tData: ", tData, tData.data);
-        tData.data = tData.data || {};
-        tOrder.tradeState = tData.data.trade_state;
-        payLog.save();
-        if (tData.code === 0 && tData.data.trade_state === 'SUCCESS') {
-          handleDeal(tData.data.out_trade_no);
-          clearTimeout(timer);
+  const poll = function () {
+    PaymentOrder.getOrder(tradeNo).then(async function (order) {
+      if (!order || order.status === "cancelled" || order.status === "credited") return;
+      if (count >= n) {
+        await PaymentOrder.markTimeout(tradeNo).catch(function () {});
+        return;
+      }
+      count++;
+      queryOrder(tradeNo, async function (tData) {
+        const data = (tData && tData.data) || {};
+        const state = data.trade_state || "";
+        if (state) {
+          await PaymentOrder.updateTradeState(tradeNo, state).catch(function () {});
+        }
+        if (tData && tData.code === 0 && state === "SUCCESS") {
+          await handleDeal(tradeNo);
+        } else if (["CLOSED", "PAYERROR", "REVOKED", "REFUND"].indexOf(state) !== -1) {
+          // 终态，无需继续轮询
         } else {
-          console.log("###waiting", tData.data.out_trade_no)
-          timer = setTimeout(() => {
-            getOrderInfo(tNo, s)
-          }, s)
+          setTimeout(poll, s);
         }
       }, appId);
-    } else {
-      clearTimeout(timer);
-      tOrder.timeout = true;
+    }).catch(function (err) {
+      console.error("updateOrderStatus 查询订单失败:", tradeNo, err && err.message);
+    });
+  };
+  poll();
+}
+
+// 启动对账：恢复尚未入账的订单（回调缺失/进程重启后的兜底）
+async function reconcilePayments() {
+  try {
+    const orders = await PaymentOrder.getUncreditedOrders();
+    for (const o of orders) {
+      if (o.status === "paid") {
+        handleDeal(o.out_trade_no);
+      } else if (o.status === "pending") {
+        const age = Date.now() - (o.createdAt || 0);
+        if (age < 15 * 60 * 1000) {
+          updateOrderStatus(o.out_trade_no, 5000, 12 * 15, o.appId);
+        }
+      }
     }
+  } catch (err) {
+    console.error("支付对账失败:", err && err.message);
   }
-  getOrderInfo(tradeNo, s);
 }
 
 
@@ -771,7 +891,6 @@ app.get('/wxGetOpenid', async (req, res) => {
 
   try {
     const response = await axios.get(url);
-    console.log("response.data: ", response.data);
     const { openid } = response.data;
     res.json({ openid });
   } catch (error) {
@@ -786,16 +905,25 @@ app.get("/cancleOrder", function (req, res) {
       code: 1,
       msg: "缺少tradeNo参数"
     }, req, res);
+    return;
   }
-  if (payLog.data[req.query.tradeNo]) {
-    payLog.data[req.query.tradeNo].cancle = true;
-    payLog.save();
-  }
-  WebTool.requestTool.sendData({
-    code: 0,
-    msg: "取消订单成功！"
-  }, req, res);
-
+  const tradeNo = req.query.tradeNo;
+  const sData = (req.session && req.session.data) || {};
+  const owner = String(sData.folderName || "");
+  PaymentOrder.getOrder(tradeNo).then(function (order) {
+    if (!order) {
+      return WebTool.requestTool.sendData({ code: 1, msg: "订单不存在" }, req, res);
+    }
+    // 只允许取消自己的订单，防止 CSRF/越权取消他人订单
+    if (owner && order.folderName !== owner) {
+      return WebTool.requestTool.sendData({ code: 1, msg: "无权取消该订单" }, req, res);
+    }
+    return PaymentOrder.markCancelled(tradeNo).then(function () {
+      WebTool.requestTool.sendData({ code: 0, msg: "取消订单成功！" }, req, res);
+    });
+  }).catch(function () {
+    WebTool.requestTool.sendData({ code: 1, msg: "取消订单失败" }, req, res);
+  });
 });
 
 let queryOrder = function (tradeNo, callback, appId) {
@@ -809,7 +937,7 @@ let queryOrder = function (tradeNo, callback, appId) {
     out_trade_no: tradeNo,
     nonce_str: ""
   }
-  params.nonce_str = Math.random().toString(36).substr(2);
+  params.nonce_str = crypto.randomBytes(16).toString('hex');
   let stringA = generateOrderString(params);
   let stringSignTemp = stringA + "&key=" + wxPayInfo.key;
   let md5 = crypto.createHash('md5');
@@ -877,18 +1005,19 @@ let queryOrder = function (tradeNo, callback, appId) {
 
 app.post("/wxOrder", function (req, res) {
   req.session.data = req.session.data || {};
-  req.session.data.lastTrade = req.session.data.tradeNo || "";
 
-  let type = req.body.trade_type || "NATIVE";
-  let price = Number(req.body.price) || 29000;
-  let product = req.body.product || "token";
-  let id = req.body.product_id || "001";
+  // P0-2：价格与积分由服务端价目表决定，客户端只允许指定 product_id
+  const productId = req.body.product_id || "";
+  const product = PaymentOrder.PRODUCTS[productId];
+  if (!product) {
+    return WebTool.requestTool.sendData({ code: 1, msg: "无效的充值套餐" }, req, res);
+  }
+  const price = product.price;   // 分
+  const tokens = product.tokens;
+  const tradeType = req.body.trade_type || "NATIVE";
 
   // 获取客户端真实 IP（自动处理 X-Forwarded-For）
   let clientIp = req.ip;
-
-  // 若 req.ip 返回的是 IPv6 格式或内网地址，可手动提取
-  // 手动方式：取 X-Forwarded-For 的第一个非内网 IP
   if (!clientIp || clientIp === '::1' || clientIp.startsWith('127.')) {
     const forwarded = req.headers['x-forwarded-for'];
     if (forwarded) {
@@ -896,32 +1025,30 @@ app.post("/wxOrder", function (req, res) {
       clientIp = ips.find(ip => !ip.startsWith('192.168.') && !ip.startsWith('10.') && !ip.startsWith('172.') && ip !== '127.0.0.1') || ips[0];
     }
   }
-
-  // 确保是 IPv4 格式
   clientIp = clientIp.replace(/^::ffff:/, '');
-  console.log("clientIp: ", clientIp);
 
-  let aType = req.body.type || "wxService";
+  const aType = req.body.type || "wxService";
+  const appid = WECHAT_CONFIG[aType].appId;
 
-  let appid = WECHAT_CONFIG[aType].appId;
-
-  console.log("current appid: ", appid);
+  // P0-5：用加密安全随机数生成 nonce 与唯一订单号
+  const nonceStr = crypto.randomBytes(16).toString('hex');
+  const outTradeNo = "tw" + Date.now().toString(36) + crypto.randomBytes(8).toString('hex');
 
   let notify = wxPayInfo.notify;
   let params = {
     appid: appid,
-    body: product,
+    body: "TransWeb 积分充值",
     device_info: "WEB",
     mch_id: wxPayInfo.mchId,
-    nonce_str: "",
+    nonce_str: nonceStr,
     notify_url: notify,
-    out_trade_no: "",
-    product_id: id,
+    out_trade_no: outTradeNo,
+    product_id: productId,
     sign_type: "MD5",
     spbill_create_ip: clientIp,
     total_fee: price,
-    trade_type: type
-  }
+    trade_type: tradeType
+  };
   if (req.body.openid) {
     params.openid = req.body.openid;
   }
@@ -929,134 +1056,114 @@ app.post("/wxOrder", function (req, res) {
     params.scene_info = JSON.stringify({ "h5_info": { "type": "Wap", "wap_url": "transweb.cn", "wap_name": "北京津度科技有限责任公司" } });
   }
 
-  params.nonce_str = Math.random().toString(36).substr(2);
-  params.out_trade_no = murmurHash3.x86.hash32(params.nonce_str + "_" + (new Date()).getTime());
-
-  console.log("params: ", params);
-
-  let md5 = crypto.createHash('md5');
-
   let stringA = generateOrderString(params);
-
   let stringSignTemp = stringA + "&key=" + wxPayInfo.key;
+  params.sign = crypto.createHash('md5').update(stringSignTemp).digest('hex').toUpperCase();
 
-  params.sign = md5.update(stringSignTemp).digest('hex').toUpperCase();
-
-
-  let jsonxml = generateXmlString(params, "xml");
-
-  let options = {
-    url: wxPayInfo.payOrderUrl,
-    timeout: 10000,
-    method: 'POST',
-    headers: {
-      'Content-Type': 'text/xml'
-    },
-    body: jsonxml
-  };
-
-  request(options, function (err, response, body) {
-    if (err) {
-      console.error(err);
-      WebTool.requestTool.sendData({
-        code: 2,
-        msg: "请求支付链接失败"
-      }, req, res);
-    } else if (response.statusCode == 200) {
-      let name = "";
-      if (req.session.data && req.session.data.folderName) {
-        name = req.session.data.folderName;
-      }
-      req.session.data.tradeNo = params.out_trade_no;
-      if (req.session.data.lastTrade && payLog.data[req.session.data.lastTrade]) {
-        payLog.data[req.session.data.lastTrade].cancle = true;
-      }
-
-      payLog.data[params.out_trade_no] = {
-        folderName: name || req.body.folderName,
-        product_id: params.product_id,
-        price: req.body.price,
-        tokens: req.body.tokens,
-        time: (new Date()).getTime()
-      }
-      payLog.save();
-
-      let xmlParser = new xml2js.Parser({
-        explicitArray: false,
-        ignoreAttrs: true
-      });
-
-      console.log('原始 XML 响应:', body);
-      xmlParser.parseString(body, function (err, data) {
-        data = data.xml || {};
-
-        console.log("data.return_code", data.return_code);
-        console.log("data.prepay_id", data.prepay_id);
-        // 构建基础返回数据
-        let responseData = {
-          code: data.return_code,
-          message: data.return_msg,
-          payUrl: data.code_url,
-          out_trade_no: params.out_trade_no,
-          prepay_id: data.prepay_id,
-          mweb_url: data.mweb_url,
-          trade_type: data.trade_type
-        };
-
-        // 如果是 JSAPI 支付，额外生成前端调起支付所需参数
-        if (type === "JSAPI" && data.prepay_id) {
-          const timeStamp = Math.floor(Date.now() / 1000).toString();
-          const nonceStr = Math.random().toString(36).substr(2, 15);
-          const packageStr = `prepay_id=${data.prepay_id}`;
-          const signType = "MD5";
-
-          // 生成 paySign（签名规则：appId、timeStamp、nonceStr、package、signType 按字典序排序后拼接，加 key 后 MD5 大写）
-          const signParams = {
-            appId: appid,
-            timeStamp,
-            nonceStr,
-            package: packageStr,
-            signType
-          };
-          const stringA = Object.keys(signParams).sort().map(k => `${k}=${signParams[k]}`).join('&');
-          const stringSignTemp = stringA + "&key=" + wxPayInfo.key; // 使用与统一下单相同的密钥
-          const paySign = crypto.createHash('md5').update(stringSignTemp).digest('hex').toUpperCase();
-
-          console.log("packageStr: ", packageStr);
-
-          Object.assign(responseData, {
-            appId: appid,
-            timeStamp,
-            nonceStr,
-            package: packageStr,
-            signType,
-            paySign
-          });
-        }
-
-        // 返回给前端
-        WebTool.requestTool.sendData(responseData, req, res);
-      })
-      //订单有效时间为15分钟
-      updateOrderStatus(params.out_trade_no, 5000, 12 * 15, appid);
-    } else {
-      WebTool.requestTool.sendData({
-        code: 1,
-        msg: "请求中"
-      }, req, res);
+  // 先落库（pending），避免下单成功但进程崩溃导致无记录
+  const folderName = (req.session.data && req.session.data.folderName) ? req.session.data.folderName : (req.body.folderName || "");
+  PaymentOrder.createOrder({
+    out_trade_no: outTradeNo,
+    folderName: folderName,
+    productId: productId,
+    appId: appid,
+    price: price,
+    tokens: tokens,
+  }).then(function () {
+    // 取消上一个未完成订单，避免重复下单堆积
+    const lastTrade = req.session.data.tradeNo;
+    if (lastTrade) {
+      PaymentOrder.markCancelled(lastTrade).catch(function () {});
     }
+    req.session.data.tradeNo = outTradeNo;
+
+    let jsonxml = generateXmlString(params, "xml");
+    let options = {
+      url: wxPayInfo.payOrderUrl,
+      timeout: 10000,
+      method: 'POST',
+      headers: { 'Content-Type': 'text/xml' },
+      body: jsonxml
+    };
+
+    request(options, function (err, response, body) {
+      if (err) {
+        console.error(err);
+        WebTool.requestTool.sendData({ code: 2, msg: "请求支付链接失败" }, req, res);
+      } else if (response.statusCode == 200) {
+        let xmlParser = new xml2js.Parser({ explicitArray: false, ignoreAttrs: true });
+        xmlParser.parseString(body, function (err, data) {
+          data = (data && data.xml) || {};
+          let responseData = {
+            code: data.return_code,
+            message: data.return_msg,
+            payUrl: data.code_url,
+            out_trade_no: outTradeNo,
+            prepay_id: data.prepay_id,
+            mweb_url: data.mweb_url,
+            trade_type: data.trade_type
+          };
+          if (tradeType === "JSAPI" && data.prepay_id) {
+            const timeStamp = Math.floor(Date.now() / 1000).toString();
+            const nonceStr2 = crypto.randomBytes(16).toString('hex');
+            const packageStr = `prepay_id=${data.prepay_id}`;
+            const signType = "MD5";
+            const signParams = { appId: appid, timeStamp, nonceStr: nonceStr2, package: packageStr, signType };
+            const stringA = Object.keys(signParams).sort().map(k => `${k}=${signParams[k]}`).join('&');
+            const paySign = crypto.createHash('md5').update(stringA + "&key=" + wxPayInfo.key).digest('hex').toUpperCase();
+            Object.assign(responseData, { appId: appid, timeStamp, nonceStr: nonceStr2, package: packageStr, signType, paySign });
+          }
+          WebTool.requestTool.sendData(responseData, req, res);
+        });
+        // 订单有效时间为15分钟，轮询作为回调兜底
+        updateOrderStatus(outTradeNo, 5000, 12 * 15, appid);
+      } else {
+        WebTool.requestTool.sendData({ code: 1, msg: "请求中" }, req, res);
+      }
+    });
+  }).catch(function (err) {
+    console.error("创建支付订单失败:", err && err.message);
+    WebTool.requestTool.sendData({ code: 2, msg: "创建订单失败" }, req, res);
   });
 });
 
-app.post("/receiveWxNotify", function (req, res) {
-  // let body = req.rawBody || req.body;
-  // console.log("receiveWxNotify_body", body, req.headers);
-
-  let feedback = generateXmlString({
-    return_code: "SUCCESS",
-    return_msg: "OK"
-  }, "xml");
-  res.end(feedback);
+app.post("/receiveWxNotify", express.raw({ type: ["text/xml", "application/xml"], limit: "1mb" }), function (req, res) {
+  const raw = req.body;
+  if (!raw || !raw.length) {
+    return res.type("application/xml").send(wxPayReply(false, "缺少报文"));
+  }
+  const parser = new xml2js.Parser({ explicitArray: false, ignoreAttrs: true, trim: true });
+  parser.parseString(raw.toString("utf8"), function (err, data) {
+    if (err || !data || !data.xml) {
+      return res.type("application/xml").send(wxPayReply(false, "解析失败"));
+    }
+    const p = data.xml;
+    // 业务未成功：回 SUCCESS 避免微信无意义重试
+    if (p.return_code !== "SUCCESS" || p.result_code !== "SUCCESS") {
+      return res.type("application/xml").send(wxPayReply(true, "OK"));
+    }
+    if (!verifyWxSign(p)) {
+      console.error("微信支付回调验签失败:", p.out_trade_no);
+      return res.type("application/xml").send(wxPayReply(false, "验签失败"));
+    }
+    const orderNo = p.out_trade_no;
+    PaymentOrder.getOrder(orderNo).then(function (order) {
+      if (!order) {
+        return res.type("application/xml").send(wxPayReply(false, "订单不存在"));
+      }
+      if (String(p.total_fee) !== String(order.price)) {
+        console.error("微信支付回调金额不一致:", orderNo, p.total_fee, order.price);
+        return res.type("application/xml").send(wxPayReply(false, "金额不一致"));
+      }
+      return handleDeal(orderNo).then(function () {
+        res.type("application/xml").send(wxPayReply(true, "OK"));
+      }).catch(function () {
+        res.type("application/xml").send(wxPayReply(false, "入账失败"));
+      });
+    }).catch(function () {
+      res.type("application/xml").send(wxPayReply(false, "服务异常"));
+    });
+  });
 });
 
 app.get("/checkPay", function (req, res) {
@@ -1066,10 +1173,13 @@ app.get("/checkPay", function (req, res) {
       ret: 3,
       data: "获取支付情况失败，缺少订单编号"
     }, req, res);
-    return false;
+    return;
   }
-  let tOrder = payLog.data[out_trade_no] || {};
-  WebTool.requestTool.sendData(tOrder, req, res);
+  PaymentOrder.getOrder(out_trade_no).then(function (order) {
+    WebTool.requestTool.sendData(order || {}, req, res);
+  }).catch(function () {
+    WebTool.requestTool.sendData({}, req, res);
+  });
 });
 
 /*

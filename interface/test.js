@@ -105,6 +105,17 @@ function escapeRegExp(str) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
+// 文档访问权限级别（与 common.js 中 documentAccess 配置对应）
+const DOCUMENT_ACCESS_LEVELS = ["public", "login", "owner"];
+
+// 解析集合的文档访问级别：按集合配置优先，否则回落到全局默认（仅读服务端配置，不接受客户端覆盖）
+function resolveDocumentAccess(tableName) {
+  const access = commonData.documentAccess || {};
+  const level =
+    (access.tables && access.tables[tableName]) || access.level || "public";
+  return DOCUMENT_ACCESS_LEVELS.indexOf(level) !== -1 ? level : "public";
+}
+
 let transporter = nodemailer.createTransport({
   host: "smtp.163.com",
   port: 465,         // 163 建议使用 465 端口
@@ -2505,8 +2516,32 @@ let data = {
         );
       }
 
-      const condition = { [key]: id };
       const userData = req.session?.data || {};
+
+      // ---------- 访问权限控制（由 common.js 的 documentAccess 配置驱动） ----------
+      const accessLevel = resolveDocumentAccess(tName);
+      if (accessLevel !== "public" && !userData.folderName) {
+        db.close();
+        return WebTool.requestTool.sendData(
+          {
+            ret: 1,
+            message:
+              accessLevel === "owner"
+                ? "获取失败，需要发布者登录。"
+                : "获取失败，需要登录。",
+          },
+          req,
+          res
+        );
+      }
+
+      const condition = { [key]: id };
+
+      // 发布者登录获取：仅允许读取本人发布的文档（folderName 兼容数字/字符串两种存储）
+      if (accessLevel === "owner") {
+        const fn = userData.folderName;
+        condition.folderName = { $in: [String(fn), Number(fn)] };
+      }
 
       let projection = {
         name: 1,

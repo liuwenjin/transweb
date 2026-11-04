@@ -59,7 +59,7 @@ async function getOrCreateClient(d) {
     url += (url.indexOf("?") === -1 ? "?" : "&") + "authSource=" + encodeURIComponent(d.authSource);
   }
 
-  console.log("###mongodb url: ", url);
+  console.log("###mongodb url: ", url.replace(/(mongodb:\/\/)([^:@/]+):[^@/]*@/, "$1$2:***@"));
 
   // 创建新的 Client 实例
   const client = new MongoClient(url, {

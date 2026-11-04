@@ -105,7 +105,6 @@ let AxiosRequest = function (config) {
       }
     }
 
-    console.log("request header:", options);
     service1[method](url, query, options).then(function (data) {
       if (data.data && typeof data.data.status === "number" && data.data.status < 0) {
         console.warn("adapter response status < 0:", data.data.status);

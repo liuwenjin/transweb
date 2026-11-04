@@ -2,6 +2,30 @@ var WebTool = require("./WebTool.js");
 var path = require('path');
 const fs = require('fs');
 
+// 桶文件系统根目录：所有桶操作都不得越过该目录
+const BUCKET_ROOT = path.resolve(__dirname, "../static/bucket");
+
+// 将 req.path 解码并解析为位于 BUCKET_ROOT 之内的绝对路径；越界/非法返回 null。
+// 先 decode 再 resolve，再用 path.relative 校验结果仍在根目录内，杜绝 %2e%2e 逃逸。
+function resolveBucketPath(reqPath) {
+  if (typeof reqPath !== "string") return null;
+  let decoded;
+  try {
+    decoded = decodeURIComponent(reqPath);
+  } catch (e) {
+    return null;
+  }
+  const marker = "/bucket/";
+  if (decoded.indexOf(marker) !== 0) return null;
+  const sub = decoded.slice(marker.length);
+  const resolved = path.resolve(BUCKET_ROOT, sub);
+  const rel = path.relative(BUCKET_ROOT, resolved);
+  if (rel === ".." || rel.startsWith(".." + path.sep) || path.isAbsolute(rel)) {
+    return null;
+  }
+  return resolved;
+}
+
 function checkPath(tPath, flag) {
   var ret = null;
   if (tPath && typeof (tPath) === "string") {
@@ -26,50 +50,25 @@ function checkPath(tPath, flag) {
 }
 
 function renameFileName(tPath, name) {
-  if (!name) {
-    return false;
+  if (!name || typeof name !== "string") {
+    return 3;
   }
-  var ret = 1;
-  var mPath = path.resolve(__dirname, "../static/" + "bucket");
-  var mArr = mPath.split("/");
-  var t = fs.statSync(tPath);
-  if (fs.existsSync(tPath) && t.isFile()) {
-    var arr = tPath.split("/");
-    arr.pop();
-    var tFolder = JSON.parse(JSON.stringify(arr));
-    var tArr = name.split("/");
-    if (tArr.length === 1) {
-      arr.push(name);
-    } else {
-      var mArr = [];
-      for (var i = 0; i < tArr.length; i++) {
-        if (tArr[i] === "..") {
-          arr.pop();
-        } else if (tArr[i] !== ".") {
-          mArr.push(tArr[i]);
-        } else {
-
-        }
-      }
-      tFolder = JSON.parse(JSON.stringify(arr));
-      if (mArr.length === 0) {
-        return false;
-      }
-      for (var j = 0; j < mArr.length; j++) {
-        if (j === mArr.length - 2) {
-          tFolder = JSON.parse(JSON.stringify(arr));
-        }
-        arr.push(mArr[j]);
-      }
-    }
-    if (fs.existsSync(tFolder.join("/")) && tFolder.length < mArr.length) {
-      fs.renameSync(tPath, arr.join("/"));
-      ret = 0;
-    } else {
-      ret = 3;
-    }
+  if (!fs.existsSync(tPath)) return 3;
+  let t;
+  try {
+    t = fs.statSync(tPath);
+  } catch (e) {
+    return 3;
   }
-  return ret;
+  if (!t.isFile()) return 3;
+  // 目标路径必须仍位于 BUCKET_ROOT 之内
+  const target = path.resolve(path.dirname(tPath), name);
+  const rel = path.relative(BUCKET_ROOT, target);
+  if (rel === ".." || rel.startsWith(".." + path.sep) || path.isAbsolute(rel)) {
+    return 3;
+  }
+  fs.renameSync(tPath, target);
+  return 0;
 }
 
 function removeByPath(tPath, flag) {
@@ -123,9 +122,14 @@ function getDirFilePathArr(dir) {
 
 var BucketCRUD = {
   get: function (req, res) {
-    var tPath = req.path;
-    tPath = path.resolve(__dirname, "../static/" + tPath);
-    tPath = decodeURIComponent(tPath);
+    var tPath = resolveBucketPath(req.path);
+    if (!tPath) {
+      return WebTool.requestTool.sendData({
+        ret: 1,
+        meta: { code: 403, message: "Bucket操作:get。非法路径" },
+        path: req.path
+      }, req, res);
+    }
     var tArr = getDirFilePathArr(tPath);
     if(tArr) {
       WebTool.requestTool.sendData({
@@ -150,11 +154,11 @@ var BucketCRUD = {
     }
   },
   put: function (req, res) {
-    console.log("###put file:", req.path, req.file);
     let file = req.file;
-    var tPath = req.path;
-    tPath = path.resolve(__dirname, "../static/" + tPath);
-    tPath = decodeURIComponent(tPath);
+    var tPath = resolveBucketPath(req.path);
+    if (!tPath) {
+      return WebTool.requestTool.sendData({ code: 1, message: "Bucket操作失败。非法路径" }, req, res);
+    }
     var t = (req.path[req.path.length - 1] === "/");
     var info = checkPath(tPath, t);
     var ret = {
@@ -189,11 +193,10 @@ var BucketCRUD = {
     }
   },
   delete: function (req, res) {
-    var tPath = req.path;
-    tPath = path.resolve(__dirname, "../static/" + tPath);
-    console.log("delete", tPath);
-
-    tPath = decodeURIComponent(tPath);
+    var tPath = resolveBucketPath(req.path);
+    if (!tPath) {
+      return WebTool.requestTool.sendData({ code: 2, message: "删除操作失败。非法路径" }, req, res);
+    }
     var ret = removeByPath(tPath, req.query.flag);
     var msg = "删除操作成功";
     if (ret !== 0) {
@@ -206,10 +209,11 @@ var BucketCRUD = {
     }, req, res);
   },
   post: function (req, res) {
-    var tPath = req.path;
+    var tPath = resolveBucketPath(req.path);
+    if (!tPath) {
+      return WebTool.requestTool.sendData({ code: 5, message: "重命名操作失败。非法路径" }, req, res);
+    }
     var name = req.body.name;
-    tPath = path.resolve(__dirname, "../static/" + tPath);
-    tPath = decodeURIComponent(tPath);
     var ret = 5;
     if (fs.existsSync(tPath)) {
       ret = renameFileName(tPath, name);

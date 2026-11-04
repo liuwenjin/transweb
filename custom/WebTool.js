@@ -7,22 +7,24 @@ let ObjectId = require("mongodb").ObjectId;
 
 let objectTool = {};
 objectTool.objectToString = function (obj) {
-  // 转义字符串，防止单引号/反斜杠/换行破坏生成的 JS 字面量
+  // 转义字符串，防止单引号/反斜杠/换行/U+2028/U+2029 破坏生成的 JS 字面量
   function escStr(s) {
     return String(s)
       .replace(/\\/g, "\\\\")
       .replace(/'/g, "\\'")
-      .replace(/\n/g, "\\n")
       .replace(/\r/g, "\\r")
-      .replace(/\t/g, "\\t");
+      .replace(/\n/g, "\\n")
+      .replace(/\t/g, "\\t")
+      .replace(/\u2028/g, "\\u2028")
+      .replace(/\u2029/g, "\\u2029");
   }
   if (obj && obj.constructor.name === "Object") {
     var str = "{";
     for (var k in obj) {
       if (typeof obj[k] === "string") {
-        str += k + ":'" + escStr(obj[k]) + "',";
+        str += "'" + escStr(k) + "':'" + escStr(obj[k]) + "',";
       } else {
-        str += k + ":" + this.objectToString(obj[k]) + ",";
+        str += "'" + escStr(k) + "':" + this.objectToString(obj[k]) + ",";
       }
     }
     if (str.length === 1) {

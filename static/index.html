@@ -3732,23 +3732,25 @@
 
             <div class="term">
               <div class="term-line"><span class="term-line__num"></span><code class="term-line__code">transweb config list|get|set|unset &lt;common|app&gt; &lt;path&gt;</code></div>
-              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"># common.js / appConfig.js（点路径）</code></div>
+              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"># 读写 common.js / appConfig.js 配置（点分路径定位）</code></div>
+              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code">transweb access list|set|skill|agent [public|login|owner]</code></div>
+              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"># 文档/技能/Agent 读取权限：免登陆 / 所有人登录 / 发布者登录</code></div>
               <div class="term-line"><span class="term-line__num"></span><code class="term-line__code">transweb env list|get|set|unset [KEY]</code></div>
-              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"># .env 环境变量（密钥打码）</code></div>
+              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"># 管理 .env 环境变量（密钥以掩码显示）</code></div>
               <div class="term-line"><span class="term-line__num"></span><code class="term-line__code">transweb wxpay list|check|set|unset</code></div>
-              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"># 微信支付全参数</code></div>
+              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"># 查看 / 设置微信支付全部参数</code></div>
               <div class="term-line"><span class="term-line__num"></span><code class="term-line__code">transweb admin status|hide|show</code></div>
-              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"># 后台页移出 / 恢复站点目录</code></div>
+              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"># 查看后台状态；隐藏 / 恢复后台入口</code></div>
               <div class="term-line"><span class="term-line__num"></span><code class="term-line__code">transweb default model|image|image-input</code></div>
-              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"># 三类默认模型</code></div>
+              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"># 查看 / 设置文本、生图、图生文默认模型</code></div>
               <div class="term-line"><span class="term-line__num"></span><code class="term-line__code">transweb model list|add|update|remove</code></div>
-              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"># 模型费率（支持 --from）</code></div>
+              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"># 管理模型与费率（支持 --from）</code></div>
               <div class="term-line"><span class="term-line__num"></span><code class="term-line__code">transweb api list|add|update|remove</code></div>
-              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"># API 网关与 Key</code></div>
+              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"># 管理 API 网关与 Key</code></div>
               <div class="term-line"><span class="term-line__num"></span><code class="term-line__code">transweb mongodb status|install</code></div>
-              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"># 查看 / 安装 MongoDB</code></div>
+              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"># 查看 MongoDB 状态 / 一键安装</code></div>
               <div class="term-line"><span class="term-line__num"></span><code class="term-line__code">transweb uninstall [--purge]</code></div>
-              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"># 卸载（--purge 一并清除数据）</code></div>
+              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"># 卸载服务（--purge 连同数据一并清除）</code></div>
             </div>
 
           </div>
