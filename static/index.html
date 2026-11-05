@@ -192,6 +192,14 @@
               "@type": "Answer",
               "text": "可以。把教材、手册、研报等文档上传后，即可生成专属 AI 助手，用于知识库问答、AI 客服、AI 助教等场景，并可分享给他人使用。"
             }
+          },
+          {
+            "@type": "Question",
+            "name": "数字员工或 AI 技能，怎么在不同的 TransWeb 服务之间移植？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "在源服务打开 Agent / 技能编辑页，从操作菜单「下载」得到含 appCode.vue、appPrompt.md、manifest.json 的压缩包；在目标服务用「克隆 → 本地文件克隆」导入 appCode.vue（可选 appPrompt.md），或用「在线 URL 克隆」填 manifest.json 地址。跨账号需由原账号导出后发送，目标服务需先配置 API 与模型。资料、会话、积分和已发布链接不会随包迁移。"
+            }
           }
         ]
       },
@@ -621,9 +629,8 @@
     }
 
     .hero-subtitle {
-      /* 580px 是经过测试的断行宽度：
-         第二行止于「……按需绑定，」，第三行以「让它」起句，
-         避免虚词「让」孤零零地留在行尾。 */
+      /* 580px：让第二句在「AI Agent；」之后换行，
+         后半句「按需绑定……」正好落成一行，避免行尾孤字 */
       margin: 24px auto 54px;
 
       max-width: 580px;
@@ -635,6 +642,29 @@
 
       text-align: center;
       text-wrap: pretty;
+    }
+
+    /* 副标题末句：同一段话里的轻声补充，不与主说明争夺注意力 */
+    .hero-subtitle-note {
+      display: block;
+
+      margin-top: 14px;
+
+      color: #716e67;
+      font-size: 13.5px;
+      line-height: 1.8;
+      letter-spacing: .05em;
+    }
+
+    .hero-subtitle-note::before {
+      content: "";
+      display: block;
+
+      width: 24px;
+      height: 1px;
+      margin: 0 auto 12px;
+
+      background: var(--line);
     }
 
     .social-proof {
@@ -3389,6 +3419,12 @@
         font-size: 14px;
       }
 
+      .hero-subtitle-note {
+        margin-top: 12px;
+        font-size: 13px;
+        line-height: 1.8;
+      }
+
       /* 主交互卡片：移动端固定首屏高度，内部组件超出时在卡片内滚动，彻底避免与下一区块重叠 */
       .generator {
         height: 530px;
@@ -3602,7 +3638,13 @@
       }
 
       .hero-title {
-        font-size: 36px;
+        font-size: clamp(28px, 8.6vw, 34px);
+      }
+
+      /* 中文副标题在此宽度下收窄一点，
+         「……并一键交付 / 他人使用。」才不会把「他人」拆开 */
+      .hero-subtitle:lang(zh) {
+        padding: 0 14px;
       }
 
       .section-title {
@@ -3845,13 +3887,15 @@
       <section class="hero">
 
         <h1 class="hero-title">
-          <span data-i18n="hero.title.1">把已有资料，约 3 分钟</span>
-          <span data-i18n="hero.title.2">生成你的专属 AI Agent、数字员工与 AI 客服</span>
+          <span data-i18n="hero.title.1">约 3 分钟，用已有资料</span>
+          <span data-i18n="hero.title.2">生成你的专属 AI Agent</span>
         </h1>
 
         <p class="hero-subtitle">
-          <span data-i18n="hero.subtitle.1">无需从零准备内容，也不用写 Prompt。</span><br>
-          <span data-i18n="hero.subtitle.2">上传教材、手册或研报，生成可对话的 AI Agent；技能与工作流可按需绑定，让它按固定流程完成任务，并一键交给别人使用。</span>
+          <span data-i18n="hero.subtitle.1">不用从零准备内容，也无需写 Prompt。</span><br>
+          <span data-i18n="hero.subtitle.2">上传教材、手册或研报，即可生成可对话的 AI Agent；</span><br>
+          <span data-i18n="hero.subtitle.3">按需绑定技能与工作流，让它按固定流程完成任务，并一键交付他人使用。</span>
+          <span class="hero-subtitle-note" data-i18n="hero.subtitle.4">数字员工与 AI 客服同样适用。</span>
         </p>
 
 
@@ -4617,7 +4661,7 @@ transweb wxpay check</code></pre>
           </h2>
 
           <p class="section-description" data-i18n="faq.desc">
-            关于怎么生成、怎么交付他人使用、资料安全与计费，这里回答最常被问到的几个问题。
+            关于怎么生成、怎么交付他人使用、跨服务移植、资料安全与计费，这里回答最常被问到的几个问题。
           </p>
 
         </div>
@@ -4862,6 +4906,74 @@ transweb wxpay check</code></pre>
 
                 <p data-i18n="faq.a7">
                   支持。你可以补充、替换或删除原始资料后重新生成；无需从零创建。
+                </p>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <div class="faq-item">
+
+            <button class="faq-question" id="faq-q8" type="button" aria-expanded="false" aria-controls="faq-a8">
+
+              <span class="faq-index">
+                08
+              </span>
+
+              <span class="faq-text" data-i18n="faq.q8">
+                数字员工或 AI 技能，怎么在不同的 TransWeb 服务之间移植？
+              </span>
+
+              <span class="faq-toggle" aria-hidden="true">
+                <span></span>
+                <span></span>
+              </span>
+
+            </button>
+
+            <div class="faq-answer" id="faq-a8" role="region" aria-labelledby="faq-q8">
+
+              <div class="faq-answer-inner">
+
+                <p data-i18n="faq.a8">
+                  可以迁移「定义」，但不能直接搬账号数据。源服务登录后，在 Agent / 技能编辑页的操作菜单选「下载」，会得到含 appCode.vue、appPrompt.md、manifest.json 的压缩包。到目标服务登录，在 AI Skill 生成器页输入框右下角点「克隆」，选「克隆聊天 Agent」或「克隆 AI 技能」→「本地文件克隆」，选入 appCode.vue（appPrompt.md 可选）即可；源服务可公开访问时，也可用「在线 URL 克隆」填 manifest.json 地址。跨账号须由原账号导出后发送；目标服务需先配置可用的 API 与模型。
+                </p>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <div class="faq-item">
+
+            <button class="faq-question" id="faq-q9" type="button" aria-expanded="false" aria-controls="faq-a9">
+
+              <span class="faq-index">
+                09
+              </span>
+
+              <span class="faq-text" data-i18n="faq.q9">
+                移植后，原来的资料、会话、积分和分享链接会一起过去吗？
+              </span>
+
+              <span class="faq-toggle" aria-hidden="true">
+                <span></span>
+                <span></span>
+              </span>
+
+            </button>
+
+            <div class="faq-answer" id="faq-a9" role="region" aria-labelledby="faq-q9">
+
+              <div class="faq-answer-inner">
+
+                <p data-i18n="faq.a9">
+                  不会。随包迁移的只有 Agent / 技能的定义文件（界面代码、Prompt 与 manifest）；原始资料、知识库解析结果、会话记录、积分、账号和已发布链接都留在原服务。到目标服务后，需要重新上传资料、构建知识库，按目标服务的模型重新选择并发布，才能得到新的分享链接与二维码。同一服务内换账号也一样，双方的数据与积分各自独立。
                 </p>
 
               </div>
@@ -5303,10 +5415,12 @@ transweb wxpay check</code></pre>
           "nav.skills.generator": "AI Skill 生成器",
           "nav.skills.workflow": "工作流",
           "nav.skills.hub": "Skill 广场",
-          "hero.title.1": "把已有资料，约 3 分钟",
-          "hero.title.2": "生成你的专属 AI Agent、数字员工与 AI 客服",
-          "hero.subtitle.1": "无需从零准备内容，也不用写 Prompt。",
-          "hero.subtitle.2": "上传教材、手册或研报，生成可对话的 AI Agent；技能与工作流可按需绑定，让它按固定流程完成任务，并一键交给别人使用。",
+          "hero.title.1": "约 3 分钟，用已有资料",
+          "hero.title.2": "生成你的专属 AI Agent",
+          "hero.subtitle.1": "不用从零准备内容，也无需写 Prompt。",
+          "hero.subtitle.2": "上传教材、手册或研报，即可生成可对话的 AI Agent；",
+          "hero.subtitle.3": "按需绑定技能与工作流，让它按固定流程完成任务，并一键交付他人使用。",
+          "hero.subtitle.4": "数字员工与 AI 客服同样适用。",
           "social.proof": "为教育者、研究员与企业团队而设计",
           "process.title": "极简三步，让静态资料变成数字员工。",
           "process.desc": "不用写 Prompt，也不用先搭工作流。导入、理解、上岗，三步让资料持续服务。",
@@ -5377,7 +5491,7 @@ transweb wxpay check</code></pre>
           "deploy.activate.sms.desc": "用户登录 / 注册的短信验证码服务 API Key：SEND_MESSAGE_API_KEY（螺丝帽短信）。用 transweb env set SEND_MESSAGE_API_KEY <key> 配置；未配置时手机验证码登录 / 注册不可用。",
           "deploy.activate.hint": "展开各配置项查看命令；完成后用 transweb api list、transweb model list、transweb default list 检查 AI 配置，微信支付用 transweb wxpay check，短信 Key 用 transweb env get SEND_MESSAGE_API_KEY 检查。API / model 同名配置已存在时加 --force。transweb root accessKey 与 transweb env get ADMIN_ACCOUNT / POWER_ADMIN 读取同一份 .env；修改后需 transweb restart 生效。",
           "faq.title": "常见疑问",
-          "faq.desc": "关于怎么生成、怎么交付他人使用、资料安全与计费，这里回答最常被问到的几个问题。",
+          "faq.desc": "关于怎么生成、怎么交付他人使用、跨服务移植、资料安全与计费，这里回答最常被问到的几个问题。",
           "faq.q1": "生成一个数字员工需要多久？",
           "faq.a1": "从放入资料到可以提问，通常不超过 3 分钟：解析资料、构建知识结构、生成数字员工依次完成，全程不需要手动配置 Prompt 或工作流。资料篇幅越长，解析时间会略有增加，页面会实时显示当前进度。",
           "faq.q2": "支持哪些资料格式？篇幅有上限吗？",
@@ -5395,6 +5509,10 @@ transweb wxpay check</code></pre>
           "faq.a6": "支持。一键生成专属链接或嵌入网页，就能把数字员工交付给学生、同事或客户使用，对方用自己的账号积分消费，你无需重复答疑。",
           "faq.q7": "如果不满意生成的数字员工，支持重新调整吗？",
           "faq.a7": "支持。你可以补充、替换或删除原始资料后重新生成；无需从零创建。",
+          "faq.q8": "数字员工或 AI 技能，怎么在不同的 TransWeb 服务之间移植？",
+          "faq.a8": "可以迁移「定义」，但不能直接搬账号数据。源服务登录后，在 Agent / 技能编辑页的操作菜单选「下载」，会得到含 appCode.vue、appPrompt.md、manifest.json 的压缩包。到目标服务登录，在 AI Skill 生成器页输入框右下角点「克隆」，选「克隆聊天 Agent」或「克隆 AI 技能」→「本地文件克隆」，选入 appCode.vue（appPrompt.md 可选）即可；源服务可公开访问时，也可用「在线 URL 克隆」填 manifest.json 地址。跨账号须由原账号导出后发送；目标服务需先配置可用的 API 与模型。",
+          "faq.q9": "移植后，原来的资料、会话、积分和分享链接会一起过去吗？",
+          "faq.a9": "不会。随包迁移的只有 Agent / 技能的定义文件（界面代码、Prompt 与 manifest）；原始资料、知识库解析结果、会话记录、积分、账号和已发布链接都留在原服务。到目标服务后，需要重新上传资料、构建知识库，按目标服务的模型重新选择并发布，才能得到新的分享链接与二维码。同一服务内换账号也一样，双方的数据与积分各自独立。",
           "legal.privacy": "隐私政策",
           "legal.privacy.title": "隐私政策",
           "legal.privacy.date": "最近更新：2026 年 11 月",
@@ -5583,7 +5701,7 @@ transweb wxpay check</code></pre>
 
       var LS_KEY = "appLang";
       var EN_URL = "./i18n/en.json";
-      var EN_CACHE_KEY = "i18n_en_v18";
+      var EN_CACHE_KEY = "i18n_en_v21";
 
       var lang = "zh";
       try {
