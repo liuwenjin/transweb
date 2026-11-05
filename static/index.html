@@ -519,14 +519,19 @@
       background: var(--card);
     }
 
+    /* 固定宽度：保证登录按钮 / 用户入口的宽度稳定，
+       不让长昵称把语言切换与菜单按钮挤开。
+       内部内容各自限制在槽位内，长文本以省略号收束。 */
     #loginMenuItem {
       flex: 0 0 140px;
       width: 140px;
       min-width: 140px;
+      max-width: 140px;
       white-space: nowrap;
 
       display: flex;
       align-items: center;
+      justify-content: flex-end;
       gap: 7px;
       height: 32px;
       border: 0;
@@ -534,6 +539,26 @@
 
       color: var(--ink);
       font-size: 13px;
+    }
+
+    /* 登录占位没有固有宽度，加载圈会溢出固定槽位，直接隐藏 */
+    #loginMenuItem .CardItem_stateTips,
+    #loginMenuItem .spinner-border {
+      display: none;
+    }
+
+    /* 内容不出槽位：按钮、用户入口限制为槽位宽，长文本省略 */
+    #loginMenuItem .loginContentArea {
+      width: 100%;
+      min-width: 0;
+      justify-content: flex-end;
+    }
+
+    #loginMenuItem .login-main-btn,
+    #loginMenuItem .user-trigger-btn {
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .header-right {
@@ -3372,6 +3397,8 @@
 
       .menu-toggle {
         display: flex;
+        /* 不参与收缩：空间紧张时优先压缩登录区，避免汉堡按钮被挤向语言切换 */
+        flex: 0 0 40px;
       }
 
       .menu-toggle.open span:nth-child(1) {
@@ -3384,13 +3411,6 @@
 
       .menu-toggle.open span:nth-child(3) {
         transform: translateY(-6.5px) rotate(-45deg);
-      }
-
-      #loginMenuItem {
-        flex: 0 0 auto;
-        width: auto;
-        min-width: 0;
-        white-space: nowrap;
       }
 
       .header-right {
@@ -3702,6 +3722,7 @@
       }
 
       .menu-toggle {
+        flex-basis: 36px;
         width: 36px;
         height: 36px;
       }
@@ -5417,10 +5438,10 @@ transweb wxpay check</code></pre>
           "nav.skills.hub": "Skill 广场",
           "hero.title.1": "约 3 分钟，用已有资料",
           "hero.title.2": "生成你的专属 AI 数字员工",
-          "hero.subtitle.1": "不用从零准备内容，也无需写 Prompt。",
-          "hero.subtitle.2": "上传教材、手册或研报，即可生成可对话的 AI Agent；",
-          "hero.subtitle.3": "按需绑定技能与工作流，让它按固定流程完成任务，并一键交付他人使用。",
-          "hero.subtitle.4": "数字员工与 AI 客服同样适用。",
+          "hero.subtitle.1": "无需准备素材，不必撰写 Prompt。",
+          "hero.subtitle.2": "上传教材、手册或研报，一键生成专属 AI Agent；",
+          "hero.subtitle.3": "灵活绑定技能与工作流，按标准流程高效执行任务，轻松分享交付。",
+          "hero.subtitle.4": "完美适配数字员工与 AI 客服场景。",
           "social.proof": "为教育者、研究员与企业团队而设计",
           "process.title": "极简三步，让静态资料变成数字员工。",
           "process.desc": "不用写 Prompt，也不用先搭工作流。导入、理解、上岗，三步让资料持续服务。",
