@@ -180,9 +180,9 @@ TransWeb 是一个 **B/S 架构、无代码生成 AI Agent** 的在线平台：�
 
 | 理由 | 说明 |
 | --- | --- |
-| **快** | 传统方式 3–5 天起步；这里 3 分钟出结果 |
+| **快** | 传统方式 3–5 天起步；这里约 3 分钟出结果 |
 | **省** | 按量计费、闲置零成本，没有看不懂的套餐和隐藏订阅 |
-| **稳** | 回答有据可查（带原文引用），资料加密隔离、不用于训练模型 |
+| **稳** | 回答基于资料内容（可结合原文），资料按账号隔离，不用于公共模型训练 |
 
 **产品特质：**
 
@@ -211,7 +211,7 @@ TransWeb 是一个 **B/S 架构、无代码生成 AI Agent** 的在线平台：�
 
 - **不替代专业判断**：AI 输出不构成法律、医疗、金融等专业意见。
 - **不保证 100% 准确**：结果由模型自动产出，重要结论请对照原始资料核对。
-- **不用于训练模型**：你的资料不会被用于模型训练，也不会被其他用户检索到。
+- **不用于训练模型**：你的资料不会被用于公共模型训练，也不会被其他用户检索到。
 
 ---
 
@@ -274,17 +274,154 @@ transweb status      # 查看地址、局域网访问、初始化状态
 
 ```bash
 transweb config list|get|set|unset <common|app> <path>   # common.js / appConfig.js（点路径）
-transweb env list|get|set|unset [KEY]                    # .env 环境变量（密钥打码）
+transweb env list|get|set|unset [KEY]                    # .env 环境变量（密钥默认打码，--show 明文）
 transweb wxpay list|check|set|unset                      # 微信支付全参数（AppID/商户号/密钥/回调/接口地址）
+transweb access list|set|document|set-table              # 文档读取权限（public / login / owner）
+transweb cors on|off|status                              # 跨站请求许可（默认开启）
 transweb admin status|hide|show                          # 后台页移出/恢复站点目录
 transweb default model|image|image-input                 # 三类默认模型
 transweb model list|add|update|remove                    # 模型费率（支持 --from）
-transweb api list|add|update|remove                      # API 网关与 Key
+transweb api list|add|update|remove                      # API 网关与 Key（--key-stdin 可避免密钥进历史）
+transweb logs [web|mongo] [--lines 50]                   # 查看服务 / MongoDB 日志
+transweb root accessKey                                  # root 管理账号 + 万能验证
+transweb sync static|bucket|code|all                     # 同步源码到已安装服务（需二次确认）
 transweb mongodb status|install
 transweb uninstall [--purge]
 ```
 
 > `transweb model add ... -from 国内` 与 `--from 国内` 等价（单横线长参数会自动纠正）。
+> `transweb root accessKey --json` 可用于脚本读取；等价于分别执行 `transweb env get ADMIN_ACCOUNT` 与 `transweb env get POWER_ADMIN`。
+
+### 激活功能模块（至少 1 个 API + 1 个模型）
+
+服务启动后还不会自动具备 AI 能力；必须至少配置 **1 个 apiName** 和 **1 个 model**，Agent / 技能 / 工作流才能调用模型。
+
+> 配置优先级：**root 管理账号（最高）** → 算力供应方 → model → 微信支付 / 登录验证码。
+
+#### 1. 配置算力供应方（apiName）：平台 URL + apiKey
+
+一个算力供应方对应一个 apiName；至少配置 1 个。
+
+```bash
+transweb api add dmxapi \
+  --url https://api.example.com/v1/chat/completions \
+  --key sk-xxxx
+```
+
+- `apiName` 是自定义接入名（示例用 `dmxapi`，也可以叫 `深度求索`），后续模型通过 `--api-name` 引用；
+- `--url` 填平台的 **Chat Completions** 接口地址（不是平台首页）；
+- `--key` 写入 `.env` 的 `API_KEY_` + apiName（英文名转大写，如 `dmxapi` → `API_KEY_DMXAPI`；中文名会生成哈希变量名），`common.js` 只保留 `env.opt(...)` 引用，不落明文；
+- 不想让 Key 进入 shell 历史时，可省略 `--key` 按提示输入（不回显），或用 `printf '%s' "$KEY" | transweb api add ... --key-stdin`。
+
+配置后的结构：
+
+```js
+// common.js
+apiConfig: {
+  dmxapi: {
+    url: "https://api.example.com/v1/chat/completions",
+    authorization: "Bearer " + env.opt("API_KEY_DMXAPI")
+  }
+}
+```
+
+#### 2. 配置 model：apiName + 费率 + 来源
+
+```bash
+transweb model add claude-fable-5 \
+  --api-name dmxapi \
+  --input 0.05 \
+  --output 0.25 \
+  --context 200000 \
+  --from 国外
+```
+
+| 参数 | 必填 | 说明 |
+| --- | --- | --- |
+| `--api-name` | 是 | 引用第 1 步配置的 apiName |
+| `--input` / `--output` | 是 | **费率**：积分与 token 的比例，表示 **1 个 AI token 消耗多少积分**；输入、输出分别计费，只有一个统一费率时两处填相同值 |
+| `--context` | 是 | 模型上下文窗口（token），如 `128000`、`200000` |
+| `--from` | 否 | 模型来源：`国内` 或 `国外`，默认 `国外`；前端按此分组展示 |
+
+例如 `--input 0.05 --output 0.25` 表示：1 个输入 token 计 0.05 积分，1 个输出 token 计 0.25 积分。
+前端展示时会换算成「每百万 token 积分」，但 `tokenRateMap` 中保存的始终是 **每 1 token** 的积分数。
+
+配置后的结构：
+
+```js
+// common.js
+tokenRateMap: {
+  "claude-fable-5": {
+    apiName: "dmxapi",
+    input: 0.05,       // 1 个输入 token 的积分
+    output: 0.25,      // 1 个输出 token 的积分
+    context: 200000,
+    from: "国外"       // 国内 / 国外
+  }
+}
+```
+
+#### 3. 设为默认模型（否则前端仍使用内置默认值）
+
+```bash
+transweb default model --model claude-fable-5
+# 或显式指定 apiName
+transweb default model --api-name dmxapi --model claude-fable-5
+```
+
+图片生成 / 图片输入模型分别用 `transweb default image` / `transweb default image-input` 配置。
+
+> 以上命令默认会在 Web 服务运行时自动重启使配置生效；加 `--no-restart` 只改配置。
+> 检查结果：`transweb api list`、`transweb model list`、`transweb default list`。
+> 多个 API / 模型可重复执行 `transweb api add` / `transweb model add`，同名时加 `--force` 覆盖。
+
+#### 4. 获取 root 管理账号与万能验证
+
+管理端首次登录可使用 **root 管理账号 + 万能验证**，无需短信验证码：
+
+```bash
+transweb root accessKey            # 显示 root 管理账号与登录所需的万能验证
+transweb root accessKey --json     # 输出 JSON，便于脚本读取
+```
+
+- `root 管理账号`：对应 `.env` 的 `ADMIN_ACCOUNT`，安装包默认 `transweb`；
+- `万能验证`：对应 `.env` 的 `POWER_ADMIN`，安装包默认 `transweb$harness`，仅对 root 管理账号生效；
+- 登录管理端时选择「验证码登录」，账号填 root 管理账号，验证码填万能验证即可。
+
+> 以上为安装包默认值；源码部署请以 `.env` 实际值为准（`.env.example` 中为 `xxx`，需先填写）。
+
+> 该命令与 `transweb env get ADMIN_ACCOUNT`、`transweb env get POWER_ADMIN` 读取同一份 `.env`；
+> 修改后需 `transweb restart` 生效。
+
+> 初始化页面 `static/assets/animationScripts/initAdmin.js` 内置了 `transweb` / `transweb$harness` 用于自动登录；
+> 修改 `ADMIN_ACCOUNT` / `POWER_ADMIN` 时需同步修改该文件，否则初始化页自动登录会失败。生产环境请限制后台页访问并妥善保管 `.env`。
+> `POWER_ADMIN` 含 `$`，在 shell 中赋值请用单引号（如 `transweb env set POWER_ADMIN 'transweb$harness'`），否则 `$harness` 会被展开为空。
+
+#### 5. 微信支付与登录验证码（按需）
+
+微信支付（APIv2）：
+
+```bash
+transweb wxpay list
+transweb wxpay set appId wx...
+transweb wxpay set mchId ...
+transweb wxpay set appKey ...        # 32 位 APIv2 密钥
+transweb wxpay set notify https://<域名>/receiveWxNotify
+transweb wxpay check
+```
+
+- 必填：`WX_PAY_APP_ID`、`WX_PAY_MCH_ID`、`WX_PAY_APP_KEY`、`WX_PAY_ORDER_URL`、`WX_PAY_QUERY_URL`；
+- 按需：`WX_PAY_APP_SECRET`（网页授权取 openid）、`WX_PAY_NOTIFY`（公网 HTTPS 回调）、`WX_PAY_APP_ID001` / `WX_PAY_APP_SECRET001`（小程序通道）；
+- 安装时生成的 `WX_PAY_APP_KEY` 是随机值，正式收款前替换为商户平台 APIv2 密钥；`WX_PAY_APP_KEY` 为空会导致 Web 启动报错。
+
+用户登录验证码（螺丝帽短信）：
+
+```bash
+transweb env set SEND_MESSAGE_API_KEY <key>
+```
+
+- 对应 `.env` 的 `SEND_MESSAGE_API_KEY`；未配置时手机验证码登录 / 注册不可用；
+- `transweb env set` 默认会重启 Web 服务，加 `--no-restart` 可只改配置。
 
 **方式二：源码开发**
 
@@ -299,6 +436,30 @@ npm run test           # （可选）gulp 压缩合并组件脚本
 > ⚠️ **上线前安全必做**：后台页面（`static/admin.html`、`static/initAdmin.html`）不能暴露到公网。
 > 安装包用户执行 `transweb admin hide`（`init` / 首次 `start` 会自动恢复，自动初始化完成后自动隐藏）；
 > 源码部署请手动删除或加访问控制。个人空间文件 `static/bucket/personal/` 已改为**登录后才能访问**（未登录 403）。
+
+### 同步源码到已安装服务（开发调试）
+
+如果已经用安装包跑着服务，又改了当前仓库的代码，可以用 `transweb sync` 直接同步到已安装的服务，不必每次重新打包：
+
+```bash
+transweb sync static   # 只同步 static/ 前端资源（不含 bucket）
+transweb sync bucket   # 只同步 static/bucket 应用与素材（跳过 personal 用户数据）
+transweb sync code     # 只同步 static 以外的服务端源码（server 为别名）
+transweb sync all      # 前端 + 服务端
+
+transweb sync bucket --dry-run   # 只预览，不写入
+transweb sync all --source /path/to/transweb
+```
+
+- 同步前会打印风险提示，并要求输入 `yes` 再次确认；`--yes` 可跳过确认（仅供自动化）；
+- 永不覆盖 `.env`、`interface/config/appConfig.js`、`interface/config/logined.js`、`interface/config/common.js` / `guest.js`、`*.log`、`bucket/personal` 等运行时数据；
+- 默认跳过 `node_modules`、`ca/`、`personal/`、`logs/`、`wxPayLog/`、`temp*`、`tmp/`、`dist/` 与后台页；
+- `bucket` 模式只同步 `static/bucket` 下的 `apps` / `assets` / `publicApps` 等资源，**始终跳过 `static/bucket/personal`**（用户个人空间），适用于只更新内置应用与素材的场景；
+- 只覆盖/新增文件，不删除目标端多余文件，也不会自动回滚；
+- `code` / `all` 同步后会自动重启 Web 服务；`static` / `bucket` 只刷新浏览器即可；`package.json` / lock 有变化时只提示安装依赖，不自动重启；
+- `--include-admin` 可同步 `admin.html` / `initAdmin.html`（默认跳过，避免重新暴露后台）；`--no-restart` 只同步不重启。
+
+> 该命令由 `transweb-service` 安装包提供；旧版本请先升级到包含 `transweb sync` 的版本。
 
 ### 运行时目录与数据文件（已被 .gitignore 排除）
 
@@ -342,11 +503,25 @@ npm run test           # （可选）gulp 压缩合并组件脚本
 ```bash
 transweb cors on                                     # 允许全部来源（*）
 transweb cors on --origin "https://a.com,https://b.com"   # 只允许指定来源
-transweb cors off                                    # 关闭（默认）
+transweb cors off                                    # 关闭跨站（默认是开启）
 ```
 
 默认允许跨站；执行 `transweb cors off` 后不再返回 CORS 头，并直接拒绝带外部 `Origin` 的跨站请求（同源页面、curl 与服务端调用不受影响）。
 `POST` / `PUT` / `PATCH` / `DELETE` 的 CSRF 同源校验共用这套策略与端口判定，避免「CORS 已放行、CSRF 仍 403」。
+
+文档读取权限（`documentAccess`）同样可用命令调整：
+
+```bash
+transweb access list                                # 查看默认级别与集合覆盖
+transweb access set login                           # 默认级别：所有人登录后可获取
+transweb access document owner                      # 文档集合：仅发布者登录后可获取
+transweb access skill public                        # 技能/Agent（同一张 pptItem 表）
+transweb access get pptItem                         # 查看某个集合的生效级别
+transweb access unset-table document                # 移除集合覆盖，回退默认级别
+```
+
+> 级别含义：`public` 免登陆获取、`login` 所有人登录获取、`owner` 发布者登录获取。
+> 写命令默认会重启 Web 服务使其生效；加 `--no-restart` 只改配置。
 
 ---
 

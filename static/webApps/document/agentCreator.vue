@@ -116,7 +116,7 @@
                 ref="fileInput"
                 type="file"
                 class="appleHiddenInput"
-                accept=".md,.txt,.pdf,.docx"
+                accept=".md,.txt,.pdf,.doc,.docx"
                 @change="handleFileChange"
                 data-edit-id="28"
               />
@@ -397,7 +397,7 @@ export default {
         zh: {
           "drop.click": "点击选择文档",
           "drop.or": "或将文件拖拽到此处",
-          "drop.hint": "支持 .md / .txt / .pdf / .docx，单个文件不超过 20MB",
+          "drop.hint": "支持 .md / .txt / .pdf / .doc / .docx，单个文件不超过 20MB",
           "drop.repick": "点击可重新选择文档",
           "drop.parsing": "正在解析文档…",
           "drop.parsingHint": "正在读取并解析文档内容，请稍候…",
@@ -451,7 +451,7 @@ export default {
           "drop.click": "Choose a document",
           "drop.or": "or drag a file here",
           "drop.hint":
-            "Supports .md / .txt / .pdf / .docx, up to 20 MB per file",
+            "Supports .md / .txt / .pdf / .doc / .docx, up to 20 MB per file",
           "drop.repick": "Click to choose another document",
           "drop.parsing": "Parsing document…",
           "drop.parsingHint": "Reading and parsing the document, please wait…",
