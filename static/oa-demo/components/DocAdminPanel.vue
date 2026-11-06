@@ -1,5 +1,5 @@
 <!--
-  院系文档权限与审批 OA · 文档管理员工作台（独立 Vue 3 单文件组件）
+  中国电子教育学会 公文与审批 OA · 文档管理面板（独立 Vue 3 单文件组件）
   文档库 · 版本 · 授权台账 · 回收站 · 统计
   依赖：Vue 3、Tailwind（tw- 前缀）、全局组件 oa-icon；props.store 见 ../README.md
 -->
@@ -13,8 +13,8 @@
             <oa-icon name="folder" class="tw-w-5 tw-h-5"></oa-icon>
           </div>
           <div class="tw-leading-tight">
-            <div class="tw-text-sm tw-font-semibold">文档管理员</div>
-            <div class="tw-text-[11px] tw-text-slate-500">{{ me.name }} · 院办公室</div>
+            <div class="tw-text-sm tw-font-semibold">{{ me.title }}</div>
+            <div class="tw-text-[11px] tw-text-slate-500">{{ me.name }} · {{ me.deptName }}</div>
           </div>
         </div>
       </div>
@@ -34,7 +34,7 @@
             <span class="tw-w-1.5 tw-h-1.5 tw-rounded-full tw-bg-sky-500"></span>
             最小权限原则
           </div>
-          <div class="tw-mt-2 tw-text-[11px] tw-text-sky-800 tw-leading-relaxed">敏感文档、跨部门授权、期限超过 90 天的授权，需提交院办审批后生效。</div>
+          <div class="tw-mt-2 tw-text-[11px] tw-text-sky-800 tw-leading-relaxed">敏感文档、跨分会授权、期限超过 90 天的授权，需提交秘书处审批后生效。</div>
         </div>
       </div>
 
@@ -580,8 +580,8 @@
             <label class="adm-label">上级分类</label>
             <div class="tw-text-[13px] tw-text-slate-700">{{ categoryParent ? store.catName(categoryParent).split(' / ')[0] : '新增顶级分类' }}</div>
           </div>
-          <div><label class="adm-label">分类名称</label><input v-model="categoryForm.name" class="adm-input tw-w-full tw-px-3 tw-py-2 tw-rounded-lg tw-text-[13px] tw-border tw-border-slate-200" placeholder="如：实验室管理" /></div>
-          <div><label class="adm-label">分类编码</label><input v-model="categoryForm.code" class="adm-input tw-w-full tw-px-3 tw-py-2 tw-rounded-lg tw-text-[13px] tw-border tw-border-slate-200" placeholder="如：ZD-SYS" /></div>
+          <div><label class="adm-label">分类名称</label><input v-model="categoryForm.name" class="adm-input tw-w-full tw-px-3 tw-py-2 tw-rounded-lg tw-text-[13px] tw-border tw-border-slate-200" placeholder="如：学术活动" /></div>
+          <div><label class="adm-label">分类编码</label><input v-model="categoryForm.code" class="adm-input tw-w-full tw-px-3 tw-py-2 tw-rounded-lg tw-text-[13px] tw-border tw-border-slate-200" placeholder="如：YW-XS" /></div>
         </div>
         <div class="tw-flex tw-items-center tw-justify-end tw-gap-2 tw-px-5 tw-py-4 tw-bg-slate-50">
           <button @click="categoryModal = null" class="adm-btn-ghost tw-px-4 tw-py-2 tw-rounded-lg tw-text-[12px]">取消</button>
@@ -596,7 +596,7 @@
       <div class="tw-relative tw-w-full tw-max-w-lg tw-bg-white tw-rounded-2xl tw-shadow-2xl tw-overflow-hidden">
         <div class="tw-px-5 tw-py-4 tw-border-b tw-border-slate-100">
           <div class="tw-text-sm tw-font-semibold">新增授权</div>
-          <div class="tw-text-[11px] tw-text-slate-500 tw-mt-0.5">敏感文档、跨部门、期限超过 90 天将自动提交审批</div>
+          <div class="tw-text-[11px] tw-text-slate-500 tw-mt-0.5">敏感文档、跨分会、期限超过 90 天将自动提交审批</div>
         </div>
         <div class="tw-p-5 tw-space-y-4">
           <div class="tw-grid tw-grid-cols-2 tw-gap-3">
@@ -650,7 +650,7 @@
                 <option :value="7">7 天</option><option :value="30">30 天</option><option :value="60">60 天</option><option :value="90">90 天</option><option :value="180">180 天（需审批）</option>
               </select>
             </div>
-            <div><label class="adm-label">审批提示</label><div class="tw-text-[11px] tw-mt-2" :class="grantNeedsApproval ? 'tw-text-amber-600' : 'tw-text-emerald-600'">{{ grantNeedsApproval ? '将提交院办审批后生效' : '保存后立即生效' }}</div></div>
+            <div><label class="adm-label">审批提示</label><div class="tw-text-[11px] tw-mt-2" :class="grantNeedsApproval ? 'tw-text-amber-600' : 'tw-text-emerald-600'">{{ grantNeedsApproval ? '将提交秘书处审批后生效' : '保存后立即生效' }}</div></div>
           </div>
           <div><label class="adm-label">授权用途 <span class="tw-text-rose-500">*</span></label><textarea v-model="grantForm.reason" rows="2" class="adm-input tw-w-full tw-px-3 tw-py-2 tw-rounded-lg tw-text-[13px] tw-border tw-border-slate-200" placeholder="说明授权原因与使用场景"></textarea></div>
         </div>
@@ -764,7 +764,7 @@ export default {
     };
   },
   computed: {
-    me() { return this.store.persona.docadmin; },
+    me() { return this.store.currentUser || this.store.persona.docadmin; },
     navItems() {
       return [
         { id: "library", label: "文档库", icon: "docs", badge: 0 },
@@ -780,7 +780,7 @@ export default {
     },
     pageSubtitle() {
       return {
-        library: "全院文档的归档、版本、授权与清理",
+        library: "学会文档的归档、版本、授权与清理",
         categories: "维护两级分类与分类编码",
         grants: "查看、授予与收回文档使用权限",
         recycle: "删除文档保留 30 天，可恢复",
@@ -873,7 +873,7 @@ export default {
         this.tab = "grants";
         this.openGrant({
           objectType: "category", objectId: "CAT-YW", subjectType: "dept", subjectId: "D02",
-          rights: ["view", "download"], days: 60, reason: "科研办公室因项目结题材料核对，需跨部门调阅业务文档。"
+          rights: ["view", "download"], days: 60, reason: "科研办公室因项目结题材料核对，需跨分会调阅业务文档。"
         });
       }
     },
@@ -1052,7 +1052,7 @@ export default {
       }, this.me.name);
       this.grantOpen = false;
       if (res.status === "pending") {
-        this.store.toast("已提交授权审批（" + res.instance.no + "），待院办初审。");
+        this.store.toast("已提交授权审批（" + res.instance.no + "），待秘书处初审。");
         this.tab = "grants";
       } else {
         this.store.toast("授权已生效。");

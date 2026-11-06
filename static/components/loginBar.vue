@@ -73,14 +73,15 @@
                 ></el-avatar>
               </div>
               <span class="menuItemList">
-                <span v-for="d in loginedMenu" :key="d.label">
-                  <el-button 
+                <span v-for="d in loginedMenu" :key="d.labelKey || d.label">
+                  <el-button
                     class="actionGridBtn"
-                    :loading="d.loading" 
-                    :disabled="d.loading" 
-                    @click="handleClickMenu(d)">{{
-                    d.label
-                  }}</el-button>
+                    :loading="d.loading"
+                    :disabled="d.loading"
+                    @click="handleClickMenu(d)"
+                  >
+                    <span class="login-menu-label">{{ menuLabel(d) }}</span>
+                  </el-button>
                 </span>
               </span>
             </div>
@@ -486,6 +487,52 @@ export default {
     },
     onLangChange(e) {
       this.lang = e && e.detail && e.detail.lang === "en" ? "en" : "zh";
+    },
+    // 登录后菜单来自平台注入的纯文本 label；这里按平台词表反查 key，
+    // 让菜单名称跟随 loginBar 自己的 lang 响应式切换，而不是停留在初始化时的中文。
+    menuKeyForLabel(label) {
+      if (!label || !window.webCpu || !webCpu.messages) return "";
+
+      // 平台菜单 label 可能带 emoji，也可能来自不同语言版本；先去掉前缀符号再比对。
+      function normalize(value) {
+        return String(value || "")
+          .replace(/^[^\w\u4e00-\u9fa5]+/, "")
+          .trim();
+      }
+
+      var target = normalize(label);
+      if (!target) return "";
+
+      var dictionaries = [webCpu.messages.zh, webCpu.messages.en];
+      var appDict = window.__I18N__ || {};
+      if (appDict.zh) dictionaries.push(appDict.zh);
+      if (appDict.en) dictionaries.push(appDict.en);
+
+      var keys = [
+        "myPpt",
+        "historyRecord",
+        "personalInfo",
+        "myModule",
+        "mySubscriptions",
+      ];
+
+      for (var i = 0; i < keys.length; i++) {
+        var key = keys[i];
+        for (var j = 0; j < dictionaries.length; j++) {
+          var dict = dictionaries[j];
+          if (dict && target === normalize(dict[key])) return key;
+        }
+      }
+      return "";
+    },
+    menuLabel(d) {
+      if (!d) return "";
+      var key = d.labelKey || this.menuKeyForLabel(d.label);
+      var messages =
+        key && window.webCpu && webCpu.messages
+          ? webCpu.messages[this.lang]
+          : null;
+      return (messages && messages[key]) || d.label;
     },
     handlePopoverShow() {
       this.popoverShow = true;
@@ -1334,10 +1381,16 @@ export default {
   transform: translateY(1px) !important;
 }
 
-/* 长英文文案（如 "AIGC History"）超长时优雅省略，避免溢出 */
-.actionGridBtn.el-button :deep(.el-button__text) {
+/* 长英文文案（如 "AIGC History"）超长时优雅省略，避免溢出。
+   用显式的 label 节点而不是深度选择器，遵守项目样式规则。 */
+.actionGridBtn.el-button .login-menu-label {
+  display: block;
+
+  width: 100%;
   min-width: 0;
   overflow: hidden;
+
+  text-align: center;
   white-space: nowrap;
   text-overflow: ellipsis;
 }

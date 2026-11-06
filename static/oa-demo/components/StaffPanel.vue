@@ -1,5 +1,5 @@
 <!--
-  院系文档权限与审批 OA · 普通用户工作台（独立 Vue 3 单文件组件）
+  中国电子教育学会 公文与审批 OA · 文档查阅面板（独立 Vue 3 单文件组件）
   文档查阅 · 上传归档 · 发起审批 · 权限申请
   依赖：Vue 3、Tailwind（tw- 前缀）、全局组件 oa-icon；props.store 见 ../README.md
 -->
@@ -13,7 +13,7 @@
             <oa-icon name="user" class="tw-w-5 tw-h-5"></oa-icon>
           </div>
           <div class="tw-leading-tight">
-            <div class="tw-text-sm tw-font-semibold">普通用户</div>
+            <div class="tw-text-sm tw-font-semibold">{{ me.title }}</div>
             <div class="tw-text-[11px] tw-text-slate-500">{{ me.name }} · {{ me.deptName }}</div>
           </div>
         </div>
@@ -451,10 +451,10 @@
               <div class="tw-text-center tw-text-[11px] tw-text-slate-400 tw-mt-2">文档编号：{{ docModal.no }}　密级：{{ store.h.classification(docModal.classification).label }}　版本：V{{ docModal.version }}</div>
               <div class="tw-h-px tw-bg-slate-200 tw-my-6"></div>
               <p class="tw-text-[13px] tw-leading-relaxed tw-text-slate-700 tw-indent-8">{{ docModal.summary }}</p>
-              <p class="tw-text-[13px] tw-leading-relaxed tw-text-slate-700 tw-indent-8 tw-mt-3">第一条　为规范院系文档管理与使用，明确资料范围、审批流程与责任分工，依据学校相关管理规定，结合院系实际制定本文件。</p>
-              <p class="tw-text-[13px] tw-leading-relaxed tw-text-slate-700 tw-indent-8 tw-mt-3">第二条　本文件适用于院系各部门及全体教职工。文档的查看、下载、编辑与归档，应按照岗位职责与授权范围执行，重要操作全程留痕。</p>
-              <p class="tw-text-[13px] tw-leading-relaxed tw-text-slate-700 tw-indent-8 tw-mt-3">第三条　文档管理员负责分类目录、版本与授权管理；部门负责人负责本部门文档的初审；院系领导负责重要事项终审。</p>
-              <p class="tw-text-[13px] tw-leading-relaxed tw-text-slate-700 tw-indent-8 tw-mt-3">第四条　本文件自归档之日起施行，由院办公室负责解释。</p>
+              <p class="tw-text-[13px] tw-leading-relaxed tw-text-slate-700 tw-indent-8 tw-mt-3">第一条　为规范学会公文与文档管理，明确资料范围、审批流程与责任分工，依据学会章程及相关管理规定，结合学会实际制定本文件。</p>
+              <p class="tw-text-[13px] tw-leading-relaxed tw-text-slate-700 tw-indent-8 tw-mt-3">第二条　本文件适用于学会秘书处、各分支机构及全体工作人员。公文与文档的查看、下载、编辑与归档，应按照岗位职责与授权范围执行，重要操作全程留痕。</p>
+              <p class="tw-text-[13px] tw-leading-relaxed tw-text-slate-700 tw-indent-8 tw-mt-3">第三条　档案管理员负责分类目录、版本与授权管理；秘书长负责秘书处文档的初审；理事长、副理事长负责重要事项终审。</p>
+              <p class="tw-text-[13px] tw-leading-relaxed tw-text-slate-700 tw-indent-8 tw-mt-3">第四条　本文件自归档之日起施行，由学会秘书处负责解释。</p>
               <div class="tw-mt-10 tw-text-right tw-text-[11px] tw-text-slate-400">{{ docModal.deptName }}　{{ store.h.fmtDate(docModal.updatedAt) }}</div>
               <div v-if="docModal.classification === 'sensitive'" class="staff-watermark">
                 <span v-for="n in 12" :key="n">{{ me.name }} · {{ me.account }}</span>
@@ -474,7 +474,7 @@
             </div>
             <div class="tw-mt-5 tw-p-3 tw-rounded-xl tw-bg-slate-50 tw-text-[11px] tw-text-slate-500 tw-leading-relaxed">
               <div class="tw-flex tw-items-center tw-gap-1.5 tw-text-slate-700 tw-font-medium tw-mb-1"><oa-icon name="shield" class="tw-w-3.5 tw-h-3.5"></oa-icon>权限说明</div>
-              内部文档全院可查阅并留痕；敏感文档需授权后查看，下载需额外审批，文件自动添加水印。
+              内部文档全体会员可查阅并留痕；敏感文档需授权后查看，下载需额外审批，文件自动添加水印。
             </div>
             <div class="tw-mt-5 tw-space-y-2">
               <button v-if="canDownloadDoc(docModal)" @click="doDownload(docModal)" class="staff-btn-primary tw-w-full tw-py-2.5 tw-rounded-lg tw-text-[12px] tw-text-white tw-flex tw-items-center tw-justify-center tw-gap-1.5"><oa-icon name="download" class="tw-w-4 tw-h-4"></oa-icon>下载文档</button>
@@ -573,9 +573,9 @@
           <div class="tw-rounded-xl tw-border tw-border-slate-100 tw-p-3">
             <div class="tw-text-[11px] tw-text-slate-500 tw-mb-2">审批流程</div>
             <div class="tw-flex tw-items-center tw-gap-2 tw-text-[11px]">
-              <span class="tw-px-2 tw-py-1 tw-rounded tw-bg-amber-50 tw-text-amber-700">院办初审 · 王慧敏</span>
+              <span class="tw-px-2 tw-py-1 tw-rounded tw-bg-amber-50 tw-text-amber-700">秘书处初审 · 王慧敏</span>
               <oa-icon name="arrow-right" class="tw-w-3.5 tw-h-3.5 tw-text-slate-300"></oa-icon>
-              <span class="tw-px-2 tw-py-1 tw-rounded tw-bg-slate-100 tw-text-slate-500">分管领导终审 · 赵启明</span>
+              <span class="tw-px-2 tw-py-1 tw-rounded tw-bg-slate-100 tw-text-slate-500">副理事长终审 · 赵启明</span>
             </div>
           </div>
         </div>
@@ -618,7 +618,7 @@
           </div>
 
           <div v-else-if="startForm.type === 'PERM_GRANT'" class="tw-space-y-3">
-            <div class="tw-rounded-xl tw-bg-slate-50 tw-p-3 tw-text-[12px] tw-text-slate-600">权限申请将生成审批单，由院办初审后自动授权。</div>
+            <div class="tw-rounded-xl tw-bg-slate-50 tw-p-3 tw-text-[12px] tw-text-slate-600">权限申请将生成审批单，由秘书处初审后自动授权。</div>
             <div><label class="staff-label">申请对象</label>
               <select v-model="startForm.objectId" class="staff-input tw-w-full tw-px-3 tw-py-2 tw-rounded-lg tw-text-[13px] tw-border tw-border-slate-200 tw-bg-white">
                 <option value="">请选择文档或分类</option>
@@ -686,7 +686,7 @@
                 <option :value="7">7 天</option><option :value="30">30 天</option><option :value="90">90 天</option><option :value="180">180 天</option>
               </select>
             </div>
-            <div><label class="staff-label">审批流程</label><div class="tw-mt-2 tw-text-[12px] tw-text-slate-500">院办初审 · 王慧敏</div></div>
+            <div><label class="staff-label">审批流程</label><div class="tw-mt-2 tw-text-[12px] tw-text-slate-500">秘书处初审 · 王慧敏</div></div>
           </div>
           <div>
             <label class="staff-label">申请用途 <span class="tw-text-rose-500">*</span></label>
@@ -841,8 +841,8 @@ export default {
         { type: "GENERAL", label: "对外提供材料", icon: "send" }
       ],
       visibilityOptions: [
-        { id: "all", label: "全院" },
-        { id: "dept", label: "本部门" },
+        { id: "all", label: "全体会员" },
+        { id: "dept", label: "本分支机构" },
         { id: "user", label: "指定人员" }
       ],
       rightOptions: [
@@ -853,7 +853,7 @@ export default {
     };
   },
   computed: {
-    me() { return this.store.persona.staff; },
+    me() { return this.store.currentUser || this.store.persona.staff; },
     today() {
       const d = new Date();
       const week = ["日", "一", "二", "三", "四", "五", "六"][d.getDay()];
@@ -947,7 +947,8 @@ export default {
     announcements() { return this.store.announcements; },
     activeGrants() {
       return this.store.grants.filter(g => g.status === "active" && new Date(g.validUntil).getTime() >= Date.now() && (
-        (g.subjectType === "user" && g.subjectId === this.me.account) || (g.subjectType === "role" && g.subjectId === "staff")
+        (g.subjectType === "user" && g.subjectId === this.me.account) ||
+        (g.subjectType === "role" && this.store.capsOf(this.me.account).indexOf(g.subjectId) !== -1)
       ));
     },
     expiredGrants() {
@@ -1039,7 +1040,7 @@ export default {
     doDownload(doc) {
       this.store.recordDownload(doc, this.me.account);
       const text = [
-        "院系文档权限与审批 OA · 演示文件",
+        "中国电子教育学会 · 公文与审批 OA 演示文件",
         "--------------------------------",
         "文档标题：" + doc.title,
         "文档编号：" + doc.no,
@@ -1050,7 +1051,7 @@ export default {
         "",
         doc.summary,
         "",
-        "本文件仅用于院内授权范围内的查阅，请勿对外传播。"
+        "本文件仅用于学会授权范围内的查阅，请勿对外传播。"
       ].join("\n");
       const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
       const a = document.createElement("a");
@@ -1075,7 +1076,7 @@ export default {
       const inst = this.store.requestSensitiveDownload(this.downloadDocTarget.id, this.downloadReason.trim(), this.me.account);
       this.downloadDocTarget = null;
       this.downloadReason = "";
-      this.store.toast("下载申请已提交（" + inst.no + "），待院办审批。");
+      this.store.toast("下载申请已提交（" + inst.no + "），待秘书处审批。");
       this.tab = "approvals";
     },
     openUpload() {
@@ -1129,7 +1130,7 @@ export default {
       }
       const inst = this.store.submitArchive(this.archiveDoc.id, this.me.account, { reason: this.archiveForm.reason.trim() });
       this.archiveDoc = null;
-      this.store.toast("已提交归档审批（" + inst.no + "），待院办初审。");
+      this.store.toast("已提交归档审批（" + inst.no + "），待秘书处初审。");
       this.tab = "mine";
     },
     removeDoc(doc) {
@@ -1232,7 +1233,7 @@ export default {
       const [type, id] = f.objectKey.split(":");
       const inst = this.store.requestPermission({ objectType: type, objectId: id, rights: f.rights, days: f.days, reason: f.reason.trim() }, this.me.account);
       this.permOpen = false;
-      this.store.toast("权限申请已提交（" + inst.no + "），待院办审批。");
+      this.store.toast("权限申请已提交（" + inst.no + "），待秘书处审批。");
       this.tab = "perm";
     }
   }

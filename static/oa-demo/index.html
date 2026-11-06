@@ -4,8 +4,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>院系文档权限与审批 OA · 三角色演示</title>
-  <meta name="description" content="院系文档权限与审批 OA 系统三角色交互演示：普通用户、审批人、文档管理员" />
+  <title>中国电子教育学会 · 公文与审批 OA 演示</title>
+  <meta name="description" content="中国电子教育学会公文与审批 OA 演示：按学会实际岗位登录，支持公文查阅、审批处理、文档管理三类功能视角" />
 
   <!-- Tailwind 运行时（项目本地 Play CDN，内网可用）；使用 tw- 前缀，避免与平台既有样式冲突 -->
   <script src="/common/tailwindcss.js"></script>
@@ -64,6 +64,17 @@
 
     .oa-toast-enter-active, .oa-toast-leave-active { transition: opacity .2s ease, transform .2s ease; }
     .oa-toast-enter-from, .oa-toast-leave-to { opacity: 0; transform: translateY(10px); }
+
+    .oa-login-glow { position: absolute; border-radius: 9999px; filter: blur(90px); pointer-events: none; }
+    .oa-login-glow-a { width: 460px; height: 460px; top: -120px; right: -120px; background: #4f46e5; opacity: .38; }
+    .oa-login-glow-b { width: 380px; height: 380px; bottom: -140px; left: -100px; background: #0ea5e9; opacity: .24; }
+
+    .oa-login-btn { background: #4f46e5; transition: background .15s ease, transform .15s ease; }
+    .oa-login-btn:hover:not(:disabled) { background: #4338ca; }
+    .oa-login-btn:active:not(:disabled) { transform: translateY(1px); }
+    .oa-login-btn:disabled { opacity: .65; cursor: not-allowed; }
+
+    .oa-login-input:focus { outline: none; border-color: #818cf8; box-shadow: 0 0 0 3px rgba(99, 102, 241, .12); background: #fff; }
 
     .oa-spin { animation: oa-spin 1s linear infinite; }
     @keyframes oa-spin { to { transform: rotate(360deg); } }

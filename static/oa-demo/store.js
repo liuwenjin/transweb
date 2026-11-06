@@ -1,5 +1,5 @@
 /**
- * 院系文档权限与审批 OA · 三角色演示数据与业务动作
+ * 中国电子教育学会 公文与审批 OA · 演示数据与业务动作
  * ------------------------------------------------------------------
  * 一份可持久化的前端 mock store，供三个角色组件共享：
  *   - 普通用户提交归档 / 申请权限 → 审批人待办出现任务；
@@ -12,57 +12,97 @@
 (function () {
   "use strict";
 
-  const KEY = "oa-demo-state-v3";
+  const KEY = "oa-demo-state-v4";
   const DAY = 24 * 60 * 60 * 1000;
   const HOUR = 60 * 60 * 1000;
   const now = Date.now();
   const at = (days, hours) => new Date(now + (days || 0) * DAY + (hours || 0) * HOUR).toISOString();
   const uid = (prefix) => prefix + "-" + Math.random().toString(36).slice(2, 7).toUpperCase();
 
-  const PERSONA = {
-    staff: { account: "20230001", name: "李知远", title: "讲师", deptId: "D01", deptName: "教务办公室", role: "staff", roleName: "普通用户" },
-    approver: { account: "20180006", name: "王慧敏", title: "院办主任", deptId: "D03", deptName: "院办公室", role: "approver", roleName: "审批人" },
-    docadmin: { account: "20150012", name: "陈静", title: "文档管理员", deptId: "D03", deptName: "院办公室", role: "docadmin", roleName: "文档管理员" }
-  };
+  const CAPS = ["staff", "approver", "docadmin"];
 
-  const APPROVERS = [
-    { account: "20180006", name: "王慧敏", title: "院办主任" },
-    { account: "20160001", name: "赵启明", title: "分管副院长" }
+  // 学会实际岗位角色；同一岗位可拥有多种功能权限（查阅 / 审批 / 文档管理）
+  const ROLE_DEFS = [
+    {
+      key: "president", account: "20120001", name: "孙建国", title: "理事长",
+      deptId: "D06", deptName: "理事会", caps: ["staff", "approver"],
+      desc: "主持理事会 · 重大事项终审"
+    },
+    {
+      key: "vicePresident", account: "20160001", name: "赵启明", title: "副理事长",
+      deptId: "D06", deptName: "理事会", caps: ["staff", "approver"],
+      desc: "分管工作审核 · 重要发文复核"
+    },
+    {
+      key: "standingMember", account: "20190021", name: "刘洋", title: "常务理事",
+      deptId: "D06", deptName: "理事会", caps: ["staff", "approver"],
+      desc: "常务理事会决策 · 会员与重要事项审议"
+    },
+    {
+      key: "secretaryGeneral", account: "20180006", name: "王慧敏", title: "秘书长",
+      deptId: "D01", deptName: "秘书处", caps: ["staff", "approver", "docadmin"],
+      desc: "主持秘书处工作 · 公文与文档管理"
+    },
+    {
+      key: "deputySecretary", account: "20220008", name: "张倩", title: "副秘书长",
+      deptId: "D01", deptName: "秘书处", caps: ["staff", "approver"],
+      desc: "协助秘书长 · 公文复核与综合协调"
+    },
+    {
+      key: "branchLiaison", account: "20210015", name: "周明", title: "职业教育分会联络人",
+      deptId: "D05", deptName: "职业教育分会", caps: ["staff", "approver"],
+      desc: "分会材料报送 · 分会事项初审"
+    },
+    {
+      key: "archivist", account: "20150012", name: "陈静", title: "档案管理员",
+      deptId: "D01", deptName: "秘书处", caps: ["staff", "docadmin"],
+      desc: "公文归档 · 档案借阅与授权台账"
+    },
+    {
+      key: "specialist", account: "20230001", name: "李知远", title: "秘书处专员",
+      deptId: "D01", deptName: "秘书处", caps: ["staff"],
+      desc: "公文起草 · 资料查阅 · 流程发起"
+    }
   ];
+
+  const roleOfKey = (key) => ROLE_DEFS.find((r) => r.key === key);
+  const PERSONA = {
+    staff: roleOfKey("specialist"),
+    approver: roleOfKey("secretaryGeneral"),
+    docadmin: roleOfKey("archivist")
+  };
+  const APPROVERS = ROLE_DEFS.filter((r) => r.caps.indexOf("approver") !== -1);
 
   const DEPTS = [
-    { id: "D01", name: "教务办公室" },
-    { id: "D02", name: "科研办公室" },
-    { id: "D03", name: "院办公室" },
-    { id: "D04", name: "学生工作办公室" }
+    { id: "D01", name: "秘书处" },
+    { id: "D02", name: "学术部" },
+    { id: "D03", name: "会员部" },
+    { id: "D04", name: "培训部" },
+    { id: "D05", name: "职业教育分会" },
+    { id: "D06", name: "理事会" }
   ];
 
-  const USERS = [
-    { account: "20230001", name: "李知远", deptId: "D01", deptName: "教务办公室", title: "讲师" },
-    { account: "20220008", name: "张倩", deptId: "D02", deptName: "科研办公室", title: "科研秘书" },
-    { account: "20210015", name: "周明", deptId: "D01", deptName: "教务办公室", title: "副教授" },
-    { account: "20190021", name: "刘洋", deptId: "D04", deptName: "学生工作办公室", title: "辅导员" },
-    { account: "20180006", name: "王慧敏", deptId: "D03", deptName: "院办公室", title: "院办主任" },
-    { account: "20160001", name: "赵启明", deptId: "D03", deptName: "院办公室", title: "分管副院长" },
-    { account: "20150012", name: "陈静", deptId: "D03", deptName: "院办公室", title: "文档管理员" }
-  ];
+  const USERS = ROLE_DEFS.map((r) => ({
+    account: r.account, name: r.name, deptId: r.deptId, deptName: r.deptName, title: r.title, caps: r.caps
+  }));
 
   const CATEGORIES = [
-    { id: "CAT-ZD", code: "ZD", name: "制度文件", children: [
-      { id: "CAT-ZD-JX", code: "ZD-JX", name: "教学管理" },
-      { id: "CAT-ZD-XZ", code: "ZD-XZ", name: "行政管理" }
+    { id: "CAT-GW", code: "GW", name: "公文管理", children: [
+      { id: "CAT-GW-SW", code: "GW-SW", name: "收文" },
+      { id: "CAT-GW-FW", code: "GW-FW", name: "发文" },
+      { id: "CAT-GW-HY", code: "GW-HY", name: "会议纪要" }
     ]},
-    { id: "CAT-XZ", code: "XZ", name: "行政材料", children: [
-      { id: "CAT-XZ-WJ", code: "XZ-WJ", name: "发文与函件" },
-      { id: "CAT-XZ-HY", code: "XZ-HY", name: "会议纪要" }
+    { id: "CAT-ZD", code: "ZD", name: "制度文件", children: [
+      { id: "CAT-ZD-ZL", code: "ZD-ZL", name: "学会治理" },
+      { id: "CAT-ZD-CW", code: "ZD-CW", name: "财务管理" }
     ]},
     { id: "CAT-YW", code: "YW", name: "业务文档", children: [
-      { id: "CAT-YW-JX", code: "YW-JX", name: "教学运行" },
-      { id: "CAT-YW-KY", code: "YW-KY", name: "科研管理" }
+      { id: "CAT-YW-XS", code: "YW-XS", name: "学术活动" },
+      { id: "CAT-YW-FH", code: "YW-FH", name: "分会与会员" }
     ]},
     { id: "CAT-NB", code: "NB", name: "内部资料", children: [
       { id: "CAT-NB-NB", code: "NB-NB", name: "内部参考" },
-      { id: "CAT-NB-ZL", code: "NB-ZL", name: "专项材料" }
+      { id: "CAT-NB-PS", code: "NB-PS", name: "评审材料" }
     ]}
   ];
 
@@ -82,7 +122,7 @@
 
   function mkDoc(o) {
     return Object.assign({
-      id: "", no: "", title: "", cat: "", catName: "", dept: "D03", deptName: "院办公室",
+      id: "", no: "", title: "", cat: "", catName: "", dept: "D01", deptName: "秘书处",
       owner: "陈静", ownerAccount: "20150012", classification: "internal", visibility: "all",
       tags: [], summary: "", status: "ACTIVE", version: 1, versions: [], fileType: "PDF",
       size: "1.8 MB", downloads: 0, createdAt: at(-60), updatedAt: at(-10), archivedAt: at(-9),
@@ -115,147 +155,188 @@
   function seed() {
     const docs = [
       mkDoc({
-        id: "D-1001", no: "YX-ZD-2026-0001", title: "本科教学管理制度汇编", cat: "CAT-ZD-JX", catName: CAT_MAP["CAT-ZD-JX"],
-        owner: "陈静", ownerAccount: "20150012", classification: "internal", visibility: "all",
-        tags: ["教学", "制度"], summary: "收录本科教学运行、学籍管理、考试管理等 12 项制度，作为院系教学管理的基本依据。",
+        id: "D-1001", no: "XH-ZD-2026-0001", title: "中国电子教育学会章程（2026修订稿）", cat: "CAT-ZD-ZL", catName: CAT_MAP["CAT-ZD-ZL"],
+        owner: "陈静", ownerAccount: "20150012", dept: "D01", deptName: "秘书处", classification: "internal", visibility: "all",
+        tags: ["章程", "学会治理"], summary: "学会宗旨、业务范围、会员、组织机构、资产管理与章程修改程序的 2026 修订稿。",
         status: "ACTIVE", version: 2, downloads: 128, createdAt: at(-160), updatedAt: at(-30), archivedAt: at(-28),
         approvalId: "APR-2026-001",
         versions: [
-          version(1, "本科教学管理制度汇编（2025版）.pdf", "2.1 MB", "陈静", -150, "2025 版首次归档"),
-          version(2, "本科教学管理制度汇编（2026修订）.pdf", "2.4 MB", "陈静", -30, "补充考试管理与推免细则")
+          version(1, "中国电子教育学会章程（2025修订稿）.pdf", "1.8 MB", "陈静", -150, "2025 修订稿归档"),
+          version(2, "中国电子教育学会章程（2026修订稿）.pdf", "2.0 MB", "陈静", -30, "补充会员服务与分支机构条款")
         ],
         timeline: [
           timeline(-150, "陈静", "上传文档", "创建文档并生成 V1"),
-          timeline(-149, "王慧敏", "审批通过", "归档审批通过"),
-          timeline(-30, "陈静", "上传新版本", "更新为 2026 修订版 V2"),
-          timeline(-6, "李知远", "下载文档", "下载 2026 修订版")
+          timeline(-149, "王慧敏", "审批通过", "秘书处初审通过"),
+          timeline(-30, "陈静", "上传新版本", "更新为 2026 修订稿 V2"),
+          timeline(-6, "李知远", "下载文档", "下载 2026 修订稿")
         ]
       }),
       mkDoc({
-        id: "D-1002", no: "YX-ZD-2026-0002", title: "2026 年度教学工作计划", cat: "CAT-ZD-JX", catName: CAT_MAP["CAT-ZD-JX"],
-        tags: ["教学", "计划"], summary: "明确 2026 年教学重点任务、时间节点与责任部门。",
+        id: "D-1002", no: "XH-GW-2026-0002", title: "第八届理事会2026年度工作计划", cat: "CAT-GW-FW", catName: CAT_MAP["CAT-GW-FW"],
+        tags: ["理事会", "年度计划"], summary: "第八届理事会 2026 年度重点工作、会议安排与分支机构任务分工。",
         status: "ACTIVE", version: 1, downloads: 86, createdAt: at(-70), updatedAt: at(-18), archivedAt: at(-17),
-        versions: [version(1, "2026年度教学工作计划.pdf", "1.2 MB", "陈静", -18, "定稿归档")],
-        timeline: [timeline(-18, "陈静", "上传文档", "创建文档"), timeline(-17, "王慧敏", "审批通过", "归档审批通过")]
+        versions: [version(1, "第八届理事会2026年度工作计划.pdf", "1.2 MB", "陈静", -18, "理事长会议审议后归档")]
       }),
       mkDoc({
-        id: "D-1003", no: "YX-ZD-2026-0003", title: "研究生推免实施细则", cat: "CAT-ZD-JX", catName: CAT_MAP["CAT-ZD-JX"],
-        classification: "sensitive", visibility: "user", tags: ["研究生", "推免", "敏感"],
-        summary: "推免资格、综合测评与名额分配细则，仅限参与推免工作人员查阅。",
+        id: "D-1003", no: "XH-NB-2026-0003", title: "评审专家库名单（2026）", cat: "CAT-NB-PS", catName: CAT_MAP["CAT-NB-PS"],
+        classification: "sensitive", visibility: "user", tags: ["专家库", "评审", "敏感"],
+        summary: "学会课题与教学成果评审专家名单、联系方式与回避规则，仅限评审工作人员查阅。",
         status: "ACTIVE", version: 3, downloads: 12, createdAt: at(-200), updatedAt: at(-9), archivedAt: at(-8),
         versions: [
-          version(1, "推免实施细则（2024）.pdf", "1.6 MB", "陈静", -190, "2024 版"),
-          version(2, "推免实施细则（2025）.pdf", "1.7 MB", "陈静", -100, "2025 修订"),
-          version(3, "推免实施细则（2026）.pdf", "1.8 MB", "陈静", -9, "2026 修订，调整名额分配")
+          version(1, "评审专家库名单（2024）.xlsx", "260 KB", "陈静", -190, "2024 版"),
+          version(2, "评审专家库名单（2025）.xlsx", "280 KB", "陈静", -100, "2025 增补"),
+          version(3, "评审专家库名单（2026）.xlsx", "310 KB", "陈静", -9, "2026 年度更新")
         ],
-        timeline: [timeline(-9, "陈静", "上传新版本", "更新为 2026 版 V3"), timeline(-8, "赵启明", "审批通过", "敏感文档归档审批")]
+        timeline: [timeline(-9, "陈静", "上传新版本", "更新为 2026 版 V3"), timeline(-8, "王慧敏", "审批通过", "敏感文档归档审批")]
       }),
       mkDoc({
-        id: "D-1004", no: "YX-XZ-2026-0004", title: "院系经费报销指引", cat: "CAT-XZ-WJ", catName: CAT_MAP["CAT-XZ-WJ"],
-        tags: ["财务", "报销"], summary: "差旅、会议、材料等常见报销场景的办理流程与材料清单。",
+        id: "D-1004", no: "XH-ZD-2026-0004", title: "学会财务报销管理办法", cat: "CAT-ZD-CW", catName: CAT_MAP["CAT-ZD-CW"],
+        tags: ["财务", "报销"], summary: "差旅、会议、培训、采购等常见报销场景的办理流程、标准与材料清单。",
         status: "ACTIVE", version: 1, downloads: 64, createdAt: at(-90), updatedAt: at(-40), archivedAt: at(-39),
-        versions: [version(1, "院系经费报销指引.pdf", "980 KB", "陈静", -40, "定稿归档")]
+        versions: [version(1, "学会财务报销管理办法.pdf", "980 KB", "陈静", -40, "秘书处审议后归档")]
       }),
       mkDoc({
-        id: "D-1005", no: "YX-YW-2026-0005", title: "实验室安全检查记录（2026Q3）", cat: "CAT-YW-KY", catName: CAT_MAP["CAT-YW-KY"],
-        tags: ["实验室", "安全"], summary: "第三季度实验室安全检查记录、隐患整改与复查结论。",
+        id: "D-1005", no: "XH-YW-2026-0005", title: "职业教育分会2026年度活动方案", cat: "CAT-YW-FH", catName: CAT_MAP["CAT-YW-FH"],
+        owner: "周明", ownerAccount: "20210015", dept: "D05", deptName: "职业教育分会",
+        tags: ["职业教育", "分会活动"], summary: "职业教育分会年度论坛、师资培训与校企走访安排。",
         status: "ACTIVE", version: 1, downloads: 23, createdAt: at(-40), updatedAt: at(-5), archivedAt: at(-4),
-        versions: [version(1, "实验室安全检查记录-2026Q3.pdf", "3.2 MB", "陈静", -5, "汇总归档")]
+        versions: [version(1, "职业教育分会2026年度活动方案.pdf", "2.3 MB", "周明", -5, "分会理事会审议后归档")]
       }),
       mkDoc({
-        id: "D-1006", no: "YX-ZD-2026-0006", title: "教职工年度考核办法（征求意见稿）", cat: "CAT-ZD-XZ", catName: CAT_MAP["CAT-ZD-XZ"],
-        owner: "李知远", ownerAccount: "20230001", dept: "D01", deptName: "教务办公室",
-        tags: ["考核", "征求意见"], summary: "拟修订的年度考核办法，尚在征求意见阶段，未正式归档。",
+        id: "D-1006", no: "XH-ZD-2026-0006", title: "学会会费收支报告（2026上半年）", cat: "CAT-ZD-CW", catName: CAT_MAP["CAT-ZD-CW"],
+        owner: "李知远", ownerAccount: "20230001", dept: "D01", deptName: "秘书处",
+        tags: ["会费", "收支"], summary: "2026 年上半年会费收缴、支出执行与结余情况，待提交常务理事会审议。",
         status: "DRAFT", version: 1, downloads: 0, createdAt: at(-3), updatedAt: at(-2), archivedAt: null,
-        versions: [version(1, "年度考核办法（征求意见稿）.docx", "460 KB", "李知远", -3, "初稿")],
-        timeline: [timeline(-2, "李知远", "编辑文档", "补充教学工作量计算说明")]
+        versions: [version(1, "学会会费收支报告（2026上半年）.docx", "460 KB", "李知远", -3, "初稿")],
+        timeline: [timeline(-2, "李知远", "编辑文档", "补充会费收缴明细")]
       }),
       mkDoc({
-        id: "D-1007", no: "YX-NB-2026-0007", title: "学科建设专项材料", cat: "CAT-NB-ZL", catName: CAT_MAP["CAT-NB-ZL"],
-        classification: "sensitive", visibility: "user", tags: ["学科建设", "专项", "敏感"],
-        summary: "学科评估支撑材料与经费测算，仅限专项工作组成员查阅。",
+        id: "D-1007", no: "XH-NB-2026-0007", title: "电子教育研究课题立项评审结果（未公开）", cat: "CAT-NB-PS", catName: CAT_MAP["CAT-NB-PS"],
+        classification: "sensitive", visibility: "user", tags: ["课题评审", "未公开", "敏感"],
+        summary: "2026 年度课题立项评审打分、排名与拟立项名单，公示前仅限评审工作组查阅。",
         status: "ACTIVE", version: 1, downloads: 5, createdAt: at(-50), updatedAt: at(-6), archivedAt: at(-5),
-        versions: [version(1, "学科建设专项材料（2026）.pdf", "8.6 MB", "陈静", -6, "专项材料归档")]
+        versions: [version(1, "课题立项评审结果（未公开）.pdf", "3.6 MB", "陈静", -6, "评审结果归档")]
       }),
       mkDoc({
-        id: "D-1008", no: "YX-YW-2026-0008", title: "教学成果奖申报材料", cat: "CAT-YW-JX", catName: CAT_MAP["CAT-YW-JX"],
-        owner: "李知远", ownerAccount: "20230001", dept: "D01", deptName: "教务办公室",
-        tags: ["教学成果", "申报"], summary: "2026 年校级教学成果奖申报书、支撑材料与成果总结。",
+        id: "D-1008", no: "XH-YW-2026-0008", title: "2026年学术年会组织方案", cat: "CAT-YW-XS", catName: CAT_MAP["CAT-YW-XS"],
+        owner: "李知远", ownerAccount: "20230001", dept: "D01", deptName: "秘书处",
+        tags: ["学术年会", "组织方案"], summary: "年会主题、分论坛设置、嘉宾邀请、会务分工与预算安排。",
         status: "SUBMITTED", version: 1, downloads: 3, createdAt: at(-6), updatedAt: at(-1), archivedAt: null,
         approvalId: "APR-2026-003",
-        versions: [version(1, "教学成果奖申报材料.pdf", "6.4 MB", "李知远", -1, "提交归档审批")],
-        timeline: [timeline(-1, "李知远", "提交归档", "提交至院办初审")]
+        versions: [version(1, "2026年学术年会组织方案.pdf", "4.4 MB", "李知远", -1, "提交归档审批")],
+        timeline: [timeline(-1, "李知远", "提交归档", "提交至秘书处初审")]
       }),
       mkDoc({
-        id: "D-1009", no: "YX-YW-2026-0009", title: "学生实习基地合作协议", cat: "CAT-YW-JX", catName: CAT_MAP["CAT-YW-JX"],
-        classification: "sensitive", visibility: "user", tags: ["实习", "协议", "敏感"],
-        summary: "与 6 家实习基地签订的合作协议扫描件与续签计划。",
+        id: "D-1009", no: "XH-YW-2026-0009", title: "校企合作备忘录（华为技术）", cat: "CAT-YW-XS", catName: CAT_MAP["CAT-YW-XS"],
+        classification: "sensitive", visibility: "user", tags: ["校企合作", "备忘录", "敏感"],
+        summary: "与华为技术有限公司就联合实验室、师资培训与教材建设签署的合作备忘录。",
         status: "ACTIVE", version: 1, downloads: 9, createdAt: at(-120), updatedAt: at(-20), archivedAt: at(-19),
-        versions: [version(1, "实习基地合作协议汇编.pdf", "12.3 MB", "陈静", -20, "协议归档")]
+        versions: [version(1, "校企合作备忘录（华为技术）.pdf", "8.2 MB", "陈静", -20, "合作备忘录归档")]
       }),
       mkDoc({
-        id: "D-1010", no: "YX-XZ-2026-0010", title: "院系会议室使用登记表", cat: "CAT-XZ-HY", catName: CAT_MAP["CAT-XZ-HY"],
-        tags: ["会议室", "登记"], summary: "2026 年会议室使用登记与协调记录。",
+        id: "D-1010", no: "XH-GW-2026-0010", title: "秘书处周例会纪要（第38期）", cat: "CAT-GW-HY", catName: CAT_MAP["CAT-GW-HY"],
+        owner: "王慧敏", ownerAccount: "20180006", dept: "D01", deptName: "秘书处",
+        tags: ["例会", "会议纪要"], summary: "秘书处本周重点工作、年会筹备进度与各分会材料报送情况。",
         status: "ACTIVE", version: 1, downloads: 41, createdAt: at(-30), updatedAt: at(-2), archivedAt: at(-1),
-        versions: [version(1, "会议室使用登记表-2026.xlsx", "220 KB", "陈静", -2, "月度汇总")]
+        versions: [version(1, "秘书处周例会纪要（第38期）.pdf", "320 KB", "王慧敏", -2, "例会纪要归档")]
       }),
       mkDoc({
-        id: "D-1011", no: "YX-NB-2026-0011", title: "新入职教师培训手册", cat: "CAT-NB-NB", catName: CAT_MAP["CAT-NB-NB"],
-        owner: "李知远", ownerAccount: "20230001", dept: "D01", deptName: "教务办公室",
-        tags: ["新教师", "培训"], summary: "新入职教师培训安排、导师制要求与教学规范。",
+        id: "D-1011", no: "XH-NB-2026-0011", title: "新员工入职手册", cat: "CAT-NB-NB", catName: CAT_MAP["CAT-NB-NB"],
+        owner: "李知远", ownerAccount: "20230001", dept: "D01", deptName: "秘书处",
+        tags: ["新员工", "培训"], summary: "秘书处新员工入职指引、公文流转规范、会员服务流程与保密要求。",
         status: "RETURNED", version: 1, downloads: 0, createdAt: at(-10), updatedAt: at(-3), archivedAt: null,
         approvalId: "APR-2026-004",
-        versions: [version(1, "新入职教师培训手册.pdf", "2.2 MB", "李知远", -4, "提交归档审批")],
-        timeline: [timeline(-3, "王慧敏", "退回", "请补充培训课时安排与考核方式")]
+        versions: [version(1, "新员工入职手册.pdf", "2.2 MB", "李知远", -4, "提交归档审批")],
+        timeline: [timeline(-3, "王慧敏", "退回", "请补充学会概况、会员服务流程与保密要求")]
       }),
       mkDoc({
-        id: "D-1012", no: "YX-XZ-2026-0012", title: "2025 年度工作总结", cat: "CAT-XZ-WJ", catName: CAT_MAP["CAT-XZ-WJ"],
-        tags: ["总结", "年度"], summary: "2025 年度院系工作总结与 2026 年工作要点。",
+        id: "D-1012", no: "XH-GW-2026-0012", title: "学会2025年度工作总结", cat: "CAT-GW-FW", catName: CAT_MAP["CAT-GW-FW"],
+        owner: "孙建国", ownerAccount: "20120001", dept: "D06", deptName: "理事会",
+        tags: ["年度总结", "理事会"], summary: "2025 年度学会党建、学术交流、会员服务、分支机构和财务工作回顾。",
         status: "ACTIVE", version: 1, downloads: 77, createdAt: at(-300), updatedAt: at(-100), archivedAt: at(-99),
-        versions: [version(1, "2025年度工作总结.pdf", "1.4 MB", "陈静", -100, "定稿归档")]
+        versions: [version(1, "学会2025年度工作总结.pdf", "1.4 MB", "孙建国", -100, "理事会审议后归档")]
       }),
       mkDoc({
-        id: "D-1013", no: "YX-YW-2025-0013", title: "旧版课程大纲（2019）", cat: "CAT-YW-JX", catName: CAT_MAP["CAT-YW-JX"],
-        tags: ["课程大纲", "历史"], summary: "2019 版课程大纲，已被 2025 版替代。",
+        id: "D-1013", no: "XH-ZD-2025-0013", title: "旧版学会章程（2020）", cat: "CAT-ZD-ZL", catName: CAT_MAP["CAT-ZD-ZL"],
+        tags: ["章程", "历史"], summary: "2020 年第六届第二次会员代表大会通过的章程版本，已被 2026 修订稿替代。",
         status: "RECYCLED", version: 1, downloads: 0, createdAt: at(-500), updatedAt: at(-4),
         deletedAt: at(-3), purgeAt: at(27), prevStatus: "ACTIVE",
-        versions: [version(1, "课程大纲2019.pdf", "3.8 MB", "陈静", -500, "历史版本")],
-        timeline: [timeline(-3, "陈静", "删除文档", "已被新版替代，移入回收站")]
+        versions: [version(1, "中国电子教育学会章程（2020）.pdf", "1.6 MB", "陈静", -500, "历史版本")],
+        timeline: [timeline(-3, "陈静", "删除文档", "已被 2026 修订稿替代，移入回收站")]
       }),
       mkDoc({
-        id: "D-1014", no: "YX-XZ-2024-0014", title: "2024 年招生简章", cat: "CAT-XZ-WJ", catName: CAT_MAP["CAT-XZ-WJ"],
-        tags: ["招生", "简章"], summary: "2024 年招生简章，已过有效期。",
+        id: "D-1014", no: "XH-GW-2024-0014", title: "2024年学会通讯录", cat: "CAT-GW-FW", catName: CAT_MAP["CAT-GW-FW"],
+        tags: ["通讯录", "历史"], summary: "2024 年度理事、分会联络人与秘书处工作人员通讯录，已过有效期。",
         status: "EXPIRED", version: 1, downloads: 54, createdAt: at(-420), updatedAt: at(-30),
         validUntil: at(-10), archivedAt: at(-400),
-        versions: [version(1, "2024年招生简章.pdf", "5.1 MB", "陈静", -400, "定稿归档")]
+        versions: [version(1, "2024年学会通讯录.xlsx", "180 KB", "陈静", -400, "年度通讯录归档")]
       }),
       mkDoc({
-        id: "D-1015", no: "YX-ZD-2026-0015", title: "院系印章使用管理规定", cat: "CAT-ZD-XZ", catName: CAT_MAP["CAT-ZD-XZ"],
-        tags: ["印章", "规定"], summary: "印章保管、使用审批与登记要求。",
-        status: "ACTIVE", version: 1, downloads: 31, createdAt: at(-80), updatedAt: at(-12), archivedAt: at(-11),
-        versions: [version(1, "院系印章使用管理规定.pdf", "760 KB", "陈静", -12, "定稿归档")]
+        id: "D-1015", no: "XH-ZD-2026-0015", title: "学会印章使用管理规定", cat: "CAT-ZD-ZL", catName: CAT_MAP["CAT-ZD-ZL"],
+        tags: ["印章", "用印"], summary: "学会公章、财务章、合同章的使用范围、审批流程与登记要求。",
+        status: "SUBMITTED", version: 1, downloads: 31, createdAt: at(-80), updatedAt: at(-12), archivedAt: null,
+        approvalId: "APR-2026-009",
+        versions: [version(1, "学会印章使用管理规定.pdf", "760 KB", "陈静", -12, "定稿待归档")]
+      }),
+      mkDoc({
+        id: "D-1016", no: "XH-GW-2026-0016", title: "秘书处会议纪要（2026年第10期）", cat: "CAT-GW-HY", catName: CAT_MAP["CAT-GW-HY"],
+        owner: "王慧敏", ownerAccount: "20180006", dept: "D01", deptName: "秘书处",
+        tags: ["会议纪要", "秘书处"], summary: "秘书处关于年会筹备、会员发展、分会年度考核工作的会议纪要。",
+        status: "ACTIVE", version: 1, downloads: 18, createdAt: at(-15), updatedAt: at(-2), archivedAt: at(-1),
+        versions: [version(1, "秘书处会议纪要-2026年第10期.pdf", "420 KB", "王慧敏", -2, "会议纪要归档")]
+      }),
+      mkDoc({
+        id: "D-1017", no: "XH-GW-2026-0017", title: "副理事长分管工作要点", cat: "CAT-GW-FW", catName: CAT_MAP["CAT-GW-FW"],
+        owner: "赵启明", ownerAccount: "20160001", dept: "D06", deptName: "理事会",
+        tags: ["工作要点", "分管"], summary: "副理事长分管学术交流、教材建设与校企合作的年度工作要点。",
+        status: "DRAFT", version: 1, downloads: 0, createdAt: at(-4), updatedAt: at(-1), archivedAt: null,
+        versions: [version(1, "副理事长分管工作要点.docx", "360 KB", "赵启明", -1, "初稿")]
+      }),
+      mkDoc({
+        id: "D-1018", no: "XH-YW-2026-0018", title: "职业教育分会实训基地建设方案", cat: "CAT-YW-FH", catName: CAT_MAP["CAT-YW-FH"],
+        owner: "周明", ownerAccount: "20210015", dept: "D05", deptName: "职业教育分会",
+        tags: ["实训基地", "分会"], summary: "职业教育分会实训基地建设目标、合作院校、经费测算与实施计划。",
+        status: "SUBMITTED", version: 1, downloads: 9, createdAt: at(-12), updatedAt: at(-4), archivedAt: null,
+        versions: [version(1, "职业教育分会实训基地建设方案.pdf", "2.8 MB", "周明", -4, "提交分会初审")],
+        approvalId: "APR-2026-011"
+      }),
+      mkDoc({
+        id: "D-1019", no: "XH-NB-2026-0019", title: "学会十四五发展规划中期评估", cat: "CAT-NB-NB", catName: CAT_MAP["CAT-NB-NB"],
+        owner: "孙建国", ownerAccount: "20120001", dept: "D06", deptName: "理事会",
+        tags: ["规划", "评估"], summary: "学会十四五规划中期目标完成情况、问题分析与下一阶段举措。",
+        status: "SUBMITTED", version: 1, downloads: 22, createdAt: at(-20), updatedAt: at(-6), archivedAt: null,
+        versions: [version(1, "学会十四五发展规划中期评估.pdf", "4.6 MB", "孙建国", -6, "提交理事长终审")],
+        approvalId: "APR-2026-010"
+      }),
+      mkDoc({
+        id: "D-1020", no: "XH-YW-2026-0020", title: "学术年会论文评审材料清单", cat: "CAT-YW-XS", catName: CAT_MAP["CAT-YW-XS"],
+        owner: "张倩", ownerAccount: "20220008", dept: "D01", deptName: "秘书处",
+        tags: ["学术年会", "论文评审"], summary: "年会投稿论文清单、评审专家分配与评审意见回收情况。",
+        status: "SUBMITTED", version: 1, downloads: 6, createdAt: at(-9), updatedAt: at(-3), archivedAt: null,
+        versions: [version(1, "学术年会论文评审材料清单.xlsx", "680 KB", "张倩", -3, "提交副秘书长初审")],
+        approvalId: "APR-2026-012"
       })
     ];
 
     const grants = [
       {
         id: "G-001", effect: "allow", subjectType: "user", subjectId: "20230001", subjectName: "李知远",
-        objectType: "document", objectId: "D-1002", objectName: "2026 年度教学工作计划",
-        rights: ["view", "download"], source: "document", reason: "承担教学计划编制工作",
+        objectType: "document", objectId: "D-1002", objectName: "第八届理事会2026年度工作计划",
+        rights: ["view", "download"], source: "document", reason: "参与年度计划编制",
         validFrom: at(-10), validUntil: at(20), status: "active", grantBy: "陈静",
         approvalId: "APR-2026-001", uses: 3, maxUses: null
       },
       {
-        id: "G-002", effect: "allow", subjectType: "dept", subjectId: "D02", subjectName: "科研办公室",
+        id: "G-002", effect: "allow", subjectType: "dept", subjectId: "D05", subjectName: "职业教育分会",
         objectType: "category", objectId: "CAT-NB", objectName: "内部资料",
-        rights: ["view"], source: "approval", reason: "学科建设联合工作查阅内部资料",
+        rights: ["view"], source: "approval", reason: "分会联合工作查阅内部资料",
         validFrom: at(-24), validUntil: at(6), status: "active", grantBy: "陈静",
         approvalId: "APR-2025-086", uses: 0, maxUses: null
       },
       {
         id: "G-003", effect: "allow", subjectType: "user", subjectId: "20230001", subjectName: "李知远",
-        objectType: "document", objectId: "D-1007", objectName: "学科建设专项材料",
-        rights: ["view"], source: "approval", reason: "专项工作组材料查阅",
+        objectType: "document", objectId: "D-1007", objectName: "电子教育研究课题立项评审结果（未公开）",
+        rights: ["view"], source: "approval", reason: "评审工作组材料查阅",
         validFrom: at(-29), validUntil: at(1), status: "active", grantBy: "陈静",
         approvalId: "APR-2025-091", uses: 2, maxUses: null
       },
@@ -267,15 +348,15 @@
       },
       {
         id: "G-005", effect: "allow", subjectType: "user", subjectId: "20230001", subjectName: "李知远",
-        objectType: "document", objectId: "D-1003", objectName: "研究生推免实施细则",
-        rights: ["view", "download"], source: "document", reason: "2025 年推免工作",
+        objectType: "document", objectId: "D-1003", objectName: "评审专家库名单（2026）",
+        rights: ["view", "download"], source: "document", reason: "2025 年评审工作",
         validFrom: at(-60), validUntil: at(-1), status: "expired", grantBy: "陈静",
         approvalId: "APR-2025-070", uses: 6, maxUses: null
       },
       {
         id: "G-006", effect: "allow", subjectType: "user", subjectId: "20220008", subjectName: "张倩",
-        objectType: "document", objectId: "D-1009", objectName: "学生实习基地合作协议",
-        rights: ["view", "download"], source: "approval", reason: "实习基地续签核对",
+        objectType: "document", objectId: "D-1009", objectName: "校企合作备忘录（华为技术）",
+        rights: ["view", "download"], source: "approval", reason: "校企合作续签核对",
         validFrom: at(-15), validUntil: at(45), status: "active", grantBy: "陈静",
         approvalId: "APR-2025-095", uses: 1, maxUses: null
       }
@@ -283,172 +364,272 @@
 
     const instances = [
       mkInstance({
-        id: "APR-2026-001", no: "SP-2026-0001", type: "DOC_ARCHIVE", title: "《本科教学管理制度汇编》归档审批",
-        status: "APPROVED", creator: "陈静", creatorAccount: "20150012", deptName: "院办公室", docId: "D-1001",
+        id: "APR-2026-001", no: "SP-2026-0001", type: "DOC_ARCHIVE", title: "《中国电子教育学会章程（2026修订稿）》归档审批",
+        status: "APPROVED", creator: "陈静", creatorAccount: "20150012", deptName: "秘书处", docId: "D-1001",
         createdAt: at(-32), submittedAt: at(-32), finishedAt: at(-30), currentNode: 2,
         form: [
-          { label: "文档标题", value: "本科教学管理制度汇编" },
-          { label: "文档编号", value: "YX-ZD-2026-0001" },
-          { label: "所属分类", value: "制度文件 / 教学管理" },
+          { label: "文档标题", value: "中国电子教育学会章程（2026修订稿）" },
+          { label: "文档编号", value: "XH-ZD-2026-0001" },
+          { label: "所属分类", value: "制度文件 / 学会治理" },
           { label: "密级", value: "内部" },
-          { label: "可见范围", value: "全院" },
-          { label: "归档说明", value: "2026 修订版定稿归档，供全院查阅。" }
+          { label: "可见范围", value: "全体会员" },
+          { label: "归档说明", value: "章程修订稿经会员代表大会审议通过，申请归档。" }
         ],
         nodes: [
-          mkNode("院办初审", [mkTask("20180006", "王慧敏", "approved", "材料齐全，同意归档。", -31)], "approved"),
-          mkNode("分管领导终审", [mkTask("20160001", "赵启明", "approved", "同意。", -30)], "approved")
+          mkNode("秘书处初审", [mkTask("20180006", "王慧敏", "approved", "修订条款已逐条核对。", -31)], "approved"),
+          mkNode("副理事长终审", [mkTask("20160001", "赵启明", "approved", "同意提交理事会备案。", -30)], "approved")
         ],
         history: [
           { at: at(-32), actor: "陈静", action: "提交审批", comment: "提交归档审批" },
-          { at: at(-31), actor: "王慧敏", action: "同意", comment: "材料齐全，同意归档。" },
-          { at: at(-30), actor: "赵启明", action: "同意", comment: "同意。" }
+          { at: at(-31), actor: "王慧敏", action: "同意", comment: "修订条款已逐条核对。" },
+          { at: at(-30), actor: "赵启明", action: "同意", comment: "同意提交理事会备案。" }
         ]
       }),
       mkInstance({
-        id: "APR-2026-002", no: "SP-2026-0002", type: "PERM_GRANT", title: "《研究生推免实施细则》查看权限申请",
-        status: "RUNNING", creator: "李知远", creatorAccount: "20230001", deptName: "教务办公室", docId: "D-1003",
+        id: "APR-2026-002", no: "SP-2026-0002", type: "PERM_GRANT", title: "《评审专家库名单（2026）》查看权限申请",
+        status: "RUNNING", creator: "李知远", creatorAccount: "20230001", deptName: "秘书处", docId: "D-1003",
         createdAt: at(-1), submittedAt: at(-1), dueAt: at(0, 18), priority: "urgent",
         form: [
-          { label: "申请对象", value: "研究生推免实施细则（YX-ZD-2026-0003）" },
+          { label: "申请对象", value: "评审专家库名单（2026）（XH-NB-2026-0003）" },
           { label: "申请权限", value: "查看" },
           { label: "申请期限", value: "30 天" },
-          { label: "申请用途", value: "承担 2026 年推免材料审核工作，需要查阅实施细则与名额分配口径。" }
+          { label: "申请用途", value: "承担 2026 年度课题评审秘书工作，需要核对专家名单与回避规则。" }
         ],
-        payload: { objectType: "document", objectId: "D-1003", rights: ["view"], days: 30 },
-        nodes: [mkNode("院办初审", [mkTask("20180006", "王慧敏", "pending")])],
-        history: [{ at: at(-1), actor: "李知远", action: "提交申请", comment: "申请查看《研究生推免实施细则》30 天" }]
+        payload: { objectType: "document", objectId: "D-1003", rights: ["view"], days: 30, reason: "课题评审秘书工作" },
+        nodes: [mkNode("秘书处初审", [mkTask("20180006", "王慧敏", "pending")])],
+        history: [{ at: at(-1), actor: "李知远", action: "提交申请", comment: "申请查看评审专家库名单 30 天" }]
       }),
       mkInstance({
-        id: "APR-2026-003", no: "SP-2026-0003", type: "DOC_ARCHIVE", title: "《教学成果奖申报材料》归档审批",
-        status: "RUNNING", creator: "李知远", creatorAccount: "20230001", deptName: "教务办公室", docId: "D-1008",
-        createdAt: at(-1), submittedAt: at(-1), dueAt: at(2), priority: "normal",
+        id: "APR-2026-003", no: "SP-2026-0003", type: "DOC_ARCHIVE", title: "《2026年学术年会组织方案》归档审批",
+        status: "RUNNING", creator: "李知远", creatorAccount: "20230001", deptName: "秘书处", docId: "D-1008",
+        createdAt: at(-1), submittedAt: at(-1), dueAt: at(2),
         form: [
-          { label: "文档标题", value: "教学成果奖申报材料" },
-          { label: "文档编号", value: "YX-YW-2026-0008" },
-          { label: "所属分类", value: "业务文档 / 教学运行" },
+          { label: "文档标题", value: "2026年学术年会组织方案" },
+          { label: "文档编号", value: "XH-YW-2026-0008" },
+          { label: "所属分类", value: "业务文档 / 学术活动" },
           { label: "密级", value: "内部" },
-          { label: "可见范围", value: "全院" },
-          { label: "归档说明", value: "校级教学成果奖申报材料定稿，需归档留存。" }
+          { label: "可见范围", value: "全体会员" },
+          { label: "归档说明", value: "学术年会组织方案定稿，申请归档。" }
         ],
         nodes: [
-          mkNode("院办初审", [mkTask("20180006", "王慧敏", "pending")]),
-          mkNode("分管领导终审", [mkTask("20160001", "赵启明", "waiting")], "waiting")
+          mkNode("秘书处初审", [mkTask("20180006", "王慧敏", "pending")]),
+          mkNode("副理事长终审", [mkTask("20160001", "赵启明", "waiting")], "waiting")
         ],
-        history: [{ at: at(-1), actor: "李知远", action: "提交归档", comment: "提交至院办初审" }]
+        history: [{ at: at(-1), actor: "李知远", action: "提交归档", comment: "提交至秘书处初审" }]
       }),
       mkInstance({
-        id: "APR-2026-004", no: "SP-2026-0004", type: "DOC_ARCHIVE", title: "《新入职教师培训手册》归档审批",
-        status: "RETURNED", creator: "李知远", creatorAccount: "20230001", deptName: "教务办公室", docId: "D-1011",
+        id: "APR-2026-004", no: "SP-2026-0004", type: "DOC_ARCHIVE", title: "《新员工入职手册》归档审批",
+        status: "RETURNED", creator: "李知远", creatorAccount: "20230001", deptName: "秘书处", docId: "D-1011",
         createdAt: at(-5), submittedAt: at(-5), dueAt: at(-3), currentNode: 0,
         form: [
-          { label: "文档标题", value: "新入职教师培训手册" },
-          { label: "文档编号", value: "YX-NB-2026-0011" },
+          { label: "文档标题", value: "新员工入职手册" },
+          { label: "文档编号", value: "XH-NB-2026-0011" },
           { label: "所属分类", value: "内部资料 / 内部参考" },
           { label: "密级", value: "内部" },
-          { label: "可见范围", value: "本部门" },
-          { label: "归档说明", value: "新入职教师培训使用，需归档。" }
+          { label: "可见范围", value: "秘书处" },
+          { label: "归档说明", value: "新员工入职培训使用，申请归档。" }
         ],
-        nodes: [mkNode("院办初审", [mkTask("20180006", "王慧敏", "returned", "请补充培训课时安排与考核方式后再提交。", -3)], "returned")],
+        nodes: [mkNode("秘书处初审", [mkTask("20180006", "王慧敏", "returned", "请补充学会概况、会员服务流程与保密要求后再提交。", -3)], "returned")],
         history: [
-          { at: at(-5), actor: "李知远", action: "提交归档", comment: "提交至院办初审" },
-          { at: at(-3), actor: "王慧敏", action: "退回", comment: "请补充培训课时安排与考核方式后再提交。" }
+          { at: at(-5), actor: "李知远", action: "提交归档", comment: "提交至秘书处初审" },
+          { at: at(-3), actor: "王慧敏", action: "退回", comment: "请补充学会概况、会员服务流程与保密要求后再提交。" }
         ]
       }),
       mkInstance({
-        id: "APR-2026-005", no: "SP-2026-0005", type: "SENSITIVE_DOWNLOAD", title: "《学科建设专项材料》下载审批",
-        status: "RUNNING", creator: "李知远", creatorAccount: "20230001", deptName: "教务办公室", docId: "D-1007",
+        id: "APR-2026-005", no: "SP-2026-0005", type: "SENSITIVE_DOWNLOAD", title: "《电子教育研究课题立项评审结果（未公开）》下载审批",
+        status: "RUNNING", creator: "李知远", creatorAccount: "20230001", deptName: "秘书处", docId: "D-1007",
         createdAt: at(0, -2), submittedAt: at(0, -2), dueAt: at(0, 6), priority: "urgent",
         form: [
-          { label: "文档", value: "学科建设专项材料（YX-NB-2026-0007）" },
+          { label: "文档", value: "电子教育研究课题立项评审结果（未公开）" },
           { label: "密级", value: "敏感" },
-          { label: "下载用途", value: "撰写学科建设年度进展报告，需要引用专项材料中的经费与成果数据。" },
+          { label: "下载用途", value: "撰写课题评审工作报告，需要引用立项名单与评审结论。" },
           { label: "使用范围", value: "本人" },
           { label: "有效期", value: "24 小时，仅可下载 1 次" }
         ],
-        payload: { objectType: "document", objectId: "D-1007", rights: ["download"], hours: 24 },
-        nodes: [mkNode("院办初审", [mkTask("20180006", "王慧敏", "pending")])],
-        history: [{ at: at(0, -2), actor: "李知远", action: "提交申请", comment: "申请下载敏感文档" }]
+        payload: { objectType: "document", objectId: "D-1007", rights: ["download"], hours: 24, reason: "撰写评审工作报告" },
+        nodes: [mkNode("秘书处初审", [mkTask("20180006", "王慧敏", "pending")])],
+        history: [{ at: at(0, -2), actor: "李知远", action: "提交申请", comment: "申请下载未公开评审结果" }]
       }),
       mkInstance({
-        id: "APR-2026-006", no: "SP-2026-0006", type: "PERM_GRANT", title: "科研办公室申请「业务文档」下载权限",
-        status: "RUNNING", creator: "张倩", creatorAccount: "20220008", deptName: "科研办公室", docId: null,
-        createdAt: at(-1), submittedAt: at(-1), dueAt: at(1), priority: "normal",
+        id: "APR-2026-006", no: "SP-2026-0006", type: "PERM_GRANT", title: "职业教育分会申请「业务文档」查看与下载权限",
+        status: "RUNNING", creator: "周明", creatorAccount: "20210015", deptName: "职业教育分会", docId: null,
+        createdAt: at(-1), submittedAt: at(-1), dueAt: at(1),
         form: [
           { label: "申请对象", value: "业务文档（分类）" },
-          { label: "申请部门", value: "科研办公室" },
+          { label: "申请部门", value: "职业教育分会" },
           { label: "申请权限", value: "查看、下载" },
           { label: "申请期限", value: "60 天" },
-          { label: "申请用途", value: "科研管理需要调阅教学运行类业务文档，用于项目结题材料核对。" }
+          { label: "申请用途", value: "分会年度活动与实训基地建设需要调阅学会业务文档。" }
         ],
-        payload: { objectType: "category", objectId: "CAT-YW", subjectType: "dept", subjectId: "D02", rights: ["view", "download"], days: 60 },
-        nodes: [mkNode("院办初审", [mkTask("20180006", "王慧敏", "pending")])],
-        history: [{ at: at(-1), actor: "张倩", action: "提交申请", comment: "申请跨部门资料权限" }]
+        payload: { objectType: "category", objectId: "CAT-YW", subjectType: "dept", subjectId: "D05", rights: ["view", "download"], days: 60, reason: "分会活动与实训基地建设" },
+        nodes: [mkNode("秘书处初审", [mkTask("20180006", "王慧敏", "pending")])],
+        history: [{ at: at(-1), actor: "周明", action: "提交申请", comment: "申请跨分会资料权限" }]
       }),
       mkInstance({
-        id: "APR-2026-007", no: "SP-2026-0007", type: "DOC_ARCHIVE", title: "《旧版课程大纲（2019）》归档审批",
-        status: "REJECTED", creator: "陈静", creatorAccount: "20150012", deptName: "院办公室", docId: "D-1013",
+        id: "APR-2026-007", no: "SP-2026-0007", type: "DOC_ARCHIVE", title: "《旧版学会章程（2020）》归档审批",
+        status: "REJECTED", creator: "陈静", creatorAccount: "20150012", deptName: "秘书处", docId: "D-1013",
         createdAt: at(-5), submittedAt: at(-5), dueAt: at(-4), currentNode: 0,
         form: [
-          { label: "文档标题", value: "旧版课程大纲（2019）" },
-          { label: "文档编号", value: "YX-YW-2025-0013" },
+          { label: "文档标题", value: "旧版学会章程（2020）" },
+          { label: "文档编号", value: "XH-ZD-2025-0013" },
           { label: "归档说明", value: "历史版本，申请归档保留。" }
         ],
-        nodes: [mkNode("院办初审", [mkTask("20180006", "王慧敏", "rejected", "版本过旧，建议直接作废，不再归档。", -4)], "rejected")],
+        nodes: [mkNode("秘书处初审", [mkTask("20180006", "王慧敏", "rejected", "已被 2026 修订稿替代，建议作废，不再归档。", -4)], "rejected")],
         history: [
-          { at: at(-5), actor: "陈静", action: "提交归档", comment: "提交至院办初审" },
-          { at: at(-4), actor: "王慧敏", action: "驳回", comment: "版本过旧，建议直接作废，不再归档。" }
+          { at: at(-5), actor: "陈静", action: "提交归档", comment: "提交至秘书处初审" },
+          { at: at(-4), actor: "王慧敏", action: "驳回", comment: "已被 2026 修订稿替代，建议作废，不再归档。" }
         ]
       }),
       mkInstance({
-        id: "APR-2026-008", no: "SP-2026-0008", type: "GENERAL", title: "对外提供《2025 年度工作总结》审批",
-        status: "APPROVED", creator: "王慧敏", creatorAccount: "20180006", deptName: "院办公室", docId: "D-1012",
-        createdAt: at(-12), submittedAt: at(-12), dueAt: at(-10), currentNode: 1, finishedAt: at(-10),
+        id: "APR-2026-008", no: "SP-2026-0008", type: "GENERAL", title: "对外提供《2025年度工作总结》审批",
+        status: "APPROVED", creator: "王慧敏", creatorAccount: "20180006", deptName: "秘书处", docId: "D-1012",
+        createdAt: at(-12), submittedAt: at(-12), finishedAt: at(-10), currentNode: 1,
         form: [
-          { label: "材料名称", value: "2025 年度工作总结" },
-          { label: "接收单位", value: "学校发展规划处" },
-          { label: "提供方式", value: "加盖院系公章的 PDF" },
-          { label: "用途说明", value: "学校年度考核材料汇总。" }
+          { label: "材料名称", value: "学会2025年度工作总结" },
+          { label: "接收单位", value: "业务主管单位教育部相关司局" },
+          { label: "提供方式", value: "加盖学会公章的 PDF" },
+          { label: "用途说明", value: "社会组织年度检查材料报送。" }
         ],
-        nodes: [mkNode("院办审核", [mkTask("20180006", "王慧敏", "approved", "同意提供。", -11)], "approved")],
+        nodes: [mkNode("秘书处审核", [mkTask("20180006", "王慧敏", "approved", "同意提供。", -11)], "approved")],
         history: [
           { at: at(-12), actor: "王慧敏", action: "提交审批", comment: "提交对外提供材料审批" },
           { at: at(-11), actor: "王慧敏", action: "同意", comment: "同意提供。" }
         ]
+      }),
+      mkInstance({
+        id: "APR-2026-009", no: "SP-2026-0009", type: "DOC_ARCHIVE", title: "《学会印章使用管理规定》归档审批",
+        status: "RUNNING", creator: "陈静", creatorAccount: "20150012", deptName: "秘书处", docId: "D-1015",
+        createdAt: at(-2), submittedAt: at(-2), dueAt: at(0, 12), currentNode: 1, priority: "urgent",
+        form: [
+          { label: "文档标题", value: "学会印章使用管理规定" },
+          { label: "文档编号", value: "XH-ZD-2026-0015" },
+          { label: "所属分类", value: "制度文件 / 学会治理" },
+          { label: "密级", value: "内部" },
+          { label: "可见范围", value: "秘书处及分会" },
+          { label: "归档说明", value: "用印管理制度修订定稿，申请归档。" }
+        ],
+        nodes: [
+          mkNode("秘书处初审", [mkTask("20180006", "王慧敏", "approved", "条款已核对，同意提交终审。", -1)], "approved"),
+          mkNode("副理事长终审", [mkTask("20160001", "赵启明", "pending")])
+        ],
+        history: [
+          { at: at(-2), actor: "陈静", action: "提交审批", comment: "提交归档审批" },
+          { at: at(-1), actor: "王慧敏", action: "同意", comment: "条款已核对，同意提交终审。" }
+        ]
+      }),
+      mkInstance({
+        id: "APR-2026-010", no: "SP-2026-0010", type: "DOC_ARCHIVE", title: "《学会十四五发展规划中期评估》归档审批",
+        status: "RUNNING", creator: "陈静", creatorAccount: "20150012", deptName: "秘书处", docId: "D-1019",
+        createdAt: at(-6), submittedAt: at(-6), dueAt: at(2), currentNode: 2,
+        form: [
+          { label: "文档标题", value: "学会十四五发展规划中期评估" },
+          { label: "文档编号", value: "XH-NB-2026-0019" },
+          { label: "所属分类", value: "内部资料 / 内部参考" },
+          { label: "密级", value: "内部" },
+          { label: "可见范围", value: "理事会" },
+          { label: "归档说明", value: "规划中期评估报告，需理事长终审后归档。" }
+        ],
+        nodes: [
+          mkNode("秘书处初审", [mkTask("20180006", "王慧敏", "approved", "材料完整。", -5)], "approved"),
+          mkNode("副理事长终审", [mkTask("20160001", "赵启明", "approved", "同意提交常务理事会审议。", -4)], "approved"),
+          mkNode("理事长终审", [mkTask("20120001", "孙建国", "pending")])
+        ],
+        history: [
+          { at: at(-6), actor: "陈静", action: "提交审批", comment: "提交归档审批" },
+          { at: at(-5), actor: "王慧敏", action: "同意", comment: "材料完整。" },
+          { at: at(-4), actor: "赵启明", action: "同意", comment: "同意提交常务理事会审议。" }
+        ]
+      }),
+      mkInstance({
+        id: "APR-2026-011", no: "SP-2026-0011", type: "DOC_ARCHIVE", title: "《职业教育分会实训基地建设方案》归档审批",
+        status: "RUNNING", creator: "李知远", creatorAccount: "20230001", deptName: "秘书处", docId: "D-1018",
+        createdAt: at(-1), submittedAt: at(-1), dueAt: at(1), currentNode: 0,
+        form: [
+          { label: "文档标题", value: "职业教育分会实训基地建设方案" },
+          { label: "文档编号", value: "XH-YW-2026-0018" },
+          { label: "所属分类", value: "业务文档 / 分会与会员" },
+          { label: "密级", value: "内部" },
+          { label: "可见范围", value: "分会及秘书处" },
+          { label: "归档说明", value: "分会实训基地建设方案，需分会联络人初审后归档。" }
+        ],
+        nodes: [
+          mkNode("分会联络人初审", [mkTask("20210015", "周明", "pending")]),
+          mkNode("秘书处复核", [mkTask("20180006", "王慧敏", "waiting")], "waiting")
+        ],
+        history: [{ at: at(-1), actor: "李知远", action: "提交归档", comment: "提交至分会联络人初审" }]
+      }),
+      mkInstance({
+        id: "APR-2026-012", no: "SP-2026-0012", type: "DOC_ARCHIVE", title: "《学术年会论文评审材料清单》归档审批",
+        status: "RUNNING", creator: "李知远", creatorAccount: "20230001", deptName: "秘书处", docId: "D-1020",
+        createdAt: at(-1), submittedAt: at(-1), dueAt: at(1), currentNode: 0,
+        form: [
+          { label: "文档标题", value: "学术年会论文评审材料清单" },
+          { label: "文档编号", value: "XH-YW-2026-0020" },
+          { label: "所属分类", value: "业务文档 / 学术活动" },
+          { label: "密级", value: "内部" },
+          { label: "可见范围", value: "评审工作组" },
+          { label: "归档说明", value: "年会论文评审材料清单，需副秘书长初审。" }
+        ],
+        nodes: [
+          mkNode("副秘书长初审", [mkTask("20220008", "张倩", "pending")]),
+          mkNode("秘书长复核", [mkTask("20180006", "王慧敏", "waiting")], "waiting")
+        ],
+        history: [{ at: at(-1), actor: "李知远", action: "提交归档", comment: "提交至副秘书长初审" }]
+      }),
+      mkInstance({
+        id: "APR-2026-013", no: "SP-2026-0013", type: "GENERAL", title: "2026年度第二批会员入会审议",
+        status: "RUNNING", creator: "王慧敏", creatorAccount: "20180006", deptName: "秘书处", docId: null,
+        createdAt: at(-1), submittedAt: at(-1), dueAt: at(2), currentNode: 0,
+        form: [
+          { label: "审议事项", value: "2026年度第二批会员入会" },
+          { label: "提交单位", value: "学会秘书处" },
+          { label: "申请人数", value: "单位会员 6 家、个人会员 18 人" },
+          { label: "说明", value: "按学会章程第十条，会员入会需经理事会授权机构研究并提出意见，报理事会或常务理事会讨论通过。" }
+        ],
+        nodes: [
+          mkNode("常务理事审议", [mkTask("20190021", "刘洋", "pending")]),
+          mkNode("秘书长复核", [mkTask("20180006", "王慧敏", "waiting")], "waiting")
+        ],
+        history: [{ at: at(-1), actor: "王慧敏", action: "提交审议", comment: "提交常务理事会审议会员入会名单" }]
       })
     ];
 
     const notifications = [
-      { id: uid("MSG"), account: "20230001", type: "APPR_RETURN", title: "归档审批被退回", body: "《新入职教师培训手册》被王慧敏退回：请补充培训课时安排与考核方式。", at: at(-3), read: false, link: { role: "staff", tab: "mine" } },
-      { id: uid("MSG"), account: "20230001", type: "GRANT_EXPIRE", title: "授权即将到期", body: "您对《学科建设专项材料》的查看授权将于明天到期，如需继续使用请发起续期申请。", at: at(0, -4), read: false, link: { role: "staff", tab: "perm" } },
-      { id: uid("MSG"), account: "20230001", type: "APPR_TASK", title: "审批已提交", body: "《教学成果奖申报材料》已提交院办初审，当前处理人王慧敏。", at: at(-1), read: false, link: { role: "staff", tab: "approvals" } },
-      { id: uid("MSG"), account: "20230001", type: "DOC_ARCHIVED", title: "文档已归档", body: "《2026 年度教学工作计划》已完成归档，可在文档中心查阅。", at: at(-17), read: true, link: { role: "staff", tab: "docs" } },
-      { id: uid("MSG"), account: "20180006", type: "APPR_TASK", title: "新待办：教学成果奖申报材料", body: "李知远提交《教学成果奖申报材料》归档审批，请在 2 天内处理。", at: at(-1), read: false, link: { role: "approver", tab: "todo", instanceId: "APR-2026-003" } },
-      { id: uid("MSG"), account: "20180006", type: "APPR_TASK", title: "新待办：敏感文档下载", body: "李知远申请下载《学科建设专项材料》，请尽快处理。", at: at(0, -2), read: false, link: { role: "approver", tab: "todo", instanceId: "APR-2026-005" } },
-      { id: uid("MSG"), account: "20180006", type: "APPR_TASK", title: "新待办：跨部门权限申请", body: "科研办公室申请「业务文档」查看与下载权限，期限 60 天。", at: at(-1), read: false, link: { role: "approver", tab: "todo", instanceId: "APR-2026-006" } },
-      { id: uid("MSG"), account: "20180006", type: "APPR_PASS", title: "审批已完成", body: "《2025 年度工作总结》对外提供审批已办结。", at: at(-10), read: true, link: { role: "approver", tab: "records" } },
-      { id: uid("MSG"), account: "20150012", type: "GRANT_EXPIRE", title: "授权即将到期", body: "科研办公室对「内部资料」的查看授权将于 6 天后到期。", at: at(0, -6), read: false, link: { role: "docadmin", tab: "grants" } },
-      { id: uid("MSG"), account: "20150012", type: "APPR_TASK", title: "新增审批事项", body: "科研办公室提交跨部门权限申请，待院办初审。", at: at(-1), read: false, link: { role: "docadmin", tab: "records" } },
-      { id: uid("MSG"), account: "20150012", type: "DOC_ARCHIVED", title: "归档完成", body: "《实验室安全检查记录（2026Q3）》已归档。", at: at(-4), read: true, link: { role: "docadmin", tab: "library" } }
+      { id: uid("MSG"), account: "20230001", type: "APPR_RETURN", title: "归档审批被退回", body: "《新员工入职手册》被王慧敏退回：请补充学会概况、会员服务流程与保密要求。", at: at(-3), read: false, link: { role: "staff", tab: "mine" } },
+      { id: uid("MSG"), account: "20230001", type: "GRANT_EXPIRE", title: "授权即将到期", body: "您对《电子教育研究课题立项评审结果（未公开）》的查看授权将于明天到期。", at: at(0, -4), read: false, link: { role: "staff", tab: "perm" } },
+      { id: uid("MSG"), account: "20230001", type: "APPR_TASK", title: "审批已提交", body: "《2026年学术年会组织方案》已提交秘书处初审，当前处理人王慧敏。", at: at(-1), read: false, link: { role: "staff", tab: "approvals" } },
+      { id: uid("MSG"), account: "20180006", type: "APPR_TASK", title: "新待办：学术年会组织方案", body: "李知远提交《2026年学术年会组织方案》归档审批，请在 2 天内处理。", at: at(-1), read: false, link: { role: "approver", tab: "todo", instanceId: "APR-2026-003" } },
+      { id: uid("MSG"), account: "20180006", type: "APPR_TASK", title: "新待办：未公开评审结果下载", body: "李知远申请下载《电子教育研究课题立项评审结果（未公开）》，请尽快处理。", at: at(0, -2), read: false, link: { role: "approver", tab: "todo", instanceId: "APR-2026-005" } },
+      { id: uid("MSG"), account: "20180006", type: "APPR_TASK", title: "新待办：分会权限申请", body: "职业教育分会申请「业务文档」查看与下载权限，期限 60 天。", at: at(-1), read: false, link: { role: "approver", tab: "todo", instanceId: "APR-2026-006" } },
+      { id: uid("MSG"), account: "20150012", type: "GRANT_EXPIRE", title: "授权即将到期", body: "职业教育分会对「内部资料」的查看授权将于 6 天后到期。", at: at(0, -6), read: false, link: { role: "docadmin", tab: "grants" } },
+      { id: uid("MSG"), account: "20150012", type: "APPR_TASK", title: "新增审批事项", body: "职业教育分会提交权限申请，待秘书处初审。", at: at(-1), read: false, link: { role: "docadmin", tab: "records" } },
+      { id: uid("MSG"), account: "20160001", type: "APPR_TASK", title: "新待办：印章管理规定归档", body: "《学会印章使用管理规定》已完成秘书处初审，待副理事长终审。", at: at(-1), read: false, link: { role: "approver", tab: "todo", instanceId: "APR-2026-009" } },
+      { id: uid("MSG"), account: "20120001", type: "APPR_TASK", title: "新待办：十四五规划归档", body: "《学会十四五发展规划中期评估》已通过秘书处与副理事长审核，待理事长终审。", at: at(-4), read: false, link: { role: "approver", tab: "todo", instanceId: "APR-2026-010" } },
+      { id: uid("MSG"), account: "20210015", type: "APPR_TASK", title: "新待办：实训基地建设方案", body: "李知远提交《职业教育分会实训基地建设方案》归档审批，待分会联络人初审。", at: at(-1), read: false, link: { role: "approver", tab: "todo", instanceId: "APR-2026-011" } },
+      { id: uid("MSG"), account: "20220008", type: "APPR_TASK", title: "新待办：论文评审材料清单", body: "《学术年会论文评审材料清单》待副秘书长初审。", at: at(-1), read: false, link: { role: "approver", tab: "todo", instanceId: "APR-2026-012" } },
+      { id: uid("MSG"), account: "20190021", type: "APPR_TASK", title: "新待办：会员入会审议", body: "2026 年度第二批会员入会名单待常务理事会审议。", at: at(-1), read: false, link: { role: "approver", tab: "todo", instanceId: "APR-2026-013" } }
     ];
 
     const announcements = [
-      { id: "ANN-01", title: "关于启用文档权限与审批 OA 的通知", body: "即日起，院系制度文件、行政材料与业务文档统一在 OA 中管理，原共享文件夹停止新增资料。", at: at(-7), pinned: true },
-      { id: "ANN-02", title: "敏感文档下载审批流程说明", body: "敏感文档默认不可下载，需在文档详情页提交下载申请，经院办审批后 24 小时内有效。", at: at(-3), pinned: false }
+      { id: "ANN-01", title: "关于启用学会公文与审批 OA 的通知", body: "即日起，学会公文、制度文件、会议纪要与分会材料统一在 OA 中管理，原共享目录停止新增资料。", at: at(-7), pinned: true },
+      { id: "ANN-02", title: "评审材料与专家名单下载审批说明", body: "评审专家库名单、未公开评审结果等敏感资料默认不可下载，需在文档详情页提交下载申请，经秘书处审批后 24 小时内有效。", at: at(-3), pinned: false }
     ];
 
     return {
-      __v: 3,
+      __v: 4,
+      roles: ROLE_DEFS,
       persona: PERSONA,
       approvers: APPROVERS,
       depts: DEPTS,
       users: USERS,
+      currentUser: null,
       categories: CATEGORIES,
       docs,
       grants,
       instances,
       notifications,
       announcements,
-      counters: { doc: 1015, instance: 8, grant: 6, message: notifications.length, category: 8 },
+      counters: { doc: 1020, instance: 13, grant: 6, message: notifications.length, category: 8 },
       intent: { seq: 0, role: "", tab: "", docId: null, instanceId: null, action: "" }
     };
   }
@@ -527,11 +708,15 @@
     grantById(id) { return this.grants.find((g) => g.id === id); },
 
     // ---------- 权限判定 ----------
+    roleByKey(key) { return this.roles.find((r) => r.key === key) || null; },
+    roleByAccount(account) { return this.roles.find((r) => r.account === account) || null; },
+    capsOf(account) {
+      const role = this.roleByAccount(account);
+      return role ? role.caps : ["staff"];
+    },
     roleOf(account) {
-      if (account === this.persona.staff.account) return "staff";
-      if (account === this.persona.docadmin.account) return "docadmin";
-      if (account === this.persona.approver.account || account === "20160001") return "approver";
-      return "staff";
+      const caps = this.capsOf(account);
+      return caps[0] || "staff";
     },
     grantMatches(grant, account, doc, right) {
       if (grant.effect !== "allow") return false;
@@ -543,16 +728,15 @@
         const cat = doc.cat || "";
         if (grant.objectId === "CAT-NB" ? cat.indexOf("CAT-NB") !== 0 : cat.indexOf(grant.objectId) !== 0) return false;
       }
-      const role = this.roleOf(account);
       if (grant.subjectType === "user") return grant.subjectId === account;
-      if (grant.subjectType === "role") return grant.subjectId === role;
+      if (grant.subjectType === "role") return this.capsOf(account).indexOf(grant.subjectId) !== -1;
       if (grant.subjectType === "dept") return grant.subjectId === doc.dept;
       return false;
     },
     activeGrantsFor(account) {
       return this.grants.filter((g) => g.status === "active" && new Date(g.validUntil).getTime() >= Date.now() && (
         (g.subjectType === "user" && g.subjectId === account) ||
-        (g.subjectType === "role" && g.subjectId === this.roleOf(account))
+        (g.subjectType === "role" && this.capsOf(account).indexOf(g.subjectId) !== -1)
       ));
     },
     hasGrant(account, doc, right) {
@@ -561,8 +745,8 @@
     },
     canView(doc, account) {
       if (!doc) return false;
-      const role = this.roleOf(account);
-      if (role === "docadmin" || role === "approver") return true;
+      const caps = this.capsOf(account);
+      if (caps.indexOf("docadmin") !== -1 || caps.indexOf("approver") !== -1) return true;
       if (doc.status === "RECYCLED" || doc.status === "DELETED") return false;
       if (doc.ownerAccount === account) return true;
       if (doc.classification !== "sensitive") return true;
@@ -649,19 +833,19 @@
           { label: "文档编号", value: doc.no },
           { label: "所属分类", value: doc.catName },
           { label: "密级", value: CLASS_META[doc.classification].label },
-          { label: "可见范围", value: doc.visibility === "all" ? "全院" : doc.visibility === "dept" ? "本部门" : "指定人员" },
+          { label: "可见范围", value: doc.visibility === "all" ? "全体会员" : doc.visibility === "dept" ? "本部门" : "指定人员" },
           { label: "归档说明", value: (extra && extra.reason) || "文档定稿，申请归档。" }
         ],
         nodes: [
-          mkNode("院办初审", [mkTask("20180006", "王慧敏", "pending")]),
-          mkNode("分管领导终审", [mkTask("20160001", "赵启明", "waiting")], "waiting")
+          mkNode("秘书处初审", [mkTask("20180006", "王慧敏", "pending")]),
+          mkNode("副理事长终审", [mkTask("20160001", "赵启明", "waiting")], "waiting")
         ],
-        history: [{ at: new Date().toISOString(), actor: user.name, action: "提交归档", comment: "提交至院办初审" }]
+        history: [{ at: new Date().toISOString(), actor: user.name, action: "提交归档", comment: "提交至秘书处初审" }]
       });
       doc.approvalId = inst.id;
-      doc.timeline.unshift(timeline(0, user.name, "提交归档", "提交至院办初审"));
+      doc.timeline.unshift(timeline(0, user.name, "提交归档", "提交至秘书处初审"));
       this.instances.unshift(inst);
-      this.notify("20180006", "新待办：文档归档", "《" + doc.title + "》待院办初审。", "APPR_TASK", { role: "approver", tab: "todo", instanceId: inst.id });
+      this.notify("20180006", "新待办：文档归档", "《" + doc.title + "》待秘书处初审。", "APPR_TASK", { role: "approver", tab: "todo", instanceId: inst.id });
       this.audit(user.name, "提交归档", doc.title, "成功");
       this.persist();
       return inst;
@@ -695,7 +879,7 @@
           { label: "接收单位", value: payload.recipient || "—" },
           { label: "事项说明", value: payload.reason || "—" }
         ],
-        nodes: [mkNode("院办初审", [mkTask("20180006", "王慧敏", "pending")])],
+        nodes: [mkNode("秘书处初审", [mkTask("20180006", "王慧敏", "pending")])],
         history: [{ at: new Date().toISOString(), actor: user.name, action: "提交审批", comment: payload.reason || "" }]
       });
       this.instances.unshift(inst);
@@ -807,8 +991,8 @@
           title: "「" + objectName + "」授权审批",
           status: "RUNNING",
           creator: actor || "陈静",
-          creatorAccount: this.persona.docadmin.account,
-          deptName: this.persona.docadmin.deptName,
+          creatorAccount: (this.users.find((u) => u.name === (actor || "陈静")) || this.persona.docadmin).account,
+          deptName: (this.users.find((u) => u.name === (actor || "陈静")) || this.persona.docadmin).deptName,
           docId: doc ? doc.id : null,
           dueAt: at(1),
           form: [
@@ -817,15 +1001,15 @@
             { label: "权限项", value: grant.rights.join("、") },
             { label: "期限", value: (payload.days || 30) + " 天" },
             { label: "授权用途", value: payload.reason || "—" },
-            { label: "风险提示", value: sensitive ? "敏感文档授权，需院办审批" : crossDept ? "跨部门授权，需院办审批" : "期限超过 90 天，需院办审批" }
+            { label: "风险提示", value: sensitive ? "敏感文档授权，需秘书处审批" : crossDept ? "跨分会授权，需秘书处审批" : "期限超过 90 天，需秘书处审批" }
           ],
           payload: { objectType: payload.objectType, objectId: payload.objectId, subjectType: payload.subjectType, subjectId: payload.subjectId, rights: grant.rights, days: payload.days, reason: payload.reason },
-          nodes: [mkNode("院办初审", [mkTask("20180006", "王慧敏", "pending")])],
+          nodes: [mkNode("秘书处初审", [mkTask("20180006", "王慧敏", "pending")])],
           history: [{ at: new Date().toISOString(), actor: actor || "陈静", action: "提交审批", comment: "提交授权审批" }]
         });
         grant.approvalId = inst.id;
         this.instances.unshift(inst);
-        this.notify("20180006", "新待办：授权审批", "「" + objectName + "」授权待院办初审。", "APPR_TASK", { role: "approver", tab: "todo", instanceId: inst.id });
+        this.notify("20180006", "新待办：授权审批", "「" + objectName + "」授权待秘书处初审。", "APPR_TASK", { role: "approver", tab: "todo", instanceId: inst.id });
         this.persist();
         return { status: "pending", grant, instance: inst };
       }
@@ -871,7 +1055,7 @@
           { label: "申请用途", value: payload.reason || "—" }
         ],
         payload: { objectType: payload.objectType, objectId: payload.objectId, rights: payload.rights, days: payload.days, reason: payload.reason },
-        nodes: [mkNode("院办初审", [mkTask("20180006", "王慧敏", "pending")])],
+        nodes: [mkNode("秘书处初审", [mkTask("20180006", "王慧敏", "pending")])],
         history: [{ at: new Date().toISOString(), actor: user.name, action: "提交申请", comment: payload.reason || "" }]
       });
       this.instances.unshift(inst);
@@ -902,7 +1086,7 @@
           { label: "有效期", value: "24 小时，仅可下载 1 次" }
         ],
         payload: { objectType: "document", objectId: doc.id, rights: ["download"], hours: 24 },
-        nodes: [mkNode("院办初审", [mkTask("20180006", "王慧敏", "pending")])],
+        nodes: [mkNode("秘书处初审", [mkTask("20180006", "王慧敏", "pending")])],
         history: [{ at: new Date().toISOString(), actor: user.name, action: "提交申请", comment: reason || "" }]
       });
       this.instances.unshift(inst);
@@ -1151,7 +1335,12 @@
       this.intent.seq += 1;
     },
     toast(message, type) {
-      this.ui.toast = { message, type: type || "success", seq: (this.ui.toast ? this.ui.toast.seq : 0) + 1 };
+      const seq = (this.ui.toast ? this.ui.toast.seq : 0) + 1;
+      this.ui.toast = { message, type: type || "success", seq };
+      if (this._toastTimer) clearTimeout(this._toastTimer);
+      this._toastTimer = setTimeout(() => {
+        if (this.ui.toast && this.ui.toast.seq === seq) this.ui.toast = null;
+      }, 3200);
     },
     confirm(opts) {
       return new Promise((resolve) => {
@@ -1168,7 +1357,7 @@
     persist() {
       try {
         const data = {
-          __v: 3, persona: this.persona, approvers: this.approvers, depts: this.depts, users: this.users,
+          __v: 4, persona: this.persona, approvers: this.approvers, depts: this.depts, users: this.users,
           categories: this.categories, docs: this.docs, grants: this.grants, instances: this.instances,
           notifications: this.notifications, announcements: this.announcements, counters: this.counters
         };
@@ -1183,7 +1372,13 @@
   function createStore() {
     let saved = null;
     try { saved = JSON.parse(localStorage.getItem(KEY) || "null"); } catch (e) { saved = null; }
-    const base = saved && saved.__v === 3 ? saved : seed();
+    const base = saved && saved.__v === 4 ? saved : seed();
+    // 角色定义始终以当前代码为准，避免旧缓存缺少新岗位
+    base.roles = ROLE_DEFS;
+    base.persona = PERSONA;
+    base.approvers = APPROVERS;
+    base.users = USERS;
+    base.currentUser = null;
     const state = Vue.reactive(base);
     state.ui = Vue.reactive({
       toast: null,
@@ -1197,7 +1392,7 @@
       type: (t) => INST_TYPE[t] || INST_TYPE.GENERAL,
       classification: (c) => CLASS_META[c] || CLASS_META.internal,
       rights: (arr) => (arr || []).map((r) => ({ view: "查看", download: "下载", edit: "编辑", manage: "管理" }[r] || r)).join("、"),
-      visibility: (v) => ({ all: "全院", dept: "本部门", user: "指定人员", private: "仅本人", role: "指定角色" }[v] || v),
+      visibility: (v) => ({ all: "全体会员", dept: "本分支机构", user: "指定人员", private: "仅本人", role: "指定角色" }[v] || v),
       size: (v) => v || "—"
     };
     return store;

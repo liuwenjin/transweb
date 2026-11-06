@@ -302,6 +302,14 @@
       height: 100%;
       overflow: auto;
       scroll-behavior: smooth;
+
+      /* 打开条款浮层时会把溢出临时锁住；预留滚动条槽位，
+         保证锁定前后正文宽度与位置不发生跳动 */
+      scrollbar-gutter: stable;
+    }
+
+    .contentItemArea.is-legal-open {
+      overflow: hidden;
     }
 
     button,
@@ -543,6 +551,7 @@
 
     /* 登录占位没有固有宽度，加载圈会溢出固定槽位，直接隐藏 */
     #loginMenuItem .CardItem_stateTips,
+    #loginMenuItem .loadingTips,
     #loginMenuItem .spinner-border {
       display: none;
     }
@@ -654,9 +663,7 @@
     }
 
     .hero-subtitle {
-      /* 580px：让第二句在「AI Agent；」之后换行，
-         后半句「按需绑定……」正好落成一行，避免行尾孤字 */
-      margin: 24px auto 54px;
+      margin: 24px auto 0;
 
       max-width: 580px;
 
@@ -669,31 +676,241 @@
       text-wrap: pretty;
     }
 
-    /* 副标题末句：同一段话里的轻声补充，不与主说明争夺注意力 */
-    .hero-subtitle-note {
+    .hero-subtitle span {
       display: block;
-
-      margin-top: 14px;
-
-      color: #716e67;
-      font-size: 13.5px;
-      line-height: 1.8;
-      letter-spacing: .05em;
     }
 
-    .hero-subtitle-note::before {
-      content: "";
-      display: block;
+    /* =========================
+       Hero actions / trust
+    ========================= */
 
-      width: 24px;
-      height: 1px;
-      margin: 0 auto 12px;
+    .hero-actions {
+      margin-top: 32px;
 
-      background: var(--line);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 13px;
+    }
+
+    .hero-cta {
+      min-height: 54px;
+      padding: 0 30px;
+
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+
+      border: 1px solid var(--ink);
+      background: var(--ink);
+      color: var(--paper);
+
+      font-size: 14px;
+      letter-spacing: .08em;
+
+      transition:
+        background .3s ease,
+        border-color .3s ease,
+        transform .25s ease,
+        box-shadow .35s ease;
+    }
+
+    .hero-cta:hover {
+      background: #2b2b31;
+      border-color: #2b2b31;
+      transform: translateY(-1px);
+      box-shadow: 0 12px 30px rgba(27, 27, 25, .14);
+    }
+
+    .hero-cta:active {
+      transform: translateY(0);
+    }
+
+    .hero-cta svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .hero-cta-alt {
+      padding-bottom: 3px;
+
+      color: var(--gray);
+      font-size: 12.5px;
+      letter-spacing: .03em;
+
+      border-bottom: 1px solid var(--line);
+
+      transition:
+        color .3s ease,
+        border-color .3s ease;
+    }
+
+    .hero-cta-alt:hover {
+      color: var(--ink);
+      border-bottom-color: var(--ink);
+    }
+
+    .hero-trust {
+      margin-top: 18px;
+
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+
+      padding: 9px 14px;
+
+      border: 1px solid var(--line);
+      background: var(--paper-2);
+
+      color: #56544d;
+      font-size: 11.5px;
+      line-height: 1.65;
+      letter-spacing: .02em;
+
+      text-align: left;
+    }
+
+    .hero-trust svg {
+      flex: none;
+
+      width: 14px;
+      height: 14px;
+    }
+
+    /* =========================
+       Hero presets
+    ========================= */
+
+    .hero-presets {
+      width: min(1000px, 100%);
+
+      margin-top: 64px;
+      padding-top: 32px;
+
+      border-top: 1px solid var(--line);
+
+      scroll-margin-top: 88px;
+    }
+
+    .hero-presets__head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 28px;
+
+      margin-bottom: 24px;
+
+      text-align: left;
+    }
+
+    .hero-presets__title {
+      margin: 0;
+
+      font-family: var(--serif);
+      font-size: 22px;
+      font-weight: 400;
+      line-height: 1.5;
+      letter-spacing: .02em;
+    }
+
+    .hero-presets__desc {
+      margin: 0;
+
+      max-width: 430px;
+
+      color: var(--gray);
+      font-size: 13px;
+      line-height: 1.85;
+      text-align: right;
+    }
+
+    .preset-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .preset-card {
+      position: relative;
+
+      min-height: 150px;
+      padding: 22px 22px 24px;
+
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+
+      background: var(--white);
+      border: 1px solid var(--line);
+
+      color: var(--ink);
+      text-align: left;
+
+      transition:
+        transform .35s ease,
+        border-color .35s ease,
+        box-shadow .35s ease;
+    }
+
+    .preset-card:hover {
+      transform: translateY(-2px);
+
+      border-color: rgba(27, 27, 25, .16);
+      box-shadow: 0 16px 36px rgba(27, 27, 25, .05);
+    }
+
+    .preset-index {
+      color: var(--light);
+      font-size: 10.5px;
+      letter-spacing: .18em;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .preset-question {
+      margin-top: 24px;
+
+      color: inherit;
+      font-family: var(--serif);
+      font-size: 18px;
+      line-height: 1.55;
+      letter-spacing: .01em;
+    }
+
+    .preset-card:visited {
+      color: var(--ink);
+    }
+
+    .preset-meta {
+      margin-top: auto;
+      padding-top: 18px;
+
+      color: var(--gray);
+      font-size: 11.5px;
+      letter-spacing: .03em;
+    }
+
+    .preset-arrow {
+      position: absolute;
+      right: 20px;
+      bottom: 22px;
+
+      color: var(--light);
+      font-size: 14px;
+
+      transition:
+        color .3s ease,
+        transform .3s ease;
+    }
+
+    .preset-card:hover .preset-arrow {
+      color: var(--ink);
+      transform: translateX(3px);
     }
 
     .social-proof {
-      margin: 24px auto 0;
+      margin: 40px auto 0;
 
       color: var(--light);
 
@@ -717,6 +934,30 @@
       box-shadow:
         0 30px 80px rgba(27, 27, 25, .05),
         0 2px 6px rgba(27, 27, 25, .025);
+
+      margin-top: 32px;
+
+      scroll-margin-top: 88px;
+    }
+
+    .generator[hidden] {
+      display: none;
+    }
+
+    .generator.is-revealing {
+      animation: uploadReveal .6s cubic-bezier(.2, .7, .2, 1);
+    }
+
+    @keyframes uploadReveal {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     /* 细滚动条，贴合「白与空」极简风 */
@@ -1408,8 +1649,8 @@
     .cases {
       display: grid;
 
-      grid-template-columns:
-        1.1fr .9fr;
+      /* 四张卡等宽等高，形成整齐的 2 × 2 纸片矩阵 */
+      grid-template-columns: repeat(2, 1fr);
 
       gap: 24px;
     }
@@ -1419,7 +1660,8 @@
       position: relative;
       contain: layout paint;
 
-      min-height: 300px;
+      height: 420px;
+      min-height: 0;
 
       padding: 40px;
 
@@ -1439,15 +1681,6 @@
 
       border-color: rgba(27, 27, 25, .16);
       box-shadow: 0 18px 44px rgba(27, 27, 25, .05);
-    }
-
-    .case:nth-child(2) {
-      min-height: 350px;
-    }
-
-    .case:nth-child(3),
-    .case:nth-child(4) {
-      min-height: 320px;
     }
 
     .case-number {
@@ -1515,6 +1748,156 @@
 
       border-color: rgba(27, 27, 25, .22);
       color: var(--ink);
+    }
+
+    /* =========================
+   Audience / 个人 · 机构分层
+========================= */
+
+    .audience-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .audience-card {
+      min-height: 380px;
+
+      padding: 38px 36px 34px;
+
+      display: flex;
+      flex-direction: column;
+
+      background: var(--white);
+      border: 1px solid var(--line);
+    }
+
+    .audience-card--personal {
+      border-top-color: var(--ink);
+    }
+
+    .audience-card--enterprise {
+      background: var(--paper-2);
+    }
+
+    .audience-kicker {
+      color: var(--light);
+      font-size: 10.5px;
+      letter-spacing: .18em;
+    }
+
+    .audience-title {
+      margin: 24px 0 0;
+
+      font-family: var(--serif);
+      font-size: 25px;
+      font-weight: 400;
+      line-height: 1.5;
+      letter-spacing: .02em;
+    }
+
+    .audience-desc {
+      margin-top: 14px;
+
+      max-width: 420px;
+
+      color: var(--text-body);
+      font-size: 13.5px;
+      line-height: 1.95;
+      letter-spacing: .01em;
+    }
+
+    .audience-list {
+      margin: 24px 0 0;
+      padding: 0;
+
+      list-style: none;
+    }
+
+    .audience-list li {
+      padding: 11px 0;
+
+      display: flex;
+      gap: 10px;
+
+      border-top: 1px solid var(--line);
+
+      color: var(--text-body);
+      font-size: 12.5px;
+      line-height: 1.7;
+    }
+
+    .audience-list li::before {
+      content: "—";
+      flex: none;
+
+      color: var(--light);
+    }
+
+    .audience-actions {
+      margin-top: auto;
+      padding-top: 28px;
+
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .audience-cta {
+      min-height: 48px;
+      padding: 0 22px;
+
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+
+      border: 1px solid var(--ink);
+      background: var(--ink);
+      color: var(--paper);
+
+      font-size: 13px;
+      letter-spacing: .06em;
+
+      transition:
+        background .3s ease,
+        border-color .3s ease,
+        transform .25s ease;
+    }
+
+    .audience-cta:hover {
+      background: #2b2b31;
+      border-color: #2b2b31;
+      transform: translateY(-1px);
+    }
+
+    .audience-cta--ghost {
+      background: transparent;
+      color: var(--ink);
+      border-color: rgba(27, 27, 25, .24);
+    }
+
+    .audience-cta--ghost:hover {
+      background: var(--white);
+    }
+
+    .audience-link {
+      padding-bottom: 2px;
+
+      color: var(--gray);
+      font-size: 12.5px;
+      letter-spacing: .03em;
+
+      border-bottom: 1px solid var(--line);
+
+      transition:
+        color .3s ease,
+        border-color .3s ease;
+    }
+
+    .audience-link:hover {
+      color: var(--ink);
+      border-bottom-color: var(--ink);
     }
 
     /* =========================
@@ -2233,6 +2616,15 @@
       font-weight: 600;
     }
 
+    /* 英文标签与后文之间留出词距；中文不加空格 */
+    html[lang="en"] .deploy-tips__item > strong {
+      margin-right: .3em;
+    }
+
+    html[lang="zh-CN"] .deploy-tips__gap {
+      display: none;
+    }
+
     .deploy-tips code {
       font-family:
         "SFMono-Regular",
@@ -2511,6 +2903,12 @@
 
       padding: 40px 24px;
 
+      /* 浮层挂到 <html> 下，不再继承 body 的字体与缩放 */
+      font-family: var(--sans);
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+
       opacity: 0;
       pointer-events: none;
 
@@ -2530,6 +2928,8 @@
 
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
+
+      touch-action: none;
     }
 
     /* 如一张平铺的纸，自下方微微浮起 */
@@ -2602,10 +3002,17 @@
     }
 
     .panel-body {
+      flex: 1 1 auto;
+      min-height: 0;
+
       overflow-y: auto;
       overscroll-behavior: contain;
 
       padding: 56px 60px 52px;
+    }
+
+    .doc-row-value {
+      overflow-wrap: anywhere;
     }
 
     .panel-body::-webkit-scrollbar {
@@ -2916,6 +3323,10 @@
 
       display: flex;
       flex-direction: column;
+
+      /* 浮窗会挂到 <html> 下，避免被移动端 body 的 scale 缩小 */
+      font-family: var(--sans);
+      color: var(--ink);
 
       background: var(--white);
       border: 1px solid var(--line);
@@ -3276,6 +3687,12 @@
         width: calc(100% - 32px);
       }
 
+      /* 菜单展开时把整个 header 提到浮动工具栏之上，
+         避免底部工具按钮压住二级菜单或最后一两项 */
+      .header.nav-open {
+        z-index: 170;
+      }
+
       .header .nav {
         display: none;
         position: absolute;
@@ -3286,7 +3703,7 @@
         flex-direction: column;
         justify-content: flex-start;
         gap: 0;
-        padding: 4px 16px 12px;
+        padding: 4px 16px calc(12px + env(safe-area-inset-bottom));
 
         background: rgba(250, 249, 246, .97);
         backdrop-filter: blur(18px);
@@ -3296,6 +3713,7 @@
 
         /* 展开后的抽屉高度超出视口时可内部滚动，避免二级菜单显示不全 */
         max-height: calc(100vh - 64px);
+        max-height: calc(100dvh - 64px);
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
         overscroll-behavior: contain;
@@ -3434,15 +3852,94 @@
 
       .hero-subtitle {
         flex: none;
-        margin: 20px auto 24px;
+        margin: 20px auto 0;
         padding: 0 6px;
         font-size: 14px;
       }
 
-      .hero-subtitle-note {
-        margin-top: 12px;
-        font-size: 13px;
-        line-height: 1.8;
+      .hero-actions {
+        width: 100%;
+        margin-top: 26px;
+      }
+
+      .hero-cta {
+        width: 100%;
+        max-width: none;
+      }
+
+      .hero-trust {
+        width: 100%;
+        max-width: none;
+
+        justify-content: flex-start;
+
+        font-size: 12px;
+      }
+
+      .hero-presets {
+        margin-top: 48px;
+        padding-top: 28px;
+      }
+
+      .hero-presets__head {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+
+        margin-bottom: 18px;
+      }
+
+      .hero-presets__desc {
+        max-width: none;
+
+        font-size: 12.5px;
+        text-align: left;
+      }
+
+      .preset-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+
+      .preset-card {
+        min-height: 0;
+        padding: 18px 18px 20px;
+      }
+
+      .preset-question {
+        margin-top: 16px;
+        font-size: 17px;
+      }
+
+      .preset-meta {
+        padding-top: 14px;
+      }
+
+      .social-proof {
+        margin-top: 32px;
+      }
+
+      .audience-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .audience-card {
+        min-height: 0;
+        padding: 28px 24px 26px;
+      }
+
+      .audience-title {
+        margin-top: 18px;
+        font-size: 22px;
+      }
+
+      .audience-actions {
+        padding-top: 24px;
+      }
+
+      .audience-cta {
+        width: 100%;
       }
 
       /* 主交互卡片：移动端固定首屏高度，内部组件超出时在卡片内滚动，彻底避免与下一区块重叠 */
@@ -3532,15 +4029,12 @@
       }
 
       .case {
+        /* 移动端同样保持等高，四张卡纵向排列时尺寸一致 */
+        height: 380px;
         min-height: 0;
+
         /* 底部留出标识图标的位置，避免窄屏下与描述文字挤在一起 */
         padding: 28px 28px 92px;
-      }
-
-      .case:nth-child(2),
-      .case:nth-child(3),
-      .case:nth-child(4) {
-        min-height: 0;
       }
 
       .case-title {
@@ -3580,18 +4074,22 @@
       /* 移动端：浮层改为自底部升起的纸片 */
       .overlay {
         padding: 0;
+        padding-left: env(safe-area-inset-left);
+        padding-right: env(safe-area-inset-right);
         align-items: flex-end;
       }
 
       .panel {
         width: 100%;
         max-height: 88vh;
+        max-height: 88dvh;
 
         border-width: 1px 0 0;
       }
 
       .panel-body {
-        padding: 34px 22px 40px;
+        padding: 34px 22px calc(40px + env(safe-area-inset-bottom));
+        -webkit-overflow-scrolling: touch;
       }
 
       .panel-close {
@@ -3750,13 +4248,57 @@
       .toolbar-window {
         right: 12px;
         top: auto;
-        bottom: 76px;
+        bottom: calc(76px + env(safe-area-inset-bottom));
         transform: none;
       }
 
+      /* 客服界面：移动端改为整屏纸片，聊天区获得完整高度 */
       .toolbar-window--agent {
-        width: calc(100vw - 24px);
-        height: min(64vh, 560px);
+        left: 0 !important;
+        right: 0 !important;
+        top: 0 !important;
+        bottom: 0 !important;
+
+        width: 100% !important;
+        height: 100vh;
+        height: 100dvh;
+
+        transform: none !important;
+
+        border: 0;
+        box-shadow: none;
+      }
+
+      .toolbar-window--agent .toolbar-window__header {
+        height: calc(52px + env(safe-area-inset-top));
+        padding:
+          env(safe-area-inset-top)
+          calc(10px + env(safe-area-inset-right))
+          0
+          calc(18px + env(safe-area-inset-left));
+
+        cursor: default;
+        touch-action: auto;
+      }
+
+      .toolbar-window--agent .toolbar-window__title {
+        font-size: 15px;
+      }
+
+      .toolbar-window--agent .toolbar-window__close {
+        width: 44px;
+        height: 44px;
+      }
+
+      .toolbar-window--agent .agent-frame {
+        bottom: auto;
+        height: calc(100% - env(safe-area-inset-bottom));
+      }
+
+      /* 二维码浮窗的关闭也放大到 40px */
+      .toolbar-window__close {
+        width: 40px;
+        height: 40px;
       }
 
       .toolbar-window__body {
@@ -3840,7 +4382,6 @@
         </a>
 
         <nav class="nav" id="nav">
-          <a href="#agentCreatorArea" data-i18n="nav.create">创建 Agent</a>
           <a href="#process" data-i18n="nav.how">功能阐释</a>
           <a href="#pricing" data-i18n="nav.pricing">透明计费</a>
           <a href="#deploy" data-i18n="nav.deploy">本地部署</a>
@@ -3870,11 +4411,52 @@
       </div>
     </header>
 
+    <!-- 语言刷新兜底：在完整词典异步加载前，先同步翻译导航，避免刷新后菜单短暂/残留中文 -->
+    <script>
+      (function () {
+        var lang = "zh";
+        try {
+          var qLang = (window.location.search.match(/[?&]lang=([a-zA-Z-]+)/) || [])[1];
+          lang = qLang || localStorage.getItem("appLang") || "zh";
+        } catch (e) { }
+        if (lang !== "en") return;
+
+        var navEn = {
+          "nav.create": "Create Agent",
+          "nav.how": "How it works",
+          "nav.pricing": "Pricing",
+          "nav.deploy": "Deploy",
+          "nav.faq": "FAQ",
+          "nav.skills": "Skill/Workflow",
+          "nav.skills.generator": "AI Skill Generator",
+          "nav.skills.workflow": "Workflow",
+          "nav.skills.hub": "SkillHub"
+        };
+
+        document.documentElement.lang = "en";
+
+        var nodes = document.querySelectorAll("#nav [data-i18n]");
+        for (var i = 0; i < nodes.length; i++) {
+          var key = nodes[i].getAttribute("data-i18n");
+          if (navEn[key]) nodes[i].textContent = navEn[key];
+        }
+
+        var menuBtn = document.getElementById("menuToggle");
+        if (menuBtn) menuBtn.setAttribute("aria-label", "Open menu");
+
+        var langBtn = document.getElementById("langToggle");
+        if (langBtn) {
+          langBtn.textContent = "中文";
+          langBtn.setAttribute("aria-label", "Switch to Chinese");
+        }
+      })();
+    </script>
+
 
     <!-- =========================
      浮动工具栏：微信二维码 / Agent 界面
 ========================= -->
-    <div class="floating-toolbar" id="floatingToolbar" role="toolbar" aria-label="快捷工具栏">
+    <div class="floating-toolbar" id="floatingToolbar" role="toolbar" aria-label="快捷工具栏" data-i18n-aria="toolbar.label">
       <button class="toolbar-btn" id="toolbarQrBtn" type="button" data-toolbar-open="qr" aria-haspopup="dialog"
         aria-label="微信" data-i18n-aria="toolbar.wechatAria">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
@@ -3908,16 +4490,37 @@
       <section class="hero">
 
         <h1 class="hero-title">
-          <span data-i18n="hero.title.1">约 3 分钟，用已有资料</span>
-          <span data-i18n="hero.title.2">生成你的专属 AI 数字员工</span>
+          <span data-i18n="hero.title.1">把静态文档变成</span>
+          <span data-i18n="hero.title.2">24 小时在线的 AI 数字员工</span>
         </h1>
 
         <p class="hero-subtitle">
-          <span data-i18n="hero.subtitle.1">不用从零准备内容，也无需写 Prompt。</span><br>
-          <span data-i18n="hero.subtitle.2">上传教材、手册或研报，即可生成可对话的 AI Agent；</span><br>
-          <span data-i18n="hero.subtitle.3">按需绑定技能与工作流，让它按固定流程完成任务，并一键交付他人使用。</span>
-          <span class="hero-subtitle-note" data-i18n="hero.subtitle.4">数字员工与 AI 客服同样适用。</span>
+          <span data-i18n="hero.subtitle.1">无需写 Prompt，上传 PDF / Word，3 分钟</span>
+          <span data-i18n="hero.subtitle.2">让你的企业知识库、教学教材、行业研报开口说话。</span>
         </p>
+
+
+        <div class="hero-actions">
+          <button class="hero-cta" id="heroUploadCta" type="button" data-reveal-upload
+            aria-controls="agentCreatorArea" aria-expanded="false">
+            <span data-i18n="hero.cta">免费上传资料，3 分钟生成</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
+              stroke-linejoin="round" aria-hidden="true" focusable="false">
+              <path d="M4 12h15" />
+              <path d="m13 6 6 6-6 6" />
+            </svg>
+          </button>
+          <a class="hero-cta-alt" href="#heroPresets" data-i18n="hero.ctaAlt">或，先体验预置数字员工</a>
+        </div>
+
+        <div class="hero-trust">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"
+            stroke-linejoin="round" aria-hidden="true" focusable="false">
+            <rect x="4" y="10" width="16" height="10" rx="1" />
+            <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+          </svg>
+          <span data-i18n="hero.trust">采用 HTTPS 加密传输 · 严格按账号隔离 · 承诺绝不用于公共模型训练</span>
+        </div>
 
 
         <!--
@@ -3926,8 +4529,9 @@
     appCode.vue 已按本页「白与空」设计系统（landing_page.md）统一——
     纸白 #faf9f6 / 墨色 #1b1b19 / 宋体标题 / 极细线条 / 纸卷舒展动效，
     可直接挂载于本第一屏 hero 区域。
+    默认隐藏，点击「免费上传资料」后再展开。
   -->
-        <div class="generator reveal" id="agentCreatorArea">
+        <div class="generator" id="agentCreatorArea" hidden>
 
           <!-- agentCreator.vue 组件加载等待提示：渲染前与渲染过程中显示 -->
           <div class="ac-loading" id="agentCreatorLoading" role="status" aria-live="polite">
@@ -3937,6 +4541,50 @@
           </div>
 
         </div>
+
+
+        <div class="hero-presets" id="heroPresets">
+
+          <div class="hero-presets__head">
+            <div>
+              <div class="eyebrow">ONE-CLICK DEMO</div>
+              <h2 class="hero-presets__title" data-i18n="hero.presets.title">先问一句，再决定。</h2>
+            </div>
+            <p class="hero-presets__desc" data-i18n="hero.presets.desc">
+              点击问题，打开预置客服并预填；也可以稍后上传自己的资料。
+            </p>
+          </div>
+
+          <div class="preset-grid">
+
+            <a class="preset-card" href="https://transweb.cn/agent.html?id=e3aea0746b06c50f2c9524e50c957674&amp;solo=true"
+              target="_blank" rel="noopener" data-demo-question="什么是数字员工？">
+              <span class="preset-index">01 / DEFINE</span>
+              <span class="preset-question" data-i18n="hero.demo1.q">什么是数字员工？</span>
+              <span class="preset-meta" data-i18n="hero.demo1.meta">平台客服 · 产品定义</span>
+              <span class="preset-arrow" aria-hidden="true">→</span>
+            </a>
+
+            <a class="preset-card" href="https://transweb.cn/agent.html?id=e3aea0746b06c50f2c9524e50c957674&amp;solo=true"
+              target="_blank" rel="noopener" data-demo-question="3 分钟真的能生成吗？">
+              <span class="preset-index">02 / DELIVER</span>
+              <span class="preset-question" data-i18n="hero.demo2.q">3 分钟真的能生成吗？</span>
+              <span class="preset-meta" data-i18n="hero.demo2.meta">平台客服 · 交付时效</span>
+              <span class="preset-arrow" aria-hidden="true">→</span>
+            </a>
+
+            <a class="preset-card" href="https://transweb.cn/agent.html?id=e3aea0746b06c50f2c9524e50c957674&amp;solo=true"
+              target="_blank" rel="noopener" data-demo-question="上传的资料会被用于训练吗？">
+              <span class="preset-index">03 / PRIVACY</span>
+              <span class="preset-question" data-i18n="hero.demo3.q">上传的资料会被用于训练吗？</span>
+              <span class="preset-meta" data-i18n="hero.demo3.meta">平台客服 · 资料安全</span>
+              <span class="preset-arrow" aria-hidden="true">→</span>
+            </a>
+
+          </div>
+
+        </div>
+
 
         <p class="social-proof" data-i18n="social.proof">
         为教育者、研究员与企业团队而设计
@@ -4214,6 +4862,94 @@
 
           </article>
 
+
+        </div>
+
+      </section>
+
+
+      <!-- =========================
+     Audience / 个人 · 机构分层
+========================= -->
+
+      <section class="section reveal" id="plans">
+
+        <div class="section-header">
+
+          <div class="eyebrow">
+            WHO IT'S FOR
+          </div>
+
+          <h2 class="section-title" data-i18n="audience.title">
+            从个人到机构，按你的数据边界选择。
+          </h2>
+
+          <p class="section-description" data-i18n="audience.desc">
+            同一套 Agent 能力，两种交付方式：在线按量使用，或部署到你自己的服务器。
+          </p>
+
+        </div>
+
+        <div class="audience-grid">
+
+          <article class="audience-card audience-card--personal">
+
+            <div class="audience-kicker" data-i18n="audience.personal.kicker">
+              个人 / 小团队
+            </div>
+
+            <h3 class="audience-title" data-i18n="audience.personal.title">
+              在线生成，按量计费
+            </h3>
+
+            <p class="audience-desc" data-i18n="audience.personal.desc">
+              不部署、不买套餐。上传资料即可生成，按模型实际用量计费，闲置时没有成本。
+            </p>
+
+            <ul class="audience-list">
+              <li data-i18n="audience.personal.list1">无需服务器，上传即用</li>
+              <li data-i18n="audience.personal.list2">按量计费，闲置零成本</li>
+              <li data-i18n="audience.personal.list3">链接 / 二维码一键交付</li>
+            </ul>
+
+            <div class="audience-actions">
+              <button class="audience-cta" type="button" data-reveal-upload data-i18n="audience.personal.cta">
+                免费上传资料，3 分钟生成
+              </button>
+            </div>
+
+          </article>
+
+          <article class="audience-card audience-card--enterprise">
+
+            <div class="audience-kicker" data-i18n="audience.enterprise.kicker">
+              企业 / 机构
+            </div>
+
+            <h3 class="audience-title" data-i18n="audience.enterprise.title">
+              私有化部署，数据可不出内网
+            </h3>
+
+            <p class="audience-desc" data-i18n="audience.enterprise.desc">
+              把整套服务装进自己的服务器；接入自有模型时，数据可全程留在内网。
+            </p>
+
+            <ul class="audience-list">
+              <li data-i18n="audience.enterprise.list1">安装包自托管，升级不丢数据</li>
+              <li data-i18n="audience.enterprise.list2">API / 模型可配置，支持自有模型</li>
+              <li data-i18n="audience.enterprise.list3">适合院校、企业与数据敏感场景</li>
+            </ul>
+
+            <div class="audience-actions">
+              <a class="audience-cta audience-cta--ghost" href="#deploy" data-i18n="audience.enterprise.cta">
+                查看本地部署
+              </a>
+              <a class="audience-link" href="#contact" data-doc="contact" data-i18n="audience.enterprise.consult">
+                咨询私有化方案 →
+              </a>
+            </div>
+
+          </article>
 
         </div>
 
@@ -4499,13 +5235,13 @@
 
             <div class="term">
               <div class="term-line"><span class="term-line__num"></span><code class="term-line__code">npm install -g transweb-service@1.5.13</code></div>
-              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"># 全局安装部署包</code></div>
+              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c" data-i18n="deploy.cmd.install"># 全局安装部署包</code></div>
               <div class="term-line"><span class="term-line__num"></span><code class="term-line__code">transweb init</code></div>
-              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"># 初始化数据库（会清空数据，需确认）</code></div>
+              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c" data-i18n="deploy.cmd.init"># 初始化数据库（会清空数据，需确认）</code></div>
               <div class="term-line"><span class="term-line__num"></span><code class="term-line__code">transweb start</code></div>
-              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"># 启动 MongoDB 与 Web 服务；首次打开初始化页面</code></div>
+              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c" data-i18n="deploy.cmd.start"># 启动 MongoDB 与 Web 服务；首次打开初始化页面</code></div>
               <div class="term-line"><span class="term-line__num"></span><code class="term-line__code">transweb status</code></div>
-              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"># 查看访问地址、局域网地址与初始化状态</code></div>
+              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c" data-i18n="deploy.cmd.status"># 查看访问地址、局域网地址与初始化状态</code></div>
             </div>
 
             <div class="deploy-reference">
@@ -4521,25 +5257,25 @@
 
                 <div class="term">
                   <div class="term-line"><span class="term-line__num"></span><code class="term-line__code">transweb config list|get|set|unset &lt;common|app&gt; &lt;path&gt;</code></div>
-                  <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"># 读写 common.js / appConfig.js 配置（点分路径定位）</code></div>
+                  <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c" data-i18n="deploy.cmd.config"># 读写 common.js / appConfig.js 配置（点分路径定位）</code></div>
                   <div class="term-line"><span class="term-line__num"></span><code class="term-line__code">transweb access list|set|skill|agent [public|login|owner]</code></div>
-                  <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"># 文档/技能/Agent 读取权限：免登陆 / 所有人登录 / 发布者登录</code></div>
+                  <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c" data-i18n="deploy.cmd.access"># 文档/技能/Agent 读取权限：免登陆 / 所有人登录 / 发布者登录</code></div>
                   <div class="term-line"><span class="term-line__num"></span><code class="term-line__code">transweb env list|get|set|unset [KEY]</code></div>
-                  <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"># 管理 .env 环境变量（密钥以掩码显示）</code></div>
+                  <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c" data-i18n="deploy.cmd.env"># 管理 .env 环境变量（密钥以掩码显示）</code></div>
                   <div class="term-line"><span class="term-line__num"></span><code class="term-line__code">transweb wxpay list|check|set|unset</code></div>
-                  <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"># 查看 / 设置微信支付全部参数</code></div>
+                  <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c" data-i18n="deploy.cmd.wxpay"># 查看 / 设置微信支付全部参数</code></div>
                   <div class="term-line"><span class="term-line__num"></span><code class="term-line__code">transweb admin status|hide|show</code></div>
-                  <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"># 查看后台状态；隐藏 / 恢复后台入口</code></div>
+                  <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c" data-i18n="deploy.cmd.admin"># 查看后台状态；隐藏 / 恢复后台入口</code></div>
                   <div class="term-line"><span class="term-line__num"></span><code class="term-line__code">transweb default model|image|image-input</code></div>
-                  <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"># 查看 / 设置文本、生图、图片输入默认模型</code></div>
+                  <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c" data-i18n="deploy.cmd.default"># 查看 / 设置文本、生图、图片输入默认模型</code></div>
                   <div class="term-line"><span class="term-line__num"></span><code class="term-line__code">transweb model list|add|update|remove</code></div>
-                  <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"># 管理模型与费率（支持 --from）</code></div>
+                  <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c" data-i18n="deploy.cmd.model"># 管理模型与费率（支持 --from）</code></div>
                   <div class="term-line"><span class="term-line__num"></span><code class="term-line__code">transweb api list|add|update|remove</code></div>
-                  <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"># 管理 API 网关与 Key</code></div>
+                  <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c" data-i18n="deploy.cmd.api"># 管理 API 网关与 Key</code></div>
                   <div class="term-line"><span class="term-line__num"></span><code class="term-line__code">transweb mongodb status|install</code></div>
-                  <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"># 查看 MongoDB 状态 / 一键安装</code></div>
+                  <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c" data-i18n="deploy.cmd.mongo"># 查看 MongoDB 状态 / 一键安装</code></div>
                   <div class="term-line"><span class="term-line__num"></span><code class="term-line__code">transweb uninstall [--purge]</code></div>
-                  <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"># 卸载服务（--purge 连同数据一并清除）</code></div>
+                  <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c" data-i18n="deploy.cmd.uninstall"># 卸载服务（--purge 连同数据一并清除）</code></div>
                 </div>
               </details>
             </div>
@@ -4591,7 +5327,7 @@ transweb root accessKey --json</code></pre>
                 <div class="deploy-config__body">
                   <div class="deploy-config__kicker" data-i18n="deploy.activate.overview">配置概述</div>
                   <p class="deploy-config__overview" data-i18n="deploy.activate.model.overview">模型挂在算力供应方下；至少配置 1 个，并设为默认模型。</p>
-                  <pre class="deploy-config__cmd"><code>transweb model add &lt;model&gt; \
+                  <pre class="deploy-config__cmd"><code data-i18n="deploy.cmd.modelAdd">transweb model add &lt;model&gt; \
   --api-name &lt;apiName&gt; \
   --input &lt;rate&gt; --output &lt;rate&gt; \
   --context &lt;context&gt; --from &lt;国内|国外&gt;
@@ -4610,7 +5346,7 @@ transweb default model --model &lt;model&gt;</code></pre>
                 <div class="deploy-config__body">
                   <div class="deploy-config__kicker" data-i18n="deploy.activate.overview">配置概述</div>
                   <p class="deploy-config__overview" data-i18n="deploy.activate.pay.overview">正式收款前配置微信支付 APIv2 参数；至少完成必填项。</p>
-                  <pre class="deploy-config__cmd"><code>transweb wxpay set &lt;参数&gt; &lt;值&gt;
+                  <pre class="deploy-config__cmd"><code data-i18n="deploy.cmd.wxpaySet">transweb wxpay set &lt;参数&gt; &lt;值&gt;
 transweb wxpay check</code></pre>
                   <p class="deploy-config__note" data-i18n="deploy.activate.pay.desc">必填 WX_PAY_APP_ID、WX_PAY_MCH_ID、WX_PAY_APP_KEY（32 位 APIv2 密钥）、WX_PAY_ORDER_URL、WX_PAY_QUERY_URL；按需 WX_PAY_APP_SECRET、WX_PAY_NOTIFY、WX_PAY_APP_ID001 / SECRET001。用 transweb wxpay set 写入、wxpay check 校验；安装生成的 APP_KEY 是随机值，正式收款前替换为商户平台密钥。</p>
                 </div>
@@ -4639,25 +5375,25 @@ transweb wxpay check</code></pre>
 
         <!-- 部署提示：开源地址 / 安全与运维提示（独立方框） -->
         <div class="deploy-tips">
-          <div class="deploy-tips__title">部署提示</div>
+          <div class="deploy-tips__title" data-i18n="deploy.tips.title">部署提示</div>
           <ul class="deploy-tips__list">
             <li class="deploy-tips__item">
-              <strong>开源地址：</strong><a href="https://github.com/liuwenjin/transweb" target="_blank" rel="noopener">github.com/liuwenjin/transweb</a>
+              <strong data-i18n="deploy.tips.repo.label">开源地址：</strong><a href="https://github.com/liuwenjin/transweb" target="_blank" rel="noopener">github.com/liuwenjin/transweb</a>
             </li>
             <li class="deploy-tips__item">
-              <strong>上线前安全：</strong>务必执行 <code>transweb admin hide</code>，避免后台入口（admin.html / initAdmin.html）暴露到公网；公网部署再设 <code>TRANSWEB_DISABLE_ADMIN=1</code> 兜底。
+              <strong data-i18n="deploy.tips.security.label">上线前安全：</strong><span data-i18n="deploy.tips.security.before">务必执行</span> <code>transweb admin hide</code><span class="deploy-tips__gap" aria-hidden="true"> </span><span data-i18n="deploy.tips.security.after">，避免后台入口（admin.html / initAdmin.html）暴露到公网；公网部署再设</span> <code>TRANSWEB_DISABLE_ADMIN=1</code> <span data-i18n="deploy.tips.security.fallback">兜底。</span>
             </li>
             <li class="deploy-tips__item">
-              <strong>初始化页面：</strong>初始化完成前 <code>/initAdmin.html</code> 自动可访问，初始化完成后自动返回 404；再次进入后台执行 <code>transweb admin show</code>。
+              <strong data-i18n="deploy.tips.init.label">初始化页面：</strong><span data-i18n="deploy.tips.init.before">初始化完成前</span> <code>/initAdmin.html</code> <span data-i18n="deploy.tips.init.after">自动可访问，初始化完成后自动返回 404；再次进入后台执行</span> <code>transweb admin show</code><span data-i18n="deploy.tips.init.period">。</span>
             </li>
             <li class="deploy-tips__item">
-              <strong>首次初始化：</strong>自动安装应用依赖（约 543 个包）并下载 MongoDB 6.0.x（约 58MB）。
+              <strong data-i18n="deploy.tips.first.label">首次初始化：</strong><span data-i18n="deploy.tips.first.text">自动安装应用依赖（约 543 个包）并下载 MongoDB 6.0.x（约 58MB）。</span>
             </li>
             <li class="deploy-tips__item">
-              <strong>数据目录：</strong>服务目录默认 <code>~/.transweb-service</code>，升级 npm 包不会丢失数据。
+              <strong data-i18n="deploy.tips.data.label">数据目录：</strong><span data-i18n="deploy.tips.data.before">服务目录默认</span> <code>~/.transweb-service</code><span data-i18n="deploy.tips.data.after">，升级 npm 包不会丢失数据。</span>
             </li>
             <li class="deploy-tips__item">
-              <strong>局域网访问：</strong>其他设备可直接访问 <code>transweb status</code> 里显示的地址。
+              <strong data-i18n="deploy.tips.lan.label">局域网访问：</strong><span data-i18n="deploy.tips.lan.before">其他设备可直接访问</span> <code>transweb status</code><span data-i18n="deploy.tips.lan.after">里显示的地址。</span>
             </li>
           </ul>
         </div>
@@ -5366,7 +6102,7 @@ transweb wxpay check</code></pre>
       <div class="toolbar-window__body toolbar-window__body--center">
         <img class="qr-image"
           data-qr-src="https://transweb-1254183942.cos.ap-beijing.myqcloud.com/introduce/wx_liuwenjin.png"
-          loading="lazy" alt="微信二维码" />
+          loading="lazy" alt="微信二维码" data-i18n-alt="toolbar.qrAlt" />
         <p class="qr-hint" data-i18n="toolbar.wechatHint">扫码，添加客服微信</p>
       </div>
     </div>
@@ -5386,7 +6122,7 @@ transweb wxpay check</code></pre>
           <div class="agent-loading__spinner" aria-hidden="true"></div>
           <p class="agent-loading__text" data-i18n="toolbar.agentLoading">正在加载客服界面…</p>
         </div>
-        <iframe class="agent-frame" title="客服"
+        <iframe class="agent-frame" title="客服" data-i18n-title="toolbar.agentFrameTitle"
           data-agent-src="https://transweb.cn/agent.html?id=e3aea0746b06c50f2c9524e50c957674&amp;solo=true"
           allow="clipboard-read; clipboard-write" allowfullscreen></iframe>
       </div>
@@ -5436,12 +6172,21 @@ transweb wxpay check</code></pre>
           "nav.skills.generator": "AI Skill 生成器",
           "nav.skills.workflow": "工作流",
           "nav.skills.hub": "Skill 广场",
-          "hero.title.1": "约 3 分钟，用已有资料",
-          "hero.title.2": "生成你的专属 AI 数字员工",
-          "hero.subtitle.1": "无需准备素材，不必撰写 Prompt。",
-          "hero.subtitle.2": "上传教材、手册或研报，一键生成专属 AI Agent；",
-          "hero.subtitle.3": "灵活绑定技能与工作流，按标准流程高效执行任务，轻松分享交付。",
-          "hero.subtitle.4": "完美适配数字员工与 AI 客服场景。",
+          "hero.title.1": "把静态文档变成",
+          "hero.title.2": "24 小时在线的 AI 数字员工",
+          "hero.subtitle.1": "无需写 Prompt，上传 PDF / Word，3 分钟",
+          "hero.subtitle.2": "让你的企业知识库、教学教材、行业研报开口说话。",
+          "hero.cta": "免费上传资料，3 分钟生成",
+          "hero.ctaAlt": "或，先体验预置数字员工",
+          "hero.trust": "采用 HTTPS 加密传输 · 严格按账号隔离 · 承诺绝不用于公共模型训练",
+          "hero.presets.title": "先问一句，再决定。",
+          "hero.presets.desc": "点击问题，打开预置客服并预填；也可以稍后上传自己的资料。",
+          "hero.demo1.q": "什么是数字员工？",
+          "hero.demo1.meta": "平台客服 · 产品定义",
+          "hero.demo2.q": "3 分钟真的能生成吗？",
+          "hero.demo2.meta": "平台客服 · 交付时效",
+          "hero.demo3.q": "上传的资料会被用于训练吗？",
+          "hero.demo3.meta": "平台客服 · 资料安全",
           "social.proof": "为教育者、研究员与企业团队而设计",
           "process.title": "极简三步，让静态资料变成数字员工。",
           "process.desc": "不用写 Prompt，也不用先搭工作流。导入、理解、上岗，三步让资料持续服务。",
@@ -5461,6 +6206,23 @@ transweb wxpay check</code></pre>
           "case.3.desc": "把散落的读书笔记、研报、摘录交给它：写方案时忘了某篇报告的结论，问一句，它结合资料给出结论和线索。",
           "case.4.title": "领域顾问",
           "case.4.desc": "把行业规范、制度、案例资料交给它：客户问「资质怎么申请」「新规有什么影响」，它按资料内容逐条说明，团队和客户都能直接问。",
+          "audience.title": "从个人到机构，按你的数据边界选择。",
+          "audience.desc": "同一套 Agent 能力，两种交付方式：在线按量使用，或部署到你自己的服务器。",
+          "audience.personal.kicker": "个人 / 小团队",
+          "audience.personal.title": "在线生成，按量计费",
+          "audience.personal.desc": "不部署、不买套餐。上传资料即可生成，按模型实际用量计费，闲置时没有成本。",
+          "audience.personal.list1": "无需服务器，上传即用",
+          "audience.personal.list2": "按量计费，闲置零成本",
+          "audience.personal.list3": "链接 / 二维码一键交付",
+          "audience.personal.cta": "免费上传资料，3 分钟生成",
+          "audience.enterprise.kicker": "企业 / 机构",
+          "audience.enterprise.title": "私有化部署，数据可不出内网",
+          "audience.enterprise.desc": "把整套服务装进自己的服务器；接入自有模型时，数据可全程留在内网。",
+          "audience.enterprise.list1": "安装包自托管，升级不丢数据",
+          "audience.enterprise.list2": "API / 模型可配置，支持自有模型",
+          "audience.enterprise.list3": "适合院校、企业与数据敏感场景",
+          "audience.enterprise.cta": "查看本地部署",
+          "audience.enterprise.consult": "咨询私有化方案 →",
           "pricing.title": "不猜价格，只为实际使用付费。",
           "pricing.desc": "没有复杂套餐，也不把 AI 能力包装成看不懂的权益。用多少扣多少，闲置零成本，费用一目了然。",
           "pricing.formula": "按量计费 = 模型调用积分 + 发布 / 导出服务费",
@@ -5492,6 +6254,40 @@ transweb wxpay check</code></pre>
           "deploy.reference.caption": "部署完成后的 CLI 参考，默认收起",
           "deploy.more": "更多指令",
           "deploy.less": "收起指令",
+          "deploy.cmd.install": "# 全局安装部署包",
+          "deploy.cmd.init": "# 初始化数据库（会清空数据，需确认）",
+          "deploy.cmd.start": "# 启动 MongoDB 与 Web 服务；首次打开初始化页面",
+          "deploy.cmd.status": "# 查看访问地址、局域网地址与初始化状态",
+          "deploy.cmd.config": "# 读写 common.js / appConfig.js 配置（点分路径定位）",
+          "deploy.cmd.access": "# 文档/技能/Agent 读取权限：免登陆 / 所有人登录 / 发布者登录",
+          "deploy.cmd.env": "# 管理 .env 环境变量（密钥以掩码显示）",
+          "deploy.cmd.wxpay": "# 查看 / 设置微信支付全部参数",
+          "deploy.cmd.admin": "# 查看后台状态；隐藏 / 恢复后台入口",
+          "deploy.cmd.default": "# 查看 / 设置文本、生图、图片输入默认模型",
+          "deploy.cmd.model": "# 管理模型与费率（支持 --from）",
+          "deploy.cmd.api": "# 管理 API 网关与 Key",
+          "deploy.cmd.mongo": "# 查看 MongoDB 状态 / 一键安装",
+          "deploy.cmd.uninstall": "# 卸载服务（--purge 连同数据一并清除）",
+          "deploy.cmd.wxpaySet": "transweb wxpay set <参数> <值>\ntransweb wxpay check",
+          "deploy.cmd.modelAdd": "transweb model add <model> \\\n  --api-name <apiName> \\\n  --input <rate> --output <rate> \\\n  --context <context> --from <国内|国外>\n\ntransweb default model --model <model>",
+          "deploy.tips.title": "部署提示",
+          "deploy.tips.repo.label": "开源地址：",
+          "deploy.tips.security.label": "上线前安全：",
+          "deploy.tips.security.before": "务必执行",
+          "deploy.tips.security.after": "，避免后台入口（admin.html / initAdmin.html）暴露到公网；公网部署再设",
+          "deploy.tips.security.fallback": "兜底。",
+          "deploy.tips.init.label": "初始化页面：",
+          "deploy.tips.init.before": "初始化完成前",
+          "deploy.tips.init.after": "自动可访问，初始化完成后自动返回 404；再次进入后台执行",
+          "deploy.tips.init.period": "。",
+          "deploy.tips.first.label": "首次初始化：",
+          "deploy.tips.first.text": "自动安装应用依赖（约 543 个包）并下载 MongoDB 6.0.x（约 58MB）。",
+          "deploy.tips.data.label": "数据目录：",
+          "deploy.tips.data.before": "服务目录默认",
+          "deploy.tips.data.after": "，升级 npm 包不会丢失数据。",
+          "deploy.tips.lan.label": "局域网访问：",
+          "deploy.tips.lan.before": "其他设备可直接访问",
+          "deploy.tips.lan.after": " 里显示的地址。",
           "deploy.activate.caption": "按优先级配置以下项目；点击标题展开配置概述与说明",
           "deploy.activate.priority": "最高优先级",
           "deploy.activate.overview": "配置概述",
@@ -5708,6 +6504,7 @@ transweb wxpay check</code></pre>
           "loginBar.apiKeyDelete": "删除",
           "loginBar.apiKeyNamePlaceholder": "输入 Key 名称",
           "loginBar.apiKeyEmpty": "暂无 API Key",
+          "toolbar.label": "快捷工具栏",
           "toolbar.wechat": "微信",
           "toolbar.wechatAria": "显示微信二维码",
           "toolbar.wechatTitle": "添加微信",
@@ -5715,14 +6512,16 @@ transweb wxpay check</code></pre>
           "toolbar.agent": "AI 客服",
           "toolbar.agentAria": "打开客服界面",
           "toolbar.agentTitle": "客服界面",
-          "toolbar.agentLoading": "正在加载客服界面…"
+          "toolbar.agentLoading": "正在加载客服界面…",
+          "toolbar.qrAlt": "微信二维码",
+          "toolbar.agentFrameTitle": "客服"
         },
         en: null
       };
 
       var LS_KEY = "appLang";
-      var EN_URL = "./i18n/en.json";
-      var EN_CACHE_KEY = "i18n_en_v21";
+      var EN_URL = "./i18n/en.json?v=27";
+      var EN_CACHE_KEY = "i18n_en_v27";
 
       var lang = "zh";
       try {
@@ -5778,20 +6577,48 @@ transweb wxpay check</code></pre>
           if (dict[ariaKey] !== undefined) ariaNodes[j].setAttribute("aria-label", dict[ariaKey]);
         }
 
+        var altNodes = document.querySelectorAll("[data-i18n-alt]");
+        for (var k = 0; k < altNodes.length; k++) {
+          var altKey = altNodes[k].getAttribute("data-i18n-alt");
+          if (dict[altKey] !== undefined) altNodes[k].setAttribute("alt", dict[altKey]);
+        }
+
+        var titleNodes = document.querySelectorAll("[data-i18n-title]");
+        for (var m = 0; m < titleNodes.length; m++) {
+          var titleKey = titleNodes[m].getAttribute("data-i18n-title");
+          if (dict[titleKey] !== undefined) titleNodes[m].setAttribute("title", dict[titleKey]);
+        }
+
         var toggle = document.getElementById("langToggle");
         if (toggle) {
           toggle.textContent = l === "en" ? "中文" : "EN";
-          toggle.setAttribute("aria-label", l === "en" ? "切换到中文" : "Switch to English");
+          toggle.setAttribute("aria-label", l === "en" ? "Switch to Chinese" : "切换到英文");
         }
+      }
+
+      function persistLanguage(next) {
+        try {
+          localStorage.setItem(LS_KEY, next);
+        } catch (e) { }
+
+        // 刷新时 URL 参数优先于 localStorage；切换语言时同步地址栏，
+        // 避免上次残留的 ?lang=zh 把英文刷新回中文。
+        try {
+          var url = new URL(window.location.href);
+          if (next === "en") url.searchParams.set("lang", "en");
+          else url.searchParams.delete("lang");
+
+          var nextUrl = url.pathname + url.search + url.hash;
+          var currentUrl = window.location.pathname + window.location.search + window.location.hash;
+          if (nextUrl !== currentUrl) window.history.replaceState(null, "", nextUrl);
+        } catch (e) { }
       }
 
       function commit(next) {
         lang = next;
         window.lang = lang;
         window.__APP_LANG__ = lang;
-        try {
-          localStorage.setItem(LS_KEY, lang);
-        } catch (e) { }
+        persistLanguage(lang);
         apply(lang);
         try {
           window.dispatchEvent(new CustomEvent("applangchange", { detail: { lang: lang } }));
@@ -5831,15 +6658,32 @@ transweb wxpay check</code></pre>
       // 初始应用：若上次选择英文，异步加载后再应用
       ensureDict(lang, function (resolved) {
         lang = resolved;
-        window.__APP_LANG__ = resolved;
-        apply(resolved);
+        window.lang = lang;
+        window.__APP_LANG__ = lang;
+        apply(lang);
+
+        // 通知 loginBar / 登录弹窗等异步挂载组件同步语言。
+        // loginBar.vue 也会在 mounted 时读取 __APP_LANG__，这里覆盖先挂载的情况。
+        try {
+          window.dispatchEvent(new CustomEvent("applangchange", { detail: { lang: lang } }));
+        } catch (e) { }
+        try {
+          if (window.webCpu && webCpu.mitt) webCpu.mitt.emit("langChanged", lang);
+        } catch (e) { }
       });
 
       var toggleBtn = document.getElementById("langToggle");
       if (toggleBtn) {
         toggleBtn.addEventListener("click", function () {
-          window.__setAppLang__(lang === "en" ? "zh" : "en");
-          window.lang = lang;
+          var next = lang === "en" ? "zh" : "en";
+
+          // 先同步写入选择与 URL，用户切换后立即刷新也不会丢语言。
+          persistLanguage(next);
+          window.lang = next;
+          window.__APP_LANG__ = next;
+
+          window.__setAppLang__(next);
+
           var elem = document.getElementById("loginMenuItem");
           if (elem && window.aigcInterface && typeof aigcInterface.updateLoginBar === "function") {
             aigcInterface.updateLoginBar(elem);
@@ -5885,6 +6729,7 @@ transweb wxpay check</code></pre>
     (function () {
       var navToggleBtn = document.getElementById("menuToggle");
       var siteNav = document.getElementById("nav");
+      var siteHeader = document.querySelector(".header");
       if (!navToggleBtn || !siteNav) return;
 
       var mobileQuery = window.matchMedia("(max-width: 900px)");
@@ -5894,11 +6739,17 @@ transweb wxpay check</code></pre>
         navToggleBtn.classList.toggle("open", open);
         navToggleBtn.setAttribute("aria-expanded", String(open));
 
+        // 移动端展开时抬高 header，避免下拉菜单被右下角浮动工具栏压住
+        if (siteHeader) {
+          siteHeader.classList.toggle("nav-open", open && mobileQuery.matches);
+        }
+
         // 内联样式只作为移动端的兜底；桌面端必须清空，
         // 否则 siteNav.style.display = "none" 会覆盖样式表的 .nav{display:flex}，
         // 导致 PC 端点击菜单后整个导航被隐藏。
         if (mobileQuery.matches) {
           siteNav.style.display = open ? "flex" : "none";
+          if (open) siteNav.scrollTop = 0;
         } else {
           siteNav.style.display = "";
         }
@@ -5913,6 +6764,7 @@ transweb wxpay check</code></pre>
           // 桌面端：清除内联样式，回落到样式表默认值
           siteNav.classList.remove("open");
           navToggleBtn.classList.remove("open");
+          if (siteHeader) siteHeader.classList.remove("nav-open");
           siteNav.style.display = "";
           navToggleBtn.style.display = "";
           navToggleBtn.setAttribute("aria-expanded", "false");
@@ -5950,6 +6802,22 @@ transweb wxpay check</code></pre>
 
       var toggle = item.querySelector(".twf-toggle");
       var menu = item.querySelector(".twf-menu");
+      var mobileQuery = window.matchMedia("(max-width: 900px)");
+
+      // 小屏 / 横屏时抽屉内部会滚动；展开二级菜单后主动把它滚进可视区，
+      // 避免「AI Skill 生成器 / 工作流 / Skill 广场」被抽屉底边截住。
+      function keepMenuVisible() {
+        if (!mobileQuery.matches || !menu) return;
+
+        var nav = item.closest(".nav");
+        if (!nav) return;
+
+        // 二级菜单是抽屉的最后一块：只在小屏、内容需要滚动时滚到底，
+        // 保证「AI Skill 生成器 / 工作流 / Skill 广场」完整露出且可点击。
+        if (nav.scrollHeight > nav.clientHeight + 1) {
+          nav.scrollTop = nav.scrollHeight;
+        }
+      }
 
       function close() {
         item.classList.remove("open");
@@ -5959,6 +6827,10 @@ transweb wxpay check</code></pre>
       function open() {
         item.classList.add("open");
         if (toggle) toggle.setAttribute("aria-expanded", "true");
+
+        if (mobileQuery.matches) {
+          window.setTimeout(keepMenuVisible, 40);
+        }
       }
 
       if (toggle) {
@@ -6067,6 +6939,12 @@ transweb wxpay check</code></pre>
       var overlay = document.getElementById("legalOverlay");
       if (!overlay) return;
 
+      // 移动端 body 会被 adjustStyle 整体缩放；把浮层挂到 <html> 下，
+      // 脱离 body 的 transform 与页面滚动容器，才能真正铺满视口。
+      if (overlay.parentNode !== document.documentElement) {
+        document.documentElement.appendChild(overlay);
+      }
+
       var panel = overlay.querySelector(".panel");
       var scrollArea = overlay.querySelector(".panel-body");
       var closeBtn = document.getElementById("legalClose");
@@ -6087,6 +6965,7 @@ transweb wxpay check</code></pre>
       var lastFocus = null;
       var pushedFor = null;
       var closeTimer = null;
+      var scroller = document.querySelector(".contentItemArea");
       var lockedScroll = 0;
 
       function isOpen() {
@@ -6094,34 +6973,27 @@ transweb wxpay check</code></pre>
       }
 
       function lockScroll() {
-        lockedScroll = window.pageYOffset || document.documentElement.scrollTop || 0;
+        if (!scroller) return;
 
-        var gutter = window.innerWidth - document.documentElement.clientWidth;
-
-        document.body.style.position = "fixed";
-        document.body.style.top = -lockedScroll + "px";
-        document.body.style.left = "0";
-        document.body.style.right = "0";
-        document.body.style.width = "100%";
-
-        if (gutter > 0) document.body.style.paddingRight = gutter + "px";
+        lockedScroll = scroller.scrollTop;
+        scroller.classList.add("is-legal-open");
       }
 
       function unlockScroll() {
-        document.body.style.position = "";
-        document.body.style.top = "";
-        document.body.style.left = "";
-        document.body.style.right = "";
-        document.body.style.width = "";
-        document.body.style.paddingRight = "";
+        if (!scroller) return;
 
-        // 暂时关闭滚动惯性，避免关闭浮层时出现一段可见的回滚动画
-        var root = document.documentElement;
-        var previous = root.style.scrollBehavior;
+        scroller.classList.remove("is-legal-open");
+        scroller.scrollTop = lockedScroll;
+      }
 
-        root.style.scrollBehavior = "auto";
-        window.scrollTo(0, lockedScroll);
-        root.style.scrollBehavior = previous;
+      function focusWithoutScroll(element) {
+        if (!element || typeof element.focus !== "function") return;
+
+        try {
+          element.focus({ preventScroll: true });
+        } catch (error) {
+          element.focus();
+        }
       }
 
       function showDoc(id) {
@@ -6171,7 +7043,7 @@ transweb wxpay check</code></pre>
         }
 
         window.setTimeout(function () {
-          if (isOpen() && closeBtn) closeBtn.focus();
+          if (isOpen() && closeBtn) focusWithoutScroll(closeBtn);
         }, 80);
       }
 
@@ -6182,15 +7054,15 @@ transweb wxpay check</code></pre>
 
         overlay.classList.remove("open");
 
+        unlockScroll();
+
         if (closeTimer) window.clearTimeout(closeTimer);
         closeTimer = window.setTimeout(function () {
           closeTimer = null;
           if (!isOpen()) overlay.hidden = true;
         }, 420);
 
-        if (!fromHistory) unlockScroll();
-
-        if (lastFocus && typeof lastFocus.focus === "function") lastFocus.focus();
+        focusWithoutScroll(lastFocus);
         lastFocus = null;
 
         var pushed = pushedFor;
@@ -6256,10 +7128,10 @@ transweb wxpay check</code></pre>
 
         if (event.shiftKey && document.activeElement === first) {
           event.preventDefault();
-          last.focus();
+          focusWithoutScroll(last);
         } else if (!event.shiftKey && document.activeElement === last) {
           event.preventDefault();
-          first.focus();
+          focusWithoutScroll(first);
         }
       });
 
@@ -6489,6 +7361,33 @@ transweb wxpay check</code></pre>
       var agentLoaded = false;
       var current = null;
 
+      function isCompact() {
+        return window.matchMedia("(max-width: 900px)").matches;
+      }
+
+      function resetWindowPosition(win) {
+        if (!win) return;
+
+        win.style.left = "";
+        win.style.top = "";
+        win.style.right = "";
+        win.style.transform = "";
+      }
+
+      // 桌面端拖拽会写入 left/top/right 内联样式；移动端整屏显示时
+      // 必须先清掉，保证 CSS 的全屏定位不被残留内联样式覆盖。
+      if (isCompact()) {
+        resetWindowPosition(windows.qr);
+        resetWindowPosition(windows.agent);
+      }
+
+      Object.keys(windows).forEach(function (key) {
+        var win = windows[key];
+        if (win && win.parentNode !== document.documentElement) {
+          document.documentElement.appendChild(win);
+        }
+      });
+
       function hideAgentLoading() {
         if (agentLoading) agentLoading.classList.add("is-done");
       }
@@ -6515,7 +7414,8 @@ transweb wxpay check</code></pre>
         }
 
         handle.addEventListener("pointerdown", function (event) {
-          // 点击关闭按钮时不触发拖动
+          // 移动端整屏纸片不参与拖动；点击关闭按钮时也不触发
+          if (isCompact()) return;
           if (event.target.closest("[data-toolbar-close]")) return;
 
           event.preventDefault();
@@ -6561,6 +7461,8 @@ transweb wxpay check</code></pre>
         if (current) close(current);
         current = name;
 
+        if (isCompact()) resetWindowPosition(win);
+
         // Agent iframe 首次打开时才加载，避免页面初始化时额外请求
         if (name === "agent" && agentFrame && !agentLoaded) {
           var src = agentFrame.getAttribute("data-agent-src");
@@ -6597,6 +7499,31 @@ transweb wxpay check</code></pre>
         if (current === name) current = null;
       }
 
+      function loadAgentSrc(src) {
+        if (!agentFrame || !src) return;
+
+        showAgentLoading();
+        agentFrame.src = src;
+        agentLoaded = true;
+      }
+
+      // 首屏预置体验：用预填问题打开同一个客服窗口，不自动发送，
+      // 访客可以补一句或直接回车，避免一进来就触发登录/计费。
+      window.__openAgentDemo = function (question) {
+        if (!agentFrame) return;
+
+        var base = agentFrame.getAttribute("data-agent-src") || "";
+        if (!base) return;
+
+        base = base.replace(/([?&])input=[^&]*/g, "");
+        var sep = base.indexOf("?") > -1 ? "&" : "?";
+        var src = base + (question ? sep + "input=" + encodeURIComponent(question) : "");
+
+        loadAgentSrc(src);
+
+        if (current !== "agent") open("agent");
+      };
+
       Object.keys(windows).forEach(function (key) {
         if (windows[key]) makeDraggable(windows[key]);
       });
@@ -6618,7 +7545,65 @@ transweb wxpay check</code></pre>
         event.preventDefault();
         close(current);
       });
+
+      window.addEventListener("resize", function () {
+        if (!isCompact()) return;
+
+        resetWindowPosition(windows.qr);
+        resetWindowPosition(windows.agent);
+      });
     })();
+
+
+    /* =========================
+       首屏：展开上传区 / 预置体验入口
+    ========================= */
+
+    (function () {
+      var generator = document.getElementById("agentCreatorArea");
+      var primaryCta = document.getElementById("heroUploadCta");
+      if (!generator) return;
+
+      function revealUpload(event) {
+        if (event) event.preventDefault();
+
+        generator.hidden = false;
+        generator.classList.remove("is-revealing");
+        void generator.offsetHeight;
+        generator.classList.add("is-revealing");
+
+        if (primaryCta) primaryCta.setAttribute("aria-expanded", "true");
+
+        window.setTimeout(function () {
+          generator.scrollIntoView({ behavior: "smooth", block: "center" });
+        }, 60);
+
+        window.setTimeout(function () {
+          generator.classList.remove("is-revealing");
+        }, 700);
+      }
+
+      Array.prototype.forEach.call(document.querySelectorAll("[data-reveal-upload]"), function (trigger) {
+        trigger.addEventListener("click", revealUpload);
+      });
+
+      Array.prototype.forEach.call(document.querySelectorAll("[data-demo-question]"), function (card) {
+        card.addEventListener("click", function (event) {
+          if (event.metaKey || event.ctrlKey || event.shiftKey || event.button !== 0) return;
+          if (typeof window.__openAgentDemo !== "function") return;
+
+          event.preventDefault();
+
+          var questionNode = card.querySelector(".preset-question");
+          var question = questionNode
+            ? questionNode.textContent.trim()
+            : card.getAttribute("data-demo-question");
+
+          window.__openAgentDemo(question);
+        });
+      });
+    })();
+
 
     /* =========================
        我的 Apps 卡片列表（登录后展示）

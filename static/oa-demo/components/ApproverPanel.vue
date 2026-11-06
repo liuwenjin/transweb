@@ -1,5 +1,5 @@
 <!--
-  院系文档权限与审批 OA · 审批人工作台（独立 Vue 3 单文件组件）
+  中国电子教育学会 公文与审批 OA · 审批处理面板（独立 Vue 3 单文件组件）
   待办处理 · 同意/退回/驳回 · 转办加签 · 审批记录
   依赖：Vue 3、Tailwind（tw- 前缀）、全局组件 oa-icon；props.store 见 ../README.md
 -->
@@ -13,15 +13,12 @@
             <oa-icon name="task" class="tw-w-5 tw-h-5"></oa-icon>
           </div>
           <div class="tw-leading-tight tw-min-w-0">
-            <div class="tw-text-sm tw-font-semibold">审批人</div>
-            <div class="tw-text-[11px] tw-text-slate-500 tw-truncate">{{ me.name }} · {{ me.title }}</div>
+            <div class="tw-text-sm tw-font-semibold">{{ me.title }}</div>
+            <div class="tw-text-[11px] tw-text-slate-500 tw-truncate">{{ me.name }} · {{ me.deptName }}</div>
           </div>
         </div>
-        <div class="tw-mt-3">
-          <label class="tw-text-[10px] tw-text-slate-400">当前审批人</label>
-          <select v-model="approverAccount" class="apr-input tw-w-full tw-mt-1 tw-px-2 tw-py-1.5 tw-rounded-lg tw-text-[12px] tw-border tw-border-slate-200 tw-bg-slate-50">
-            <option v-for="a in store.approvers" :key="a.account" :value="a.account">{{ a.name }} · {{ a.title }}</option>
-          </select>
+        <div class="tw-mt-3 tw-flex tw-flex-wrap tw-gap-1">
+          <span v-for="cap in me.caps" :key="cap" class="tw-px-1.5 tw-py-0.5 tw-rounded tw-bg-emerald-50 tw-text-emerald-700 tw-border tw-border-emerald-100 tw-text-[10px]">{{ capLabel(cap) }}</span>
         </div>
       </div>
 
@@ -62,7 +59,7 @@
         <div class="tw-flex-1"></div>
         <div class="tw-flex tw-items-center tw-gap-2 tw-text-[11px] tw-text-slate-500 tw-px-3 tw-py-1.5 tw-rounded-full tw-bg-slate-50 tw-border tw-border-slate-200">
           <oa-icon name="user" class="tw-w-3.5 tw-h-3.5"></oa-icon>
-          当前审批人：{{ me.name }}
+          当前登录：{{ me.name }}
         </div>
         <div class="tw-relative">
           <button @click="notifOpen = !notifOpen" class="apr-icon-btn tw-relative tw-w-9 tw-h-9 tw-rounded-lg tw-flex tw-items-center tw-justify-center tw-text-slate-500">
@@ -481,7 +478,7 @@
         </div>
         <div class="tw-flex-1 tw-overflow-y-auto oa-scroll tw-bg-slate-100 tw-p-6">
           <div class="apr-print-sheet tw-bg-white tw-mx-auto tw-px-10 tw-py-8 tw-shadow-sm">
-            <div class="tw-text-center tw-text-lg tw-font-semibold">院系文档权限与审批 OA · 审批单</div>
+            <div class="tw-text-center tw-text-lg tw-font-semibold">中国电子教育学会 · 公文与审批 OA 审批单</div>
             <div class="tw-text-center tw-text-[11px] tw-text-slate-500 tw-mt-1">{{ exportInstance.no }}</div>
             <div class="tw-h-px tw-bg-slate-200 tw-my-5"></div>
             <table class="tw-w-full tw-text-[11px] tw-border-collapse">
@@ -519,7 +516,7 @@
               <span>导出人：{{ me.name }}</span>
               <span>导出时间：{{ store.h.fmtDateTime(new Date().toISOString()) }}</span>
             </div>
-            <div class="tw-mt-3 tw-text-[10px] tw-text-slate-400">本审批单由系统生成，含水印与操作记录，仅限院内使用。</div>
+            <div class="tw-mt-3 tw-text-[10px] tw-text-slate-400">本审批单由系统生成，含水印与操作记录，仅限学会内部使用。</div>
           </div>
         </div>
         <div class="tw-flex tw-items-center tw-justify-between tw-px-5 tw-py-3.5 tw-bg-white tw-border-t tw-border-slate-100">
@@ -541,7 +538,6 @@ export default {
   data() {
     return {
       tab: "todo",
-      approverAccount: "20180006",
       typeFilter: "all",
       statusFilter: "",
       search: "",
@@ -568,11 +564,11 @@ export default {
   },
   computed: {
     me() {
-      return this.store.approvers.find(a => a.account === this.approverAccount) || this.store.approvers[0];
+      return this.store.currentUser || this.store.persona.approver;
     },
     navItems() {
       return [
-        { id: "todo", label: "我的待办", icon: "inbox", badge: this.store.todoFor(this.approverAccount).length },
+        { id: "todo", label: "我的待办", icon: "inbox", badge: this.store.todoFor(this.me.account).length },
         { id: "done", label: "我的已办", icon: "check-circle", badge: 0 },
         { id: "records", label: "审批记录", icon: "clipboard", badge: 0 },
         { id: "stats", label: "审批统计", icon: "chart", badge: 0 }
@@ -585,11 +581,11 @@ export default {
       return {
         todo: "仅显示分配给当前审批人的任务",
         done: "我处理过的任务与意见",
-        records: "全院审批实例与流转记录",
+        records: "学会审批实例与流转记录",
         stats: "办结量、退回率与处理时长"
       }[this.tab];
     },
-    todoAll() { return this.store.todoFor(this.approverAccount); },
+    todoAll() { return this.store.todoFor(this.me.account); },
     todoList() {
       let list = this.todoAll;
       if (this.typeFilter !== "all") list = list.filter(i => i.instance.type === this.typeFilter);
@@ -610,7 +606,7 @@ export default {
         { id: "GENERAL", label: "通用事项" }
       ];
     },
-    doneList() { return this.store.doneFor(this.approverAccount); },
+    doneList() { return this.store.doneFor(this.me.account); },
     recordList() {
       let list = this.store.instances.slice();
       if (this.statusFilter) list = list.filter(i => i.status === this.statusFilter);
@@ -620,8 +616,8 @@ export default {
       }
       return list;
     },
-    unread() { return this.store.unreadFor(this.approverAccount); },
-    myNotifs() { return this.store.notificationsFor(this.approverAccount).slice(0, 8); },
+    unread() { return this.store.unreadFor(this.me.account); },
+    myNotifs() { return this.store.notificationsFor(this.me.account).slice(0, 8); },
     attachments() {
       if (!this.detail) return [];
       if (this.detail.type === "DOC_ARCHIVE") return [
@@ -632,7 +628,7 @@ export default {
       if (this.detail.type === "PERM_GRANT") return [{ name: "权限申请说明.pdf", size: "180 KB" }];
       return [];
     },
-    otherApprovers() { return this.store.approvers.filter(a => a.account !== this.approverAccount); },
+    otherApprovers() { return this.store.approvers.filter(a => a.account !== this.me.account); },
     maxMonthly() { return Math.max.apply(null, this.monthly.map(m => m.value)); },
     instTotal() { return this.store.instances.length; },
     statCards() {
@@ -672,14 +668,11 @@ export default {
     }
   },
   watch: {
-    approverAccount() {
-      this.detail = null;
-      this.tab = "todo";
-    },
     "store.intent.seq"() { this.applyIntent(); }
   },
   mounted() { this.applyIntent(); },
   methods: {
+    capLabel(cap) { return { staff: "文档查阅", approver: "审批处理", docadmin: "文档管理" }[cap] || cap; },
     go(tab) { this.tab = tab; this.detail = null; },
     applyIntent() {
       const it = this.store.intent;
@@ -718,12 +711,12 @@ export default {
       if (!inst || inst.status !== "RUNNING") return null;
       const node = inst.nodes[inst.currentNode];
       if (!node) return null;
-      return node.tasks.find(t => t.account === this.approverAccount && t.status === "pending") || null;
+      return node.tasks.find(t => t.account === this.me.account && t.status === "pending") || null;
     },
     approve() {
       const inst = this.detail;
       if (!inst) return;
-      const res = this.store.handleTask(inst.id, this.approverAccount, "approve", { comment: this.comment || "同意" });
+      const res = this.store.handleTask(inst.id, this.me.account, "approve", { comment: this.comment || "同意" });
       if (!res.ok) { this.store.toast(res.message, "error"); return; }
       const next = res.instance.nodes[res.instance.currentNode];
       const nextApprover = next && next.status === "pending" ? next.tasks.filter(t => t.status === "pending").map(t => t.name).join("、") : "";
@@ -738,7 +731,7 @@ export default {
         okText: "同意"
       }).then(ok => {
         if (!ok) return;
-        const res = this.store.handleTask(inst.id, this.approverAccount, "approve", { comment: "材料齐全，同意。" });
+        const res = this.store.handleTask(inst.id, this.me.account, "approve", { comment: "材料齐全，同意。" });
         if (res.ok) this.store.toast("已同意。");
         else this.store.toast(res.message, "error");
       });
@@ -768,7 +761,7 @@ export default {
         if (!this.actionTargets.length) { this.store.toast("请选择加签人。", "error"); return; }
         payload.targets = this.actionTargets.slice();
       }
-      const res = this.store.handleTask(inst.id, this.approverAccount, type, payload);
+      const res = this.store.handleTask(inst.id, this.me.account, type, payload);
       if (!res.ok) { this.store.toast(res.message, "error"); return; }
       this.actionOpen = false;
       if (type === "addsign") {
@@ -780,7 +773,7 @@ export default {
       this.tab = type === "transfer" ? "todo" : "done";
     },
     urge(inst) {
-      const res = this.store.urgeInstance(inst.id, this.approverAccount);
+      const res = this.store.urgeInstance(inst.id, this.me.account);
       this.store.toast(res.ok ? "已催办当前处理人。" : res.message, res.ok ? "success" : "error");
     },
     openExport(inst) {
@@ -799,7 +792,7 @@ export default {
         if (inst) { this.tab = "todo"; this.openDetail(inst); }
       }
     },
-    readAll() { this.store.markAllRead(this.approverAccount); }
+    readAll() { this.store.markAllRead(this.me.account); }
   }
 };
 </script>

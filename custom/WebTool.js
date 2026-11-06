@@ -936,6 +936,198 @@ objectTool.fetchQuestionData = async function (
   return { list, total, explainInfo, current, size };
 }
 
+/**
+ * 通过 JEV（System One）接口，从候选知识库中选择与问题最匹配的一个。
+ *
+ * 支持两种调用方式：
+ *   await objectTool.analyzeKnowledgeBase(question, knowledgeBases)
+ *   await objectTool.analyzeKnowledgeBase({ question, knowledgeBases })
+ *
+ * 返回值为选中的知识库名称；无匹配、参数不合法或接口异常时返回 ""。
+ * 传入 callback 时，成功会额外回调 callback(choice)，失败回调 callback("")；
+ * 传 errCallback 时保留原始错误对象。
+ */
+objectTool.analyzeKnowledgeBase = async function (
+  question,
+  knowledgeBases,
+  callback,
+  errCallback
+) {
+  // 兼容直接传 { question, knowledgeBases, callback, errCallback } 的路由调用
+  if (
+    question &&
+    typeof question === "object" &&
+    !Array.isArray(question)
+  ) {
+    const options = question;
+    question =
+      options.question !== undefined
+        ? options.question
+        : options.query !== undefined
+          ? options.query
+          : options.text;
+    knowledgeBases =
+      options.knowledgeBases !== undefined
+        ? options.knowledgeBases
+        : options.knowledge_bases !== undefined
+          ? options.knowledge_bases
+          : options.list;
+    callback = options.callback || callback;
+    errCallback = options.errCallback || options.errorCallback || errCallback;
+  }
+
+  const safeQuestion = String(question ?? "").trim();
+
+  if (!safeQuestion) {
+    if (typeof callback === "function") callback("");
+    return "";
+  }
+
+  // 规范化候选知识库：兼容数组、单个对象以及 { name: desc } 映射
+  let list = [];
+  if (Array.isArray(knowledgeBases)) {
+    list = knowledgeBases;
+  } else if (knowledgeBases && typeof knowledgeBases === "object") {
+    // 单个知识库对象（{name, desc}）与 { name: desc } 映射都兼容
+    if (
+      knowledgeBases.name !== undefined ||
+      knowledgeBases.desc !== undefined ||
+      knowledgeBases.description !== undefined
+    ) {
+      list = [knowledgeBases];
+    } else {
+      list = Object.keys(knowledgeBases).map((name) => ({
+        name,
+        desc: knowledgeBases[name],
+      }));
+    }
+  } else if (knowledgeBases) {
+    list = [knowledgeBases];
+  }
+
+  const criteria = {};
+  list.forEach((kb) => {
+    if (typeof kb === "string") {
+      const name = kb.trim();
+      if (name) criteria[name] = name + ":" + name + "知识库";
+      return;
+    }
+
+    if (!kb || typeof kb !== "object") return;
+
+    const name = String(kb.name ?? "未命名知识库").trim();
+    if (!name) return;
+
+    const desc = String(
+      kb.desc ?? kb.description ?? name + "知识库"
+    ).trim();
+    criteria[name] = name + ":" + (desc || name + "知识库");
+  });
+
+  criteria["none"] = "没有匹配的知识库";
+
+  if (!Object.keys(criteria).length || Object.keys(criteria).length === 1) {
+    if (typeof callback === "function") callback("");
+    return "";
+  }
+
+  const endpoint = env.opt("JEV_API_ENDPOINT");
+  if (!endpoint || !/^https?:\/\//i.test(endpoint)) {
+    console.warn("analyzeKnowledgeBase: JEV_API_ENDPOINT 未配置或格式不正确");
+    if (typeof errCallback === "function") {
+      errCallback(new Error("JEV_API_ENDPOINT is not configured"));
+    }
+    if (typeof callback === "function" && callback !== errCallback) callback("");
+    return "";
+  }
+
+  const apiKey = env.opt("API_KEY_JEV") || env.opt("TYPESAFE_API_KEY");
+  const headers = {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+  };
+  if (apiKey) headers.Authorization = "Bearer " + apiKey;
+
+  const payload = {
+    model: env.opt("JEV_MODEL") || "jev-latest",
+    state: `用户正在提问，需要从候选知识库中选出最相关的一个作为上下文。用户问题：${safeQuestion}`,
+    questions: {
+      knowledgeSelection: {
+        type: "choice",
+        instructions: "根据上述用户问题，以下哪个知识库提供的上下文最为匹配？",
+        criteria: criteria,
+      },
+    },
+  };
+
+  const timeout = Math.min(
+    Math.max(Number(env.opt("JEV_TIMEOUT_MS")) || 15000, 1000),
+    60000
+  );
+
+  let choice = "";
+
+  try {
+    const response = await axios.post(endpoint, payload, {
+      headers: headers,
+      timeout: timeout,
+    });
+
+    let data = response && response.data;
+    if (typeof data === "string") {
+      try {
+        data = JSON.parse(data);
+      } catch (e) {
+        data = null;
+      }
+    }
+    // 兼容部分网关把结果再包一层 data 的情况
+    if (data && data.data && data.data.answers) data = data.data;
+
+    const answer =
+      data &&
+      data.answers &&
+      (data.answers.knowledgeSelection || data.answers.knowledge_selection);
+
+    if (typeof answer === "string") {
+      choice = answer;
+    } else if (answer && typeof answer === "object") {
+      choice = answer.choice ?? answer.value ?? answer.name ?? answer.key ?? "";
+      if (choice && typeof choice === "object") {
+        choice = choice.value ?? choice.name ?? choice.key ?? "";
+      }
+    }
+
+    choice = String(choice || "").trim();
+  } catch (error) {
+    console.warn(
+      "analyzeKnowledgeBase: JEV 接口请求失败:",
+      error && error.message ? error.message : error
+    );
+    if (typeof errCallback === "function") errCallback(error);
+    if (typeof callback === "function" && callback !== errCallback) callback("");
+    return "";
+  }
+
+  // 只接受候选列表中的名称（none 表示明确无匹配），避免把模型自由文本
+  // 当成知识库 ID 传给后续检索。
+  if (choice && choice !== "none" && criteria[choice] === undefined) {
+    // 有的模型会返回描述而不是 criteria 的 key，这里按描述反查一次。
+    const matched = Object.keys(criteria).find(
+      (name) => name === choice || criteria[name] === choice
+    );
+    if (matched) {
+      choice = matched;
+    } else {
+      console.warn("analyzeKnowledgeBase: JEV 返回了未知知识库:", choice);
+      choice = "";
+    }
+  }
+
+  if (typeof callback === "function") callback(choice);
+  return choice;
+};
+
 objectTool.extractJSON = function (text, safeMode = false) {
   if (!text) return null;
   if (typeof text !== "string") {
