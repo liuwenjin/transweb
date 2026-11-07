@@ -268,6 +268,8 @@ transweb status      # 查看地址、局域网访问、初始化状态
 - 首次初始化会自动安装应用依赖（约 543 个包）并下载 MongoDB 6.0.x（约 58MB）；
 - 服务目录默认 `~/.transweb-service`（配置、数据库、日志、证书都在这里），升级 npm 包不丢数据；
 - 局域网其他设备可直接访问 `transweb status` 里显示的地址；
+- 重装或切换 Node 版本后若提示 `transweb: No such file or directory`，先执行 `hash -r`；
+  仍失败见安装包内 `README-INSTALL.md` 的「故障排查」；
 - HTTPS 证书不随包分发：把证书放到 `<npm 全局目录>/transweb-service/app/ca/cn/{key.pem,cert.pem}`，缺失时自动跳过 8443。
 
 常用命令：
