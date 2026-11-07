@@ -220,6 +220,1117 @@
     details summary::-webkit-details-marker {
       display: none;
     }
+
+    /* ==========================================================================
+       Trans-Workflow × Trans-Agent 「白与空」视觉统一层
+       ========================================================================== */
+    :root {
+      --paper: #faf9f6;
+      --white: #fffefa;
+      --ink: #1b1b19;
+      --gray: #6b6962;
+      --text-body: #56544d;
+      --light: #a5a29a;
+      --line: #e8e5de;
+      --serif: "Source Han Serif SC", "Noto Serif SC", "Songti SC", "STSong", serif;
+      --sans: Inter, -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial,
+        "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      --ease: cubic-bezier(.2, .7, .2, 1);
+    }
+
+    html,
+    body {
+      background: var(--paper) !important;
+      color: var(--ink) !important;
+    }
+
+    html {
+      scrollbar-gutter: stable;
+    }
+
+    body {
+      padding-top: 64px;
+      font-family: var(--sans) !important;
+      background-image: none !important;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    ::selection {
+      background: var(--ink);
+      color: var(--paper);
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* ---------- Header ---------- */
+    .wf-header {
+      position: fixed;
+      z-index: 100;
+      top: 0;
+      left: 0;
+      right: 0;
+
+      height: 64px;
+      overflow: visible;
+
+      background: rgba(250, 249, 246, .9);
+      border-bottom: 1px solid rgba(27, 27, 25, .07);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+
+    .wf-header.nav-open {
+      z-index: 180;
+    }
+
+    .wf-header__inner {
+      width: min(1120px, calc(100% - 48px));
+      height: 100%;
+      margin: auto;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .brand-lockup {
+      flex: none;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .page-mark {
+      flex: none;
+      height: 22px;
+      padding: 0 8px;
+
+      display: inline-flex;
+      align-items: center;
+
+      background: var(--ink);
+      color: var(--paper);
+
+      font-size: 9.5px;
+      letter-spacing: .1em;
+      white-space: nowrap;
+    }
+
+    .wf-logo {
+      flex: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .wf-logo__name {
+      font-size: 14.5px;
+      font-weight: 600;
+      letter-spacing: .2em;
+      line-height: 1;
+    }
+
+    .wf-logo__sub {
+      color: var(--light);
+      font-size: 9px;
+      letter-spacing: .1em;
+      line-height: 1.2;
+    }
+
+    .wf-nav {
+      flex: 1 1 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 30px;
+    }
+
+    .wf-nav a {
+      color: var(--gray);
+      font-size: 12.5px;
+      letter-spacing: .03em;
+      white-space: nowrap;
+      transition: color .3s ease;
+    }
+
+    .wf-nav a:hover,
+    .wf-nav a.is-active {
+      color: var(--ink);
+    }
+
+    .wf-header__actions {
+      flex: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .wf-btn {
+      min-height: 36px;
+      padding: 0 18px;
+
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+
+      border: 1px solid var(--ink);
+      background: var(--ink);
+      color: var(--paper);
+
+      font-size: 11.5px;
+      letter-spacing: .08em;
+      white-space: nowrap;
+
+      transition: background .3s ease, border-color .3s ease, color .3s ease;
+    }
+
+    .wf-btn:hover {
+      background: #2b2b31;
+      border-color: #2b2b31;
+    }
+
+    .wf-btn--ghost {
+      background: transparent;
+      color: var(--ink);
+      border-color: rgba(27, 27, 25, .24);
+    }
+
+    .wf-btn--ghost:hover {
+      background: var(--white);
+      color: var(--ink);
+      border-color: rgba(27, 27, 25, .4);
+    }
+
+    .wf-btn--lg {
+      min-height: 50px;
+      padding: 0 24px;
+      font-size: 13px;
+    }
+
+    .wf-menu-btn {
+      display: none;
+
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .wf-menu-lines {
+      width: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .wf-menu-lines > span {
+      display: block;
+      width: 20px;
+      height: 1.5px;
+      background: var(--ink);
+    }
+
+    .wf-menu-x {
+      position: relative;
+      display: none;
+      width: 20px;
+      height: 20px;
+    }
+
+    .wf-menu-x > span {
+      position: absolute;
+      top: 9px;
+      left: 0;
+      width: 20px;
+      height: 1.5px;
+      background: var(--ink);
+    }
+
+    .wf-menu-x > span:first-child { transform: rotate(45deg); }
+    .wf-menu-x > span:last-child { transform: rotate(-45deg); }
+
+    .wf-menu-btn[aria-expanded="true"] .wf-menu-lines { display: none; }
+    .wf-menu-btn[aria-expanded="true"] .wf-menu-x { display: block; }
+
+    .wf-mobile { display: none; }
+
+    .wf-mobile:not(.hidden) { display: block; }
+
+    .wf-mobile {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+
+      padding: 8px 16px calc(20px + env(safe-area-inset-bottom));
+
+      background: var(--paper);
+      border-bottom: 1px solid var(--line);
+      box-shadow: 0 18px 32px rgba(27, 27, 25, .07);
+
+      max-height: calc(100dvh - 56px);
+      overflow-y: auto;
+    }
+
+    .wf-mobile > a {
+      display: block;
+      padding: 15px 0;
+
+      border-bottom: 1px solid var(--line);
+
+      color: var(--gray);
+      font-size: 14px;
+      letter-spacing: .04em;
+      text-align: center;
+    }
+
+    .wf-mobile > a.is-active {
+      color: var(--ink);
+    }
+
+    .wf-mobile__actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding-top: 16px;
+    }
+
+    .wf-mobile__actions .wf-btn { width: 100%; }
+
+    .wf-mobile__github {
+      padding: 10px 0;
+      color: var(--gray);
+      font-size: 12px;
+      text-align: center;
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+
+    /* ---------- Workflow secondary nav ---------- */
+    .wf-subnav {
+      position: sticky;
+      z-index: 90;
+      top: 0;
+
+      background: rgba(250, 249, 246, .94);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+
+    .wf-subnav__inner {
+      width: min(1120px, calc(100% - 48px));
+      height: 40px;
+      margin: auto;
+
+      display: flex;
+      align-items: center;
+      gap: 26px;
+
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .wf-subnav__inner::-webkit-scrollbar { display: none; }
+
+    .wf-subnav a {
+      flex: none;
+      color: var(--gray);
+      font-size: 11.5px;
+      letter-spacing: .04em;
+      white-space: nowrap;
+      transition: color .3s ease;
+    }
+
+    .wf-subnav a:hover { color: var(--ink); }
+
+    /* ---------- Hero ---------- */
+    .wf-hero {
+      padding: 84px 0 72px;
+      background: var(--paper);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .wf-hero__inner {
+      width: min(1120px, calc(100% - 48px));
+      margin: auto;
+
+      display: grid;
+      grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr);
+      gap: 56px;
+      align-items: center;
+    }
+
+    .wf-eyebrow {
+      color: var(--light);
+      font-size: 10px;
+      letter-spacing: .2em;
+    }
+
+    .wf-hero__title {
+      margin: 18px 0 0;
+
+      font-family: var(--serif) !important;
+      font-size: clamp(34px, 4vw, 48px) !important;
+      font-weight: 400 !important;
+      line-height: 1.32 !important;
+      letter-spacing: .02em !important;
+
+      color: var(--ink) !important;
+    }
+
+    .wf-hero__desc {
+      margin: 22px 0 0;
+      max-width: 540px;
+
+      color: var(--gray) !important;
+      font-size: 14.5px !important;
+      line-height: 1.95 !important;
+      letter-spacing: .01em;
+    }
+
+    .wf-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      margin-top: 32px;
+    }
+
+    .wf-hero__meta {
+      margin-top: 18px;
+      color: var(--light);
+      font-size: 10.5px;
+      letter-spacing: .06em;
+    }
+
+    .wf-hero__visual { min-width: 0; }
+
+    .wf-window {
+      background: var(--white);
+      border: 1px solid var(--line);
+      box-shadow: 0 24px 54px rgba(27, 27, 25, .06);
+    }
+
+    .wf-window__bar {
+      height: 38px;
+      padding: 0 14px;
+
+      display: flex;
+      align-items: center;
+      gap: 6px;
+
+      border-bottom: 1px solid var(--line);
+    }
+
+    .wf-window__bar > span {
+      width: 5px;
+      height: 5px;
+      border: 1px solid var(--light);
+      border-radius: 50%;
+    }
+
+    .wf-window__bar > em {
+      margin-left: 10px;
+      color: var(--light);
+      font-size: 10px;
+      font-style: normal;
+      letter-spacing: .03em;
+    }
+
+    .wf-window img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    /* ---------- Main / sections ---------- */
+    .wf-main {
+      width: min(1120px, calc(100% - 48px)) !important;
+      max-width: 1120px !important;
+      margin: auto !important;
+      padding: 72px 0 84px !important;
+
+      display: flex;
+      flex: 1 0 auto;
+      flex-direction: column;
+      gap: 84px !important;
+    }
+
+    .wf-main > section {
+      scroll-margin-top: 112px;
+    }
+
+    /* section header */
+    .wf-main .text-center.max-w-3xl {
+      max-width: 720px !important;
+      margin: 0 0 40px 0 !important;
+      text-align: left !important;
+    }
+
+    .wf-main .text-center.max-w-3xl h2 {
+      margin: 0 !important;
+
+      font-family: var(--serif) !important;
+      font-size: clamp(28px, 3.4vw, 38px) !important;
+      font-weight: 400 !important;
+      line-height: 1.42 !important;
+      letter-spacing: .02em !important;
+
+      color: var(--ink) !important;
+    }
+
+    .wf-main .text-center.max-w-3xl p {
+      margin-top: 16px !important;
+
+      color: var(--gray) !important;
+      font-size: 14px !important;
+      line-height: 1.9 !important;
+    }
+
+    .wf-main h3 {
+      font-family: var(--serif) !important;
+      font-size: 20px !important;
+      font-weight: 400 !important;
+      line-height: 1.5 !important;
+      letter-spacing: .02em !important;
+      color: var(--ink) !important;
+    }
+
+    .wf-main p {
+      color: var(--text-body);
+    }
+
+    /* generic paper cards */
+    .wf-main [class*="bg-[#f8f8fa]"],
+    .wf-main [class*="bg-[#F6F9F7]"],
+    .wf-main [class*="bg-brand-50"],
+    .wf-main [class*="bg-slate-50"] {
+      background: var(--white) !important;
+      border-color: var(--line) !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+    }
+
+    .wf-main [class*="bg-[#f8f8fa]"]:hover,
+    .wf-main [class*="border-gray-100"]:hover {
+      border-color: rgba(27, 27, 25, .16) !important;
+      box-shadow: 0 14px 30px rgba(27, 27, 25, .04) !important;
+    }
+
+    .wf-main [class*="border-gray-100"],
+    .wf-main [class*="border-slate-200"],
+    .wf-main [class*="border-slate-100"] {
+      border-color: var(--line) !important;
+    }
+
+    .wf-main .shadow-sm,
+    .wf-main .shadow-md,
+    .wf-main .shadow-lg,
+    .wf-main .shadow-xl {
+      box-shadow: none !important;
+    }
+
+    /* 图标底色统一为纸灰 */
+    .wf-main [class*="bg-brand-100"],
+    .wf-main [class*="bg-emerald-50"],
+    .wf-main [class*="bg-indigo-50"],
+    .wf-main [class*="bg-cyan-50"],
+    .wf-main [class*="bg-rose-50"],
+    .wf-main [class*="bg-violet-50"] {
+      background: var(--paper) !important;
+      border: 1px solid var(--line);
+      color: var(--gray) !important;
+    }
+
+    .wf-main [class*="text-emerald-600"],
+    .wf-main [class*="text-rose-500"],
+    .wf-main [class*="text-indigo-600"],
+    .wf-main [class*="text-cyan-600"],
+    .wf-main [class*="text-violet-600"] {
+      color: var(--gray) !important;
+    }
+
+    /* 标签 / 胶囊统一为细线标签 */
+    .wf-main span.rounded-full,
+    .wf-main .rounded-full.border {
+      border-radius: 0 !important;
+      background: transparent !important;
+      color: var(--gray) !important;
+      border: 1px solid var(--line);
+    }
+
+    .wf-main button.rounded-full,
+    .wf-main a.rounded-full {
+      border-radius: 0 !important;
+    }
+
+    .wf-main a[class*="bg-brand-600"],
+    .wf-main button[class*="bg-brand-600"],
+    .wf-main a[class*="bg-white"][class*="text-brand"] {
+      background: var(--ink) !important;
+      border-color: var(--ink) !important;
+      color: var(--paper) !important;
+      box-shadow: none !important;
+    }
+
+    .wf-main a[class*="bg-brand-600"]:hover,
+    .wf-main button[class*="bg-brand-600"]:hover {
+      background: #2b2b31 !important;
+      border-color: #2b2b31 !important;
+    }
+
+    /* Search */
+    #search-input {
+      height: 54px;
+      padding: 0 128px 0 46px !important;
+
+      border: 1px solid var(--line) !important;
+      border-radius: 0 !important;
+      background: var(--white) !important;
+
+      color: var(--ink) !important;
+      font-size: 13px !important;
+      box-shadow: none !important;
+      outline: none;
+    }
+
+    #search-input::placeholder { color: var(--light); }
+
+    #search-input:focus {
+      border-color: var(--ink) !important;
+      box-shadow: 0 0 0 1px var(--ink) !important;
+    }
+
+    #market .relative.max-w-2xl > div:first-child {
+      padding-left: 15px !important;
+      color: var(--gray) !important;
+    }
+
+    #search-kbd {
+      right: 14px !important;
+      padding: 4px 7px !important;
+      border: 1px solid var(--line) !important;
+      border-radius: 0 !important;
+      background: var(--paper) !important;
+      color: var(--light) !important;
+      font-size: 10px !important;
+      box-shadow: none !important;
+    }
+
+    #category-tags {
+      gap: 18px !important;
+    }
+
+    .wf-cat {
+      flex: none;
+      padding: 0 0 8px;
+
+      border: 0;
+      border-bottom: 1px solid transparent;
+      background: transparent;
+
+      color: var(--gray);
+      font-size: 12.5px;
+      letter-spacing: .03em;
+      white-space: nowrap;
+    }
+
+    .wf-cat.is-active {
+      color: var(--ink);
+      border-bottom-color: var(--ink);
+    }
+
+    #result-count,
+    #clear-filter {
+      color: var(--light) !important;
+      font-size: 11px !important;
+      letter-spacing: .04em;
+    }
+
+    /* Dynamic workflow cards */
+    #workflow-grid {
+      display: grid !important;
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+      gap: 24px !important;
+      margin-top: 30px !important;
+      counter-reset: workflow;
+    }
+
+    .wf-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      min-height: 286px;
+      padding: 26px;
+
+      background: var(--white);
+      border: 1px solid var(--line);
+
+      cursor: pointer;
+
+      transition:
+        transform .35s var(--ease),
+        border-color .35s ease,
+        box-shadow .35s ease;
+    }
+
+    .wf-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(27, 27, 25, .18);
+      box-shadow: 0 16px 36px rgba(27, 27, 25, .05);
+    }
+
+    .wf-card::before {
+      counter-increment: workflow;
+      content: counter(workflow, decimal-leading-zero);
+
+      margin-bottom: 18px;
+
+      color: var(--light);
+      font-size: 10.5px;
+      letter-spacing: .18em;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .wf-card__category {
+      color: var(--gray);
+      font-size: 10.5px;
+      letter-spacing: .12em;
+    }
+
+    .wf-card__hot {
+      margin-left: 10px;
+      color: var(--ink);
+      font-size: 10px;
+      letter-spacing: .08em;
+    }
+
+    .wf-card__title {
+      margin: 10px 0 0;
+
+      font-family: var(--serif);
+      font-size: 21px;
+      font-weight: 400;
+      line-height: 1.5;
+      letter-spacing: .02em;
+    }
+
+    .wf-card__desc {
+      margin: 14px 0 0;
+
+      color: var(--text-body);
+      font-size: 13px;
+      line-height: 1.9;
+
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .wf-card__flow {
+      margin-top: 18px;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+    }
+
+    .wf-card__flow-label {
+      color: var(--light);
+      font-size: 10.5px;
+      letter-spacing: .05em;
+    }
+
+    .wf-card__nodes {
+      margin-top: 9px;
+
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 5px;
+
+      color: var(--gray);
+      font-size: 11px;
+      line-height: 1.7;
+    }
+
+    .wf-card__nodes i {
+      color: var(--light);
+      font-style: normal;
+    }
+
+    .wf-card__footer {
+      margin-top: auto;
+      padding-top: 18px;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+
+      color: var(--light);
+      font-size: 11px;
+    }
+
+    .wf-card__run {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+
+      color: var(--ink);
+      font-size: 11.5px;
+      letter-spacing: .04em;
+    }
+
+    .wf-card__run i {
+      font-style: normal;
+      transition: transform .3s ease;
+    }
+
+    .wf-card:hover .wf-card__run i { transform: translateX(3px); }
+
+    #empty-state {
+      padding: 70px 20px !important;
+      color: var(--gray);
+    }
+
+    /* Quickstart step cards */
+    .wf-main .grid > div > div[class*="h-40"] {
+      background: var(--paper) !important;
+      border-bottom: 1px solid var(--line);
+    }
+
+    /* Architecture / tabs */
+    .wf-main [class*="bg-slate-200"],
+    .wf-main [class*="bg-slate-300"] {
+      background: var(--paper) !important;
+      border-color: var(--line) !important;
+    }
+
+    .wf-main button[class*="bg-white"] {
+      background: var(--white) !important;
+      color: var(--ink) !important;
+      box-shadow: none !important;
+    }
+
+    /* Quickstart step titles */
+    #quickstart .grid h2 {
+      font-family: var(--serif) !important;
+      font-size: 19px !important;
+      font-weight: 400 !important;
+      line-height: 1.5 !important;
+    }
+
+    /* Community */
+    #community > div:first-child,
+    #community .bg-brand-900 {
+      background: var(--white) !important;
+      color: var(--ink) !important;
+      border: 1px solid var(--line);
+      box-shadow: none !important;
+    }
+
+    #community .bg-white\/10,
+    #community .border-white\/20,
+    #community .bg-white\/20 {
+      background: var(--paper) !important;
+      border-color: var(--line) !important;
+      color: var(--gray) !important;
+    }
+
+    #community h2 {
+      font-family: var(--serif) !important;
+      font-size: clamp(26px, 3vw, 32px) !important;
+      font-weight: 400 !important;
+      line-height: 1.45 !important;
+    }
+
+    #community h2,
+    #community .text-white,
+    #community .text-slate-300,
+    #community .text-brand-200 {
+      color: var(--ink) !important;
+    }
+
+    #community a[class*="bg-brand-600"] {
+      background: var(--ink) !important;
+      border-color: var(--ink) !important;
+      color: var(--paper) !important;
+    }
+
+    #community a[class*="border-white"] {
+      background: transparent !important;
+      color: var(--ink) !important;
+      border-color: var(--line) !important;
+    }
+
+    /* FAQ */
+    .wf-main details {
+      background: var(--white) !important;
+      border-color: var(--line) !important;
+      box-shadow: none !important;
+    }
+
+    .wf-main details summary {
+      font-family: var(--serif);
+      font-size: 15px;
+      font-weight: 400;
+    }
+
+    .wf-main details table thead {
+      background: var(--paper) !important;
+    }
+
+    .wf-main details th,
+    .wf-main details td {
+      border-color: var(--line) !important;
+    }
+
+    /* Final CTA */
+    .wf-final {
+      width: min(1120px, calc(100% - 48px));
+      margin: 0 auto;
+      padding: 0 0 72px;
+    }
+
+    .wf-final__inner {
+      padding: 56px 48px;
+
+      background: var(--white);
+      border: 1px solid var(--line);
+      text-align: center;
+    }
+
+    .wf-final__title {
+      margin: 0;
+
+      font-family: var(--serif);
+      font-size: clamp(26px, 3vw, 34px);
+      font-weight: 400;
+      line-height: 1.45;
+    }
+
+    .wf-final__desc {
+      margin: 14px 0 0;
+      color: var(--gray);
+      font-size: 13px;
+    }
+
+    .wf-final__actions {
+      margin-top: 28px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    /* Footer */
+    .wf-footer {
+      width: min(1120px, calc(100% - 48px));
+      margin: auto;
+      padding: 64px 0 40px;
+
+      border-top: 1px solid var(--line);
+    }
+
+    .wf-footer__inner {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 32px;
+    }
+
+    .wf-footer__quote {
+      font-family: var(--serif);
+      font-size: 19px;
+      line-height: 1.6;
+      letter-spacing: .05em;
+    }
+
+    .wf-footer__copy {
+      margin-top: 12px;
+      color: var(--light);
+      font-size: 10.5px;
+      letter-spacing: .05em;
+    }
+
+    .wf-footer__links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+
+      color: var(--gray);
+      font-size: 11.5px;
+    }
+
+    .wf-footer__links a:hover { color: var(--ink); }
+
+    /* ---------- Responsive ---------- */
+    @media (max-width: 1100px) {
+      .wf-header__actions > .wf-btn--ghost { display: none; }
+      .wf-nav { gap: 22px; }
+    }
+
+    @media (max-width: 900px) {
+      body { padding-top: 56px; }
+
+      .wf-header { height: 56px; }
+      .wf-header__inner { width: calc(100% - 32px); }
+
+      .wf-logo__name { font-size: 13.5px; }
+      .wf-logo__sub { font-size: 8.5px; }
+
+      .wf-nav,
+      .wf-header__actions > .wf-btn { display: none; }
+
+      .wf-menu-btn { display: flex; }
+
+      .wf-subnav {
+        top: 0;
+      }
+
+      .wf-subnav__inner {
+        width: calc(100% - 32px);
+        height: 40px;
+        gap: 18px;
+      }
+
+      .wf-subnav a {
+        font-size: 11px;
+      }
+
+      .wf-hero { padding: 42px 0 42px; }
+
+      .wf-hero__inner {
+        width: 100%;
+        padding: 0 16px;
+
+        grid-template-columns: 1fr;
+        gap: 34px;
+      }
+
+      .wf-hero__title {
+        font-size: 30px !important;
+        line-height: 1.4 !important;
+      }
+
+      .wf-hero__desc {
+        font-size: 13px !important;
+        line-height: 1.9 !important;
+      }
+
+      .wf-actions { flex-direction: column; align-items: stretch; }
+      .wf-actions .wf-btn { width: 100%; }
+
+      .wf-hero__meta { font-size: 10px; }
+
+      .wf-window__bar { height: 34px; }
+
+      .wf-main {
+        width: 100% !important;
+        padding: 40px 16px 64px !important;
+        gap: 56px !important;
+      }
+
+      .wf-main > section {
+        scroll-margin-top: 104px;
+      }
+
+      .wf-main .text-center.max-w-3xl {
+        margin-bottom: 28px !important;
+      }
+
+      .wf-main .text-center.max-w-3xl h2 {
+        font-size: 27px !important;
+        line-height: 1.45 !important;
+      }
+
+      .wf-main .text-center.max-w-3xl p {
+        font-size: 13px !important;
+      }
+
+      #search-input {
+        height: 50px;
+        padding-right: 44px !important;
+        font-size: 12.5px !important;
+      }
+
+      #search-kbd { display: none !important; }
+
+      #category-tags { gap: 16px !important; }
+
+      #workflow-grid {
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
+      }
+
+      .wf-card {
+        min-height: 0;
+        padding: 22px;
+      }
+
+      .wf-card__title { font-size: 20px; }
+
+      .wf-final {
+        width: calc(100% - 32px);
+        padding-bottom: 48px;
+      }
+
+      .wf-final__inner { padding: 40px 24px; }
+
+      .wf-final__actions { flex-direction: column; }
+      .wf-final__actions .wf-btn { width: 100%; }
+
+      .wf-footer {
+        width: calc(100% - 32px);
+        padding: 48px 0 calc(32px + env(safe-area-inset-bottom));
+      }
+
+      .wf-footer__inner {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 24px;
+      }
+
+      .wf-footer__quote { font-size: 17px; }
+    }
+
+    /* 移动端整体缩放后的滚动容器：保证固定头部与二级导航不随页面滚走 */
+    html,
+    body {
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .page-scroll {
+      width: 100%;
+      height: 100%;
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-x: hidden;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      scroll-behavior: smooth;
+    }
+
+    @media (min-width: 901px) {
+      .wf-mobile { display: none !important; }
+    }
+
+    @media (max-width: 380px) {
+      .wf-logo__sub { display: none; }
+      .wf-hero__title { font-size: 27px !important; }
+    }
+
   </style>
 </head>
 
@@ -230,167 +1341,93 @@
       style="display:none;visibility:hidden"></iframe></noscript>
   <!-- End Google Tag Manager (noscript) -->
 
-  <header
-    class="sticky top-0 z-50 w-full border-b border-slate-200/70 dark:border-slate-800/70 bg-[#f8f8fa]/90 dark:bg-slate-950/90 backdrop-blur-md shadow-sm">
-    <div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-      <a href="/" title="Trans-Workflow 首页" class="flex items-center gap-3">
-        <img class="w-8 h-8 sm:w-9 sm:h-9" src="https://transweb.cn/assets/images/logo-brand.png" alt="Trans-Workflow Logo" width="36"
-          height="36">
-        <span class="flex flex-col leading-none">
-          <span
-            class="text-base sm:text-xl font-bold tracking-wider text-slate-900 dark:text-white">Trans-Workflow</span>
-          <span class="mt-1 text-[10px] sm:text-xs uppercase tracking-widest text-slate-400 dark:text-slate-500">单文件 AI
-            流水线</span>
-        </span>
-      </a>
+  <div class="page-scroll">
 
-      <nav class="hidden md:flex items-center gap-7 text-sm font-medium" aria-label="主导航">
-        <a href="#market"
-          class="whitespace-nowrap text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-brand-300 transition-colors">流水线市场</a>
-        <a href="#quickstart"
-          class="whitespace-nowrap text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-brand-300 transition-colors">快速开始</a>
-        <a href="#builder"
-          class="whitespace-nowrap text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-brand-300 transition-colors">怎么组装</a>
-        <a href="#personas"
-          class="whitespace-nowrap text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-brand-300 transition-colors">谁在用
-          · 案例</a>
-        <a href="#community"
-          class="whitespace-nowrap text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-brand-300 transition-colors">开源&文档</a>
+  <header class="wf-header">
+    <div class="wf-header__inner">
+      <div class="brand-lockup">
+        <a href="/" title="TransWeb 首页" class="wf-logo">
+          <span class="wf-logo__name">Trans-Agent</span>
+          <span class="wf-logo__sub">Trans-Workflow · 单文件 AI 流水线</span>
+        </a>
+        <span class="page-mark">工作流</span>
+      </div>
+
+      <nav class="wf-nav" aria-label="主导航">
+        <a href="/">首页</a>
+        <a href="skillHub.html">Skill 广场</a>
+        <a href="workflow.html" class="is-active" aria-current="page">工作流</a>
       </nav>
 
-      <div class="flex items-center gap-2">
-        <a target="_blank" href="https://transweb.cn/skill.html"
-          class="hidden lg:inline-flex items-center gap-2 rounded-full border border-slate-200 dark:border-slate-700 px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 hover:border-brand-600 hover:text-brand-600 dark:hover:text-brand-300 transition-colors">
-          <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path
-              d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
-          </svg>
-          Skill 生成
-        </a>
-        <a target="_blank" href="https://transweb.cn/skillHub.html" rel="noopener"
-          class="hidden sm:inline-flex items-center gap-2 rounded-full border border-slate-200 dark:border-slate-700 px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 hover:border-brand-600 hover:text-brand-600 dark:hover:text-brand-300 transition-colors">
-          <i data-lucide="layout-grid" class="w-5 h-5"></i>
-          可选 Skills
-        </a>
-        <a target="_blank" href="https://transweb.cn/workflow/mathFlow.html"
-          class="inline-flex items-center gap-2 rounded-full bg-brand-600 hover:bg-brand-500 px-5 py-2 text-sm font-semibold text-white transition-colors">
-          <i data-lucide="terminal" class="w-4 h-4"></i>
-          <span class="hidden sm:inline">免费运行</span><span class="sm:hidden">运行</span>
-        </a>
-        <button id="theme-toggle" aria-label="切换明暗主题"
-          class="p-2 rounded-none text-slate-500 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
-          <i data-lucide="sun" class="w-4 h-4 hidden" id="theme-icon-sun"></i>
-          <i data-lucide="moon" class="w-4 h-4" id="theme-icon-moon"></i>
-        </button>
-        <button id="mobile-menu-toggle" aria-label="切换移动端导航菜单"
-          class="md:hidden p-2 rounded-none text-slate-500 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
-          <i data-lucide="menu" class="w-5 h-5" id="menu-icon-open"></i>
-          <i data-lucide="x" class="w-5 h-5 hidden" id="menu-icon-close"></i>
+      <div class="wf-header__actions">
+        <a class="wf-btn" href="workflow/index.html">编排工作流</a>
+
+        <button id="mobile-menu-toggle" aria-label="切换移动端导航菜单" aria-expanded="false" class="wf-menu-btn">
+          <span class="wf-menu-lines" aria-hidden="true">
+            <span></span><span></span><span></span>
+          </span>
+          <span class="wf-menu-x" aria-hidden="true">
+            <span></span><span></span>
+          </span>
         </button>
       </div>
     </div>
 
-    <div id="mobile-menu"
-      class="hidden md:hidden border-t border-slate-200/60 dark:border-slate-800/60 bg-white/95 dark:bg-slate-950/95 px-4 py-3 space-y-1">
-      <a href="#market"
-        class="block px-3 py-2.5 rounded-none text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">流水线市场</a>
-      <a href="#quickstart"
-        class="block px-3 py-2.5 rounded-none text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">快速开始</a>
-      <a href="#builder"
-        class="block px-3 py-2.5 rounded-none text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">怎么组装</a>
-      <a href="#personas"
-        class="block px-3 py-2.5 rounded-none text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">谁在用
-        · 案例</a>
-      <a href="#community"
-        class="block px-3 py-2.5 rounded-none text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">开源&文档</a>
-      <a target="_blank" href="https://transweb.cn/skill.html"
-        class="block px-3 py-2.5 rounded-none text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">Skill
-        生成</a>
-      <a target="_blank" href="https://transweb.cn/skillHub.html" rel="noopener"
-        class="block px-3 py-2.5 rounded-none text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">可选
-        Skills</a>
-      <div class="pt-3 border-t border-slate-200/60 dark:border-slate-800/60 flex flex-col gap-2">
-        <a target="_blank" href="https://transweb.cn/workflow/index.html"
-          class="w-full text-center py-2.5 rounded-full text-sm font-semibold text-white bg-brand-600">免费运行</a>
-        <a target="_blank" href="https://github.com/liuwenjin/trans-workflow" rel="noopener"
-          class="w-full text-center py-2.5 rounded-full text-sm font-medium text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800">
-          <i data-lucide="star" class="w-4 h-4"></i>
-          GitHub 仓库</a>
+    <div id="mobile-menu" class="wf-mobile hidden">
+      <a href="/">首页</a>
+      <a href="skillHub.html">Skill 广场</a>
+      <a href="workflow.html" class="is-active" aria-current="page">工作流</a>
+      <div class="wf-mobile__actions">
+        <a class="wf-btn" href="workflow/index.html">编排工作流</a>
       </div>
     </div>
   </header>
 
-  <!-- Hero：墨色全幅展示区 -->
-  <section id="demo" class="relative bg-brand-900 text-white overflow-hidden scroll-mt-24">
-    <!-- 背景装饰：墨色渐变 + 网格纹理 + 弥散光晕 -->
-    <div class="pointer-events-none absolute inset-0 bg-gradient-to-br from-brand-900 via-brand-800 to-brand-700"
-      aria-hidden="true"></div>
-    <div class="pointer-events-none absolute inset-0 hero-grid-bg" aria-hidden="true"></div>
-    <div class="pointer-events-none absolute -top-24 -right-16 h-96 w-96 rounded-full bg-brand-500/30 blur-3xl"
-      aria-hidden="true"></div>
-    <div class="pointer-events-none absolute -bottom-32 -left-16 h-96 w-96 rounded-full bg-slate-500/20 blur-3xl"
-      aria-hidden="true"></div>
+  <nav class="wf-subnav" aria-label="工作流页面导航">
+    <div class="wf-subnav__inner">
+      <a href="#market">流水线市场</a>
+      <a href="#quickstart">快速开始</a>
+      <a href="#builder">怎么组装</a>
+      <a href="#personas">谁在用</a>
+      <a href="#community">开源 &amp; 文档</a>
+    </div>
+  </nav>
 
-    <div class="relative max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
-
-        <div class="lg:col-span-6">
-          <div
-            class="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-xs font-semibold tracking-wide">
-            <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
-            零服务器成本 · 数据 100% 私有 · 开箱即用
-          </div>
-          <h1 class="mt-6 text-[30px] sm:text-5xl font-extrabold leading-[1.15] text-white tracking-tight">
-            不用写后端、零部署成本！<br>10 分钟组装你的专属 AI 专家工作流
-          </h1>
-          <p class="mt-5 max-w-xl text-base sm:text-lg leading-relaxed text-slate-300">
-            只需一个 HTML 文件，在浏览器里直接跑 AI！告别 Docker 踩坑与高昂服务器账单。支持任意节点随时“回滚重跑”与人工干预，让复杂工作流结果 100% 可控。
-          </p>
-
-          <div class="mt-8 flex flex-col sm:flex-row items-start gap-3">
-            <a target="_blank" href="https://transweb.cn/workflow/mathFlow.html"
-              class="inline-flex w-full sm:w-auto items-center justify-center gap-2 whitespace-nowrap rounded-full bg-brand-600 hover:bg-brand-500 px-5 sm:px-7 py-3 text-base font-bold text-white shadow-lg transition-colors">
-              👉 立即免费运行工作流
-            </a>
-            <a target="_blank" href="https://github.com/liuwenjin/trans-workflow" rel="noopener"
-              class="inline-flex w-full sm:w-auto items-center justify-center gap-2 whitespace-nowrap rounded-full border border-white/25 bg-white/10 px-7 py-3 text-base font-semibold text-white hover:bg-white/20 transition-colors">
-              <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                <path fill-rule="evenodd" clip-rule="evenodd"
-                  d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.203 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2Z" />
-              </svg>
-              查看 GitHub 源码（MIT 开源）
-            </a>
-          </div>
-
+  <!-- Hero -->
+  <section id="demo" class="wf-hero">
+    <div class="wf-hero__inner">
+      <div class="wf-hero__copy">
+        <div class="wf-eyebrow">AI WORKFLOW / SINGLE-FILE ENGINE</div>
+        <h1 class="wf-hero__title">把一次性的 AI 对话，<br>编成可复用的流水线。</h1>
+        <p class="wf-hero__desc">
+          不用写后端，也不用部署服务器。选一个现成工作流，或把 Skill 串成自己的流程；每个节点都能回滚、改一句，再继续。
+        </p>
+        <div class="wf-actions">
+          <a class="wf-btn wf-btn--lg" href="https://transweb.cn/workflow/mathFlow.html" target="_blank" rel="noopener">免费运行工作流</a>
+          <a class="wf-btn wf-btn--lg wf-btn--ghost" href="https://github.com/liuwenjin/trans-workflow" target="_blank" rel="noopener">查看 GitHub 源码</a>
         </div>
+        <div class="wf-hero__meta">零服务器成本 · 数据留在浏览器 · MIT 开源</div>
+      </div>
 
-        <div class="lg:col-span-6 space-y-4">
-          <div
-            class="overflow-hidden rounded-none border border-white/10 bg-white dark:bg-slate-900 dark:border-slate-800 shadow-xl">
-            <div class="flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 px-4 py-2.5">
-              <span class="h-2.5 w-2.5 rounded-full bg-rose-400"></span>
-              <span class="h-2.5 w-2.5 rounded-full bg-amber-400"></span>
-              <span class="h-2.5 w-2.5 rounded-full bg-emerald-400"></span>
-              <span class="ml-3 font-mono text-xs text-slate-400">transweb.cn/workflow</span>
-            </div>
-            <img src="https://transweb.cn/assets/images/workflow-hero.png" alt="Trans-Workflow 工作流引擎真实运行界面" class="block w-full h-auto"
-              width="1440" height="900" loading="eager">
+      <div class="wf-hero__visual">
+        <div class="wf-window">
+          <div class="wf-window__bar">
+            <span></span><span></span><span></span>
+            <em>transweb.cn/workflow</em>
           </div>
-
-
+          <img src="https://transweb.cn/assets/images/workflow-hero.png" alt="Trans-Workflow 工作流引擎界面"
+            width="1440" height="900" loading="eager">
         </div>
-
       </div>
     </div>
   </section>
 
-  <main class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 flex-1 w-full flex flex-col gap-12 sm:gap-16">
+  <main class="wf-main">
 
     <!-- AI Skill 市场 -->
     <section id="market" class="scroll-mt-24">
       <div class="text-center max-w-3xl mx-auto mb-10">
-        <h2 class="text-3xl font-bold text-slate-900 dark:text-white">不必从零开始！挑选适合你的场景模板，一秒开启自动化</h2>
+        <h2 class="text-3xl font-bold text-slate-900 dark:text-white">从一个现成的工作流开始。</h2>
         <p class="mt-4 text-lg text-gray-600 dark:text-slate-400">精选 AI 流水线，覆盖创作、科研、教学、合规与营销，开箱即用</p>
       </div>
 
@@ -450,7 +1487,7 @@
     <!-- 核心卖点 -->
     <section id="features" class="scroll-mt-24">
       <div class="text-center max-w-3xl mx-auto mb-10">
-        <h2 class="text-3xl font-bold text-slate-900 dark:text-white">为什么选择 Trans-Workflow？</h2>
+        <h2 class="text-3xl font-bold text-slate-900 dark:text-white">为什么是单文件？</h2>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div
@@ -489,7 +1526,7 @@
     <!-- Quickstart -->
     <section id="quickstart" class="scroll-mt-24">
       <div class="text-center max-w-3xl mx-auto mb-10">
-        <h2 class="text-3xl font-bold text-slate-900 dark:text-white">快速开始 · 使用 AI 流水线</h2>
+        <h2 class="text-3xl font-bold text-slate-900 dark:text-white">三步，把工作流跑起来。</h2>
       </div>
       <div class="w-full">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
@@ -606,7 +1643,7 @@
     <!-- 核心能力 -->
     <section id="builder" class="scroll-mt-24 pt-6 border-t border-slate-200/80 dark:border-slate-800/80">
       <div class="text-center max-w-3xl mx-auto mb-10">
-        <h2 class="text-3xl font-bold text-slate-900 dark:text-white">怎么组装 AI 流水线</h2>
+        <h2 class="text-3xl font-bold text-slate-900 dark:text-white">把 Skill 串成一条流水线。</h2>
         <p class="mt-4 text-lg text-gray-600 dark:text-slate-400">像搭积木一样，把 AI Skill 组装成一条流水线</p>
       </div>
 
@@ -662,10 +1699,10 @@
       </div>
     </section>
 
-    <!-- 运行架构 -->
+    <!-- 一条流水线，两种视角。 -->
     <section id="architecture" class="scroll-mt-24 pt-6 border-t border-slate-200/80 dark:border-slate-800/80">
       <div class="text-center max-w-3xl mx-auto mb-10">
-        <h2 class="text-3xl font-bold text-slate-900 dark:text-white">运行架构</h2>
+        <h2 class="text-3xl font-bold text-slate-900 dark:text-white">一条流水线，两种视角。</h2>
         <p class="mt-4 text-lg text-gray-600 dark:text-slate-400">两种视角看清同一条流水线：谁先执行、数据流向哪里。</p>
       </div>
       <div class="relative flex flex-col justify-center items-center">
@@ -1260,7 +2297,7 @@
     <!-- 使用案例：如果你是… -->
     <section id="use-cases" class="scroll-mt-24 pt-6 border-t border-slate-200/80 dark:border-slate-800/80">
       <div class="text-center max-w-3xl mx-auto mb-10">
-        <h2 class="text-3xl font-bold text-slate-900 dark:text-white">使用案例 · 一个输入，换来一份成品</h2>
+        <h2 class="text-3xl font-bold text-slate-900 dark:text-white">一个输入，一份成品。</h2>
         <p class="mt-4 text-lg text-gray-600 dark:text-slate-400">不用想象，直接看「喂进去什么 → 中间怎么走 → 最后拿到什么」</p>
       </div>
 
@@ -1270,15 +2307,15 @@
           class="flex flex-wrap justify-center gap-1 p-1 rounded-none bg-slate-200/60 dark:bg-slate-800/60 border border-slate-300/40 dark:border-slate-700/50">
           <button id="case-tab-teacher" onclick="switchCaseTab('teacher')"
             class="whitespace-nowrap px-4 py-2 text-sm font-bold rounded-none transition-all duration-200 bg-white dark:bg-slate-900 text-brand-600 dark:text-brand-400 shadow-sm">
-            🧑‍🏫 如果你是老师
+            如果你是老师
           </button>
           <button id="case-tab-student" onclick="switchCaseTab('student')"
             class="whitespace-nowrap px-4 py-2 text-sm font-bold rounded-none transition-all duration-200 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
-            🎓 如果你是备考学生
+            如果你是备考学生
           </button>
           <button id="case-tab-legal" onclick="switchCaseTab('legal')"
             class="whitespace-nowrap px-4 py-2 text-sm font-bold rounded-none transition-all duration-200 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
-            ⚖️ 如果你是公司法务
+            如果你是公司法务
           </button>
         </div>
       </div>
@@ -1705,48 +2742,52 @@
   </main>
 
   <!-- 终极 CTA -->
-  <section class="max-w-4xl mx-auto w-full px-4 sm:px-6 lg:px-8 pb-4">
-    <div class="relative overflow-hidden rounded-none bg-brand-900 text-white p-8 sm:p-12 text-center">
-      <div class="pointer-events-none absolute inset-0 bg-gradient-to-br from-brand-800 to-brand-600"
-        aria-hidden="true"></div>
-      <div class="pointer-events-none absolute -top-24 -right-16 h-72 w-72 rounded-full bg-brand-500/30 blur-3xl"
-        aria-hidden="true"></div>
-      <div class="relative">
-        <h2 class="text-2xl sm:text-3xl font-bold">准备好体验下一代 AI 工作流了吗？</h2>
-        <p class="mt-3 text-sm sm:text-base text-slate-300">无需绑定信用卡，10 秒内开启你的第一个自动化 Workflow。</p>
-        <div class="mt-7 flex flex-col sm:flex-row justify-center gap-3">
-          <a target="_blank" href="https://transweb.cn/workflow/index.html"
-            class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full bg-white text-brand-700 hover:bg-brand-50 px-7 py-3 text-sm font-bold shadow-lg transition-colors">
-            🚀 立即在线体验
-          </a>
-          <a target="_blank" href="https://github.com/liuwenjin/trans-workflow" rel="noopener"
-            class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full border border-white/25 bg-white/10 hover:bg-white/20 px-7 py-3 text-sm font-semibold text-white transition-colors">
-            ⭐ 在 GitHub 上支持我们
-          </a>
-        </div>
+  <section class="wf-final">
+    <div class="wf-final__inner">
+      <div class="wf-eyebrow">START HERE</div>
+      <h2 class="wf-final__title">准备好跑第一条流水线了吗？</h2>
+      <p class="wf-final__desc">无需绑定信用卡，打开网页即可开始。</p>
+      <div class="wf-final__actions">
+        <a class="wf-btn wf-btn--lg" href="https://transweb.cn/workflow/index.html" target="_blank" rel="noopener">立即在线体验</a>
+        <a class="wf-btn wf-btn--lg wf-btn--ghost" href="https://github.com/liuwenjin/trans-workflow" target="_blank" rel="noopener">在 GitHub 上支持</a>
       </div>
     </div>
   </section>
 
-  <footer class="mt-auto bg-[#1a1a1e] py-8 text-center text-xs sm:text-sm text-slate-500 px-4">
-    <span class="text-lg font-bold text-white tracking-wider">Trans-Workflow</span>
-    <p class="mt-3">© 2026 Trans-Workflow. MIT License. | <a class="text-slate-400 hover:text-white hover:underline"
-        href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">京ICP备17026815号-1</a></p>
-    <p class="mt-2">
-      <a class="text-slate-400 hover:text-white hover:underline" href="https://github.com/liuwenjin/trans-workflow"
-        target="_blank" rel="noopener noreferrer">GitHub</a>
-      <span class="mx-2">·</span>
-      <a class="text-slate-400 hover:text-white hover:underline" href="https://transweb.cn/workflow/docs/index.html"
-        target="_blank" rel="noopener noreferrer">Docs</a>
-    </p>
+  <footer class="wf-footer">
+    <div class="wf-footer__inner">
+      <div>
+        <div class="wf-footer__quote">把一次性的对话，整理成可复用的工具。</div>
+        <p class="wf-footer__copy">© 2026 Trans-Workflow · MIT License · 京ICP备17026815号-1</p>
+      </div>
+      <div class="wf-footer__links">
+        <a href="https://github.com/liuwenjin/trans-workflow" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://transweb.cn/workflow/docs/index.html" target="_blank" rel="noopener">Docs</a>
+        <a href="https://transweb.cn/skillHub.html" target="_blank" rel="noopener">SkillHub</a>
+        <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">备案</a>
+      </div>
+    </div>
   </footer>
 
   <div id="toast-container"
     class="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center gap-2 pointer-events-none"></div>
 
+  </div>
+
   <!-- 脚本逻辑 -->
   <script defer src="https://transweb.cn/transweb/webCpu.js"></script>
-  <script defer src="https://transweb.cn/workflow.js"></script>
+  <script defer src="workflow.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      if (!window.WebTool) return;
+      let tRadio = Number(WebTool.urlQuery(location.href, "transformRadio"));
+      if (tRadio !== 1) {
+        WebTool.adjustStyle(480, 530);
+      } else {
+        window.transformRadio = tRadio;
+      }
+    });
+  </script>
 </body>
 
 </html>

@@ -54,10 +54,7 @@ const emptyState = document.getElementById('empty-state');
 function renderCategories() {
   const categories = ['全部', ...new Set(WORKFLOWS.map(w => w.category))];
   categoryTags.innerHTML = categories.map(cat => `
-    <button class="shrink-0 px-4 py-2 rounded-full text-xs sm:text-sm font-medium whitespace-nowrap transition-colors ${cat === activeCategory
-      ? 'bg-brand-600 text-white border border-brand-600'
-      : 'border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:border-brand-600 hover:text-brand-600 dark:hover:text-brand-300'
-    }" data-category="${cat}">${cat}</button>
+    <button class="wf-cat ${cat === activeCategory ? 'is-active' : ''}" data-category="${cat}">${cat}</button>
   `).join('');
 
   categoryTags.querySelectorAll('button').forEach(btn => {
@@ -75,10 +72,7 @@ function runWorkflow(url) {
 
 function miniNodeMap(nodes) {
   return nodes.map((node, i) => `
-    <span class="inline-flex items-center gap-1">
-      <span class="whitespace-nowrap rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-2.5 py-1 text-xs font-medium text-slate-600 dark:text-slate-300">${node}</span>
-      ${i < nodes.length - 1 ? '<i data-lucide="arrow-right" class="w-3.5 h-3.5 text-slate-300 dark:text-slate-600 shrink-0"></i>' : ''}
-    </span>
+    <span>${node}</span>${i < nodes.length - 1 ? '<i>→</i>' : ''}
   `).join('');
 }
 
@@ -95,41 +89,25 @@ function renderWorkflows(workflows) {
   emptyState.classList.remove('flex');
   resultCount.textContent = `共 ${workflows.length} 条流水线`;
 
-  workflowGrid.innerHTML = workflows.map(w => {
-    const tone = toneOf(w.category);
+  workflowGrid.innerHTML = workflows.map((w, index) => {
     return `
-      <article class="group relative flex flex-col justify-between rounded-2xl bg-[#F6F9F7] dark:bg-slate-900/70 border border-gray-100 dark:border-slate-800 p-5 sm:p-6 shadow-sm hover:shadow-md hover:border-brand-600/40 transition-all duration-300 cursor-pointer" data-url="${w.url}">
-        ${w.hot ? `<span class="absolute top-0 right-0 z-10 rounded-bl-xl rounded-tr-2xl bg-orange-500 px-3 py-1 text-xs font-bold text-white shadow-sm">🔥 ${w.hot}</span>` : ''}
+      <article class="wf-card" data-url="${w.url}" data-title="${w.title}">
         <div>
-          <div class="mb-3.5 flex items-center gap-2.5">
-            <span class="inline-flex h-11 w-11 items-center justify-center rounded-xl ${tone.icon}">
-              <i data-lucide="${w.iconKey}" class="w-5 h-5"></i>
-            </span>
-            <span class="px-3 py-1 rounded-full ${tone.chip} text-xs font-semibold">${w.category}</span>
-          </div>
-
-          <h3 class="text-lg font-bold text-slate-800 dark:text-white flex items-center justify-between gap-2 group-hover:text-brand-600 dark:group-hover:text-brand-300 transition-colors">
-            <span>${w.title}</span>
-            <i data-lucide="external-link" class="w-4 h-4 text-slate-300 dark:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity shrink-0"></i>
-          </h3>
-          <p class="mt-2 text-sm leading-relaxed text-gray-600 dark:text-slate-400 line-clamp-2">${w.description}</p>
-
-          <div class="mt-4 rounded-xl bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 px-3 py-3">
-            <div class="mb-2 text-xs font-semibold text-slate-500 dark:text-slate-400">流程 · ${w.nodes.length} 步</div>
-            <div class="flex flex-wrap items-center gap-1.5">${miniNodeMap(w.nodes)}</div>
-          </div>
+          <span class="wf-card__category">${w.category}</span>${w.hot ? `<span class="wf-card__hot">${w.hot}</span>` : ''}
         </div>
-
-        <button class="mt-5 inline-flex w-full items-center justify-center gap-2 whitespace-nowrap rounded-full bg-brand-600 hover:bg-brand-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors" data-action="run" data-url="${w.url}">
-          ⚡ 免费运行此工作流
-        </button>
+        <h3 class="wf-card__title">${w.title}</h3>
+        <p class="wf-card__desc">${w.description}</p>
+        <div class="wf-card__flow">
+          <div class="wf-card__flow-label">流程 · ${w.nodes.length} 步</div>
+          <div class="wf-card__nodes">${miniNodeMap(w.nodes)}</div>
+        </div>
+        <div class="wf-card__footer">
+          <span>单文件运行 · 本地数据</span>
+          <span class="wf-card__run">免费运行 <i>→</i></span>
+        </div>
       </article>
     `;
   }).join('');
-
-  if (window.lucide && typeof window.lucide.createIcons === 'function') {
-    window.lucide.createIcons();
-  }
 
   workflowGrid.querySelectorAll('article[data-url]').forEach(card => {
     card.addEventListener('click', () => runWorkflow(card.dataset.url));
@@ -160,29 +138,33 @@ function initWorkflowPage() {
   renderCategories();
   applyFilter();
 
-  const themeToggleBtn = document.getElementById('theme-toggle');
-  if (themeToggleBtn) {
-    themeToggleBtn.addEventListener('click', () => {
-      document.documentElement.classList.toggle('dark');
-    });
+  if (window.lucide && typeof window.lucide.createIcons === 'function') {
+    window.lucide.createIcons();
   }
 
   const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
   const mobileMenu = document.getElementById('mobile-menu');
-  const menuIconOpen = document.getElementById('menu-icon-open');
-  const menuIconClose = document.getElementById('menu-icon-close');
+  const siteHeader = document.querySelector('.wf-header');
   if (mobileMenuToggle && mobileMenu) {
     mobileMenuToggle.addEventListener('click', () => {
       const isHidden = mobileMenu.classList.contains('hidden');
       if (isHidden) {
         mobileMenu.classList.remove('hidden');
-        menuIconOpen.classList.add('hidden');
-        menuIconClose.classList.remove('hidden');
+        mobileMenuToggle.setAttribute('aria-expanded', 'true');
+        if (siteHeader) siteHeader.classList.add('nav-open');
       } else {
         mobileMenu.classList.add('hidden');
-        menuIconOpen.classList.remove('hidden');
-        menuIconClose.classList.add('hidden');
+        mobileMenuToggle.setAttribute('aria-expanded', 'false');
+        if (siteHeader) siteHeader.classList.remove('nav-open');
       }
+    });
+
+    mobileMenu.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.add('hidden');
+        mobileMenuToggle.setAttribute('aria-expanded', 'false');
+        if (siteHeader) siteHeader.classList.remove('nav-open');
+      });
     });
   }
 

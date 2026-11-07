@@ -156,7 +156,7 @@
   <script src="https://transweb.cn/common/fuse.js"></script>
   <script src="https://transweb.cn/common/lucide.min.js"></script>
   <script defer src="https://transweb.cn/transweb/webCpu.js"></script>
-  <script defer src="https://transweb.cn/navigation.js"></script>
+  <script defer src="navigation.js"></script>
   <script type="text/javascript">
     (function (c, l, a, r, i, t, y) {
       c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
@@ -262,124 +262,1114 @@
     .prose-reading {
       max-width: 65ch;
     }
+
+    /* ==========================================================================
+       SkillHub × Trans-Agent 「白与空」视觉统一层
+       与 static/index.html 共用纸白 / 墨色 / 宋体标题 / 1px 细线
+       ========================================================================== */
+    :root {
+      --paper: #faf9f6;
+      --white: #fffefa;
+      --ink: #1b1b19;
+      --gray: #6b6962;
+      --text-body: #56544d;
+      --light: #a5a29a;
+      --line: #e8e5de;
+      --serif: "Source Han Serif SC", "Noto Serif SC", "Songti SC", "STSong", serif;
+      --sans: Inter, -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial,
+        "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      --ease: cubic-bezier(.2, .7, .2, 1);
+    }
+
+    html,
+    body {
+      background: var(--paper) !important;
+      color: var(--ink) !important;
+    }
+
+    html {
+      scrollbar-gutter: stable;
+    }
+
+    body {
+      margin: 0;
+      padding-top: 64px;
+
+      font-family: var(--sans) !important;
+      background-image: none !important;
+
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    ::selection {
+      background: var(--ink);
+      color: var(--paper);
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    /* ---------- Header ---------- */
+    .hub-header {
+      position: fixed;
+      z-index: 100;
+      top: 0;
+      left: 0;
+      right: 0;
+
+      height: 64px;
+      overflow: visible;
+
+      background: rgba(250, 249, 246, .9);
+      border-bottom: 1px solid rgba(27, 27, 25, .07);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+
+    .hub-header.nav-open {
+      z-index: 180;
+    }
+
+    .hub-header__inner {
+      width: min(1120px, calc(100% - 48px));
+      height: 100%;
+      margin: auto;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .brand-lockup {
+      flex: none;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .page-mark {
+      flex: none;
+      height: 22px;
+      padding: 0 8px;
+
+      display: inline-flex;
+      align-items: center;
+
+      background: var(--ink);
+      color: var(--paper);
+
+      font-size: 9.5px;
+      letter-spacing: .1em;
+      white-space: nowrap;
+    }
+
+    .hub-logo {
+      flex: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .hub-logo__name {
+      font-size: 14.5px;
+      font-weight: 600;
+      letter-spacing: .2em;
+      line-height: 1;
+    }
+
+    .hub-logo__sub {
+      color: var(--light);
+      font-size: 9px;
+      letter-spacing: .12em;
+      line-height: 1.2;
+    }
+
+    .hub-nav {
+      flex: 1 1 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 30px;
+    }
+
+    .hub-nav a {
+      color: var(--gray);
+      font-size: 12.5px;
+      letter-spacing: .03em;
+      white-space: nowrap;
+      transition: color .3s ease;
+    }
+
+    .hub-nav a:hover,
+    .hub-nav a.is-active {
+      color: var(--ink);
+    }
+
+    .hub-actions {
+      flex: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .hub-btn {
+      min-height: 36px;
+      padding: 0 18px;
+
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+
+      border: 1px solid var(--ink);
+      background: var(--ink);
+      color: var(--paper);
+
+      font-size: 11.5px;
+      letter-spacing: .08em;
+      white-space: nowrap;
+
+      transition: background .3s ease, border-color .3s ease, color .3s ease;
+    }
+
+    .hub-btn:hover {
+      background: #2b2b31;
+      border-color: #2b2b31;
+    }
+
+    .hub-btn--ghost {
+      background: transparent;
+      color: var(--ink);
+      border-color: rgba(27, 27, 25, .24);
+    }
+
+    .hub-btn--ghost:hover {
+      background: var(--white);
+      color: var(--ink);
+      border-color: rgba(27, 27, 25, .4);
+    }
+
+    .hub-menu-btn {
+      display: none;
+
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: var(--ink);
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hub-menu-lines {
+      width: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .hub-menu-lines > span {
+      display: block;
+      width: 20px;
+      height: 1.5px;
+      background: var(--ink);
+    }
+
+    .hub-menu-x {
+      position: relative;
+      display: none;
+      width: 20px;
+      height: 20px;
+    }
+
+    .hub-menu-x > span {
+      position: absolute;
+      top: 9px;
+      left: 0;
+      width: 20px;
+      height: 1.5px;
+      background: var(--ink);
+    }
+
+    .hub-menu-x > span:first-child {
+      transform: rotate(45deg);
+    }
+
+    .hub-menu-x > span:last-child {
+      transform: rotate(-45deg);
+    }
+
+    .hub-menu-btn[aria-expanded="true"] .hub-menu-lines {
+      display: none;
+    }
+
+    .hub-menu-btn[aria-expanded="true"] .hub-menu-x {
+      display: block;
+    }
+
+    .hub-mobile {
+      display: none;
+    }
+
+    .hub-mobile:not(.hidden) {
+      display: block;
+    }
+
+    @media (min-width: 901px) {
+      .hub-mobile {
+        display: none !important;
+      }
+    }
+
+    .hub-mobile {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+
+      padding: 8px 16px calc(20px + env(safe-area-inset-bottom));
+
+      background: var(--paper);
+      border-bottom: 1px solid var(--line);
+      box-shadow: 0 18px 32px rgba(27, 27, 25, .07);
+
+      max-height: calc(100dvh - 56px);
+      overflow-y: auto;
+    }
+
+    .hub-mobile > a {
+      display: block;
+      padding: 15px 0;
+
+      border-bottom: 1px solid var(--line);
+
+      color: var(--gray);
+      font-size: 14px;
+      letter-spacing: .04em;
+      text-align: center;
+    }
+
+    .hub-mobile > a.is-active {
+      color: var(--ink);
+    }
+
+    .hub-mobile__actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding-top: 16px;
+    }
+
+    .hub-mobile__actions .hub-btn {
+      width: 100%;
+    }
+
+    /* ---------- Layout ---------- */
+    .hub-shell {
+      width: min(1120px, calc(100% - 48px)) !important;
+      max-width: 1120px !important;
+      margin: auto !important;
+
+      padding: 56px 0 88px !important;
+
+      display: flex !important;
+      flex: 1 0 auto;
+      align-items: flex-start;
+      gap: 56px !important;
+    }
+
+    .hub-aside {
+      width: 210px !important;
+      flex: none !important;
+      align-self: stretch;
+    }
+
+    .hub-main {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .hub-intro {
+      max-width: 760px !important;
+      margin: 0 0 42px !important;
+      text-align: left !important;
+    }
+
+    .hub-eyebrow {
+      margin-bottom: 18px;
+
+      color: var(--light);
+      font-size: 10px;
+      letter-spacing: .2em;
+    }
+
+    .hub-title {
+      margin: 0;
+
+      font-family: var(--serif) !important;
+      font-size: clamp(30px, 4vw, 42px) !important;
+      font-weight: 400 !important;
+      line-height: 1.38 !important;
+      letter-spacing: .02em !important;
+
+      color: var(--ink) !important;
+    }
+
+    .hub-desc {
+      max-width: 640px;
+      margin: 22px 0 0 !important;
+
+      color: var(--gray) !important;
+      font-size: 14px !important;
+      line-height: 1.95 !important;
+      letter-spacing: .01em;
+    }
+
+    /* ---------- Sidebar categories ---------- */
+    #pc-categories {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 0 !important;
+      position: sticky;
+      top: 96px;
+    }
+
+    .hub-cat {
+      width: 100%;
+      padding: 13px 0;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+
+      border: 0;
+      border-bottom: 1px solid var(--line);
+      background: transparent;
+
+      color: var(--gray);
+      font-size: 13px;
+      letter-spacing: .03em;
+      text-align: left;
+
+      transition: color .3s ease;
+    }
+
+    .hub-cat:hover,
+    .hub-cat.is-active {
+      color: var(--ink);
+    }
+
+    .hub-cat__count {
+      color: var(--light);
+      font-size: 10.5px;
+      letter-spacing: .05em;
+      font-variant-numeric: tabular-nums;
+    }
+
+    #mobile-categories {
+      display: none !important;
+    }
+
+    /* ---------- Search ---------- */
+    .hub-search {
+      position: relative;
+    }
+
+    #search-input {
+      width: 100%;
+      height: 58px;
+
+      padding: 0 54px 0 50px !important;
+
+      border: 1px solid var(--line) !important;
+      border-radius: 0 !important;
+      background: var(--white) !important;
+
+      color: var(--ink) !important;
+      font-size: 14px !important;
+      letter-spacing: .01em;
+
+      box-shadow: none !important;
+      outline: none;
+      transition: border-color .3s ease, box-shadow .3s ease;
+    }
+
+    #search-input::placeholder {
+      color: var(--light);
+    }
+
+    #search-input:focus {
+      border-color: var(--ink) !important;
+      box-shadow: 0 0 0 1px var(--ink) !important;
+    }
+
+    .hub-search > div:first-child {
+      left: 0 !important;
+      padding-left: 17px !important;
+      color: var(--gray) !important;
+    }
+
+    .hub-search > div:first-child svg {
+      width: 17px !important;
+      height: 17px !important;
+      color: var(--gray) !important;
+    }
+
+    .hub-search kbd {
+      right: 17px !important;
+      top: 15px !important;
+      bottom: 15px !important;
+
+      padding: 0 7px !important;
+
+      border: 1px solid var(--line) !important;
+      border-radius: 0 !important;
+      background: var(--paper) !important;
+
+      color: var(--light) !important;
+      font-size: 11px !important;
+      font-family: var(--sans) !important;
+      box-shadow: none !important;
+    }
+
+    .hub-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+
+      margin-top: 14px;
+      padding-top: 13px;
+
+      border-top: 1px solid var(--line);
+
+      color: var(--light) !important;
+      font-size: 11px !important;
+      letter-spacing: .04em;
+    }
+
+    .hub-meta #filter-status {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* ---------- Cards ---------- */
+    .hub-grid {
+      display: grid !important;
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+      gap: 24px !important;
+
+      margin-top: 28px;
+      counter-reset: skill;
+    }
+
+    #agent-grid > article {
+      position: relative;
+
+      display: flex !important;
+      flex-direction: column;
+      min-height: 266px;
+
+      padding: 26px !important;
+
+      border: 1px solid var(--line) !important;
+      border-radius: 0 !important;
+      background: var(--white) !important;
+      box-shadow: none !important;
+      backdrop-filter: none !important;
+
+      overflow: hidden;
+      transform: none;
+
+      transition:
+        transform .35s var(--ease),
+        border-color .35s ease,
+        box-shadow .35s ease;
+    }
+
+    #agent-grid > article:hover {
+      transform: translateY(-2px);
+      border-color: rgba(27, 27, 25, .18) !important;
+      box-shadow: 0 16px 36px rgba(27, 27, 25, .05) !important;
+    }
+
+    #agent-grid > article::before {
+      counter-increment: skill;
+      content: counter(skill, decimal-leading-zero);
+
+      margin-bottom: 20px;
+
+      color: var(--light);
+      font-size: 10.5px;
+      letter-spacing: .18em;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* 隐去旧版彩色 emoji 图标与柔光装饰，让纸片保持安静 */
+    #agent-grid > article > .absolute,
+    #agent-grid > article [class*="w-16"][class*="h-16"],
+    #agent-grid > article [class*="w-12"][class*="h-12"],
+    #agent-grid > article [title="热门推荐"],
+    #agent-grid > article .animate-ping {
+      display: none !important;
+    }
+
+    #agent-grid > article h2,
+    #agent-grid > article h3 {
+      margin: 0 !important;
+
+      font-family: var(--serif) !important;
+      font-size: 21px !important;
+      font-weight: 400 !important;
+      line-height: 1.5 !important;
+      letter-spacing: .02em !important;
+
+      color: var(--ink) !important;
+      transition: color .3s ease;
+    }
+
+    #agent-grid > article span.inline-flex:not(.run-btn) {
+      display: inline-block !important;
+      margin-top: 9px !important;
+      padding: 0 !important;
+
+      border: 0 !important;
+      border-radius: 0 !important;
+      background: transparent !important;
+
+      color: var(--gray) !important;
+      font-size: 10.5px !important;
+      font-weight: 400 !important;
+      letter-spacing: .12em !important;
+    }
+
+    #agent-grid > article p {
+      margin-top: 16px !important;
+
+      color: var(--text-body) !important;
+      font-size: 13px !important;
+      line-height: 1.9 !important;
+      letter-spacing: .01em;
+
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    #agent-grid > article .mt-4.flex.flex-wrap.gap-2,
+    #agent-grid > article .mt-3.flex.flex-wrap.gap-2 {
+      margin-top: 18px !important;
+
+      color: var(--light) !important;
+      font-size: 11.5px !important;
+      letter-spacing: .02em;
+      line-height: 1.8;
+    }
+
+    #agent-grid > article .mt-4.flex.flex-wrap.gap-2 > span {
+      color: inherit !important;
+      font-size: inherit !important;
+      font-weight: 400 !important;
+      transition: color .25s ease;
+    }
+
+    #agent-grid > article .mt-4.flex.flex-wrap.gap-2 > span:hover {
+      color: var(--ink) !important;
+    }
+
+    #agent-grid > article > .mt-8 {
+      margin-top: auto !important;
+      padding-top: 16px !important;
+
+      border-top: 1px solid var(--line) !important;
+
+      color: var(--light) !important;
+      font-size: 11px !important;
+      letter-spacing: .03em;
+    }
+
+    #agent-grid > article > .mt-8 [data-url],
+    #agent-grid > article > .mt-8 .run-btn {
+      color: var(--ink) !important;
+      font-weight: 500 !important;
+    }
+
+    #agent-grid > article > .mt-8 [data-url]:hover,
+    #agent-grid > article > .mt-8 .run-btn:hover {
+      color: var(--gray) !important;
+    }
+
+    /* ---------- Empty state ---------- */
+    .hub-empty {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+
+      padding: 88px 24px;
+      text-align: center;
+    }
+
+    .hub-empty.flex {
+      display: flex;
+    }
+
+    .hub-empty > div:first-child {
+      display: none;
+    }
+
+    .hub-empty h2 {
+      margin: 0;
+
+      font-family: var(--serif);
+      font-size: 24px;
+      font-weight: 400;
+    }
+
+    .hub-empty p {
+      margin-top: 12px;
+      color: var(--gray);
+      font-size: 13px;
+    }
+
+    /* ---------- Footer ---------- */
+    .hub-footer {
+      width: min(1120px, calc(100% - 48px));
+      margin: auto;
+      padding: 64px 0 40px;
+
+      border-top: 1px solid var(--line);
+    }
+
+    .hub-footer__inner {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 32px;
+    }
+
+    .hub-footer__quote {
+      font-family: var(--serif);
+      font-size: 19px;
+      line-height: 1.6;
+      letter-spacing: .05em;
+    }
+
+    .hub-footer__copy {
+      margin-top: 12px;
+      color: var(--light);
+      font-size: 10.5px;
+      letter-spacing: .05em;
+    }
+
+    .hub-footer__links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+
+      color: var(--gray);
+      font-size: 11.5px;
+      letter-spacing: .02em;
+    }
+
+    .hub-footer__links a {
+      transition: color .3s ease;
+    }
+
+    .hub-footer__links a:hover {
+      color: var(--ink);
+    }
+
+    /* ---------- Drawer ---------- */
+    @media (min-width: 901px) {
+      #drawer-container {
+        max-width: 860px !important;
+      }
+    }
+
+    #drawer-backdrop {
+      z-index: 200 !important;
+      background: rgba(27, 27, 25, .38) !important;
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+    }
+
+    #drawer-container {
+      z-index: 201 !important;
+      background: var(--paper) !important;
+      border-left: 1px solid var(--line);
+      box-shadow: -24px 0 64px rgba(27, 27, 25, .12) !important;
+    }
+
+    #drawer-container > div:first-child {
+      min-height: 62px;
+      padding: 14px 20px !important;
+
+      background: rgba(250, 249, 246, .94) !important;
+      border-bottom: 1px solid var(--line) !important;
+      border-radius: 0 !important;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+
+    #drawer-title {
+      font-family: var(--serif) !important;
+      font-size: 17px !important;
+      font-weight: 400 !important;
+      color: var(--ink) !important;
+    }
+
+    #drawer-url {
+      color: var(--light) !important;
+      font-size: 10px !important;
+    }
+
+    #drawer-container .rounded-none {
+      border-radius: 0 !important;
+    }
+
+    #drawer-container .bg-brand-50 {
+      background: var(--paper) !important;
+      color: var(--gray) !important;
+    }
+
+    #drawer-container .text-brand-500 {
+      color: var(--gray) !important;
+    }
+
+    #drawer-external-link,
+    #close-drawer-btn {
+      color: var(--gray) !important;
+      border-radius: 0 !important;
+    }
+
+    #drawer-external-link:hover,
+    #close-drawer-btn:hover {
+      color: var(--ink) !important;
+      background: var(--white) !important;
+    }
+
+    #close-drawer-btn {
+      width: 40px;
+      height: 40px;
+    }
+
+    #drawer-container .relative.flex-1 {
+      background: var(--white) !important;
+    }
+
+    #drawer-loading {
+      background: rgba(250, 249, 246, .92) !important;
+      backdrop-filter: blur(8px);
+    }
+
+    #drawer-loading > div:first-child {
+      width: 28px !important;
+      height: 28px !important;
+      border-width: 1px !important;
+      border-color: var(--line) !important;
+      border-top-color: var(--ink) !important;
+    }
+
+    #drawer-loading p {
+      color: var(--gray) !important;
+      font-size: 11.5px !important;
+      letter-spacing: .04em;
+    }
+
+    /* ---------- Responsive ---------- */
+    @media (max-width: 1100px) {
+      .hub-actions > .hub-btn--ghost {
+        display: none;
+      }
+
+      .hub-nav {
+        gap: 22px;
+      }
+    }
+
+    @media (max-width: 900px) {
+      body {
+        padding-top: 56px;
+      }
+
+      .hub-header {
+        height: 56px;
+      }
+
+      .hub-header__inner {
+        width: calc(100% - 32px);
+      }
+
+      .hub-logo__name {
+        font-size: 13.5px;
+      }
+
+      .hub-logo__sub {
+        font-size: 8.5px;
+      }
+
+      .hub-nav,
+      .hub-actions > .hub-btn {
+        display: none;
+      }
+
+      .hub-menu-btn {
+        display: flex;
+      }
+
+      .hub-mobile {
+        max-height: calc(100dvh - 56px);
+      }
+
+      .hub-shell {
+        width: 100% !important;
+        padding: 36px 16px 64px !important;
+        flex-direction: column;
+        gap: 24px !important;
+      }
+
+      .hub-aside {
+        width: 100% !important;
+        position: static;
+      }
+
+      #pc-categories {
+        display: none !important;
+      }
+
+      #mobile-categories {
+        display: flex !important;
+
+        gap: 20px;
+        padding: 0 0 12px;
+        margin: 0;
+
+        overflow-x: auto;
+        border-bottom: 1px solid var(--line);
+
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+      }
+
+      #mobile-categories::-webkit-scrollbar {
+        display: none;
+      }
+
+      .hub-cat-chip {
+        flex: none;
+        padding: 0 0 8px;
+
+        border: 0;
+        border-bottom: 1px solid transparent;
+        background: transparent;
+
+        color: var(--gray);
+        font-size: 12.5px;
+        letter-spacing: .02em;
+        white-space: nowrap;
+      }
+
+      .hub-cat-chip.is-active {
+        color: var(--ink);
+        border-bottom-color: var(--ink);
+      }
+
+      .hub-cat-chip__count {
+        margin-left: 4px;
+        color: var(--light);
+        font-size: 10px;
+      }
+
+      .hub-main {
+        width: 100%;
+      }
+
+      .hub-intro {
+        margin-bottom: 30px !important;
+      }
+
+      .hub-title {
+        font-size: 28px !important;
+        line-height: 1.42 !important;
+      }
+
+      .hub-desc {
+        margin-top: 16px !important;
+        font-size: 13px !important;
+        line-height: 1.9 !important;
+      }
+
+      #search-input {
+        height: 50px;
+        padding-left: 44px !important;
+        font-size: 13px !important;
+      }
+
+      .hub-search > div:first-child {
+        padding-left: 14px !important;
+      }
+
+      .hub-search kbd {
+        display: none !important;
+      }
+
+      .hub-grid {
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
+        margin-top: 22px;
+      }
+
+      #agent-grid > article {
+        min-height: 0;
+        padding: 22px !important;
+      }
+
+      #agent-grid > article::before {
+        margin-bottom: 16px;
+      }
+
+      #agent-grid > article h2,
+      #agent-grid > article h3 {
+        font-size: 20px !important;
+      }
+
+      .hub-footer {
+        width: calc(100% - 32px);
+        padding: 48px 0 calc(32px + env(safe-area-inset-bottom));
+      }
+
+      .hub-footer__inner {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 24px;
+      }
+
+      .hub-footer__quote {
+        font-size: 17px;
+      }
+
+      #drawer-container {
+        width: 100% !important;
+        max-width: none !important;
+        border-left: 0;
+      }
+
+      #drawer-container > div:first-child {
+        padding-top: calc(14px + env(safe-area-inset-top)) !important;
+      }
+
+      #drawer-container .relative.flex-1 {
+        padding-bottom: env(safe-area-inset-bottom);
+      }
+    }
+
+    /* 移动端整体缩放后的滚动容器：保证固定头部不随页面滚走 */
+    html,
+    body {
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .page-scroll {
+      width: 100%;
+      height: 100%;
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-x: hidden;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      scroll-behavior: smooth;
+    }
+
+    .page-scroll.is-locked {
+      overflow: hidden;
+    }
+
+    @media (min-width: 768px) {
+      #pc-categories {
+        top: 36px !important;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .hub-logo__sub {
+        display: none;
+      }
+
+      .hub-title {
+        font-size: 26px !important;
+      }
+
+      .hub-btn {
+        padding: 0 14px;
+      }
+    }
+
   </style>
 </head>
 
 <body
   class="bg-[#fafafc] text-slate-800 transition-colors duration-500 dark:bg-[#1a1a1e] dark:text-slate-200 min-h-screen flex flex-col antialiased selection:bg-brand-500/20 selection:text-brand-600 dark:selection:text-brand-300">
 
-  <!-- Header 引入呼吸感与高级磨砂玻璃 -->
-  <header
-    class="sticky top-0 z-40 w-full border-b border-slate-200/70 dark:border-slate-800/70 bg-[#f8f8fa]/90 dark:bg-slate-950/90 backdrop-blur-md shadow-sm transition-all duration-500">
-    <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 py-3.5 sm:py-5 flex items-center justify-between">
-      <!-- 1. 左侧 Logo 区域 -->
-      <a href="/" title="TransWeb 首页" class="flex items-center gap-2.5 sm:gap-4">
-        <div class="w-9 h-9 sm:w-12 sm:h-12 bg-transparent flex items-center justify-center shrink-0">
-          <img class="w-9 h-9 sm:w-12 sm:h-12 bg-transparent" src="assets/images/logo-brand.png" alt="TransWeb Logo"
-            width="48" height="48">
-        </div>
-        <div>
-          <h1 class="text-lg sm:text-2xl font-bold tracking-tight leading-none text-slate-900 dark:text-white">
-            SkillHub · 全学科 AI 技能导航
-          </h1>
-          <p class="text-[10px] sm:text-xs text-brand-600 dark:text-brand-400 font-medium mt-0.5 sm:mt-1 tracking-wide">
-            AI Skill 工具导航
-          </p>
-        </div>
-      </a>
+  <div class="page-scroll">
 
-      <!-- 2. 中央菜单 (桌面端) -->
-      <nav class="hidden md:flex items-center gap-8" aria-label="主导航">
-        <a href="/"
-          class="text-base font-medium text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-brand-400 transition-colors">
-          首页
+  <!-- Header 引入呼吸感与高级磨砂玻璃 -->
+  <header class="hub-header">
+    <div class="hub-header__inner">
+      <div class="brand-lockup">
+        <a href="/" title="TransWeb 首页" class="hub-logo">
+          <span class="hub-logo__name">Trans-Agent</span>
+          <span class="hub-logo__sub">SkillHub · 全学科 AI 技能导航</span>
         </a>
-        <a href="skillHub.html" class="text-base font-semibold text-brand-600 dark:text-brand-400 transition-colors">
-          Skill 导航
-        </a>
-        <a target="_blank" href="https://transweb.cn/workflow/docs/index.html"
-          class="text-base font-medium text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-brand-400 transition-colors">
-          文档(编排 Skill)
-        </a>
+        <span class="page-mark">Skill 广场</span>
+      </div>
+
+      <nav class="hub-nav" aria-label="主导航">
+        <a href="/">首页</a>
+        <a href="skillHub.html" class="is-active" aria-current="page">Skill 广场</a>
+        <a href="workflow.html">工作流</a>
       </nav>
 
-      <!-- 3. 右侧操作区 (转化率 CRO 优化：精准行动召唤) -->
-      <div class="flex items-center gap-2 sm:gap-3">
-        <!-- CTA 1: 进入工作流引擎 -->
-        <a target="_blank" href="https://transweb.cn/workflow/index.html" title="在线编排 AI 技能"
-          class="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold text-slate-700 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-brand-600 hover:text-brand-600 transition-colors">
-          <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="5" cy="6" r="3" />
-            <path d="M12 6h5a2 2 0 0 1 2 2v7" />
-            <circle cx="19" cy="18" r="3" />
-            <path d="M5 9v11" />
-          </svg>
-          编排 Skill
-        </a>
+      <div class="hub-actions">
+        <a class="hub-btn" href="skill.html">创建 Skill</a>
 
-        <!-- CTA 2: 自定义 Skill -->
-        <a target="_blank" href="https://transweb.cn/skill.html" title="在线生成与自定义 AI Skill"
-          class="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold text-white bg-brand-600 hover:bg-brand-500 transition-colors">
-          <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path
-              d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
-          </svg>
-          Skill 生成
-        </a>
-
-        <!-- 暗黑模式切换按钮 -->
-        <button id="theme-toggle" aria-label="切换明暗主题"
-          class="p-2 sm:p-2.5 rounded-none text-slate-500 dark:text-slate-400 hover:text-brand-600 hover:bg-brand-50/50 dark:hover:text-brand-300 dark:hover:bg-brand-500/10 transition-all duration-300">
-          <i data-lucide="sun" class="hidden dark:block w-5 h-5"></i>
-          <i data-lucide="moon" class="block dark:hidden w-5 h-5"></i>
-        </button>
-
-        <!-- 移动端汉堡菜单按钮 -->
-        <button id="mobile-menu-toggle" aria-label="切换移动端导航菜单"
-          class="md:hidden p-2 rounded-none text-slate-500 dark:text-slate-400 hover:text-brand-600 hover:bg-brand-50/50 dark:hover:text-brand-300 dark:hover:bg-brand-500/10 transition-all">
-          <i data-lucide="menu" class="w-5 h-5 block" id="menu-icon-open"></i>
-          <i data-lucide="x" class="w-5 h-5 hidden" id="menu-icon-close"></i>
+        <button id="mobile-menu-toggle" aria-label="切换移动端导航菜单" aria-expanded="false" class="hub-menu-btn">
+          <span class="hub-menu-lines" aria-hidden="true">
+            <span></span><span></span><span></span>
+          </span>
+          <span class="hub-menu-x" aria-hidden="true">
+            <span></span><span></span>
+          </span>
         </button>
       </div>
     </div>
 
-    <!-- 移动端下拉导航菜单 -->
-    <div id="mobile-menu"
-      class="hidden md:hidden border-t border-slate-200/50 dark:border-slate-800/50 bg-white/95 dark:bg-slate-950/95 backdrop-blur-xl px-4 py-4 space-y-3">
-      <a href="/"
-        class="block px-3 py-2 rounded-none font-medium text-slate-600 dark:text-slate-300 hover:text-brand-600">
-        首页
-      </a>
-      <a href="skillHub.html"
-        class="block px-3 py-2 rounded-none font-semibold text-brand-600 dark:text-brand-400 bg-brand-50/50 dark:bg-brand-500/10">
-        Skill 导航
-      </a>
-
-      <a href="https://transweb.cn/workflow/docs/index.html"
-        class="block px-3 py-2 rounded-none font-medium text-slate-600 dark:text-slate-300 hover:text-brand-600">
-        文档(编排 Skill)
-      </a>
-      <div class="pt-2 border-t border-slate-200/50 dark:border-slate-800/50 flex flex-col gap-2">
-        <a target="_blank" href="https://transweb.cn/skill.html"
-          class="w-full text-center py-2.5 rounded-full font-semibold text-white bg-brand-600">
-          自定义 AI Skill
-        </a>
-        <a target="_blank" href="https://transweb.cn/workflow/index.html"
-          class="w-full text-center py-2.5 rounded-full font-medium text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800">
-          编排 Skill
-        </a>
+    <div id="mobile-menu" class="hub-mobile hidden">
+      <a href="/">首页</a>
+      <a href="skillHub.html" class="is-active" aria-current="page">Skill 广场</a>
+      <a href="workflow.html">工作流</a>
+      <div class="hub-mobile__actions">
+        <a class="hub-btn" href="skill.html">创建 Skill</a>
       </div>
     </div>
   </header>
 
   <!-- 主体容器 -->
-  <div
-    class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 py-6 sm:py-10 lg:py-16 flex-1 w-full flex flex-col md:flex-row gap-6 md:gap-10 lg:gap-16">
+  <div class="hub-shell">
 
     <!-- 分类导航栏（移动端顶部滚动/PC端左侧固定） -->
-    <aside class="w-full md:w-[260px] lg:w-[280px] shrink-0" aria-label="分类导航">
+    <aside class="hub-aside" aria-label="分类导航">
       <div class="md:hidden flex gap-2 overflow-x-auto no-scrollbar pb-2 pt-1 -mx-4 px-4 sm:mx-0 sm:px-0"
         id="mobile-categories">
       </div>
@@ -387,11 +1377,12 @@
       </nav>
     </aside>
 
-    <main class="flex-1 space-y-6 sm:space-y-8 w-full min-w-0">
+    <main class="hub-main">
       <!-- 页面简介（SSR 可见文本） -->
-      <section class="text-center max-w-3xl mx-auto space-y-3">
-        <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white tracking-tight">全学科 AI Skill 工具导航</h2>
-        <p class="text-sm sm:text-base text-gray-600 dark:text-slate-400 leading-relaxed">
+      <section class="hub-intro">
+        <div class="hub-eyebrow">AI SKILL LIBRARY</div>
+        <h1 class="hub-title">全学科 AI Skill 工具导航</h1>
+        <p class="hub-desc">
           SkillHub 精选数学可视化、GeoGebra、编程开发、办公提效与创作自动化等全学科 AI Skill，支持在线预览与一键运行。适合课堂教学、备课制卷、作业批改与日常办公，也可在 Trans-Workflow
           中继续编排为完整工作流。
         </p>
@@ -399,7 +1390,7 @@
 
       <!-- 搜索与筛选区 -->
       <div class="space-y-4 sm:space-y-6">
-        <div class="relative group">
+        <div class="relative group hub-search">
           <div style="z-index: 3;"
             class="absolute inset-y-0 left-0 pl-4 sm:pl-6 flex items-center pointer-events-none text-slate-400 group-focus-within:text-brand-500 transition-colors duration-300">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 sm:w-6 sm:h-6 text-gray-500 hover:text-gray-900"
@@ -416,15 +1407,14 @@
             ⌘/
           </kbd>
         </div>
-        <div
-          class="flex items-center justify-between text-xs sm:text-sm font-medium text-slate-400 dark:text-slate-500 px-1 sm:px-2">
+        <div class="hub-meta">
           <div id="filter-status" class="truncate pr-2">正在展示全部 AI Skill 资源</div>
           <div id="result-count" class="shrink-0">共 13 个精选项目</div>
         </div>
       </div>
 
       <!-- Agent 列表网格 -->
-      <section id="agent-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-4 sm:gap-8"
+      <section id="agent-grid" class="hub-grid"
         aria-label="Skill 列表">
         <article
           class="group relative rounded-none bg-[#f8f8fa] dark:bg-slate-900/60 border border-gray-100 dark:border-slate-800 p-6 shadow-sm hover:shadow-md hover:border-brand-600/40 transition-all duration-300">
@@ -637,7 +1627,7 @@
       </section>
 
       <!-- 空状态 -->
-      <div id="empty-state" class="hidden flex-col items-center justify-center py-12 sm:py-[100px] text-center">
+      <div id="empty-state" class="hub-empty hidden">
         <div
           class="w-16 h-16 sm:w-20 sm:h-20 rounded-none sm:rounded-none bg-brand-50/50 dark:bg-brand-500/10 flex items-center justify-center text-brand-400 dark:text-brand-300 mb-4 sm:mb-6 backdrop-blur-md">
           <i data-lucide="bot" class="w-8 h-8 sm:w-10 sm:h-10"></i>
@@ -648,9 +1638,19 @@
     </main>
   </div>
 
-  <footer class="mt-auto bg-[#1a1a1e] py-6 sm:py-8 text-center text-xs sm:text-sm font-medium text-slate-500 px-4">
-    <span class="text-lg font-bold text-white tracking-wider">SkillHub</span>
-    <p class="mt-3">© 2026 SkillHub. AI Skill 工具导航</p>
+  <footer class="hub-footer">
+    <div class="hub-footer__inner">
+      <div>
+        <div class="hub-footer__quote">把 AI 能力，整理成一张可检索的桌面。</div>
+        <p class="hub-footer__copy">© 2026 SkillHub · Trans-Agent</p>
+      </div>
+      <div class="hub-footer__links">
+        <a href="/">Trans-Agent</a>
+        <a href="https://transweb.cn/skill.html" target="_blank" rel="noopener">AI Skill 生成器</a>
+        <a href="https://transweb.cn/workflow/index.html" target="_blank" rel="noopener">工作流</a>
+        <a href="https://transweb.cn/workflow/docs/index.html" target="_blank" rel="noopener">文档</a>
+      </div>
+    </div>
   </footer>
 
 
@@ -702,27 +1702,48 @@
     </div>
   </div>
 
+  </div>
+
   <script>
     // 移动端菜单切换脚本控制
     document.addEventListener('DOMContentLoaded', () => {
       const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
       const mobileMenu = document.getElementById('mobile-menu');
-      const menuIconOpen = document.getElementById('menu-icon-open');
-      const menuIconClose = document.getElementById('menu-icon-close');
+
+      const siteHeader = document.querySelector('.hub-header');
 
       if (mobileMenuToggle && mobileMenu) {
         mobileMenuToggle.addEventListener('click', () => {
           const isHidden = mobileMenu.classList.contains('hidden');
           if (isHidden) {
             mobileMenu.classList.remove('hidden');
-            menuIconOpen.classList.add('hidden');
-            menuIconClose.classList.remove('hidden');
+            mobileMenuToggle.setAttribute('aria-expanded', 'true');
+            if (siteHeader) siteHeader.classList.add('nav-open');
           } else {
             mobileMenu.classList.add('hidden');
-            menuIconOpen.classList.remove('hidden');
-            menuIconClose.classList.add('hidden');
+            mobileMenuToggle.setAttribute('aria-expanded', 'false');
+            if (siteHeader) siteHeader.classList.remove('nav-open');
           }
         });
+
+        mobileMenu.querySelectorAll('a').forEach((link) => {
+          link.addEventListener('click', () => {
+            mobileMenu.classList.add('hidden');
+            mobileMenuToggle.setAttribute('aria-expanded', 'false');
+            if (siteHeader) siteHeader.classList.remove('nav-open');
+          });
+        });
+      }
+    });
+  </script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      if (!window.WebTool) return;
+      let tRadio = Number(WebTool.urlQuery(location.href, "transformRadio"));
+      if (tRadio !== 1) {
+        WebTool.adjustStyle(480, 530);
+      } else {
+        window.transformRadio = tRadio;
       }
     });
   </script>

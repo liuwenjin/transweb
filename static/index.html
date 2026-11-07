@@ -351,7 +351,7 @@
       left: 0;
       right: 0;
 
-      height: 64px;
+      height: 104px;
 
       background: rgba(250, 249, 246, .9);
 
@@ -373,7 +373,7 @@
 
     .header-inner {
       width: min(1120px, calc(100% - 48px));
-      height: 100%;
+      height: 64px;
       margin: auto;
 
       display: flex;
@@ -383,15 +383,84 @@
       flex-wrap: nowrap;
     }
 
+    .index-subnav {
+      height: 40px;
+      background: rgba(250, 249, 246, .92);
+      border-top: 1px solid rgba(27, 27, 25, .05);
+    }
+
+    .index-subnav__inner {
+      width: min(1120px, calc(100% - 48px));
+      height: 100%;
+      margin: auto;
+
+      display: flex;
+      align-items: center;
+      gap: 26px;
+
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .index-subnav__inner::-webkit-scrollbar { display: none; }
+
+    .index-subnav a {
+      flex: none;
+      color: var(--gray);
+      font-size: 11.5px;
+      letter-spacing: .04em;
+      white-space: nowrap;
+      transition: color .3s ease;
+    }
+
+    .index-subnav a:hover { color: var(--ink); }
+
     .logo {
       flex: 0 0 auto;
-      white-space: nowrap;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
 
+      white-space: nowrap;
+      color: var(--ink);
+    }
+
+    .logo-name {
       font-size: 14.5px;
       font-weight: 600;
       letter-spacing: .2em;
+      line-height: 1;
+    }
 
-      color: var(--ink);
+    .logo-sub {
+      color: var(--light);
+      font-size: 9px;
+      font-weight: 400;
+      letter-spacing: .12em;
+      line-height: 1.2;
+    }
+
+    .brand-lockup {
+      flex: none;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .page-mark {
+      flex: none;
+      height: 22px;
+      padding: 0 8px;
+
+      display: inline-flex;
+      align-items: center;
+
+      background: var(--ink);
+      color: var(--paper);
+
+      font-size: 9.5px;
+      letter-spacing: .1em;
+      white-space: nowrap;
     }
 
     .nav {
@@ -642,6 +711,15 @@
       align-items: center;
     }
 
+    .hero-eyebrow {
+      margin-bottom: 18px;
+
+      color: var(--light);
+      font-size: 10px;
+      letter-spacing: .2em;
+      text-align: center;
+    }
+
     .hero-title {
       margin: 0;
       max-width: 1120px;
@@ -791,7 +869,7 @@
 
       border-top: 1px solid var(--line);
 
-      scroll-margin-top: 88px;
+      scroll-margin-top: 128px;
     }
 
     .hero-presets__head {
@@ -937,7 +1015,7 @@
 
       margin-top: 32px;
 
-      scroll-margin-top: 88px;
+      scroll-margin-top: 128px;
     }
 
     .generator[hidden] {
@@ -1358,7 +1436,7 @@
 
       padding: 120px 0;
 
-      scroll-margin-top: 88px;
+      scroll-margin-top: 128px;
 
       /* 屏下区块惰性渲染：靠近视口前跳过布局/绘制，降低长页面初始成本 */
       content-visibility: auto;
@@ -3693,6 +3771,10 @@
         z-index: 170;
       }
 
+      .header {
+        overflow: visible;
+      }
+
       .header .nav {
         display: none;
         position: absolute;
@@ -3705,15 +3787,15 @@
         gap: 0;
         padding: 4px 16px calc(12px + env(safe-area-inset-bottom));
 
-        background: rgba(250, 249, 246, .97);
+        background: var(--paper);
         backdrop-filter: blur(18px);
         -webkit-backdrop-filter: blur(18px);
         border-bottom: 1px solid rgba(27, 27, 25, .07);
         box-shadow: 0 16px 28px rgba(27, 27, 25, .07);
 
         /* 展开后的抽屉高度超出视口时可内部滚动，避免二级菜单显示不全 */
-        max-height: calc(100vh - 64px);
-        max-height: calc(100dvh - 64px);
+        max-height: calc(100vh - 96px);
+        max-height: calc(100dvh - 96px);
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
         overscroll-behavior: contain;
@@ -3842,6 +3924,27 @@
 
       .hero {
         padding: 112px 16px 16px;
+      }
+
+      .header {
+        height: 96px;
+      }
+
+      .header-inner {
+        height: 56px;
+      }
+
+      .index-subnav {
+        height: 40px;
+      }
+
+      .index-subnav__inner {
+        width: calc(100% - 32px);
+        gap: 18px;
+      }
+
+      .index-subnav a {
+        font-size: 11px;
       }
 
       .hero-title {
@@ -4155,6 +4258,11 @@
         padding-top: 96px;
       }
 
+      /* 移动端空间优先留给页面标识与主菜单；副标题在窄屏隐藏 */
+      .logo-sub {
+        display: none;
+      }
+
       .hero-title {
         font-size: clamp(28px, 8.6vw, 34px);
       }
@@ -4377,24 +4485,18 @@
     <header class="header">
       <div class="header-inner">
 
-        <a href="#" class="logo" data-i18n="logo">
-          Trans-Agent
-        </a>
+        <div class="brand-lockup">
+          <a href="/" class="logo">
+            <span class="logo-name" data-i18n="logo">Trans-Agent</span>
+            <span class="logo-sub" data-i18n="logo.sub">AI 数字员工平台</span>
+          </a>
+          <span class="page-mark" data-i18n="nav.home">首页</span>
+        </div>
 
         <nav class="nav" id="nav">
-          <a href="#process" data-i18n="nav.how">功能阐释</a>
-          <a href="#pricing" data-i18n="nav.pricing">透明计费</a>
-          <a href="#deploy" data-i18n="nav.deploy">本地部署</a>
-          <a href="#faq" data-i18n="nav.faq">常见疑问</a>
-
-          <div class="twf-drop" id="navSkillsDropdown">
-            <a href="#" class="twf-toggle" data-i18n="nav.skills" aria-haspopup="true" aria-expanded="false">技能/工作流</a>
-            <div class="twf-menu">
-              <a href="skill.html" data-i18n="nav.skills.generator">AI Skill 生成器</a>
-              <a href="workflow.html" data-i18n="nav.skills.workflow">工作流</a>
-              <a href="skillHub.html" data-i18n="nav.skills.hub">Skill 广场</a>
-            </div>
-          </div>
+          <a href="/" class="active" aria-current="page" data-i18n="nav.home">首页</a>
+          <a href="skillHub.html" data-i18n="nav.skillHub">Skill 广场</a>
+          <a href="workflow.html" data-i18n="nav.workflow">工作流</a>
         </nav>
 
         <div class="header-right">
@@ -4409,6 +4511,17 @@
         </div>
 
       </div>
+
+      <nav class="index-subnav" aria-label="首页内容导航">
+        <div class="index-subnav__inner">
+          <a href="#process" data-i18n="subnav.process">产品能力</a>
+          <a href="#cases" data-i18n="subnav.cases">客户案例</a>
+          <a href="#plans" data-i18n="subnav.plans">适合谁</a>
+          <a href="#pricing" data-i18n="subnav.pricing">透明计费</a>
+          <a href="#deploy" data-i18n="subnav.deploy">本地部署</a>
+          <a href="#faq" data-i18n="subnav.faq">常见疑问</a>
+        </div>
+      </nav>
     </header>
 
     <!-- 语言刷新兜底：在完整词典异步加载前，先同步翻译导航，避免刷新后菜单短暂/残留中文 -->
@@ -4422,15 +4535,9 @@
         if (lang !== "en") return;
 
         var navEn = {
-          "nav.create": "Create Agent",
-          "nav.how": "How it works",
-          "nav.pricing": "Pricing",
-          "nav.deploy": "Deploy",
-          "nav.faq": "FAQ",
-          "nav.skills": "Skill/Workflow",
-          "nav.skills.generator": "AI Skill Generator",
-          "nav.skills.workflow": "Workflow",
-          "nav.skills.hub": "SkillHub"
+          "nav.home": "Home",
+          "nav.skillHub": "SkillHub",
+          "nav.workflow": "Workflow"
         };
 
         document.documentElement.lang = "en";
@@ -4488,6 +4595,8 @@
 ========================= -->
 
       <section class="hero">
+
+        <div class="hero-eyebrow" data-i18n="hero.eyebrow">AI DIGITAL EMPLOYEE / TRANS-AGENT</div>
 
         <h1 class="hero-title">
           <span data-i18n="hero.title.1">把静态文档变成</span>
@@ -6162,8 +6271,18 @@ transweb wxpay check</code></pre>
           "ogTitle": "数字员工生成器｜上传资料，约 3 分钟生成专属 AI 助手",
           "ogDescription": "数字员工生成器：上传 PDF、Word 或 Markdown，无代码生成专属数字员工、AI 客服、知识库问答助手与 AI 助教，可绑定技能 / 工作流。链接二维码分享，按量计费、闲置零成本。",
           "logo": "Trans-Agent",
+          "logo.sub": "AI 数字员工平台",
+          "nav.home": "首页",
           "nav.create": "创建 Agent",
-          "nav.how": "功能阐释",
+          "nav.how": "产品能力",
+          "subnav.process": "产品能力",
+          "subnav.cases": "客户案例",
+          "subnav.plans": "适合谁",
+          "subnav.pricing": "透明计费",
+          "subnav.deploy": "本地部署",
+          "subnav.faq": "常见疑问",
+          "nav.workflow": "工作流",
+          "nav.skillHub": "Skill 广场",
           "nav.pricing": "透明计费",
           "nav.deploy": "本地部署",
           "nav.faq": "常见疑问",
@@ -6520,8 +6639,8 @@ transweb wxpay check</code></pre>
       };
 
       var LS_KEY = "appLang";
-      var EN_URL = "./i18n/en.json?v=27";
-      var EN_CACHE_KEY = "i18n_en_v27";
+      var EN_URL = "./i18n/en.json?v=30";
+      var EN_CACHE_KEY = "i18n_en_v30";
 
       var lang = "zh";
       try {
@@ -7585,6 +7704,15 @@ transweb wxpay check</code></pre>
 
       Array.prototype.forEach.call(document.querySelectorAll("[data-reveal-upload]"), function (trigger) {
         trigger.addEventListener("click", revealUpload);
+      });
+
+      // 从 SkillHub / Workflow 等子页面的「免费创建 Agent」入口跳回带 hash 时，
+      // 自动展开首屏上传区，避免只滚到一个隐藏节点。
+      if (window.location.hash === "#agentCreatorArea") {
+        window.setTimeout(revealUpload, 80);
+      }
+      window.addEventListener("hashchange", function () {
+        if (window.location.hash === "#agentCreatorArea") revealUpload();
       });
 
       Array.prototype.forEach.call(document.querySelectorAll("[data-demo-question]"), function (card) {

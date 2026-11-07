@@ -6,9 +6,6 @@ const emptyState = document.getElementById('empty-state');
 const searchInput = document.getElementById('search-input');
 const filterStatus = document.getElementById('filter-status');
 const resultCount = document.getElementById('result-count');
-const themeToggleBtn = document.getElementById('theme-toggle');
-
-
 const backdrop = document.getElementById('drawer-backdrop');
 const drawer = document.getElementById('drawer-container');
 const iframe = document.getElementById('drawer-iframe');
@@ -39,8 +36,9 @@ window.openDrawer = function (url, title = '智能体运行预览') {
   drawer.classList.remove('translate-x-full');
   drawer.classList.add('translate-x-0');
 
-  // 锁定背景滚动
+  // 锁定背景滚动（移动端缩放后实际滚动的是 .page-scroll）
   document.body.style.overflow = 'hidden';
+  document.querySelector('.page-scroll')?.classList.add('is-locked');
 };
 
 // 2. 全局关闭抽屉函数
@@ -52,6 +50,7 @@ window.closeDrawer = function () {
   drawer.classList.add('translate-x-full');
 
   document.body.style.overflow = '';
+  document.querySelector('.page-scroll')?.classList.remove('is-locked');
 
   // 延迟清空 src 释放内存
   setTimeout(() => {
@@ -95,27 +94,21 @@ document.body.addEventListener('click', (e) => {
 
 function renderCategories() {
   pcCatContainer.innerHTML = categories.map(cat => `
-                <button 
-                    onclick="selectCategory('${cat}')" 
-                    class="w-full flex items-center justify-between px-5 py-3.5 rounded-[20px] text-base font-medium transition-all duration-300 ease-out-expo ${currentCategory === cat
-      ? 'bg-brand-50/80 text-brand-600 dark:bg-brand-900/20 dark:text-brand-400 shadow-[0_2px_10px_rgba(0,0,0,0.02)]'
-      : 'text-slate-500 dark:text-slate-400 hover:bg-white/60 dark:hover:bg-slate-800/40 hover:text-slate-800 dark:hover:text-slate-200'
-    }"
-                >
+                <button
+                    type="button"
+                    onclick="selectCategory('${cat}')"
+                    class="hub-cat ${currentCategory === cat ? 'is-active' : ''}">
                     <span>${cat}</span>
-                    <span class="text-xs opacity-40 font-mono bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-full">${getCategoryCount(cat)}</span>
+                    <span class="hub-cat__count">${getCategoryCount(cat)}</span>
                 </button>
             `).join('');
 
   mobileCatContainer.innerHTML = categories.map(cat => `
-                <button 
-                    onclick="selectCategory('${cat}')" 
-                    class="whitespace-nowrap px-6 py-2.5 rounded-[24px] text-sm font-medium transition-all duration-300 shrink-0 ${currentCategory === cat
-      ? 'bg-brand-500 text-white shadow-[0_4px_12px_rgba(22,163,74,0.3)]'
-      : 'bg-white/60 dark:bg-slate-900/40 backdrop-blur-md text-slate-500 dark:text-slate-400 border border-white/60 dark:border-white/5'
-    }"
-                >
-                    ${cat} (${getCategoryCount(cat)})
+                <button
+                    type="button"
+                    onclick="selectCategory('${cat}')"
+                    class="hub-cat-chip ${currentCategory === cat ? 'is-active' : ''}">
+                    <span>${cat}</span><span class="hub-cat-chip__count">${getCategoryCount(cat)}</span>
                 </button>
             `).join('');
 }
@@ -206,7 +199,7 @@ function render() {
 
                         <div class="mt-8 pt-5 border-t border-slate-200/50 dark:border-slate-700/50 flex items-center justify-between text-sm text-slate-400 relative z-10 font-medium">
                             <span class="flex items-center gap-1.5 opacity-80"><i data-lucide="eye" class="w-4 h-4"></i> 预览 ${agent.views} 次</span>
-                            <span data-url="${agent.url}" title="运行 ${agent.name}" class="inline-flex cursor-pointer items-center gap-1.5 font-bold text-brand-500 dark:text-brand-400 hover:text-brand-600 dark:hover:text-brand-300 group/link transition-colors duration-300 run-btn">
+                            <span data-url="${agent.url}" data-title="${agent.name}" title="运行 ${agent.name}" class="inline-flex cursor-pointer items-center gap-1.5 font-bold text-brand-500 dark:text-brand-400 hover:text-brand-600 dark:hover:text-brand-300 group/link transition-colors duration-300 run-btn">
                                 立即运行 
                                 <i data-lucide="arrow-up-right" class="w-4 h-4 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 transition-transform duration-300"></i>
                             </span>
@@ -323,26 +316,9 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   window.addEventListener('keydown', (e) => {
-    if (e.key === '/' && document.activeElement !== searchInput) {
+    if ((e.metaKey || e.ctrlKey) && e.key === '/' && document.activeElement !== searchInput) {
       e.preventDefault();
       searchInput.focus();
-    }
-  });
-
-  const userTheme = localStorage.getItem("theme");
-  const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches;
-
-  if (userTheme === "dark" || (!userTheme && systemTheme)) {
-    document.documentElement.classList.add("dark");
-  }
-
-  themeToggleBtn.addEventListener('click', () => {
-    if (document.documentElement.classList.contains("dark")) {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-    } else {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
     }
   });
 

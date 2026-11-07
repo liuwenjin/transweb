@@ -5,7 +5,7 @@
   "ogDescription": "Digital Employee Generator: turn PDF, Word, or Markdown into a digital employee with no code — knowledge-base Q&A, AI customer service, and AI tutoring, plus skills and workflows. Share by link or QR code; pay-as-you-go, zero cost when idle.",
   "logo": "Trans-Agent",
   "nav.create": "Create Agent",
-  "nav.how": "How it works",
+  "nav.how": "Capabilities",
   "nav.pricing": "Pricing",
   "nav.deploy": "Deploy",
   "nav.faq": "FAQ",
@@ -356,5 +356,16 @@
   "deploy.tips.lan.after": ".",
   "toolbar.label": "Quick actions",
   "toolbar.qrAlt": "WeChat QR code",
-  "toolbar.agentFrameTitle": "Support"
+  "toolbar.agentFrameTitle": "Support",
+  "nav.workflow": "Workflow",
+  "nav.skillHub": "SkillHub",
+  "nav.home": "Home",
+  "subnav.process": "Capabilities",
+  "subnav.cases": "Use cases",
+  "subnav.plans": "Who it's for",
+  "subnav.pricing": "Pricing",
+  "subnav.deploy": "Deploy",
+  "subnav.faq": "FAQ",
+  "hero.eyebrow": "AI DIGITAL EMPLOYEE / TRANS-AGENT",
+  "logo.sub": "AI Digital Employee Platform"
 }
