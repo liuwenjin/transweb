@@ -1158,9 +1158,26 @@
 
     .wf-footer__copy {
       margin-top: 12px;
-      color: var(--light);
+      color: var(--gray);
       font-size: 10.5px;
+      line-height: 1.7;
       letter-spacing: .05em;
+    }
+
+    /* 备案号即入口：去掉独立「备案」链接，直接点击 ICP 号跳转工信部 */
+    .wf-footer__copy a {
+      color: inherit;
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-decoration-color: rgba(107, 105, 98, .35);
+      text-underline-offset: 3px;
+      transition: color .3s ease, text-decoration-color .3s ease;
+    }
+
+    .wf-footer__copy a:hover,
+    .wf-footer__copy a:focus-visible {
+      color: var(--ink);
+      text-decoration-color: currentColor;
     }
 
     .wf-footer__links {
@@ -2757,13 +2774,13 @@
     <div class="wf-footer__inner">
       <div>
         <div class="wf-footer__quote">把一次性的 AI 对话，编成可复用的工作流。</div>
-        <p class="wf-footer__copy">© 2026 Trans-Workflow · MIT License · 京ICP备17026815号-1</p>
+        <p class="wf-footer__copy">© 2026 Trans-Workflow · MIT License · <a
+            href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">京ICP备17026815号-1</a></p>
       </div>
       <div class="wf-footer__links">
         <a href="https://github.com/liuwenjin/trans-workflow" target="_blank" rel="noopener">GitHub</a>
         <a href="https://transweb.cn/workflow/docs/index.html" target="_blank" rel="noopener">Docs</a>
         <a href="https://transweb.cn/skillHub.html" target="_blank" rel="noopener">SkillHub</a>
-        <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">备案</a>
       </div>
     </div>
   </footer>

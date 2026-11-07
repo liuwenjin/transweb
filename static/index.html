@@ -3303,10 +3303,31 @@
     .footer-copy {
       margin-top: 12px;
 
-      color: var(--light);
+      /* 与 workflow / skillHub 页保持一致，备案号等法务信息需要足够对比度 */
+      color: var(--gray);
 
       font-size: 10.5px;
+      line-height: 1.7;
       letter-spacing: .05em;
+    }
+
+    /* 备案号即入口：不再单列「备案」链接，直接点击 ICP 号跳转工信部 */
+    .footer-copy a {
+      color: inherit;
+
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-decoration-color: rgba(107, 105, 98, .35);
+      text-underline-offset: 3px;
+
+      transition: color .3s ease, text-decoration-color .3s ease;
+    }
+
+    .footer-copy a:hover,
+    .footer-copy a:focus-visible {
+      color: var(--ink);
+
+      text-decoration-color: currentColor;
     }
 
     .footer-links {
@@ -5869,7 +5890,8 @@ transweb wxpay check</code></pre>
         </div>
 
         <div class="footer-copy">
-          © 2026 TransWeb. All rights reserved.
+          © 2026 TransWeb · All rights reserved ·
+          <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">京ICP备17026815号-1</a>
         </div>
 
       </div>

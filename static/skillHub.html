@@ -967,9 +967,26 @@
 
     .hub-footer__copy {
       margin-top: 12px;
-      color: var(--light);
+      color: var(--gray);
       font-size: 10.5px;
+      line-height: 1.7;
       letter-spacing: .05em;
+    }
+
+    /* 备案号即入口：不单列「备案」链接，直接点击 ICP 号跳转工信部 */
+    .hub-footer__copy a {
+      color: inherit;
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-decoration-color: rgba(107, 105, 98, .35);
+      text-underline-offset: 3px;
+      transition: color .3s ease, text-decoration-color .3s ease;
+    }
+
+    .hub-footer__copy a:hover,
+    .hub-footer__copy a:focus-visible {
+      color: var(--ink);
+      text-decoration-color: currentColor;
     }
 
     .hub-footer__links {
@@ -1642,7 +1659,8 @@
     <div class="hub-footer__inner">
       <div>
         <div class="hub-footer__quote">把 AI 能力，整理成一张可检索的桌面。</div>
-        <p class="hub-footer__copy">© 2026 SkillHub · Trans-Agent</p>
+        <p class="hub-footer__copy">© 2026 SkillHub · Trans-Agent · <a href="https://beian.miit.gov.cn/"
+            target="_blank" rel="noopener noreferrer">京ICP备17026815号-1</a></p>
       </div>
       <div class="hub-footer__links">
         <a href="/">Trans-Agent</a>
