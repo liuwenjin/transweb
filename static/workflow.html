@@ -1183,10 +1183,11 @@
     .wf-footer__links {
       display: flex;
       flex-wrap: wrap;
-      gap: 24px;
+      gap: 26px;
 
       color: var(--gray);
       font-size: 11.5px;
+      letter-spacing: .02em;
     }
 
     .wf-footer__links a:hover { color: var(--ink); }
@@ -1346,6 +1347,375 @@
     @media (max-width: 380px) {
       .wf-logo__sub { display: none; }
       .wf-hero__title { font-size: 27px !important; }
+    }
+
+    /* =========================
+       条款浮层适配：滚动锁（移植自 index.html）
+    ========================= */
+
+    .page-scroll.is-legal-open {
+      overflow: hidden;
+    }
+
+    .panel-close:focus-visible {
+      outline: 1px solid var(--ink);
+      outline-offset: 3px;
+    }
+
+    .copy-btn:focus-visible {
+      outline: 1px solid var(--ink);
+      outline-offset: 2px;
+    }
+
+    /* =========================
+   条款浮层（隐私政策 / 服务条款 / 联系我们）
+========================= */
+
+    .overlay {
+      position: fixed;
+      z-index: 200;
+      inset: 0;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      padding: 40px 24px;
+
+      /* 浮层挂到 <html> 下，不再继承 body 的字体与缩放 */
+      font-family: var(--sans);
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+
+      opacity: 0;
+      pointer-events: none;
+
+      transition: opacity .4s ease;
+    }
+
+    .overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .overlay-backdrop {
+      position: absolute;
+      inset: 0;
+
+      background: rgba(27, 27, 25, .22);
+
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+
+      touch-action: none;
+    }
+
+    /* 如一张平铺的纸，自下方微微浮起 */
+    .panel {
+      position: relative;
+
+      width: min(720px, 100%);
+      max-height: min(82vh, 780px);
+
+      display: flex;
+      flex-direction: column;
+
+      background: var(--white);
+      border: 1px solid var(--line);
+      box-shadow: 0 40px 90px rgba(27, 27, 25, .14);
+
+      transform: translateY(14px);
+
+      transition: transform .5s cubic-bezier(.2, .7, .2, 1);
+    }
+
+    .overlay.open .panel {
+      transform: translateY(0);
+    }
+
+    .panel-close {
+      position: absolute;
+      z-index: 1;
+      top: 18px;
+      right: 18px;
+
+      width: 40px;
+      height: 40px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border: 0;
+      background: transparent;
+
+      transition: transform .4s cubic-bezier(.2, .7, .2, 1);
+    }
+
+    .panel-close span {
+      position: absolute;
+
+      width: 14px;
+      height: 1px;
+
+      background: var(--gray);
+
+      transition: background .3s ease;
+    }
+
+    .panel-close span:first-child {
+      transform: rotate(45deg);
+    }
+
+    .panel-close span:last-child {
+      transform: rotate(-45deg);
+    }
+
+    .panel-close:hover {
+      transform: rotate(90deg);
+    }
+
+    .panel-close:hover span {
+      background: var(--ink);
+    }
+
+    .panel-body {
+      flex: 1 1 auto;
+      min-height: 0;
+
+      overflow-y: auto;
+      overscroll-behavior: contain;
+
+      padding: 56px 60px 52px;
+    }
+
+    .doc-row-value {
+      overflow-wrap: anywhere;
+    }
+
+    .panel-body::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .panel-body::-webkit-scrollbar-thumb {
+      background: var(--line);
+      border-radius: 3px;
+    }
+
+    .panel-body::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .doc-eyebrow {
+      color: var(--light);
+
+      font-size: 10px;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+    }
+
+    .doc-title {
+      margin: 16px 0 0;
+
+      font-family: var(--serif);
+      font-weight: 400;
+      font-size: 27px;
+
+      letter-spacing: .04em;
+    }
+
+    .doc-date {
+      margin-top: 12px;
+
+      color: var(--light);
+
+      font-size: 11px;
+      letter-spacing: .04em;
+    }
+
+    .doc-body {
+      margin-top: 34px;
+
+      border-top: 1px solid var(--line);
+    }
+
+    .doc-section {
+      padding: 24px 0;
+
+      border-bottom: 1px solid var(--line);
+    }
+
+    .doc-section:last-child {
+      padding-bottom: 0;
+
+      border-bottom: 0;
+    }
+
+    .doc-section h3 {
+      margin: 0;
+
+      font-family: var(--serif);
+      font-weight: 400;
+      font-size: 15px;
+
+      letter-spacing: .04em;
+    }
+
+    .doc-section p {
+      margin: 12px 0 0;
+
+      color: var(--gray);
+
+      font-size: 12.5px;
+      line-height: 1.95;
+    }
+
+    .doc-row {
+      padding: 22px 0;
+
+      display: flex;
+      align-items: baseline;
+      gap: 20px;
+
+      border-bottom: 1px solid var(--line);
+    }
+
+    .doc-row:last-child {
+      padding-bottom: 0;
+
+      border-bottom: 0;
+    }
+
+    .doc-row-icon {
+      flex: 0 0 auto;
+
+      align-self: flex-start;
+
+      width: 16px;
+      height: 16px;
+      /* 4px 补偿：让 16px 图标中心对齐 label 首行文字(11px)中心 */
+      margin: 4px -8px 0 0;
+
+      color: var(--gray);
+    }
+
+    .doc-row-icon svg {
+      display: block;
+
+      width: 16px;
+      height: 16px;
+    }
+
+    .doc-row-label {
+      flex: 0 0 96px;
+
+      color: var(--gray);
+
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: .04em;
+    }
+
+    .doc-row-value {
+      flex: 1;
+      min-width: 0;
+
+      font-size: 12.5px;
+      line-height: 1.9;
+    }
+
+    .doc-row-value em {
+      display: block;
+
+      margin-top: 8px;
+
+      color: var(--gray);
+
+      font-size: 11px;
+      font-style: normal;
+    }
+
+    .copy-btn {
+      padding: 0 0 2px;
+
+      display: inline-flex;
+      align-items: baseline;
+      gap: 8px;
+
+      border: 0;
+      border-bottom: 1px solid var(--line);
+      background: transparent;
+
+      color: var(--ink);
+
+      font-size: 12.5px;
+      letter-spacing: .02em;
+
+      transition: border-color .3s ease;
+    }
+
+    .copy-btn:hover {
+      border-bottom-color: var(--ink);
+    }
+
+    .copy-hint {
+      color: var(--gray);
+
+      font-size: 10px;
+      letter-spacing: .1em;
+
+      transition: color .3s ease;
+    }
+
+    .copy-btn.copied .copy-hint {
+      color: var(--ink);
+    }
+
+    @media (max-width: 900px) {
+      /* 移动端：浮层改为自底部升起的纸片 */
+      .overlay {
+        padding: 0;
+        padding-left: env(safe-area-inset-left);
+        padding-right: env(safe-area-inset-right);
+        align-items: flex-end;
+      }
+
+      .panel {
+        width: 100%;
+        max-height: 88vh;
+        max-height: 88dvh;
+
+        border-width: 1px 0 0;
+      }
+
+      .panel-body {
+        padding: 34px 22px calc(40px + env(safe-area-inset-bottom));
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .panel-close {
+        top: 8px;
+        right: 8px;
+      }
+
+      .doc-title {
+        font-size: 22px;
+      }
+
+      .doc-body {
+        margin-top: 26px;
+      }
+
+      .doc-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+
+      .doc-row-label {
+        flex: none;
+      }
     }
 
   </style>
@@ -2778,12 +3148,325 @@
             href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">京ICP备17026815号-1</a></p>
       </div>
       <div class="wf-footer__links">
-        <a href="https://github.com/liuwenjin/trans-workflow" target="_blank" rel="noopener">GitHub</a>
-        <a href="https://transweb.cn/workflow/docs/index.html" target="_blank" rel="noopener">Docs</a>
-        <a href="https://transweb.cn/skillHub.html" target="_blank" rel="noopener">SkillHub</a>
+        <a href="#privacy" data-doc="privacy" aria-haspopup="dialog">隐私政策</a>
+        <a href="#terms" data-doc="terms" aria-haspopup="dialog">服务条款</a>
+        <a href="#contact" data-doc="contact" aria-haspopup="dialog">联系我们</a>
       </div>
     </div>
   </footer>
+
+    <!-- =========================
+     条款浮层：隐私政策 / 服务条款 / 联系我们
+     与 static/index.html 的同名浮层保持一致，改动时三处同步
+     单页承载三份文档，由 footer 链接唤起
+========================= -->
+
+    <div class="overlay" id="legalOverlay" hidden>
+
+      <div class="overlay-backdrop" data-overlay-close></div>
+
+      <div class="panel" role="dialog" aria-modal="true" aria-labelledby="doc-title-privacy">
+
+        <button class="panel-close" id="legalClose" type="button" aria-label="关闭"
+          data-overlay-close>
+          <span></span>
+          <span></span>
+        </button>
+
+        <div class="panel-body" id="legalBody">
+
+
+          <!-- 隐私政策 -->
+          <article class="doc" id="doc-privacy">
+
+            <div class="doc-eyebrow">
+              PRIVACY POLICY
+            </div>
+
+            <h2 class="doc-title" id="doc-title-privacy">
+              隐私政策
+            </h2>
+
+            <div class="doc-date">
+              最近更新：2026 年 11 月
+            </div>
+
+            <div class="doc-body">
+
+              <section class="doc-section">
+                <h3>我们收集哪些信息</h3>
+                <p>
+                  账号标识（登录方式与昵称）、你主动上传的资料，以及保障服务可用所必需的运行日志，例如访问时间、设备与浏览器类型、错误信息。我们不会为了广告投放而追踪你的浏览行为，也不会将上述信息用于本政策未说明的用途。
+                </p>
+              </section>
+
+              <section class="doc-section">
+                <h3>资料如何被使用</h3>
+                <p>
+                  你上传的资料只会用于构建并支撑属于你自己的数字员工。解析结果仅在你的账号范围内可见，用于回答你的提问；我们不将其用于公共模型训练，也不出售。为完成当次请求，必要内容会传递给模型 / 云服务商（见「第三方服务」）。
+                </p>
+              </section>
+
+              <section class="doc-section">
+                <h3>存储与安全</h3>
+                <p>
+                  通过 HTTPS 访问时，资料传输使用 TLS 加密；存储阶段按账号隔离并施加访问控制。运行日志仅保留排障所必需的周期，到期自动清理。
+                </p>
+              </section>
+
+              <section class="doc-section">
+                <h3>第三方服务</h3>
+                <p>
+                  内容的解析与问答依赖底层模型和云基础设施服务商。我们仅向其传递完成当次请求所必需的内容，并要求其承担同等的保密义务。
+                </p>
+              </section>
+
+              <section class="doc-section">
+                <h3>你可以做什么</h3>
+                <p>
+                  你可以随时查看、导出或删除自己的资料与数字员工。删除后，对应的解析结果与生成记录会同步清除。如果你希望注销账号，可通过「联系我们」提出，我们会在核实身份后处理。
+                </p>
+              </section>
+
+              <section class="doc-section">
+                <h3>未成年人</h3>
+                <p>
+                  本服务面向具备完全民事行为能力的用户。若你未满 18 周岁，请在监护人的陪同下阅读本政策并使用本服务。
+                </p>
+              </section>
+
+              <section class="doc-section">
+                <h3>政策更新</h3>
+                <p>
+                  本政策如有实质性变更，我们会在页面显著位置提示，并同步更新顶部的更新日期。继续使用本服务，即表示你接受更新后的政策。
+                </p>
+              </section>
+
+            </div>
+
+          </article>
+
+
+          <!-- 服务条款 -->
+          <article class="doc" id="doc-terms" hidden>
+
+            <div class="doc-eyebrow">
+              TERMS OF SERVICE
+            </div>
+
+            <h2 class="doc-title" id="doc-title-terms">
+              服务条款
+            </h2>
+
+            <div class="doc-date">
+              最近更新：2026 年 11 月
+            </div>
+
+            <div class="doc-body">
+
+              <section class="doc-section">
+                <h3>服务说明</h3>
+                <p>
+                  本服务将你提供的资料转化为可对话的 AI Agent（数字员工），并提供调用与计费能力。生成结果由模型自动产出，请你结合原始资料自行核对准确性。
+                </p>
+              </section>
+
+              <section class="doc-section">
+                <h3>账号与责任</h3>
+                <p>
+                  请妥善保管账号凭证，账号下发生的操作视为你的行为。若发现账号异常，请第一时间通过「联系我们」告知我们。
+                </p>
+              </section>
+
+              <section class="doc-section">
+                <h3>你的内容</h3>
+                <p>
+                  你保留所上传资料的全部权利。同时你需保证对资料拥有合法的使用权与授权，不侵犯他人的知识产权、隐私权或其他合法权益，也不包含违反法律法规的内容。
+                </p>
+              </section>
+
+              <section class="doc-section">
+                <h3>合理使用</h3>
+                <p>
+                  不得利用本服务生成违法信息、实施欺诈、绕过用量限制，也不得对服务进行逆向工程、压力测试或干扰其正常运行。
+                </p>
+              </section>
+
+              <section class="doc-section">
+                <h3>计费与退款</h3>
+                <p>
+                  费用按实际模型调用消耗的积分，以及发布 / 导出等操作按配置产生的一次性服务费结算；具体以页面展示和实际用量为准。因平台自身原因导致的服务不可用，可申请对应部分的退还。
+                </p>
+              </section>
+
+              <section class="doc-section">
+                <h3>服务变更与终止</h3>
+                <p>
+                  我们可能对功能进行调整、暂停或终止，重大变更会提前告知。若你不同意变更内容，可以停止使用并删除你的数据。
+                </p>
+              </section>
+
+              <section class="doc-section">
+                <h3>免责声明</h3>
+                <p>
+                  本服务按「现状」提供。AI 输出不构成法律、医疗、金融等专业意见，涉及专业判断时请咨询具备相应资质的专业人士。
+                </p>
+              </section>
+
+              <section class="doc-section">
+                <h3>适用法律</h3>
+                <p>
+                  本条款的订立、效力与解释适用中华人民共和国法律。若发生争议，双方应先友好协商解决。
+                </p>
+              </section>
+
+            </div>
+
+          </article>
+
+
+          <!-- 联系我们 -->
+          <article class="doc" id="doc-contact" hidden>
+
+            <div class="doc-eyebrow">
+              CONTACT
+            </div>
+
+            <h2 class="doc-title" id="doc-title-contact">
+              联系我们
+            </h2>
+
+            <div class="doc-date">
+              一般咨询 1 个工作日内回复
+            </div>
+
+            <div class="doc-body">
+
+              <div class="doc-row">
+
+                <div class="doc-row-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
+                    stroke-linejoin="round" focusable="false">
+                    <path d="M21 11.5a8.5 8.5 0 0 1-12.36 7.5L4 21l2.1-4.2A8.5 8.5 0 1 1 21 11.5Z" />
+                    <path d="M9 11.5h.01M12 11.5h.01M15 11.5h.01" />
+                  </svg>
+                </div>
+
+                <div class="doc-row-label">
+                  支持与反馈
+                </div>
+
+                <div class="doc-row-value">
+                  <button class="copy-btn" type="button" data-copy="neilking@163.com">
+                    <span class="copy-value">neilking@163.com</span>
+                    <span class="copy-hint" aria-live="polite">复制</span>
+                  </button>
+                  <em>功能异常、账号与计费问题请发往此邮箱</em>
+                </div>
+
+              </div>
+
+              <div class="doc-row">
+
+                <div class="doc-row-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
+                    stroke-linejoin="round" focusable="false">
+                    <rect x="3" y="7" width="18" height="13" rx="2" />
+                    <path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                    <path d="M3 12.5h18" />
+                  </svg>
+                </div>
+
+                <div class="doc-row-label">
+                  商务与合作
+                </div>
+
+                <div class="doc-row-value">
+                  <button class="copy-btn" type="button" data-copy="neil.king.liu@gmail.com">
+                    <span class="copy-value">neil.king.liu@gmail.com</span>
+                    <span class="copy-hint" aria-live="polite">复制</span>
+                  </button>
+                  <em>院校、企业与机构的批量使用与定制需求</em>
+                </div>
+
+              </div>
+
+              <div class="doc-row">
+
+                <div class="doc-row-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
+                    stroke-linejoin="round" focusable="false">
+                    <circle cx="12" cy="12" r="9" />
+                    <path d="M12 7.5V12l3 1.8" />
+                  </svg>
+                </div>
+
+                <div class="doc-row-label">
+                  服务时间
+                </div>
+
+                <div class="doc-row-value">
+                  <span>周一至周五 09:30 — 18:30（GMT+8）</span>
+                  <em>节假日期间的紧急问题会在下一个工作日优先处理</em>
+                </div>
+
+              </div>
+
+              <div class="doc-row">
+
+                <div class="doc-row-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
+                    stroke-linejoin="round" focusable="false">
+                    <path d="M13 2 4.5 13.5H11L9.5 22 18 10.5h-6.5L13 2Z" />
+                  </svg>
+                </div>
+
+                <div class="doc-row-label">
+                  响应时效
+                </div>
+
+                <div class="doc-row-value">
+                  <span>一般咨询 1 个工作日内回复，账号与计费问题优先处理</span>
+                  <em>附上资料类型与提问示例，可以帮助我们更快定位问题</em>
+                </div>
+
+              </div>
+
+              <div class="doc-row">
+
+                <div class="doc-row-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
+                    stroke-linejoin="round" focusable="false">
+                    <path d="M9 18h6" />
+                    <path d="M10 21h4" />
+                    <path d="M12 3a6 6 0 0 0-3.6 10.8c.6.5 1 1.2 1.1 2h5c.1-.8.5-1.5 1.1-2A6 6 0 0 0 12 3Z" />
+                  </svg>
+                </div>
+
+                <div class="doc-row-label">
+                  告诉我们
+                </div>
+
+                <div class="doc-row-value">
+                  <span>你正在使用的资料类型与场景，我们会给出更合适的导入与拆分建议</span>
+                  <em>你的使用方式，也常常是下一个功能的起点</em>
+                </div>
+
+              </div>
+
+            </div>
+
+          </article>
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+
 
   <div id="toast-container"
     class="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center gap-2 pointer-events-none"></div>
@@ -2804,6 +3487,291 @@
       }
     });
   </script>
+  <script>
+    /* =========================
+       条款浮层：隐私政策 / 服务条款 / 联系我们
+    ========================= */
+
+    (function () {
+      var overlay = document.getElementById("legalOverlay");
+      if (!overlay) return;
+
+      // 移动端 body 会被 adjustStyle 整体缩放；把浮层挂到 <html> 下，
+      // 脱离 body 的 transform 与页面滚动容器，才能真正铺满视口。
+      if (overlay.parentNode !== document.documentElement) {
+        document.documentElement.appendChild(overlay);
+      }
+
+      var panel = overlay.querySelector(".panel");
+      var scrollArea = overlay.querySelector(".panel-body");
+      var closeBtn = document.getElementById("legalClose");
+
+      var docs = {
+        privacy: document.getElementById("doc-privacy"),
+        terms: document.getElementById("doc-terms"),
+        contact: document.getElementById("doc-contact")
+      };
+
+      var docIds = Object.keys(docs).filter(function (key) {
+        return !!docs[key];
+      });
+
+      if (!docIds.length) return;
+
+      var current = null;
+      var lastFocus = null;
+      var pushedFor = null;
+      var closeTimer = null;
+      var scroller = document.querySelector(".page-scroll");
+      var lockedScroll = 0;
+
+      function isOpen() {
+        return overlay.classList.contains("open");
+      }
+
+      function lockScroll() {
+        if (!scroller) return;
+
+        lockedScroll = scroller.scrollTop;
+        scroller.classList.add("is-legal-open");
+      }
+
+      function unlockScroll() {
+        if (!scroller) return;
+
+        scroller.classList.remove("is-legal-open");
+        scroller.scrollTop = lockedScroll;
+      }
+
+      function focusWithoutScroll(element) {
+        if (!element || typeof element.focus !== "function") return;
+
+        try {
+          element.focus({ preventScroll: true });
+        } catch (error) {
+          element.focus();
+        }
+      }
+
+      function showDoc(id) {
+        var doc = docs[id];
+        if (!doc) return;
+
+        docIds.forEach(function (key) {
+          docs[key].hidden = key !== id;
+        });
+
+        var title = doc.querySelector(".doc-title");
+        if (title) {
+          if (!title.id) title.id = "doc-title-" + id;
+          panel.setAttribute("aria-labelledby", title.id);
+        }
+
+        if (scrollArea) scrollArea.scrollTop = 0;
+
+        overlay.hidden = false;
+        void overlay.offsetHeight; // 强制回流，让入场过渡生效
+        overlay.classList.add("open");
+      }
+
+      function open(id, options) {
+        if (!docs[id]) return;
+        options = options || {};
+
+        if (isOpen() && current === id) return;
+
+        if (!isOpen()) {
+          lastFocus = document.activeElement;
+          lockScroll();
+        }
+
+        current = id;
+        showDoc(id);
+
+        // 每次打开写入一条历史记录，浏览器返回键即可关闭浮层
+        if (options.push !== false && pushedFor !== id) {
+          pushedFor = id;
+
+          try {
+            history.pushState({ legal: id }, "", "#" + id);
+          } catch (error) {
+            pushedFor = null;
+          }
+        }
+
+        window.setTimeout(function () {
+          if (isOpen() && closeBtn) focusWithoutScroll(closeBtn);
+        }, 80);
+      }
+
+      function close(fromHistory) {
+        if (!isOpen()) return;
+
+        current = null;
+
+        overlay.classList.remove("open");
+
+        unlockScroll();
+
+        if (closeTimer) window.clearTimeout(closeTimer);
+        closeTimer = window.setTimeout(function () {
+          closeTimer = null;
+          if (!isOpen()) overlay.hidden = true;
+        }, 420);
+
+        focusWithoutScroll(lastFocus);
+        lastFocus = null;
+
+        var pushed = pushedFor;
+        pushedFor = null;
+
+        if (fromHistory) return;
+
+        if (pushed && window.location.hash === "#" + pushed) {
+          history.back();
+        } else if (docIds.indexOf((window.location.hash || "").slice(1)) > -1) {
+          history.replaceState(null, "", window.location.pathname + window.location.search);
+        }
+      }
+
+      function syncFromHash() {
+        var id = (window.location.hash || "").slice(1);
+
+        if (docIds.indexOf(id) > -1) {
+          open(id, { push: false });
+        } else if (isOpen()) {
+          close(true);
+        }
+      }
+
+      Array.prototype.forEach.call(document.querySelectorAll("[data-doc]"), function (trigger) {
+        trigger.addEventListener("click", function (event) {
+          var id = trigger.getAttribute("data-doc");
+          if (!docs[id]) return;
+
+          event.preventDefault();
+          open(id);
+        });
+      });
+
+      Array.prototype.forEach.call(overlay.querySelectorAll("[data-overlay-close]"), function (element) {
+        element.addEventListener("click", function () {
+          close(false);
+        });
+      });
+
+      document.addEventListener("keydown", function (event) {
+        if (event.key !== "Escape" || !isOpen()) return;
+
+        event.preventDefault();
+        close(false);
+      });
+
+      // 键盘焦点限制在浮层内部
+      overlay.addEventListener("keydown", function (event) {
+        if (event.key !== "Tab") return;
+
+        var focusable = Array.prototype.filter.call(
+          panel.querySelectorAll('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'),
+          function (element) {
+            return element.offsetParent !== null;
+          }
+        );
+
+        if (!focusable.length) return;
+
+        var first = focusable[0];
+        var last = focusable[focusable.length - 1];
+
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          focusWithoutScroll(last);
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          focusWithoutScroll(first);
+        }
+      });
+
+      window.addEventListener("popstate", syncFromHash);
+      window.addEventListener("hashchange", syncFromHash);
+
+      // 支持以 #privacy / #terms / #contact 直接进入
+      syncFromHash();
+    })();
+
+
+    /* =========================
+       邮箱复制
+    ========================= */
+
+    (function () {
+      var buttons = document.querySelectorAll(".copy-btn");
+      if (!buttons.length) return;
+
+      function legacyCopy(text) {
+        var field = document.createElement("textarea");
+
+        field.value = text;
+        field.setAttribute("readonly", "");
+        field.style.position = "fixed";
+        field.style.top = "-1000px";
+
+        document.body.appendChild(field);
+        field.select();
+
+        var ok = false;
+
+        try {
+          ok = document.execCommand("copy");
+        } catch (error) {
+          ok = false;
+        }
+
+        document.body.removeChild(field);
+        return ok;
+      }
+
+      Array.prototype.forEach.call(buttons, function (button) {
+        var hint = button.querySelector(".copy-hint");
+        var timer = null;
+
+        button.addEventListener("click", function () {
+          var text = button.getAttribute("data-copy") || "";
+
+          var resetLabel = window.__t__ ? window.__t__("legal.copyHint") : "复制";
+          var okLabel = window.__t__ ? window.__t__("legal.copied") : "已复制";
+          var failLabel = window.__t__ ? window.__t__("legal.copyManually") : "请手动复制";
+
+          function feedback(ok) {
+            if (!hint) return;
+
+            hint.textContent = ok ? okLabel : failLabel;
+            button.classList.toggle("copied", ok);
+
+            if (timer) window.clearTimeout(timer);
+            timer = window.setTimeout(function () {
+              hint.textContent = resetLabel;
+              button.classList.remove("copied");
+            }, 1800);
+          }
+
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(function () {
+              feedback(true);
+            }, function () {
+              feedback(legacyCopy(text));
+            });
+          } else {
+            feedback(legacyCopy(text));
+          }
+        });
+      });
+    })();
+
+
+
+  </script>
+
 </body>
 
 </html>
