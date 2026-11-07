@@ -24,24 +24,24 @@
   </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Trans-Workflow | 把一次性 AI 对话，变成可复用的 AI 流水线</title>
-  <meta name="description" content="Trans-Workflow 帮你把提示词、AI Skill 和多个模型组合成工作流，变成可反复使用的 AI 流水线工具。无需安装，数据留在本地，可一键导出为网页。">
+  <title>Trans-Workflow | 把一次性的 AI 对话，编成可复用的工作流</title>
+  <meta name="description" content="Trans-Workflow 把提示词、AI Skill 和多个模型串成一个工作流：做一次，反复运行。无需安装，数据留在浏览器本地，结果可一键导出为网页。">
   <meta name="keywords"
     content="Trans-Workflow, AI 工作流基础服务, AI Workflow Infrastructure, 开源 AI 工作流, 单文件工作流引擎, 无代码 AI Agent, 节点级回溯, 本地私有 AI">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://transweb.cn/">
 
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Trans-Workflow | 把一次性 AI 对话，变成可复用的 AI 流水线">
-  <meta property="og:description" content="把提示词、AI Skill 和多个模型组合成工作流，变成可反复使用的 AI 流水线工具。">
+  <meta property="og:title" content="Trans-Workflow | 把一次性的 AI 对话，编成可复用的工作流">
+  <meta property="og:description" content="把提示词、AI Skill 和多个模型串成一个工作流：做一次，反复运行。">
   <meta property="og:url" content="https://transweb.cn/">
   <meta property="og:site_name" content="Trans-Workflow">
   <meta property="og:locale" content="zh_CN">
   <meta property="og:image" content="https://transweb.cn/assets/images/workflow-hero.png">
 
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Trans-Workflow | 把一次性 AI 对话，变成可复用的 AI 流水线">
-  <meta name="twitter:description" content="把提示词、AI Skill 和多个模型组合成工作流，变成可反复使用的 AI 流水线工具。">
+  <meta name="twitter:title" content="Trans-Workflow | 把一次性的 AI 对话，编成可复用的工作流">
+  <meta name="twitter:description" content="把提示词、AI Skill 和多个模型串成一个工作流：做一次，反复运行。">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -69,7 +69,7 @@
         "@id": "https://transweb.cn/#website",
         "url": "https://transweb.cn/",
         "name": "Trans-Workflow",
-        "description": "面向开发者的开源 AI 流水线工具，单文件编排 AI Skill与 Agent。",
+        "description": "开源的单文件 AI 工作流工具：用 Skill 节点把提示词与模型串起来，无需部署。",
         "inLanguage": "zh-CN",
         "publisher": {
           "@id": "https://transweb.cn/#organization"
@@ -79,7 +79,7 @@
         "@type": "SoftwareApplication",
         "@id": "https://transweb.cn/#application",
         "name": "Trans-Workflow Engine",
-        "alternateName": "Trans-Workflow AI 流水线工具",
+        "alternateName": "Trans-Workflow AI 工作流工具",
         "url": "https://transweb.cn/workflow/index.html",
         "logo": "https://transweb.cn/assets/logo.png",
         "screenshot": "https://transweb.cn/assets/images/workflow-hero.png",
@@ -97,11 +97,11 @@
           "priceCurrency": "USD"
         },
         "featureList": [
-          "单 HTML 文件部署的 AI 流水线工具",
-          "节点级局部重跑与 Human-in-the-loop 中间干预",
-          "纯浏览器本地存储，数据 100% 隐私安全",
+          "单 HTML 文件运行的 AI 工作流工具",
+          "节点级重跑与人工复核，卡在哪里就从哪里改",
+          "纯浏览器本地存储，数据不上传服务器",
           "支持多 AI Skill 节点协同与可视化编排",
-          "MIT 开源，可快速扩展新节点与模板"
+          "MIT 开源，可自由扩展新节点与新 Skill"
         ]
       },
       {
@@ -109,10 +109,10 @@
         "mainEntity": [
           {
             "@type": "Question",
-            "name": "Trans-Workflow 与 Dify、FastGPT 等平台有什么区别？",
+            "name": "Trans-Workflow 与 Dify、Coze 等平台有什么区别？",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Trans-Workflow 定位为轻量级 AI 流水线工具，整个引擎封装在单 HTML 文件中，可直接在浏览器本地或静态服务器运行。"
+              "text": "Trans-Workflow 定位为轻量级 AI 工作流工具，整个引擎封装在单 HTML 文件中，可直接在浏览器本地或静态服务器运行。"
             }
           },
           {
@@ -120,15 +120,15 @@
             "name": "使用 Trans-Workflow 会有数据泄露风险吗？",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "不会。引擎采用纯前端架构，工作流配置、节点日志与中间结果均保存在本地或所属账户中。"
+              "text": "不会。引擎采用纯前端架构，工作流配置、节点记录与中间结果都保存在浏览器本地，不上传服务器。"
             }
           },
           {
             "@type": "Question",
-            "name": "如何导入或分享编排好的 AI 工作流？",
+            "name": "如何把一个工作流分享给别人？",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "支持一键导出 HTML 文件，团队成员直接双击即可运行与分享。"
+              "text": "导出一个 HTML 文件发过去，对方双击就能运行；也可以放回静态服务器继续用。"
             }
           }
         ]
@@ -1348,7 +1348,7 @@
       <div class="brand-lockup">
         <a href="/" title="TransWeb 首页" class="wf-logo">
           <span class="wf-logo__name">Trans-Agent</span>
-          <span class="wf-logo__sub">Trans-Workflow · 单文件 AI 流水线</span>
+          <span class="wf-logo__sub">Trans-Workflow · 单文件 AI 工作流</span>
         </a>
         <span class="page-mark">工作流</span>
       </div>
@@ -1385,7 +1385,7 @@
 
   <nav class="wf-subnav" aria-label="工作流页面导航">
     <div class="wf-subnav__inner">
-      <a href="#market">流水线市场</a>
+      <a href="#market">工作流市场</a>
       <a href="#quickstart">快速开始</a>
       <a href="#builder">怎么组装</a>
       <a href="#personas">谁在用</a>
@@ -1398,15 +1398,15 @@
     <div class="wf-hero__inner">
       <div class="wf-hero__copy">
         <div class="wf-eyebrow">AI WORKFLOW / SINGLE-FILE ENGINE</div>
-        <h1 class="wf-hero__title">把一次性的 AI 对话，<br>编成可复用的流水线。</h1>
+        <h1 class="wf-hero__title">把一次性的 AI 对话，<br>编成可复用的工作流。</h1>
         <p class="wf-hero__desc">
-          不用写后端，也不用部署服务器。选一个现成工作流，或把 Skill 串成自己的流程；每个节点都能回滚、改一句，再继续。
+          不用写后端，也不用部署服务器。选一个现成的工作流，或把几个 Skill 串成自己的；某个节点跑偏了，单独重跑、改一句，再继续。
         </p>
         <div class="wf-actions">
           <a class="wf-btn wf-btn--lg" href="https://transweb.cn/workflow/mathFlow.html" target="_blank" rel="noopener">免费运行工作流</a>
           <a class="wf-btn wf-btn--lg wf-btn--ghost" href="https://github.com/liuwenjin/trans-workflow" target="_blank" rel="noopener">查看 GitHub 源码</a>
         </div>
-        <div class="wf-hero__meta">零服务器成本 · 数据留在浏览器 · MIT 开源</div>
+        <div class="wf-hero__meta">零服务器成本 · 数据只留在浏览器 · MIT 开源</div>
       </div>
 
       <div class="wf-hero__visual">
@@ -1424,11 +1424,11 @@
 
   <main class="wf-main">
 
-    <!-- AI Skill 市场 -->
+    <!-- 工作流市场 -->
     <section id="market" class="scroll-mt-24">
       <div class="text-center max-w-3xl mx-auto mb-10">
         <h2 class="text-3xl font-bold text-slate-900 dark:text-white">从一个现成的工作流开始。</h2>
-        <p class="mt-4 text-lg text-gray-600 dark:text-slate-400">精选 AI 流水线，覆盖创作、科研、教学、合规与营销，开箱即用</p>
+        <p class="mt-4 text-lg text-gray-600 dark:text-slate-400">精选 AI 工作流，覆盖教学备课、内容创作、数据可视化、学术科研与法律合规，打开即用</p>
       </div>
 
       <div class="space-y-4">
@@ -1441,7 +1441,7 @@
                 d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
             </svg>
           </div>
-          <input type="text" id="search-input" aria-label="搜索 AI 流水线" placeholder="搜索流水线名称、用途或能力…"
+          <input type="text" id="search-input" aria-label="搜索 AI 工作流" placeholder="搜索工作流名称、用途或能力…"
             class="w-full pl-10 sm:pl-12 pr-10 sm:pr-16 py-3 bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 rounded-none shadow-sm focus:outline-none focus:ring-4 focus:ring-brand-500/15 focus:border-brand-600/50 transition-all placeholder-slate-400 dark:placeholder-slate-500 text-sm text-slate-800 dark:text-slate-100" />
           <kbd id="search-kbd" title="按 Ctrl/Cmd + K 或 / 聚焦搜索"
             class="hidden sm:inline-flex absolute right-4 top-1/2 -translate-y-1/2 items-center px-2 py-1 rounded-none border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 font-mono text-[11px] text-slate-400 shadow-sm">
@@ -1457,7 +1457,7 @@
           </div>
           <div
             class="flex items-center justify-between sm:justify-end gap-4 text-xs sm:text-sm font-medium text-slate-400 dark:text-slate-500 shrink-0">
-            <span id="result-count">共 17 条流水线</span>
+            <span id="result-count">共 17 个工作流</span>
             <button id="clear-filter"
               class="hidden inline-flex items-center gap-1 hover:text-brand-600 dark:hover:text-brand-300 transition-colors">清除筛选
               <i data-lucide="x" class="w-3.5 h-3.5"></i>
@@ -1467,15 +1467,15 @@
       </div>
 
       <section id="workflow-grid" class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-        aria-label="AI 流水线列表"></section>
+        aria-label="AI 工作流列表"></section>
 
       <div id="empty-state" class="hidden flex-col items-center justify-center py-16 text-center">
         <div
           class="w-12 h-12 rounded-none bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 mb-4">
           <i data-lucide="search-x" class="w-6 h-6"></i>
         </div>
-        <h2 class="text-lg font-semibold text-slate-800 dark:text-slate-200">未找到匹配的 AI 流水线</h2>
-        <p class="text-sm text-slate-500 mt-2">尝试更改关键词或重置分类</p>
+        <h2 class="text-lg font-semibold text-slate-800 dark:text-slate-200">未找到匹配的 AI 工作流</h2>
+        <p class="text-sm text-slate-500 mt-2">换个关键词，或重置筛选条件</p>
         <button id="empty-reset"
           class="mt-4 inline-flex items-center gap-2 rounded-full bg-brand-600 hover:bg-brand-500 px-5 py-2.5 text-sm font-semibold text-white transition-colors">
           <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
@@ -1497,8 +1497,7 @@
             <i data-lucide="rocket" class="w-5 h-5"></i>
           </div>
           <h3 class="mt-4 text-lg font-bold text-slate-800 dark:text-white">双击即用，零部署门槛</h3>
-          <p class="mt-2 text-sm text-gray-600 dark:text-slate-400 leading-relaxed">一个 HTML 文件就是完整引擎。无需
-            Docker，无需搭建数据库，下载即可本地运行，像打开网页一样简单。</p>
+          <p class="mt-2 text-sm text-gray-600 dark:text-slate-400 leading-relaxed">一个 HTML 文件就是完整引擎：不用 Docker，不用数据库，下载下来双击就能跑。</p>
         </div>
         <div
           class="rounded-none bg-[#f8f8fa] dark:bg-slate-900/70 p-6 shadow-sm border border-gray-100 dark:border-slate-800 hover:shadow-md transition flex flex-col">
@@ -1506,9 +1505,9 @@
             class="flex h-10 w-10 items-center justify-center rounded-none bg-brand-100 dark:bg-brand-500/10 text-brand-600 dark:text-brand-300">
             <i data-lucide="refresh-cw" class="w-5 h-5"></i>
           </div>
-          <h3 class="mt-4 text-lg font-bold text-slate-800 dark:text-white">节点级修正，告别“抽卡式”生成</h3>
+          <h3 class="mt-4 text-lg font-bold text-slate-800 dark:text-white">节点级修正，告别「抽卡式」生成</h3>
           <p class="mt-2 text-sm text-gray-600 dark:text-slate-400 leading-relaxed">
-            运行中断或结果不满意？无需从头再来！支持单节点局部重跑与人工干预，让每次输出都精准达标。</p>
+            某个节点跑歪了？不用整条重来：单独重跑这个节点，或停下来人工改好，再继续往下跑。</p>
         </div>
         <div
           class="rounded-none bg-[#f8f8fa] dark:bg-slate-900/70 p-6 shadow-sm border border-gray-100 dark:border-slate-800 hover:shadow-md transition flex flex-col">
@@ -1516,9 +1515,9 @@
             class="flex h-10 w-10 items-center justify-center rounded-none bg-brand-100 dark:bg-brand-500/10 text-brand-600 dark:text-brand-300">
             <i data-lucide="shield-check" class="w-5 h-5"></i>
           </div>
-          <h3 class="mt-4 text-lg font-bold text-slate-800 dark:text-white">数据 100% 私有，零隐私泄露风险</h3>
+          <h3 class="mt-4 text-lg font-bold text-slate-800 dark:text-white">数据只留在本地，不上传服务器</h3>
           <p class="mt-2 text-sm text-gray-600 dark:text-slate-400 leading-relaxed">
-            执行记录严格保留在你的本地浏览器中，中间结果和最终输出存在私人账户中。敏感合同、科研论文、商业方案安心处理。</p>
+            运行记录、中间结果和最终成品都保存在你的浏览器里，不会上传。敏感合同、科研论文、商业方案都可以放心处理。</p>
         </div>
       </div>
     </section>
@@ -1562,8 +1561,8 @@
                 01</span>
               <span class="text-lg font-black text-brand-600/20 dark:text-brand-300/20">01</span>
             </div>
-            <h2 class="mt-2 text-lg font-bold text-slate-800 dark:text-white">选一个 AI 流水线</h2>
-            <p class="mt-2 text-sm text-gray-600 dark:text-slate-400 leading-relaxed">从市场挑一个，直接打开就能用。</p>
+            <h2 class="mt-2 text-lg font-bold text-slate-800 dark:text-white">选一个 AI 工作流</h2>
+            <p class="mt-2 text-sm text-gray-600 dark:text-slate-400 leading-relaxed">从工作流市场挑一个，打开就能用。</p>
           </div>
           <div
             class="rounded-none bg-[#f8f8fa] dark:bg-slate-900/70 p-6 shadow-sm border border-gray-100 dark:border-slate-800 hover:shadow-md transition flex flex-col">
@@ -1600,8 +1599,8 @@
                 02</span>
               <span class="text-lg font-black text-brand-600/20 dark:text-brand-300/20">02</span>
             </div>
-            <h2 class="mt-2 text-lg font-bold text-slate-800 dark:text-white">输入需求，点击生成</h2>
-            <p class="mt-2 text-sm text-gray-600 dark:text-slate-400 leading-relaxed">执行后，自动按流水线完成内容生成，支持用户随时调整中间结果。
+            <h2 class="mt-2 text-lg font-bold text-slate-800 dark:text-white">输入需求，点击运行</h2>
+            <p class="mt-2 text-sm text-gray-600 dark:text-slate-400 leading-relaxed">需求交给第一个节点，后面按顺序自动跑；中途想改，随时可以停下来。
             </p>
           </div>
           <div
@@ -1634,17 +1633,17 @@
               <span class="text-lg font-black text-brand-600/20 dark:text-brand-300/20">03</span>
             </div>
             <h2 class="mt-2 text-lg font-bold text-slate-800 dark:text-white">导出结果网页</h2>
-            <p class="mt-2 text-sm text-gray-600 dark:text-slate-400 leading-relaxed">一键变成可分享、可交付的结果网页。</p>
+            <p class="mt-2 text-sm text-gray-600 dark:text-slate-400 leading-relaxed">整个工作流的产出，一键变成一个可分享、可交付的网页。</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 核心能力 -->
+    <!-- 怎么组装 -->
     <section id="builder" class="scroll-mt-24 pt-6 border-t border-slate-200/80 dark:border-slate-800/80">
       <div class="text-center max-w-3xl mx-auto mb-10">
-        <h2 class="text-3xl font-bold text-slate-900 dark:text-white">把 Skill 串成一条流水线。</h2>
-        <p class="mt-4 text-lg text-gray-600 dark:text-slate-400">像搭积木一样，把 AI Skill 组装成一条流水线</p>
+        <h2 class="text-3xl font-bold text-slate-900 dark:text-white">把 Skill 串成一个工作流。</h2>
+        <p class="mt-4 text-lg text-gray-600 dark:text-slate-400">像搭积木一样，先挑 Skill，再排节点、接数据。</p>
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -1658,7 +1657,7 @@
             <span class="text-lg font-bold text-brand-600">01</span>
           </div>
           <h3 class="mt-4 text-lg font-bold text-slate-800 dark:text-white mb-2">选 Skill</h3>
-          <p class="text-sm text-gray-600 dark:text-slate-400 leading-relaxed">从库里挑一个，或新建一个自己的。</p>
+          <p class="text-sm text-gray-600 dark:text-slate-400 leading-relaxed">从 Skill 广场挑一个，或新建一个自己的。</p>
         </div>
         <div
           class="rounded-none bg-[#f8f8fa] dark:bg-slate-900/70 p-6 shadow-sm border border-gray-100 dark:border-slate-800 hover:shadow-md transition flex flex-col">
@@ -1670,7 +1669,7 @@
             <span class="text-lg font-bold text-brand-600">02</span>
           </div>
           <h3 class="mt-4 text-lg font-bold text-slate-800 dark:text-white mb-2">排节点</h3>
-          <p class="text-sm text-gray-600 dark:text-slate-400 leading-relaxed">按执行顺序拖出流程。</p>
+          <p class="text-sm text-gray-600 dark:text-slate-400 leading-relaxed">按执行顺序把节点排成一条线。</p>
         </div>
         <div
           class="rounded-none bg-[#f8f8fa] dark:bg-slate-900/70 p-6 shadow-sm border border-gray-100 dark:border-slate-800 hover:shadow-md transition flex flex-col">
@@ -1682,7 +1681,7 @@
             <span class="text-lg font-bold text-brand-600">03</span>
           </div>
           <h3 class="mt-4 text-lg font-bold text-slate-800 dark:text-white mb-2">连数据</h3>
-          <p class="text-sm text-gray-600 dark:text-slate-400 leading-relaxed">让上一个节点的结果喂给下一个。</p>
+          <p class="text-sm text-gray-600 dark:text-slate-400 leading-relaxed">把上一个节点的输出，接到下一个节点的输入。</p>
         </div>
         <div
           class="rounded-none bg-[#f8f8fa] dark:bg-slate-900/70 p-6 shadow-sm border border-gray-100 dark:border-slate-800 hover:shadow-md transition flex flex-col">
@@ -1694,16 +1693,16 @@
             <span class="text-lg font-bold text-brand-600">04</span>
           </div>
           <h3 class="mt-4 text-lg font-bold text-slate-800 dark:text-white mb-2">导出网页</h3>
-          <p class="text-sm text-gray-600 dark:text-slate-400 leading-relaxed">一个 HTML，双击即用、可分享。</p>
+          <p class="text-sm text-gray-600 dark:text-slate-400 leading-relaxed">整个工作流打包成一个 HTML，双击即用、可直接分享。</p>
         </div>
       </div>
     </section>
 
-    <!-- 一条流水线，两种视角。 -->
+    <!-- 一个工作流，两种视角。 -->
     <section id="architecture" class="scroll-mt-24 pt-6 border-t border-slate-200/80 dark:border-slate-800/80">
       <div class="text-center max-w-3xl mx-auto mb-10">
-        <h2 class="text-3xl font-bold text-slate-900 dark:text-white">一条流水线，两种视角。</h2>
-        <p class="mt-4 text-lg text-gray-600 dark:text-slate-400">两种视角看清同一条流水线：谁先执行、数据流向哪里。</p>
+        <h2 class="text-3xl font-bold text-slate-900 dark:text-white">一个工作流，两种视角。</h2>
+        <p class="mt-4 text-lg text-gray-600 dark:text-slate-400">同一件事，两个问题：先跑谁？数据从哪来、到哪去？</p>
       </div>
       <div class="relative flex flex-col justify-center items-center">
 
@@ -1717,11 +1716,11 @@
           class="relative z-20 flex p-1 mb-4 space-x-1 rounded-none bg-slate-200/60 dark:bg-slate-800/60 backdrop-blur-md border border-slate-300/40 dark:border-slate-700/50">
           <button id="tab-sequence-btn" onclick="switchWorkflowTab('sequence')"
             class="px-4 py-1.5 text-xs font-bold rounded-none transition-all duration-200 shadow-sm bg-white dark:bg-slate-900 text-brand-600 dark:text-brand-400">
-            时序关系图
+            执行时序图
           </button>
           <button id="tab-dataflow-btn" onclick="switchWorkflowTab('dataflow')"
             class="px-4 py-1.5 text-xs font-bold rounded-none transition-all duration-200 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
-            数据流拓扑图
+            数据流向图
           </button>
         </div>
 
@@ -1909,13 +1908,13 @@
               </g>
             </g>
 
-            <!-- Human_Review 人工干预节点 -->
+            <!-- Human_Review 人工复核节点 -->
             <g transform="translate(280, 260)">
               <rect width="140" height="140" rx="16" fill="#FFFFFF" stroke="#6e6e73" stroke-width="2"
                 class="node-card d-stroke" filter="url(#node-shadow-2)" />
               <rect x="3" y="3" width="134" height="24" rx="12" fill="#f3f3f5" class="node-head" />
               <text x="8" y="19" fill="#1a1a1e" class="d-title">👤 人工复核</text>
-              <text x="8" y="40" fill="#6e6e73" class="d-sub">人工干预 · 确认</text>
+              <text x="8" y="40" fill="#6e6e73" class="d-sub">人工复核 · 暂停确认</text>
               <g transform="translate(17, 45)">
                 <circle cx="50" cy="36" r="26" fill="#f3f3f5" stroke="#1a1a1e" stroke-width="2" class="d-stroke" />
                 <circle cx="38" cy="32" r="3" fill="#1a1a1e" />
@@ -1940,17 +1939,17 @@
             <!-- 底部图例说明 -->
             <g transform="translate(40, 420)">
               <line x1="0" y1="10" x2="30" y2="10" stroke="#1a1a1e" stroke-width="2.5" />
-              <text x="38" y="14" fill="#6e6e73" class="d-sub">实线：数据走向（A→B, A→C, B→D, C→D）</text>
+              <text x="38" y="14" fill="#6e6e73" class="d-sub">实线：数据流向（A→B, A→C, B→D, C→D）</text>
 
               <line x1="260" y1="10" x2="290" y2="10" stroke="#6e6e73" stroke-width="1.5" stroke-dasharray="6 4" />
-              <text x="298" y="14" fill="#6e6e73" class="d-sub">虚线：执行时序步进</text>
+              <text x="298" y="14" fill="#6e6e73" class="d-sub">虚线：执行先后顺序</text>
             </g>
 
             <!-- 顶部贴纸标识 -->
             <g transform="translate(605, 10)">
               <rect width="135" height="32" rx="10" fill="#6e6e73" stroke="#FFFFFF" stroke-width="2" class="d-stroke"
                 filter="url(#node-shadow-2)" />
-              <text x="67" y="20" text-anchor="middle" fill="#FFFFFF" class="d-badge">顺序串行 + 人工复核</text>
+              <text x="67" y="20" text-anchor="middle" fill="#FFFFFF" class="d-badge">执行时序 + 人工复核</text>
             </g>
           </svg>
         </div>
@@ -2131,14 +2130,14 @@
               <rect width="155" height="56" rx="12" fill="#1a1a1e" stroke="#6e6e73" stroke-width="2" class="d-stroke"
                 filter="url(#node-shadow-1)" />
               <text x="14" y="26" fill="#a5a5aa" class="d-title">📄 结果网页</text>
-              <text x="14" y="42" fill="#a5a5aa" class="d-sub">结构化产出</text>
+              <text x="14" y="42" fill="#a5a5aa" class="d-sub">最终产出</text>
             </g>
 
             <!-- 顶部贴纸标识 -->
             <g transform="translate(605, 20)">
               <rect width="135" height="32" rx="10" fill="#1a1a1e" stroke="#FFFFFF" stroke-width="2" class="d-stroke"
                 filter="url(#node-shadow-1)" />
-              <text x="67" y="20" text-anchor="middle" fill="#FFFFFF" class="d-badge">拓扑并行协同</text>
+              <text x="67" y="20" text-anchor="middle" fill="#FFFFFF" class="d-badge">数据流向 + 并行协同</text>
             </g>
           </svg>
         </div>
@@ -2189,7 +2188,7 @@
             class="text-xs font-semibold uppercase tracking-widest text-brand-600 bg-brand-500/10 dark:bg-brand-500/20 px-3 py-1 rounded-full">For
             Whom</span>
           <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white mt-3">谁在用 Trans-Workflow</h2>
-          <p class="mt-3 text-base sm:text-lg text-slate-600 dark:text-slate-400">你不是在「调一个聊天机器人」，而是在「雇一条能直接交付成品的流水线」</p>
+          <p class="mt-3 text-base sm:text-lg text-slate-600 dark:text-slate-400">你不是在「调一个聊天机器人」，而是在「跑一个能直接交付成品的工作流」</p>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -2324,15 +2323,15 @@
       <div id="case-panel-teacher" class="block w-full">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
 
-          <!-- 左：输入 + 流水线 -->
+          <!-- 左：输入 + 工作流 -->
           <div class="lg:col-span-5 space-y-4">
             <div
               class="rounded-none bg-[#f8f8fa] dark:bg-slate-900/70 border border-gray-100 dark:border-slate-800 p-6 shadow-sm">
               <div class="flex items-center gap-2 text-sm font-semibold text-slate-700 dark:text-slate-300">
                 <span
                   class="flex h-6 w-6 items-center justify-center rounded-none bg-brand-600 text-white text-xs font-bold">1</span>
-                打开 AI 流水线网页：<a href="https://transweb.cn/workflow/docs/examples/tiered-lesson.html" target="_blank"
-                  class="text-brand-600 dark:text-brand-400 hover:underline">多级难度“分层教案”</a>
+                打开 AI 工作流：<a href="https://transweb.cn/workflow/docs/examples/tiered-lesson.html" target="_blank"
+                  class="text-brand-600 dark:text-brand-400 hover:underline">多级难度分层教案</a>
               </div>
             </div>
             <div
@@ -2354,7 +2353,7 @@
               <div class="flex items-center gap-2 mb-3 text-sm font-semibold text-slate-700 dark:text-slate-300">
                 <span
                   class="flex h-6 w-6 items-center justify-center rounded-none bg-brand-600 text-white text-xs font-bold">3</span>
-                流水线自动按 4 步执行
+                工作流自动按 4 步执行
               </div>
               <div class="flex flex-wrap items-center gap-1.5">
                 <span
@@ -2369,7 +2368,7 @@
                 <span
                   class="whitespace-nowrap rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-2.5 py-1 text-xs font-medium text-slate-600 dark:text-slate-300">压轴探索</span>
               </div>
-              <p class="mt-3 text-xs text-slate-400 dark:text-slate-500">每个节点都能中途叫停、人工改一句，再继续往下跑 —— 不用全部重来。</p>
+              <p class="mt-3 text-xs text-slate-400 dark:text-slate-500">每个节点都能中途叫停，人工复核、改一句，再继续往下跑——不用全部重来。</p>
             </div>
           </div>
 
@@ -2402,7 +2401,7 @@
               <div class="flex items-center gap-2 text-sm font-semibold text-slate-700 dark:text-slate-300">
                 <span
                   class="flex h-6 w-6 items-center justify-center rounded-none bg-brand-600 text-white text-xs font-bold">1</span>
-                打开 AI 流水线网页：<a href="https://transweb.cn/workflow/docs/examples/practice4missed.html" target="_blank"
+                打开 AI 工作流：<a href="https://transweb.cn/workflow/docs/examples/practice4missed.html" target="_blank"
                   class="text-brand-600 dark:text-brand-400 hover:underline">错题专项变式题助理</a>
               </div>
             </div>
@@ -2424,7 +2423,7 @@
               <div class="flex items-center gap-2 mb-3 text-sm font-semibold text-slate-700 dark:text-slate-300">
                 <span
                   class="flex h-6 w-6 items-center justify-center rounded-none bg-brand-600 text-white text-xs font-bold">3</span>
-                流水线拆解错因 → 出变式
+                工作流先拆错因，再出变式
               </div>
               <div class="flex flex-wrap items-center gap-1.5">
                 <span
@@ -2464,8 +2463,8 @@
               <div class="flex items-center gap-2 text-sm font-semibold text-slate-700 dark:text-slate-300">
                 <span
                   class="flex h-6 w-6 items-center justify-center rounded-none bg-brand-600 text-white text-xs font-bold">1</span>
-                打开 AI 流水线网页：<a href="https://transweb.cn/workflow/docs/examples/contract-review.html" target="_blank"
-                  class="text-brand-600 dark:text-brand-400 hover:underline">法律审核场景</a>
+                打开 AI 工作流：<a href="https://transweb.cn/workflow/docs/examples/contract-review.html" target="_blank"
+                  class="text-brand-600 dark:text-brand-400 hover:underline">合同审核</a>
               </div>
             </div>
             <div
@@ -2486,7 +2485,7 @@
               <div class="flex items-center gap-2 mb-3 text-sm font-semibold text-slate-700 dark:text-slate-300">
                 <span
                   class="flex h-6 w-6 items-center justify-center rounded-none bg-brand-600 text-white text-xs font-bold">3</span>
-                流水线按 5 步审核
+                工作流按 5 步审核
               </div>
               <div class="flex flex-wrap items-center gap-1.5">
                 <span
@@ -2504,7 +2503,7 @@
                 <span
                   class="whitespace-nowrap rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-2.5 py-1 text-xs font-medium text-slate-600 dark:text-slate-300">汇总报告</span>
               </div>
-              <p class="mt-3 text-xs text-slate-400 dark:text-slate-500">多角色交叉审查：商务风险与合规法务分开跑，再汇总成一份报告。</p>
+              <p class="mt-3 text-xs text-slate-400 dark:text-slate-500">五个节点分工：先把合同拆成结构化条款，再做基础校验，商务风险与合规法务分开跑，最后汇总成一份报告。</p>
             </div>
           </div>
           <div class="lg:col-span-7">
@@ -2569,13 +2568,13 @@
         <div class="mt-5">
           <div class="text-sm font-semibold text-brand-200">liuwenjin/trans-workflow</div>
           <h2 class="mt-3 text-2xl sm:text-3xl font-bold">开源，但不止于代码</h2>
-          <p class="mt-3 text-sm sm:text-base text-slate-300">模板、Skill、文档与引擎本身都开放贡献</p>
+          <p class="mt-3 text-sm sm:text-base text-slate-300">工作流、Skill、文档与引擎本身都开放贡献</p>
         </div>
         <div class="mt-7 flex flex-col sm:flex-row justify-center gap-3">
           <a target="_blank" href="https://github.com/liuwenjin/trans-workflow" rel="noopener"
             class="inline-flex items-center justify-center gap-2 rounded-full bg-brand-600 hover:bg-brand-500 px-7 py-3 text-sm font-bold text-white shadow-lg transition-colors">
             <i data-lucide="star" class="w-4 h-4"></i>
-            查看仓库
+            查看 GitHub 仓库
           </a>
           <a target="_blank" href="https://transweb.cn/workflow/docs/index.html"
             class="inline-flex items-center justify-center gap-2 rounded-full border border-white/25 bg-white/10 hover:bg-white/20 px-7 py-3 text-sm font-semibold text-white transition-colors">
@@ -2619,16 +2618,16 @@
               <tr>
                 <td class="p-3 font-medium">部署成本</td>
                 <td class="p-3">需配置服务器、Docker、向量数据库，按月付费</td>
-                <td class="p-3 font-semibold text-emerald-600 dark:text-emerald-400">￥0 服务器成本！一个 HTML 文件直接跑</td>
+                <td class="p-3 font-semibold text-emerald-600 dark:text-emerald-400">零服务器成本，一个 HTML 文件直接跑</td>
               </tr>
               <tr>
                 <td class="p-3 font-medium">调试效率</td>
-                <td class="p-3">某一步出问题往往需要全盘重跑，浪费 Token</td>
-                <td class="p-3 font-semibold text-emerald-600 dark:text-emerald-400">精准重跑单个节点，支持随时人工修正</td>
+                <td class="p-3">某一步出问题往往要整条重跑，浪费 Token</td>
+                <td class="p-3 font-semibold text-emerald-600 dark:text-emerald-400">单独重跑某个节点，可随时人工复核</td>
               </tr>
               <tr>
                 <td class="p-3 font-medium">团队分发</td>
-                <td class="p-3">需要配置复杂账号权限与环境变量</td>
+                <td class="p-3">要配置账号权限与环境变量</td>
                 <td class="p-3 font-semibold text-emerald-600 dark:text-emerald-400">导出 HTML 发给同事，双击就能直接用</td>
               </tr>
             </tbody>
@@ -2640,7 +2639,7 @@
         class="group rounded-none bg-[#f8f8fa] dark:bg-slate-900/70 border border-gray-100 dark:border-slate-800 p-6 shadow-sm">
         <summary
           class="flex items-center justify-between cursor-pointer text-sm font-semibold text-slate-800 dark:text-slate-200">
-          <span>为什么单文件架构比传统云端工作流更有优势？</span>
+          <span>为什么单文件比传统云端工作流更有优势？</span>
           <span class="transition group-open:rotate-180">
             <svg fill="none" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
               stroke-width="1.5" viewBox="0 0 24 24" width="20">
@@ -2649,7 +2648,7 @@
           </span>
         </summary>
         <p class="text-sm text-slate-500 dark:text-slate-400 mt-3 leading-relaxed">
-          单文件意味着零运维、零调优、易存档、极速分发。你的工作流资产可以像文档一样保存在本地，随用随开，永不担心因服务端宕机而中断业务。
+          单文件意味着零运维、易存档、随手分发。一个工作流就是一个 HTML 文件，可以像文档一样存在本地，随用随开，也不怕服务端宕机。
         </p>
       </details>
 
@@ -2657,7 +2656,7 @@
         class="group rounded-none bg-[#f8f8fa] dark:bg-slate-900/70 border border-gray-100 dark:border-slate-800 p-6 shadow-sm">
         <summary
           class="flex items-center justify-between cursor-pointer text-sm font-semibold text-slate-800 dark:text-slate-200">
-          <span>如何导入或分享工作流？</span>
+          <span>如何把一个工作流分享给别人？</span>
           <span class="transition group-open:rotate-180">
             <svg fill="none" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
               stroke-width="1.5" viewBox="0 0 24 24" width="20">
@@ -2666,7 +2665,7 @@
           </span>
         </summary>
         <p class="text-sm text-slate-500 dark:text-slate-400 mt-3 leading-relaxed">
-          支持一键导出 HTML 文件，团队成员双击即可运行，也可以放回静态服务器继续使用。
+          导出一个 HTML 文件发过去，对方双击就能运行；也可以放回静态服务器继续用。
         </p>
       </details>
 
@@ -2700,7 +2699,7 @@
           </span>
         </summary>
         <p class="text-sm text-slate-500 dark:text-slate-400 mt-3 leading-relaxed">
-          支持配置。可使用内置模型，也支持调用大模型时需填入你自己的 API Key，Key 只保存在你的浏览器本地，不会上传到任何服务器。
+          支持。可以直接用内置模型，也可以填入自己的 API Key 调用大模型；Key 只保存在浏览器本地，不会上传到服务器。
         </p>
       </details>
 
@@ -2717,7 +2716,7 @@
           </span>
         </summary>
         <p class="text-sm text-slate-500 dark:text-slate-400 mt-3 leading-relaxed">
-          支持兼容 OpenAI 接口的主流模型，可在 Skill 节点中灵活切换。
+          兼容 OpenAI 接口的主流模型都能用，在 Skill 节点里随时切换。
         </p>
       </details>
 
@@ -2734,7 +2733,7 @@
           </span>
         </summary>
         <p class="text-sm text-slate-500 dark:text-slate-400 mt-3 leading-relaxed">
-          当然！Trans-Workflow 采用极简的单文件架构与 MIT 开源协议。无论是作为内部工具链的基础设施，还是集成到现有 SaaS 产品中，你都可以自由定制与商业化使用。
+          可以。Trans-Workflow 采用 MIT 开源协议与单文件架构：既能做内部工具链的底座，也能集成进现有 SaaS 产品，自由定制、商用皆可。
         </p>
       </details>
     </section>
@@ -2745,11 +2744,11 @@
   <section class="wf-final">
     <div class="wf-final__inner">
       <div class="wf-eyebrow">START HERE</div>
-      <h2 class="wf-final__title">准备好跑第一条流水线了吗？</h2>
-      <p class="wf-final__desc">无需绑定信用卡，打开网页即可开始。</p>
+      <h2 class="wf-final__title">准备好跑第一个工作流了吗？</h2>
+      <p class="wf-final__desc">无需注册，打开网页即可开始。</p>
       <div class="wf-final__actions">
         <a class="wf-btn wf-btn--lg" href="https://transweb.cn/workflow/index.html" target="_blank" rel="noopener">立即在线体验</a>
-        <a class="wf-btn wf-btn--lg wf-btn--ghost" href="https://github.com/liuwenjin/trans-workflow" target="_blank" rel="noopener">在 GitHub 上支持</a>
+        <a class="wf-btn wf-btn--lg wf-btn--ghost" href="https://github.com/liuwenjin/trans-workflow" target="_blank" rel="noopener">去 GitHub 点个 Star</a>
       </div>
     </div>
   </section>
@@ -2757,7 +2756,7 @@
   <footer class="wf-footer">
     <div class="wf-footer__inner">
       <div>
-        <div class="wf-footer__quote">把一次性的对话，整理成可复用的工具。</div>
+        <div class="wf-footer__quote">把一次性的 AI 对话，编成可复用的工作流。</div>
         <p class="wf-footer__copy">© 2026 Trans-Workflow · MIT License · 京ICP备17026815号-1</p>
       </div>
       <div class="wf-footer__links">

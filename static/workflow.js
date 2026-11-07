@@ -81,13 +81,13 @@ function renderWorkflows(workflows) {
     workflowGrid.innerHTML = '';
     emptyState.classList.remove('hidden');
     emptyState.classList.add('flex');
-    resultCount.textContent = '共 0 条流水线';
+    resultCount.textContent = '共 0 个工作流';
     return;
   }
 
   emptyState.classList.add('hidden');
   emptyState.classList.remove('flex');
-  resultCount.textContent = `共 ${workflows.length} 条流水线`;
+  resultCount.textContent = `共 ${workflows.length} 个工作流`;
 
   workflowGrid.innerHTML = workflows.map((w, index) => {
     return `
@@ -98,7 +98,7 @@ function renderWorkflows(workflows) {
         <h3 class="wf-card__title">${w.title}</h3>
         <p class="wf-card__desc">${w.description}</p>
         <div class="wf-card__flow">
-          <div class="wf-card__flow-label">流程 · ${w.nodes.length} 步</div>
+          <div class="wf-card__flow-label">共 ${w.nodes.length} 步</div>
           <div class="wf-card__nodes">${miniNodeMap(w.nodes)}</div>
         </div>
         <div class="wf-card__footer">
