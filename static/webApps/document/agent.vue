@@ -197,7 +197,7 @@ export default {
       },
       effectSwitch: false,
       dialogStyle: {
-        background: "linear-gradient(to bottom right, #6951FF, #10EDC5)",
+        background: "#ffffff",
         maxWidth: "1000px",
         width: "98%",
         maxHeight: "95%",

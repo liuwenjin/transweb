@@ -48,15 +48,18 @@
             />
           </svg>
           <input
+            id="loginPhone"
             class="mobileInput"
-            type="text"
+            type="tel"
             :placeholder="t('phonePlaceholder')"
             :aria-label="t('phonePlaceholder')"
-            autocomplete="username"
+            aria-describedby="loginPhoneError"
+            autocomplete="tel"
+            inputmode="tel"
             maxlength="30"
             spellcheck="false"
           />
-          <div class="text-danger">{{ t("phoneErrorTips") }}</div>
+          <div class="text-danger" id="loginPhoneError" role="alert">{{ t("phoneErrorTips") }}</div>
         </div>
 
         <div class="loginRegInput integratedInput">
@@ -75,10 +78,12 @@
             />
           </svg>
           <input
+            id="loginCode"
             class="numberInput"
             type="text"
             :placeholder="t('codePlaceholder')"
             :aria-label="t('codePlaceholder')"
+            aria-describedby="loginCodeError"
             inputmode="numeric"
             autocomplete="one-time-code"
             autocapitalize="off"
@@ -88,21 +93,23 @@
           <el-button round type="primary" class="getCodeBtn">{{
             t("getCodeTips")
           }}</el-button>
-          <label class="gettingCodetips"
+          <label class="gettingCodetips" aria-live="polite"
             ><span class="countTimerSpan"></span>s
             {{ t("waitCodeTips") }}</label
           >
-          <div class="text-danger">{{ t("codeErrorTips") }}</div>
+          <div class="text-danger" id="loginCodeError" role="alert">{{ t("codeErrorTips") }}</div>
         </div>
 
         <p class="agreementArea">
-          <el-checkbox
-            v-model="agreementChecked"
-            size="small"
-            class="agreeCheckbox"
-          >
-            <span class="agreeLabel">{{ t("login.agree") }}</span>
-          </el-checkbox>
+          <span class="agreeCheck">
+            <input
+              id="loginAgree"
+              v-model="agreementChecked"
+              type="checkbox"
+              class="agreeInput"
+            />
+            <label class="agreeLabel" for="loginAgree">{{ t("login.agree") }}</label>
+          </span>
           <button
             type="button"
             class="btn btn-sm btn-link agreementLink"
@@ -499,56 +506,18 @@ export default {
   margin-right: 2px;
 }
 
-:deep(.agreeCheckbox .el-checkbox__label) {
-  color: var(--ash);
-  font-size: 13px;
-  padding-left: 6px;
-}
 
-:deep(.agreeCheckbox .el-checkbox__inner) {
-  width: 17px !important;
-  height: 17px !important;
-  border-radius: 0px !important;
-  border: 1px solid var(--border-strong) !important;
-  background-color: var(--card) !important;
-  box-shadow: none;
-  transition: all 0.2s ease;
-}
 
-/* 关键修复：对钩使用 content-box */
-:deep(.agreeCheckbox .el-checkbox__inner::after) {
-  box-sizing: content-box !important;
-  content: "";
-  border: 1px solid #ffffff !important;
-  border-top: 0 !important;
-  border-left: 0 !important;
-  width: 4px !important;
-  height: 8px !important;
-  left: 5px !important;
-  top: 1px !important;
-  position: absolute !important;
-  transform: rotate(45deg) scaleY(0) !important;
-  transform-origin: center !important;
-  transition: transform 0.18s ease;
-}
 
-:deep(.agreeCheckbox .el-checkbox__input:hover .el-checkbox__inner) {
-  border-color: var(--ink) !important;
-}
 
-:deep(.agreeCheckbox .el-checkbox__input.is-checked .el-checkbox__inner) {
-  background: var(--ink) !important;
-  border-color: var(--ink) !important;
-  box-shadow: none;
-}
 
-:deep(.agreeCheckbox .el-checkbox__input.is-checked .el-checkbox__inner::after) {
-  transform: rotate(45deg) scaleY(1) !important;
-}
 
-:deep(.agreeCheckbox .el-checkbox__input.is-focus .el-checkbox__inner) {
-  box-shadow: 0 0 0 1px var(--ink);
-}
+
+
+
+
+
+
 
 /* 协议链接按钮 */
 .agreementLink {
@@ -626,10 +595,7 @@ export default {
 }
 
 /* 按钮文字置于微光之上 */
-:deep(.confirmBtnArea .el-button span) {
-  position: relative;
-  z-index: 2;
-}
+
 
 .confirmBtnArea .el-button:hover,
 .confirmBtn.btn:hover {
@@ -680,4 +646,339 @@ export default {
   }
 }
 
+
+/* ==========================================================================
+   GOV.UK 服务设计规范适配层
+   - 19px 正文、44px 表单控件、绿色主按钮、黄色键盘焦点
+   - 直角、白色输入底、2px 墨色描边
+   ========================================================================== */
+.loginRegItemArea {
+  --gds-black: #0b0c0c;
+  --gds-blue: #1d70b8;
+  --gds-green: #00703c;
+  --gds-green-hover: #005a30;
+  --gds-green-shadow: #002d18;
+  --gds-red: #d4351c;
+  --gds-yellow: #ffdd00;
+  --gds-grey: #f3f2f1;
+  --gds-border: #b1b4b6;
+  --gds-secondary: #505a5f;
+  --gds-font: "GDS Transport", Arial, "Noto Sans SC", "Source Han Sans SC",
+    "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+
+  --paper: #ffffff;
+  --card: #ffffff;
+  --field: #ffffff;
+  --field-hover: var(--gds-grey);
+  --ink: var(--gds-black);
+  --ash: var(--gds-secondary);
+  --ash-2: #6f777b;
+  --line: var(--gds-border);
+  --border: var(--gds-border);
+  --border-strong: var(--gds-black);
+  --red: var(--gds-red);
+  --serif: var(--gds-font);
+  --sans: var(--gds-font);
+
+  padding: 30px 24px !important;
+  border: 0;
+  background: #ffffff;
+  box-shadow: none;
+  font-family: var(--gds-font);
+  font-size: 1.1875rem;
+  line-height: 1.5;
+  color: var(--gds-black);
+
+  --el-color-primary: var(--gds-green);
+  --el-color-primary-light-3: var(--gds-green-hover);
+  --el-color-primary-dark-2: var(--gds-green-shadow);
+  --el-border-radius-base: 0;
+  --el-border-color: var(--gds-border);
+  --el-text-color-primary: var(--gds-black);
+  --el-font-size-base: 1.1875rem;
+  --el-component-size: 44px;
+  --el-checkbox-font-size: 1rem;
+  --el-checkbox-input-width: 24px;
+  --el-checkbox-input-height: 24px;
+  --el-checkbox-checked-bg-color: var(--gds-black);
+  --el-checkbox-checked-input-border-color: var(--gds-black);
+  --el-checkbox-input-border-color-hover: var(--gds-black);
+}
+
+.loginRegItemArea::before {
+  display: none;
+}
+
+.loginRegItemArea .loginHeader {
+  margin-bottom: 25px;
+}
+
+.loginRegItemArea .loginTitle {
+  width: 100%;
+  font-family: var(--gds-font);
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.09;
+  letter-spacing: 0;
+  color: var(--gds-black) !important;
+}
+
+.loginRegItemArea .loginTitle::before {
+  display: none;
+}
+
+.loginRegItemArea .loginRegInput input {
+  height: 44px;
+  padding: 0 16px 0 44px;
+  border: 2px solid var(--gds-black);
+  border-radius: 0;
+  background-color: #ffffff !important;
+  color: var(--gds-black) !important;
+  font-family: var(--gds-font);
+  font-size: 1.1875rem !important;
+  line-height: 1.25;
+  letter-spacing: 0;
+  box-shadow: none;
+}
+
+.loginRegItemArea .loginRegInput input::placeholder {
+  color: var(--gds-secondary);
+  font-size: 1.1875rem;
+  opacity: 1;
+}
+
+.loginRegItemArea .loginRegInput input:focus,
+.loginRegItemArea .loginRegInput input:focus-visible {
+  border-color: var(--gds-black);
+  outline: 3px solid var(--gds-yellow);
+  outline-offset: 0;
+  background-color: #ffffff !important;
+  box-shadow: inset 0 0 0 2px var(--gds-black);
+}
+
+.loginRegItemArea .integratedInput {
+  min-height: 44px;
+  padding: 0;
+  border: 2px solid var(--gds-black);
+  border-radius: 0;
+  background-color: #ffffff !important;
+  box-shadow: none;
+}
+
+.loginRegItemArea .integratedInput:focus-within {
+  border-color: var(--gds-black);
+  background-color: #ffffff !important;
+  outline: 3px solid var(--gds-yellow);
+  outline-offset: 0;
+  box-shadow: inset 0 0 0 2px var(--gds-black);
+}
+
+.loginRegItemArea .integratedInput input.numberInput {
+  height: 40px;
+  padding: 0 132px 0 44px;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+.loginRegItemArea .loginRegInput .fieldIcon {
+  left: 14px;
+  color: var(--gds-secondary);
+}
+
+.loginRegItemArea .getCodeBtn.el-button {
+  position: absolute !important;
+  right: 4px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  min-width: 44px;
+  height: 40px !important;
+  padding: 0 12px !important;
+  border: 2px solid transparent !important;
+  border-radius: 0 !important;
+  background: var(--gds-green) !important;
+  color: #ffffff !important;
+  font-family: var(--gds-font);
+  font-size: 1rem !important;
+  font-weight: 400 !important;
+  letter-spacing: 0 !important;
+  box-shadow: 0 2px 0 var(--gds-green-shadow) !important;
+}
+
+.loginRegItemArea .getCodeBtn.el-button:hover {
+  background: var(--gds-green-hover) !important;
+  border-color: var(--gds-green-hover) !important;
+  transform: translateY(-50%) !important;
+  box-shadow: 0 2px 0 var(--gds-green-shadow) !important;
+}
+
+.loginRegItemArea .getCodeBtn.el-button:focus-visible {
+  background: var(--gds-yellow) !important;
+  border-color: var(--gds-yellow) !important;
+  color: var(--gds-black) !important;
+  outline: 3px solid transparent;
+  outline-offset: 0;
+  box-shadow: 0 2px 0 var(--gds-black) !important;
+}
+
+.loginRegItemArea .loginRegInput .text-danger {
+  position: static;
+  margin-top: 5px;
+  color: var(--gds-red) !important;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.loginRegItemArea .agreementArea {
+  margin: 20px 0 25px !important;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--gds-secondary);
+}
+
+.loginRegItemArea .agreementLink {
+  min-height: 24px;
+  color: var(--gds-blue) !important;
+  font-size: 1rem !important;
+  text-decoration: underline !important;
+  border-bottom: 0 !important;
+  text-underline-offset: 0.1578em;
+}
+
+.loginRegItemArea .agreementLink:hover {
+  color: var(--gds-blue) !important;
+  text-decoration-thickness: 3px !important;
+}
+
+.loginRegItemArea .agreementLink:focus-visible {
+  color: var(--gds-black) !important;
+  background: var(--gds-yellow);
+  outline: 3px solid transparent;
+  outline-offset: 0;
+  box-shadow: 0 -2px var(--gds-yellow), 0 4px var(--gds-black);
+  text-decoration: none !important;
+}
+
+.loginRegItemArea .agreeHint {
+  color: var(--gds-secondary);
+  font-size: 1rem;
+}
+
+.loginRegItemArea .confirmBtnArea .el-button {
+  width: 100% !important;
+  height: 44px !important;
+  padding: 8px 10px 7px !important;
+  border: 2px solid transparent !important;
+  border-radius: 0 !important;
+  background: var(--gds-green) !important;
+  color: #ffffff !important;
+  font-family: var(--gds-font);
+  font-size: 1.1875rem !important;
+  font-weight: 400 !important;
+  letter-spacing: 0 !important;
+  box-shadow: 0 2px 0 var(--gds-green-shadow) !important;
+}
+
+.loginRegItemArea .confirmBtnArea .el-button::after {
+  display: none !important;
+}
+
+.loginRegItemArea .confirmBtnArea .el-button:hover {
+  background: var(--gds-green-hover) !important;
+  border-color: var(--gds-green-hover) !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 0 var(--gds-green-shadow) !important;
+}
+
+.loginRegItemArea .confirmBtnArea .el-button:focus-visible {
+  background: var(--gds-yellow) !important;
+  border-color: var(--gds-yellow) !important;
+  color: var(--gds-black) !important;
+  outline: 3px solid transparent;
+  outline-offset: 0;
+  box-shadow: 0 2px 0 var(--gds-black) !important;
+}
+
+.loginRegItemArea .confirmBtnArea .el-button.is-disabled,
+.loginRegItemArea .confirmBtnArea .el-button.is-loading {
+  background: var(--gds-grey) !important;
+  border-color: var(--gds-grey) !important;
+  color: var(--gds-secondary) !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+}
+
+.loginRegItemArea .el-button:focus-visible {
+  outline: 3px solid transparent;
+  outline-offset: 0;
+  background: var(--gds-yellow);
+  color: var(--gds-black);
+  box-shadow: 0 2px 0 var(--gds-black);
+}
+
+.loginRegItemArea .gettingCodetips {
+  color: var(--gds-secondary);
+  font-size: 1rem;
+}
+
+.loginRegItemArea .agreeCheck {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+}
+
+.loginRegItemArea .agreeInput {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 24px;
+  height: 24px;
+  margin: 0;
+  flex: none;
+  border: 2px solid var(--gds-black);
+  border-radius: 0;
+  background: #ffffff;
+  position: relative;
+  cursor: pointer;
+}
+
+.loginRegItemArea .agreeInput:checked {
+  background: var(--gds-black);
+}
+
+.loginRegItemArea .agreeInput:checked::after {
+  content: "";
+  position: absolute;
+  left: 7px;
+  top: 2px;
+  width: 6px;
+  height: 12px;
+  border: solid #ffffff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.loginRegItemArea .agreeInput:focus-visible {
+  outline: 3px solid var(--gds-yellow);
+  outline-offset: 0;
+  box-shadow: 0 0 0 2px var(--gds-black);
+}
+
+.loginRegItemArea .agreeLabel {
+  color: var(--gds-secondary);
+  font-size: 1rem;
+  line-height: 1.5;
+  cursor: pointer;
+}
+
+@media (max-width: 420px) {
+  .loginRegItemArea {
+    padding: 24px 18px !important;
+    border: 0;
+  }
+
+  .loginRegItemArea .loginTitle {
+    font-size: 1.75rem;
+  }
+}
 </style>

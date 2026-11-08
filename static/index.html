@@ -44,7 +44,7 @@
     content="数字员工生成器, AI客服生成器, AI智能体生成器, AI Agent生成器, 上传文档生成AI助手, 上传PDF生成AI客服, 文档知识库问答机器人, 知识库问答生成器, 无代码生成数字员工, 无代码AI智能体, 企业知识库AI助手, 私有知识库问答, 文档知识库, 文档生成AI助手, 把文档变成AI客服, 网站AI客服机器人, 公众号AI客服, AI助教, 定制AI助手, TransWeb" />
   <meta name="author" content="TransWeb" />
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
-  <meta name="theme-color" content="#faf9f6" />
+  <meta name="theme-color" content="#0b0c0c" />
   <meta name="format-detection" content="telephone=no" />
   <link rel="canonical" href="https://transweb.cn/" />
 
@@ -600,17 +600,17 @@
        不让长昵称把语言切换与菜单按钮挤开。
        内部内容各自限制在槽位内，长文本以省略号收束。 */
     #loginMenuItem {
-      flex: 0 0 140px;
-      width: 140px;
-      min-width: 140px;
-      max-width: 140px;
+      flex: 0 0 170px;
+      width: 170px;
+      min-width: 170px;
+      max-width: 170px;
       white-space: nowrap;
 
       display: flex;
       align-items: center;
       justify-content: flex-end;
       gap: 7px;
-      height: 32px;
+      height: 44px;
       border: 0;
       background: transparent;
 
@@ -634,7 +634,7 @@
 
     #loginMenuItem .login-main-btn,
     #loginMenuItem .user-trigger-btn {
-      max-width: 100%;
+      width: 100%;
       overflow: hidden;
       text-overflow: ellipsis;
     }
@@ -1521,7 +1521,7 @@
       border-right: 1px solid var(--line);
     }
 
-    .process-item:not(:first-child) {
+    .process-item {
       padding-left: 40px;
     }
 
@@ -2755,7 +2755,7 @@
         padding-right: 28px;
       }
 
-      .process-item:not(:first-child) {
+      .process-item {
         padding-left: 28px;
       }
 
@@ -3644,7 +3644,9 @@
 
     .my-apps-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      /* 所有行等高：无论卡片内容多少，尺寸都保持一致 */
+      grid-auto-rows: 1fr;
       gap: 24px;
     }
 
@@ -3656,6 +3658,11 @@
       display: flex;
       align-items: center;
       gap: 16px;
+
+      /* 固定最小高度并撑满网格行，保证同一区域卡片尺寸统一 */
+      min-height: 92px;
+      height: 100%;
+      overflow: hidden;
 
       cursor: pointer;
       text-align: left;
@@ -3675,6 +3682,7 @@
 
     .my-app-card__thumb {
       flex: 0 0 50px;
+      align-self: center;
       width: 50px;
       height: 50px;
 
@@ -3707,12 +3715,18 @@
     .my-app-card__meta {
       flex: 1;
       min-width: 0;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
     }
 
     .my-app-card__title {
       margin: 0;
       font-size: 15px;
       font-weight: 600;
+      line-height: 1.4;
       color: var(--ink);
       white-space: nowrap;
       overflow: hidden;
@@ -3720,8 +3734,8 @@
     }
 
     .my-app-card__time {
-      margin-top: 5px;
       font-size: 12px;
+      line-height: 1.4;
       color: var(--gray);
       white-space: nowrap;
       overflow: hidden;
@@ -3731,7 +3745,6 @@
     .my-app-card--more {
       justify-content: center;
       align-items: center;
-      min-height: 92px;
       cursor: default;
     }
 
@@ -3761,13 +3774,13 @@
 
     @media (max-width: 1199px) {
       .my-apps-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
     }
 
     @media (max-width: 767px) {
       .my-apps-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
         gap: 16px;
       }
 
@@ -4131,7 +4144,7 @@
         border-bottom: 1px solid var(--line);
       }
 
-      .process-item:not(:first-child) {
+      .process-item {
         padding-left: 0;
       }
 
@@ -4494,9 +4507,13 @@
       background: #a5a29a;
     }
   </style>
+
+  <!-- GOV.UK 服务设计规范适配层：在三页原有样式之后加载，统一页眉、页脚、字体与焦点状态 -->
+  <link rel="stylesheet" href="common/govuk.css">
 </head>
 
 <body>
+  <a class="govuk-skip-link" href="#main-content" data-i18n="skip.link">跳到主要内容</a>
   <div class="contentItemArea">
 
     <!-- =========================
@@ -4511,10 +4528,9 @@
             <span class="logo-name" data-i18n="logo">Trans-Agent</span>
             <span class="logo-sub" data-i18n="logo.sub">AI 数字员工平台</span>
           </a>
-          <span class="page-mark" data-i18n="nav.home">首页</span>
         </div>
 
-        <nav class="nav" id="nav">
+        <nav class="nav" id="nav" aria-label="主导航">
           <a href="/" class="active" aria-current="page" data-i18n="nav.home">首页</a>
           <a href="skillHub.html" data-i18n="nav.skillHub">Skill 广场</a>
           <a href="workflow.html" data-i18n="nav.workflow">工作流</a>
@@ -4523,7 +4539,7 @@
         <div class="header-right">
           <button class="lang-toggle" id="langToggle" type="button" aria-label="Switch to English">EN</button>
           <div id="loginMenuItem"></div>
-          <button class="menu-toggle" id="menuToggle" type="button" aria-label="打开菜单" data-i18n-aria="nav.menu"
+          <button class="menu-toggle" id="menuToggle" type="button" aria-label="打开菜单" data-i18n-aria="nav.menu" aria-controls="nav"
             aria-expanded="false">
             <span></span>
             <span></span>
@@ -4532,18 +4548,31 @@
         </div>
 
       </div>
-
-      <nav class="index-subnav" aria-label="首页内容导航">
-        <div class="index-subnav__inner">
-          <a href="#process" data-i18n="subnav.process">产品能力</a>
-          <a href="#cases" data-i18n="subnav.cases">客户案例</a>
-          <a href="#plans" data-i18n="subnav.plans">适合谁</a>
-          <a href="#pricing" data-i18n="subnav.pricing">透明计费</a>
-          <a href="#deploy" data-i18n="subnav.deploy">本地部署</a>
-          <a href="#faq" data-i18n="subnav.faq">常见疑问</a>
-        </div>
-      </nav>
     </header>
+
+    <nav class="index-subnav" aria-label="首页内容导航">
+      <div class="index-subnav__inner">
+        <a href="#process" data-i18n="subnav.process">产品能力</a>
+        <!-- <a href="#cases" data-i18n="subnav.cases">客户案例</a> -->
+        <a href="#cases" data-i18n="subnav.plans">谁在用</a>
+        <a href="#pricing" data-i18n="subnav.pricing">透明计费</a>
+        <a href="#deploy" data-i18n="subnav.deploy">本地部署</a>
+        <a href="#faq" data-i18n="subnav.faq">常见疑问</a>
+      </div>
+    </nav>
+
+    <!-- 阶段横幅：GOV.UK Service Manual 要求公开服务所处阶段并提供反馈入口 -->
+    <div class="govuk-width-container">
+      <div class="govuk-phase-banner">
+        <p class="govuk-phase-banner__content">
+          <strong class="govuk-tag govuk-phase-banner__content__tag" data-i18n="phase.tag">测试版</strong>
+          <span class="govuk-phase-banner__text">
+            <span data-i18n="phase.text">这是一个新服务，我们会持续改进。</span>
+            <a class="govuk-link" href="#contact" data-doc="contact" aria-haspopup="dialog" data-i18n="phase.link">告诉我们哪里可以做得更好</a><span data-i18n="phase.period">。</span>
+          </span>
+        </p>
+      </div>
+    </div>
 
     <!-- 语言刷新兜底：在完整词典异步加载前，先同步翻译导航，避免刷新后菜单短暂/残留中文 -->
     <script>
@@ -4609,7 +4638,7 @@
     </div>
 
 
-    <main>
+    <main id="main-content" tabindex="-1">
 
       <!-- =========================
      Hero
@@ -4625,8 +4654,7 @@
         </h1>
 
         <p class="hero-subtitle">
-          <span data-i18n="hero.subtitle.1">无需写 Prompt，上传 PDF / Word，3 分钟</span>
-          <span data-i18n="hero.subtitle.2">让你的企业知识库、教学教材、行业研报开口说话。</span>
+          <span data-i18n="hero.subtitle.1">无需写 Prompt，上传 PDF / Word，3 分钟</span><span data-i18n="hero.subtitle.2">让你的企业知识库、教学教材、行业研报开口说话。</span>
         </p>
 
 
@@ -4855,7 +4883,7 @@
         <div class="section-header">
 
           <div class="eyebrow">
-            POSSIBILITIES
+            WHO USES IT
           </div>
 
           <h2 class="section-title" data-i18n="cases.title">
@@ -4863,7 +4891,7 @@
           </h2>
 
           <p class="section-description" data-i18n="cases.desc">
-            一份资料培养一位员工：把手册、教材、研报分别上传，就能得到多位各管一岗的数字员工——专精各自领域、优先依据资料内容回答，还能一键交付他人使用。
+            老师备课、学生解题、新人问制度、研究员找结论、客户问规范——谁想弄明白，就找对应的那一位。手册、教材、研报分别上传，就能得到多位各管一岗的数字员工：专精各自领域、优先依据资料回答，一键交付即可使用。
           </p>
 
         </div>
@@ -4883,7 +4911,7 @@
             </h3>
 
             <p class="case-desc" data-i18n="case.1.desc">
-              把教材、讲义、课件交给它：学生问「这道题怎么解」，它结合资料一步步讲；老师要出卷，它照着知识点自动出题，随时可问。
+              老师把教材、讲义、课件交给它：学生问「这道题怎么解」，它翻出原文一步步讲；老师要出卷，它照着知识点自动出题。一个助教，全班随时能问。
             </p>
 
             <!-- 标识图标 01：打开的书（教材 / 课程） -->
@@ -4914,7 +4942,7 @@
             </h3>
 
             <p class="case-desc" data-i18n="case.2.desc">
-              把员工手册、SOP、培训资料交给它：新人问「报销怎么走」「项目怎么立项」，它照着制度快速回答，随时可问，老员工不用再当人形说明书。
+              HR 和带教的老员工把员工手册、SOP、培训资料交给它：新人问「报销怎么走」「项目怎么立项」，它照着制度秒回。新人少走弯路，老员工也不用再当人形说明书。
             </p>
 
             <!-- 标识图标 02：组织节点（团队 / 培训） -->
@@ -4943,7 +4971,7 @@
             </h3>
 
             <p class="case-desc" data-i18n="case.3.desc">
-              把散落的读书笔记、研报、摘录交给它：写方案时忘了某篇报告的结论，问一句，它结合资料给出结论和线索。
+              研究员、顾问、写方案的人把读书笔记、研报、摘录交给它：忘了某篇报告的结论，问一句，它连出处一起翻出来。
             </p>
 
             <!-- 标识图标 03：层叠书页（长期积累） -->
@@ -4970,7 +4998,7 @@
             </h3>
 
             <p class="case-desc" data-i18n="case.4.desc">
-              把行业规范、制度、案例资料交给它：客户问「资质怎么申请」「新规有什么影响」，它按资料内容逐条说明，团队和客户都能直接问。
+              服务机构把行业规范、制度、案例资料交给它：客户问「资质怎么申请」「新规有什么影响」，它逐条引用原文；客户经理不用现翻文件，团队和客户都能直接问。
             </p>
 
             <!-- 标识图标 04：天平（规范 / 制度） -->
@@ -5559,7 +5587,7 @@ transweb wxpay check</code></pre>
 
           <div class="faq-item open">
 
-            <button class="faq-question" id="faq-q1" type="button" aria-expanded="true" aria-controls="faq-a1">
+            <h3 class="faq-heading"><button class="faq-question" id="faq-q1" type="button" aria-expanded="true" aria-controls="faq-a1">
 
               <span class="faq-index">
                 01
@@ -5574,7 +5602,7 @@ transweb wxpay check</code></pre>
                 <span></span>
               </span>
 
-            </button>
+            </button></h3>
 
             <div class="faq-answer" id="faq-a1" role="region" aria-labelledby="faq-q1">
 
@@ -5593,7 +5621,7 @@ transweb wxpay check</code></pre>
 
           <div class="faq-item">
 
-            <button class="faq-question" id="faq-q2" type="button" aria-expanded="false" aria-controls="faq-a2">
+            <h3 class="faq-heading"><button class="faq-question" id="faq-q2" type="button" aria-expanded="false" aria-controls="faq-a2">
 
               <span class="faq-index">
                 02
@@ -5608,7 +5636,7 @@ transweb wxpay check</code></pre>
                 <span></span>
               </span>
 
-            </button>
+            </button></h3>
 
             <div class="faq-answer" id="faq-a2" role="region" aria-labelledby="faq-q2">
 
@@ -5628,7 +5656,7 @@ transweb wxpay check</code></pre>
 
           <div class="faq-item">
 
-            <button class="faq-question" id="faq-q3" type="button" aria-expanded="false" aria-controls="faq-a3">
+            <h3 class="faq-heading"><button class="faq-question" id="faq-q3" type="button" aria-expanded="false" aria-controls="faq-a3">
 
               <span class="faq-index">
                 03
@@ -5643,7 +5671,7 @@ transweb wxpay check</code></pre>
                 <span></span>
               </span>
 
-            </button>
+            </button></h3>
 
             <div class="faq-answer" id="faq-a3" role="region" aria-labelledby="faq-q3">
 
@@ -5665,7 +5693,7 @@ transweb wxpay check</code></pre>
 
           <div class="faq-item">
 
-            <button class="faq-question" id="faq-q4" type="button" aria-expanded="false" aria-controls="faq-a4">
+            <h3 class="faq-heading"><button class="faq-question" id="faq-q4" type="button" aria-expanded="false" aria-controls="faq-a4">
 
               <span class="faq-index">
                 04
@@ -5680,7 +5708,7 @@ transweb wxpay check</code></pre>
                 <span></span>
               </span>
 
-            </button>
+            </button></h3>
 
             <div class="faq-answer" id="faq-a4" role="region" aria-labelledby="faq-q4">
 
@@ -5699,7 +5727,7 @@ transweb wxpay check</code></pre>
 
           <div class="faq-item">
 
-            <button class="faq-question" id="faq-q5" type="button" aria-expanded="false" aria-controls="faq-a5">
+            <h3 class="faq-heading"><button class="faq-question" id="faq-q5" type="button" aria-expanded="false" aria-controls="faq-a5">
 
               <span class="faq-index">
                 05
@@ -5714,7 +5742,7 @@ transweb wxpay check</code></pre>
                 <span></span>
               </span>
 
-            </button>
+            </button></h3>
 
             <div class="faq-answer" id="faq-a5" role="region" aria-labelledby="faq-q5">
 
@@ -5736,7 +5764,7 @@ transweb wxpay check</code></pre>
 
           <div class="faq-item">
 
-            <button class="faq-question" id="faq-q6" type="button" aria-expanded="false" aria-controls="faq-a6">
+            <h3 class="faq-heading"><button class="faq-question" id="faq-q6" type="button" aria-expanded="false" aria-controls="faq-a6">
 
               <span class="faq-index">
                 06
@@ -5751,7 +5779,7 @@ transweb wxpay check</code></pre>
                 <span></span>
               </span>
 
-            </button>
+            </button></h3>
 
             <div class="faq-answer" id="faq-a6" role="region" aria-labelledby="faq-q6">
 
@@ -5770,7 +5798,7 @@ transweb wxpay check</code></pre>
 
           <div class="faq-item">
 
-            <button class="faq-question" id="faq-q7" type="button" aria-expanded="false" aria-controls="faq-a7">
+            <h3 class="faq-heading"><button class="faq-question" id="faq-q7" type="button" aria-expanded="false" aria-controls="faq-a7">
 
               <span class="faq-index">
                 07
@@ -5785,7 +5813,7 @@ transweb wxpay check</code></pre>
                 <span></span>
               </span>
 
-            </button>
+            </button></h3>
 
             <div class="faq-answer" id="faq-a7" role="region" aria-labelledby="faq-q7">
 
@@ -5804,7 +5832,7 @@ transweb wxpay check</code></pre>
 
           <div class="faq-item">
 
-            <button class="faq-question" id="faq-q8" type="button" aria-expanded="false" aria-controls="faq-a8">
+            <h3 class="faq-heading"><button class="faq-question" id="faq-q8" type="button" aria-expanded="false" aria-controls="faq-a8">
 
               <span class="faq-index">
                 08
@@ -5819,7 +5847,7 @@ transweb wxpay check</code></pre>
                 <span></span>
               </span>
 
-            </button>
+            </button></h3>
 
             <div class="faq-answer" id="faq-a8" role="region" aria-labelledby="faq-q8">
 
@@ -5838,7 +5866,7 @@ transweb wxpay check</code></pre>
 
           <div class="faq-item">
 
-            <button class="faq-question" id="faq-q9" type="button" aria-expanded="false" aria-controls="faq-a9">
+            <h3 class="faq-heading"><button class="faq-question" id="faq-q9" type="button" aria-expanded="false" aria-controls="faq-a9">
 
               <span class="faq-index">
                 09
@@ -5853,7 +5881,7 @@ transweb wxpay check</code></pre>
                 <span></span>
               </span>
 
-            </button>
+            </button></h3>
 
             <div class="faq-answer" id="faq-a9" role="region" aria-labelledby="faq-q9">
 
@@ -5881,34 +5909,47 @@ transweb wxpay check</code></pre>
      Footer
 ========================= -->
 
-    <footer class="footer">
+    <footer class="govuk-footer">
+      <div class="govuk-width-container">
+        <div class="govuk-footer__meta">
+          <div class="govuk-footer__meta-item govuk-footer__meta-item--grow">
+            <p class="govuk-footer__heading">Trans-Agent</p>
+            <p class="govuk-footer__quote" data-i18n="footer.quote">让知识上岗，让服务持续。</p>
 
-      <div>
+            <h2 class="govuk-visually-hidden" data-i18n="footer.legal.heading">法务与支持</h2>
+            <ul class="govuk-footer__inline-list">
+              <li class="govuk-footer__inline-list-item">
+                <a class="govuk-footer__link" href="#privacy" data-doc="privacy" aria-haspopup="dialog"
+                  data-i18n="legal.privacy">隐私政策</a>
+              </li>
+              <li class="govuk-footer__inline-list-item">
+                <a class="govuk-footer__link" href="#terms" data-doc="terms" aria-haspopup="dialog"
+                  data-i18n="legal.terms">服务条款</a>
+              </li>
+              <li class="govuk-footer__inline-list-item">
+                <a class="govuk-footer__link" href="#accessibility" data-doc="accessibility" aria-haspopup="dialog"
+                  data-i18n="legal.accessibility">无障碍声明</a>
+              </li>
+              <li class="govuk-footer__inline-list-item">
+                <a class="govuk-footer__link" href="#contact" data-doc="contact" aria-haspopup="dialog"
+                  data-i18n="legal.contact">联系我们</a>
+              </li>
+            </ul>
 
-        <div class="footer-quote" data-i18n="footer.quote">
-          让知识上岗，让服务持续。
+            <p class="govuk-footer__copy">
+              © 2026 TransWeb · All rights reserved ·
+              <a class="govuk-footer__link" href="https://beian.miit.gov.cn/" target="_blank"
+                rel="noopener noreferrer">京ICP备17026815号-1</a>
+            </p>
+          </div>
         </div>
-
-        <div class="footer-copy">
-          © 2026 TransWeb · All rights reserved ·
-          <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">京ICP备17026815号-1</a>
-        </div>
-
       </div>
-
-
-      <div class="footer-links">
-        <a href="#privacy" data-doc="privacy" aria-haspopup="dialog" data-i18n="legal.privacy">隐私政策</a>
-        <a href="#terms" data-doc="terms" aria-haspopup="dialog" data-i18n="legal.terms">服务条款</a>
-        <a href="#contact" data-doc="contact" aria-haspopup="dialog" data-i18n="legal.contact">联系我们</a>
-      </div>
-
     </footer>
 
 
     <!-- =========================
-     条款浮层：隐私政策 / 服务条款 / 联系我们
-     单页承载三份文档，由 footer 链接与正文内联链接唤起
+     条款浮层：隐私政策 / 服务条款 / 无障碍声明 / 联系我们
+     单页承载四份文档，由 footer 链接与正文内联链接唤起
 ========================= -->
 
     <div class="overlay" id="legalOverlay" hidden>
@@ -6209,6 +6250,56 @@ transweb wxpay check</code></pre>
           </article>
 
 
+          <!-- 无障碍声明：GOV.UK Service Manual 要求公开无障碍状况与反馈渠道 -->
+          <article class="doc" id="doc-accessibility" hidden>
+
+            <div class="doc-eyebrow">
+              ACCESSIBILITY STATEMENT
+            </div>
+
+            <h2 class="doc-title" id="doc-title-accessibility" data-i18n="legal.accessibility.title">
+              无障碍声明
+            </h2>
+
+            <div class="doc-date" data-i18n="a11y.date">
+              最近更新：2026 年 11 月
+            </div>
+
+            <div class="doc-body">
+
+              <section class="doc-section">
+                <h3 data-i18n="a11y.s1.title">我们的承诺</h3>
+                <p data-i18n="a11y.s1.text">
+                  本服务面向所有用户，包括使用屏幕阅读器、键盘、放大软件或语音输入的人。我们按 WCAG 2.2 AA 级标准设计页面，并持续检查颜色对比度、焦点顺序、键盘操作与文字缩放。
+                </p>
+              </section>
+
+              <section class="doc-section">
+                <h3 data-i18n="a11y.s2.title">已经做到的</h3>
+                <p data-i18n="a11y.s2.text">
+                  页面可以用键盘完整操作；跳转链接可以直接到达主要内容；正文与背景的对比度达到至少 4.5:1；页面在窄屏下不需要横向滚动；动画会尊重系统的「减少动态效果」设置。
+                </p>
+              </section>
+
+              <section class="doc-section">
+                <h3 data-i18n="a11y.s3.title">已知限制</h3>
+                <p data-i18n="a11y.s3.text">
+                  窄屏下页面会缩放到 480/530px 画布，以保证内嵌编辑器完整显示，部分文字会相应变小。工作流画布中的节点拖拽目前需要鼠标或触屏操作；内置创建器与第三方模型生成的图表、公式，其字号、布局与替代文本由组件或生成内容决定，可能不完全遵循本站规范。我们会在后续版本中改进这些部分。
+                </p>
+              </section>
+
+              <section class="doc-section">
+                <h3 data-i18n="a11y.s4.title">告诉我们你的体验</h3>
+                <p data-i18n="a11y.s4.text">
+                  如果你遇到无法使用的页面或功能，请发邮件到 neilking@163.com，说明你使用的设备、浏览器与辅助技术。我们会在 5 个工作日内回复，并在确认问题后给出修复时间。
+                </p>
+              </section>
+
+            </div>
+
+          </article>
+
+
         </div>
 
       </div>
@@ -6267,10 +6358,12 @@ transweb wxpay check</code></pre>
   
   <script>
     document.addEventListener("DOMContentLoaded", function () {
+      // 窄屏下由 WebTool.adjustStyle 把页面缩放到 480/530px 画布，
+      // 保证内嵌编辑器与生成器组件在手机上仍保持完整布局。
       let tRadio = Number(WebTool.urlQuery(location.href, "transformRadio"));
       if (tRadio !== 1) {
         WebTool.adjustStyle(480, 530);
-      } 
+      }
       window.transformRadio = tRadio;
       
       let qParams = WebTool.getQueryParams();
@@ -6299,7 +6392,7 @@ transweb wxpay check</code></pre>
           "nav.how": "产品能力",
           "subnav.process": "产品能力",
           "subnav.cases": "客户案例",
-          "subnav.plans": "适合谁",
+          "subnav.plans": "谁在用",
           "subnav.pricing": "透明计费",
           "subnav.deploy": "本地部署",
           "subnav.faq": "常见疑问",
@@ -6309,6 +6402,7 @@ transweb wxpay check</code></pre>
           "nav.deploy": "本地部署",
           "nav.faq": "常见疑问",
           "nav.menu": "打开菜单",
+          "nav.menu.close": "关闭菜单",
           "nav.skills": "技能/工作流",
           "nav.skills.generator": "AI Skill 生成器",
           "nav.skills.workflow": "工作流",
@@ -6338,15 +6432,15 @@ transweb wxpay check</code></pre>
           "process.3.title": "上岗 · 持续服务",
           "process.3.text": "回答基于资料内容、服务持续在线；一键生成链接或网页，交付给他人随时使用。",
           "cases.title": "一人一岗，把资料讲清楚。",
-          "cases.desc": "一份资料培养一位员工：把手册、教材、研报分别上传，就能得到多位各管一岗的数字员工——专精各自领域、优先依据资料内容回答，还能一键交付他人使用。",
+          "cases.desc": "老师备课、学生解题、新人问制度、研究员找结论、客户问规范——谁想弄明白，就找对应的那一位。手册、教材、研报分别上传，就能得到多位各管一岗的数字员工：专精各自领域、优先依据资料回答，一键交付即可使用。",
           "case.1.title": "AI 助教",
-          "case.1.desc": "把教材、讲义、课件交给它：学生问「这道题怎么解」，它结合资料一步步讲；老师要出卷，它照着知识点自动出题，随时可问。",
+          "case.1.desc": "老师把教材、讲义、课件交给它：学生问「这道题怎么解」，它翻出原文一步步讲；老师要出卷，它照着知识点自动出题。一个助教，全班随时能问。",
           "case.2.title": "带教师傅",
-          "case.2.desc": "把员工手册、SOP、培训资料交给它：新人问「报销怎么走」「项目怎么立项」，它照着制度快速回答，随时可问，老员工不用再当人形说明书。",
+          "case.2.desc": "HR 和带教的老员工把员工手册、SOP、培训资料交给它：新人问「报销怎么走」「项目怎么立项」，它照着制度秒回。新人少走弯路，老员工也不用再当人形说明书。",
           "case.3.title": "私人助理",
-          "case.3.desc": "把散落的读书笔记、研报、摘录交给它：写方案时忘了某篇报告的结论，问一句，它结合资料给出结论和线索。",
+          "case.3.desc": "研究员、顾问、写方案的人把读书笔记、研报、摘录交给它：忘了某篇报告的结论，问一句，它连出处一起翻出来。",
           "case.4.title": "领域顾问",
-          "case.4.desc": "把行业规范、制度、案例资料交给它：客户问「资质怎么申请」「新规有什么影响」，它按资料内容逐条说明，团队和客户都能直接问。",
+          "case.4.desc": "服务机构把行业规范、制度、案例资料交给它：客户问「资质怎么申请」「新规有什么影响」，它逐条引用原文；客户经理不用现翻文件，团队和客户都能直接问。",
           "audience.title": "从个人到机构，按你的数据边界选择。",
           "audience.desc": "同一套 Agent 能力，两种交付方式：在线按量使用，或部署到你自己的服务器。",
           "audience.personal.kicker": "个人 / 小团队",
@@ -6483,6 +6577,24 @@ transweb wxpay check</code></pre>
           "legal.copyHint": "复制",
           "legal.copied": "已复制",
           "legal.copyManually": "请手动复制",
+          "skip.link": "跳到主要内容",
+          "header.mark": "服务首页",
+          "phase.tag": "测试版",
+          "phase.text": "这是一个新服务，我们会持续改进。",
+          "phase.link": "告诉我们哪里可以做得更好",
+          "phase.period": "。",
+          "footer.legal.heading": "法务与支持",
+          "legal.accessibility": "无障碍声明",
+          "legal.accessibility.title": "无障碍声明",
+          "a11y.date": "最近更新：2026 年 11 月",
+          "a11y.s1.title": "我们的承诺",
+          "a11y.s1.text": "本服务面向所有用户，包括使用屏幕阅读器、键盘、放大软件或语音输入的人。我们按 WCAG 2.2 AA 级标准设计页面，并持续检查颜色对比度、焦点顺序、键盘操作与文字缩放。",
+          "a11y.s2.title": "已经做到的",
+          "a11y.s2.text": "页面可以用键盘完整操作；跳转链接可以直接到达主要内容；正文与背景的对比度达到至少 4.5:1；页面在窄屏下不需要横向滚动；动画会尊重系统的「减少动态效果」设置。",
+          "a11y.s3.title": "已知限制",
+          "a11y.s3.text": "窄屏下页面会缩放到 480/530px 画布，以保证内嵌编辑器完整显示，部分文字会相应变小。工作流画布中的节点拖拽目前需要鼠标或触屏操作；内置创建器与第三方模型生成的图表、公式，其字号、布局与替代文本由组件或生成内容决定，可能不完全遵循本站规范。我们会在后续版本中改进这些部分。",
+          "a11y.s4.title": "告诉我们你的体验",
+          "a11y.s4.text": "如果你遇到无法使用的页面或功能，请发邮件到 neilking@163.com，说明你使用的设备、浏览器与辅助技术。我们会在 5 个工作日内回复，并在确认问题后给出修复时间。",
           "privacy.s1.title": "我们收集哪些信息",
           "privacy.s1.text": "账号标识（登录方式与昵称）、你主动上传的资料，以及保障服务可用所必需的运行日志，例如访问时间、设备与浏览器类型、错误信息。我们不会为了广告投放而追踪你的浏览行为，也不会将上述信息用于本政策未说明的用途。",
           "privacy.s2.title": "资料如何被使用",
@@ -6661,8 +6773,8 @@ transweb wxpay check</code></pre>
       };
 
       var LS_KEY = "appLang";
-      var EN_URL = "./i18n/en.json?v=30";
-      var EN_CACHE_KEY = "i18n_en_v30";
+      var EN_URL = "./i18n/en.json?v=37";
+      var EN_CACHE_KEY = "i18n_en_v37";
 
       var lang = "zh";
       try {
@@ -6879,6 +6991,12 @@ transweb wxpay check</code></pre>
         siteNav.classList.toggle("open", open);
         navToggleBtn.classList.toggle("open", open);
         navToggleBtn.setAttribute("aria-expanded", String(open));
+        navToggleBtn.setAttribute(
+          "aria-label",
+          open
+            ? (window.__t__ ? window.__t__("nav.menu.close") : "关闭菜单")
+            : (window.__t__ ? window.__t__("nav.menu") : "打开菜单")
+        );
 
         // 移动端展开时抬高 header，避免下拉菜单被右下角浮动工具栏压住
         if (siteHeader) {
@@ -7073,7 +7191,7 @@ transweb wxpay check</code></pre>
 
 
     /* =========================
-       条款浮层：隐私政策 / 服务条款 / 联系我们
+       条款浮层：隐私政策 / 服务条款 / 无障碍声明 / 联系我们
     ========================= */
 
     (function () {
@@ -7093,7 +7211,8 @@ transweb wxpay check</code></pre>
       var docs = {
         privacy: document.getElementById("doc-privacy"),
         terms: document.getElementById("doc-terms"),
-        contact: document.getElementById("doc-contact")
+        contact: document.getElementById("doc-contact"),
+        accessibility: document.getElementById("doc-accessibility")
       };
 
       var docIds = Object.keys(docs).filter(function (key) {

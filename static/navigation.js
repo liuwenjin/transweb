@@ -15,9 +15,20 @@ const externalLink = document.getElementById('drawer-external-link');
 const closeBtn = document.getElementById('close-drawer-btn');
 const loading = document.getElementById('drawer-loading');
 
+let drawerReturnFocus = null;
+let drawerCloseTimer = null;
+
 // 1. 全局打开抽屉函数
 window.openDrawer = function (url, title = '智能体运行预览') {
   if (!url) return;
+
+  if (drawerCloseTimer) {
+    clearTimeout(drawerCloseTimer);
+    drawerCloseTimer = null;
+  }
+
+  drawerReturnFocus = document.activeElement;
+  drawer.setAttribute('aria-hidden', 'false');
 
   drawerTitle.textContent = title;
   drawerUrl.textContent = url;
@@ -39,6 +50,11 @@ window.openDrawer = function (url, title = '智能体运行预览') {
   // 锁定背景滚动（移动端缩放后实际滚动的是 .page-scroll）
   document.body.style.overflow = 'hidden';
   document.querySelector('.page-scroll')?.classList.add('is-locked');
+
+  // 把键盘焦点移入浮层，避免焦点仍停留在背景页面
+  window.setTimeout(function () {
+    if (closeBtn) closeBtn.focus();
+  }, 100);
 };
 
 // 2. 全局关闭抽屉函数
@@ -53,9 +69,17 @@ window.closeDrawer = function () {
   document.querySelector('.page-scroll')?.classList.remove('is-locked');
 
   // 延迟清空 src 释放内存
-  setTimeout(() => {
+  drawerCloseTimer = setTimeout(() => {
+    drawerCloseTimer = null;
     iframe.src = 'about:blank';
+    drawer.setAttribute('aria-hidden', 'true');
   }, 300);
+
+  // 关闭后把焦点还给触发「立即运行」的链接
+  if (drawerReturnFocus && typeof drawerReturnFocus.focus === 'function') {
+    drawerReturnFocus.focus({ preventScroll: true });
+  }
+  drawerReturnFocus = null;
 };
 
 // 3. Iframe 加载完成后隐藏 Loading
@@ -73,7 +97,29 @@ closeBtn.addEventListener('click', closeDrawer);
 backdrop.addEventListener('click', closeDrawer);
 
 document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') closeDrawer();
+  if (e.key === 'Escape') {
+    closeDrawer();
+    return;
+  }
+
+  // 抽屉是模态浮层：Tab 焦点限制在抽屉内部，避免跑到背景页面
+  if (e.key !== 'Tab' || drawer.getAttribute('aria-hidden') === 'true') return;
+
+  const focusable = [...drawer.querySelectorAll('a[href], button:not([disabled]), iframe, [tabindex]:not([tabindex="-1"])')]
+    .filter((el) => el.offsetParent !== null || el.tagName === 'IFRAME');
+
+  if (!focusable.length) return;
+
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+
+  if (e.shiftKey && document.activeElement === first) {
+    e.preventDefault();
+    last.focus();
+  } else if (!e.shiftKey && document.activeElement === last) {
+    e.preventDefault();
+    first.focus();
+  }
 });
 
 // 5. 事件委托：自动拦截含有 [data-url] 或 class="run-btn" 的元素点击
@@ -173,7 +219,7 @@ function render() {
                                         ${agent.icon}
                                     </div>
                                     <div>
-                                        <h2 class="font-bold text-[20px] text-slate-800 dark:text-slate-100 group-hover:text-brand-500 dark:group-hover:text-brand-400 transition-colors duration-300 tracking-tight">${agent.name}</h2>
+                                        <h3 class="font-bold text-[20px] text-slate-800 dark:text-slate-100 group-hover:text-brand-500 dark:group-hover:text-brand-400 transition-colors duration-300 tracking-tight">${agent.name}</h3>
                                         <div class="flex flex-wrap items-center gap-2 mt-1.5">
                                             <span class="inline-flex items-center rounded-lg bg-emerald-500/10 dark:bg-emerald-400/10 px-2.5 py-1 text-xs font-semibold text-brand-600 dark:text-brand-400 tracking-wide">${agent.category}</span>
                                         </div>
@@ -199,10 +245,10 @@ function render() {
 
                         <div class="mt-8 pt-5 border-t border-slate-200/50 dark:border-slate-700/50 flex items-center justify-between text-sm text-slate-400 relative z-10 font-medium">
                             <span class="flex items-center gap-1.5 opacity-80"><i data-lucide="eye" class="w-4 h-4"></i> 预览 ${agent.views} 次</span>
-                            <span data-url="${agent.url}" data-title="${agent.name}" title="运行 ${agent.name}" class="inline-flex cursor-pointer items-center gap-1.5 font-bold text-brand-500 dark:text-brand-400 hover:text-brand-600 dark:hover:text-brand-300 group/link transition-colors duration-300 run-btn">
-                                立即运行 
+                            ${agent.url && agent.url !== '#' ? `<a href="${agent.url}" target="_blank" rel="noopener noreferrer" data-url="${agent.url}" data-title="${agent.name}" title="运行 ${agent.name}" class="inline-flex cursor-pointer items-center gap-1.5 font-bold text-brand-500 dark:text-brand-400 hover:text-brand-600 dark:hover:text-brand-300 group/link transition-colors duration-300 run-btn">
+                                立即运行
                                 <i data-lucide="arrow-up-right" class="w-4 h-4 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 transition-transform duration-300"></i>
-                            </span>
+                            </a>` : `<span class="inline-flex items-center gap-1.5 font-bold text-slate-400" aria-disabled="true">暂未开放</span>`}
                         </div>
                     </article>
                 `).join('');

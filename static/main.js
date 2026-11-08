@@ -419,7 +419,7 @@ document.addEventListener("DOMContentLoaded", function () {
           maxHeight: "450px",
           position: "relative",
           margin: "auto",
-          background: "linear-gradient(to bottom right, #6951FF, #10EDC5)",
+          background: "#ffffff",
           "border-radius": "5px",
           overflow: "hidden",
           border: "solid 1px #ddd",

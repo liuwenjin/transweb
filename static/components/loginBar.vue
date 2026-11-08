@@ -36,6 +36,7 @@
               <el-avatar
                 style="vertical-align: middle; margin-top: -3px;"
                 :size="20"
+                :alt="userData.name || t('anonymous')"
                 :src="userData.image || 'https://transweb.cn/assets/logo.png'"
               ></el-avatar>
               <span class="pointsValueTips">
@@ -68,6 +69,7 @@
                   class="user-large-avatar"
                   @click="triggerFileInput($event)"
                   :size="72"
+                  :alt="userData.name || t('anonymous')"
                   :src="userData.image"
                   ><i class="bi bi-pencil-square"></i
                 ></el-avatar>
@@ -179,6 +181,7 @@
                     class="apiKeyNameInput"
                     type="text"
                     :placeholder="apiKeyLabel('loginBar.apiKeyNamePlaceholder', '输入 Key 名称')"
+                    :aria-label="apiKeyLabel('loginBar.apiKeyNamePlaceholder', 'API Key 名称')"
                     maxlength="64"
                     spellcheck="false"
                     autocomplete="off"
@@ -461,16 +464,19 @@ export default {
     this.lang = window.__APP_LANG__ === "en" ? "en" : "zh";
     window.addEventListener("applangchange", this.onLangChange);
     window.addEventListener("resize", this.updatePopoverWidth);
+    window.addEventListener("resize", this.updatePopoverTop);
     if (typeof this.switchRoleData === "function") {
       this.switchRoleData();
     }
     this.$nextTick(() => {
       this.updatePopoverWidth();
+      this.updatePopoverTop();
     });
   },
   beforeUnmount() {
     window.removeEventListener("applangchange", this.onLangChange);
     window.removeEventListener("resize", this.updatePopoverWidth);
+    window.removeEventListener("resize", this.updatePopoverTop);
   },
   methods: {
     // 文案翻译：优先读取父页面 creator.html 注入的全局词表（单一数据源）
@@ -537,10 +543,43 @@ export default {
     handlePopoverShow() {
       this.popoverShow = true;
       this.updatePopoverWidth();
+      this.$nextTick(() => {
+        this.updatePopoverTop();
+      });
     },
     // 根据触发按钮的右边缘位置计算浮窗宽度：
     // 浮窗为 bottom-end（右对齐），宽度 = min(460, 触发按钮右边缘 - 左边距)。
     // 移动端保证最小宽度 360px，同时尽量宽且不越过左侧边界。
+    // 移动端浮窗紧贴触发按钮下沿；用 body 的实际缩放比例换算成 CSS 坐标，
+    // 避免 adjustStyle 缩放后浮窗与按钮之间出现空隙。
+    updatePopoverTop() {
+      const el = this.$el;
+      if (!el || !el.closest) return;
+      const header = el.closest("header");
+      if (!header) return;
+
+      const trigger =
+        header.querySelector(".lang-toggle") ||
+        el.querySelector(".user-trigger-btn") ||
+        el.querySelector(".login-main-btn");
+      const body = document.body;
+      const bodyRect = body.getBoundingClientRect();
+      const scale = body.offsetWidth
+        ? bodyRect.width / body.offsetWidth
+        : 1;
+
+      let top = header.offsetHeight;
+      if (trigger) {
+        const rect = trigger.getBoundingClientRect();
+        top = (rect.bottom - bodyRect.top) / (scale || 1);
+      }
+
+      const value = Math.round(top) + "px";
+      el.style.setProperty("--login-panel-top", value);
+      // Popover 可能被 Element 渲染到 body 下，变量写到根节点才能被继承
+      document.documentElement.style.setProperty("--login-panel-top", value);
+    },
+
     updatePopoverWidth() {
       const maxWidth = 460;
       const margin = 12;
@@ -1721,4 +1760,393 @@ export default {
   }
 }
 
+
+/* ==========================================================================
+   GOV.UK 服务设计规范适配层
+   - 页眉按钮 44px、GDS 绿色主按钮；弹层直角、1px 描边
+   - 文字 19px / 16px，GDS 蓝链接与黄色键盘焦点
+   ========================================================================== */
+.loginContentArea {
+  --gds-black: #0b0c0c;
+  --gds-blue: #1d70b8;
+  --gds-green: #00703c;
+  --gds-green-hover: #005a30;
+  --gds-green-shadow: #002d18;
+  --gds-red: #d4351c;
+  --gds-yellow: #ffdd00;
+  --gds-grey: #f3f2f1;
+  --gds-border: #b1b4b6;
+  --gds-secondary: #505a5f;
+  --gds-font: "GDS Transport", Arial, "Noto Sans SC", "Source Han Sans SC",
+    "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+
+  --paper: #ffffff;
+  --card: #ffffff;
+  --field: var(--gds-grey);
+  --field-hover: #dbdad9;
+  --ink: var(--gds-black);
+  --ash: var(--gds-secondary);
+  --ash-2: #6f777b;
+  --line: var(--gds-border);
+  --border: var(--gds-border);
+  --border-strong: var(--gds-black);
+  --red: var(--gds-red);
+  --serif: var(--gds-font);
+  --sans: var(--gds-font);
+
+  height: 44px;
+  min-height: 44px;
+  font-family: var(--gds-font);
+  font-size: 1.1875rem;
+  line-height: 1.5;
+
+  --el-color-primary: var(--gds-green);
+  --el-color-primary-light-3: var(--gds-green-hover);
+  --el-border-radius-base: 0;
+  --el-border-color: var(--gds-border);
+  --el-text-color-primary: var(--gds-black);
+  --el-font-size-base: 1.1875rem;
+  --el-component-size: 44px;
+}
+
+.loginContentArea .login-main-btn.el-button {
+  min-width: 44px;
+  height: 44px !important;
+  padding: 0 16px !important;
+  border: 2px solid transparent !important;
+  border-radius: 0 !important;
+  background: var(--gds-green) !important;
+  color: #ffffff !important;
+  font-family: var(--gds-font);
+  font-size: 1rem !important;
+  font-weight: 400 !important;
+  letter-spacing: 0 !important;
+  box-shadow: 0 2px 0 var(--gds-green-shadow) !important;
+}
+
+.loginContentArea .login-main-btn.el-button:hover {
+  background: var(--gds-green-hover) !important;
+  border-color: var(--gds-green-hover) !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 0 var(--gds-green-shadow) !important;
+  transform: none !important;
+}
+
+.loginContentArea .login-main-btn.el-button:focus-visible {
+  background: var(--gds-yellow) !important;
+  border-color: var(--gds-yellow) !important;
+  color: var(--gds-black) !important;
+  outline: 3px solid transparent;
+  outline-offset: 0;
+  box-shadow: 0 2px 0 var(--gds-black) !important;
+}
+
+.loginContentArea .user-trigger-btn {
+  width: auto;
+  min-width: 44px;
+  height: 44px !important;
+  padding: 0 12px !important;
+  border: 2px solid #ffffff !important;
+  border-radius: 0 !important;
+  background: #ffffff !important;
+  color: var(--gds-black) !important;
+  font-family: var(--gds-font);
+  font-size: 1rem !important;
+  font-weight: 400 !important;
+  box-shadow: none !important;
+}
+
+.loginContentArea .user-trigger-btn:hover {
+  background: var(--gds-grey) !important;
+  border-color: #ffffff !important;
+  color: var(--gds-black) !important;
+  transform: none;
+  box-shadow: none !important;
+}
+
+.loginContentArea .user-trigger-btn:focus-visible {
+  background: var(--gds-yellow) !important;
+  border-color: var(--gds-yellow) !important;
+  color: var(--gds-black) !important;
+  outline: 3px solid transparent;
+  outline-offset: 0;
+  box-shadow: 0 2px 0 var(--gds-black) !important;
+}
+
+.loginContentArea[popovershow="true"] > .user-trigger-btn {
+  background: var(--gds-grey) !important;
+  color: var(--gds-black) !important;
+  border-color: var(--gds-yellow) !important;
+  box-shadow: none !important;
+}
+
+.loginContentArea .pointsValueTips {
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--gds-secondary);
+}
+
+.loginContentArea .pointsValueTips .unit {
+  font-size: 0.875rem;
+  color: var(--gds-secondary);
+}
+
+.loginContentArea .saas-premium-popover.el-popper {
+  width: min(440px, calc(100vw - 30px)) !important;
+  max-width: calc(100vw - 30px) !important;
+  padding: 0 !important;
+  border: 1px solid var(--gds-border) !important;
+  border-radius: 0 !important;
+  background: #ffffff !important;
+  box-shadow: 0 4px 0 rgba(11, 12, 12, 0.18) !important;
+}
+
+.loginContentArea .mySpaceInfo {
+  padding: 25px;
+  background: #ffffff;
+  font-family: var(--gds-font);
+  font-size: 1.1875rem;
+}
+
+.loginContentArea .personalInfoItem {
+  padding: 14px 0;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--gds-secondary);
+  border-bottom: 1px solid var(--gds-border);
+}
+
+.loginContentArea .itemLabel {
+  min-width: 88px;
+  font-size: 1rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--gds-secondary);
+}
+
+.loginContentArea .itemContent,
+.loginContentArea .pointsValue {
+  font-size: 1.1875rem;
+  font-weight: 700;
+  color: var(--gds-black);
+}
+
+.loginContentArea .pointsValue.primaryValue {
+  font-size: 1.5rem;
+}
+
+.loginContentArea .actionGridBtn.el-button {
+  height: 44px !important;
+  padding: 0 12px !important;
+  border: 1px solid var(--gds-border) !important;
+  border-radius: 0 !important;
+  background: #ffffff !important;
+  color: var(--gds-black) !important;
+  font-family: var(--gds-font);
+  font-size: 1rem !important;
+  font-weight: 400 !important;
+  box-shadow: none !important;
+}
+
+.loginContentArea .actionGridBtn.el-button:hover {
+  background: var(--gds-grey) !important;
+  border-color: var(--gds-black) !important;
+  color: var(--gds-black) !important;
+  transform: none;
+  box-shadow: none !important;
+}
+
+.loginContentArea .actionGridBtn.el-button:focus-visible {
+  background: var(--gds-yellow) !important;
+  border-color: var(--gds-black) !important;
+  color: var(--gds-black) !important;
+  outline: 3px solid transparent;
+  outline-offset: 0;
+  box-shadow: 0 2px 0 var(--gds-black) !important;
+}
+
+.loginContentArea .subtleBtn.el-button {
+  min-height: 44px;
+  padding: 0 14px !important;
+  border: 1px solid var(--gds-border) !important;
+  border-radius: 0 !important;
+  background: #ffffff !important;
+  color: var(--gds-black) !important;
+  font-family: var(--gds-font);
+  font-size: 1rem !important;
+  font-weight: 400 !important;
+  letter-spacing: 0 !important;
+}
+
+.loginContentArea .subtleBtn.el-button:hover {
+  background: var(--gds-grey) !important;
+  border-color: var(--gds-black) !important;
+  color: var(--gds-black) !important;
+}
+
+.loginContentArea .primaryGradientBtn.el-button {
+  min-height: 44px;
+  padding: 0 16px !important;
+  border: 2px solid transparent !important;
+  border-radius: 0 !important;
+  background: var(--gds-green) !important;
+  color: #ffffff !important;
+  font-family: var(--gds-font);
+  font-size: 1rem !important;
+  font-weight: 400 !important;
+  letter-spacing: 0 !important;
+  box-shadow: 0 2px 0 var(--gds-green-shadow) !important;
+}
+
+.loginContentArea .primaryGradientBtn.el-button:hover {
+  background: var(--gds-green-hover) !important;
+  border-color: var(--gds-green-hover) !important;
+  color: #ffffff !important;
+  transform: none;
+  box-shadow: 0 2px 0 var(--gds-green-shadow) !important;
+}
+
+.loginContentArea .primaryGradientBtn.el-button:focus-visible,
+.loginContentArea .subtleBtn.el-button:focus-visible {
+  background: var(--gds-yellow) !important;
+  border-color: var(--gds-yellow) !important;
+  color: var(--gds-black) !important;
+  outline: 3px solid transparent;
+  outline-offset: 0;
+  box-shadow: 0 2px 0 var(--gds-black) !important;
+}
+
+.loginContentArea .apiKeyField input {
+  height: 44px;
+  padding: 0 12px 0 40px;
+  border: 2px solid var(--gds-black);
+  border-radius: 0;
+  background: #ffffff !important;
+  color: var(--gds-black) !important;
+  font-family: var(--gds-font);
+  font-size: 1rem !important;
+  letter-spacing: 0;
+  box-shadow: none;
+}
+
+.loginContentArea .apiKeyField input::placeholder {
+  color: var(--gds-secondary);
+  font-size: 1rem;
+  opacity: 1;
+}
+
+.loginContentArea .apiKeyField input:focus {
+  border-color: var(--gds-black);
+  outline: 3px solid var(--gds-yellow);
+  outline-offset: 0;
+  box-shadow: inset 0 0 0 2px var(--gds-black);
+}
+
+.loginContentArea .apiKeyName {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--gds-black);
+}
+
+.loginContentArea .apiKeyMask {
+  font-size: 1rem;
+  color: var(--gds-secondary);
+}
+
+.loginContentArea .apiKeyTime {
+  font-size: 1rem;
+  color: var(--gds-secondary);
+}
+
+.loginContentArea .apiKeyEmpty {
+  font-size: 1rem;
+  color: var(--gds-secondary);
+}
+
+.loginContentArea .exitLogined .el-button.exitButton {
+  min-height: 44px;
+  padding: 0 14px;
+  color: var(--gds-red);
+  font-family: var(--gds-font);
+  font-size: 1rem;
+  font-weight: 400;
+  text-decoration: underline;
+}
+
+.loginContentArea .exitLogined .el-button.exitButton:hover {
+  color: var(--gds-red);
+  text-decoration-thickness: 3px;
+}
+
+.loginContentArea .el-button:focus-visible,
+.loginContentArea .apiKeyField input:focus-visible {
+  outline: 3px solid transparent;
+  outline-offset: 0;
+  background: var(--gds-yellow);
+  color: var(--gds-black);
+  box-shadow: 0 2px 0 var(--gds-black);
+}
+
+@media (max-width: 640px) {
+  .loginContentArea .login-main-btn.el-button {
+    padding: 0 10px !important;
+    font-size: 1rem !important;
+  }
+
+  .loginContentArea .saas-premium-popover.el-popper {
+    position: fixed !important;
+    left: 15px !important;
+    right: 15px !important;
+    top: var(--login-panel-top, 80px) !important;
+    /* 与页眉右侧「EN / 中文」按钮共用同一条右边线；
+       宽度固定为内容区宽度，左右各留 15px，保持水平居中 */
+    width: calc(100% - 30px) !important;
+    max-width: calc(100% - 30px) !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    transform: none !important;
+    border: 1px solid #b1b4b6 !important;
+    border-radius: 0 !important;
+    background: #ffffff !important;
+    box-shadow: 0 4px 0 rgba(11, 12, 12, 0.18) !important;
+    box-sizing: border-box;
+    max-height: calc(100vh - 100px) !important;
+    overflow-y: auto;
+  }
+
+  .loginContentArea .mySpaceInfo {
+    padding: 20px 15px;
+  }
+
+  .loginContentArea .menuItemList {
+    /* 移动端也保持一行两个入口，长文案通过省略号收束 */
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+}
+</style>
+<style>
+/* Mobile only: 浮窗可能被渲染到 body 下，使用非 scoped 规则保证定位生效 */
+@media (max-width: 640px) {
+  .saas-premium-popover.el-popper {
+    position: fixed !important;
+    top: var(--login-panel-top, 80px) !important;
+    left: 15px !important;
+    right: 15px !important;
+    width: calc(100% - 30px) !important;
+    max-width: calc(100% - 30px) !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    transform: none !important;
+    border: 1px solid #b1b4b6 !important;
+    border-radius: 0 !important;
+    background: #ffffff !important;
+    box-shadow: 0 4px 0 rgba(11, 12, 12, 0.18) !important;
+    box-sizing: border-box;
+    max-height: calc(100vh - 100px) !important;
+    overflow-y: auto;
+  }
+}
 </style>

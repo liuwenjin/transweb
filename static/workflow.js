@@ -95,7 +95,7 @@ function renderWorkflows(workflows) {
         <div>
           <span class="wf-card__category">${w.category}</span>${w.hot ? `<span class="wf-card__hot">${w.hot}</span>` : ''}
         </div>
-        <h3 class="wf-card__title">${w.title}</h3>
+        <h3 class="wf-card__title"><a class="wf-card__link" href="${w.url}" target="_blank" rel="noopener noreferrer">${w.title}</a></h3>
         <p class="wf-card__desc">${w.description}</p>
         <div class="wf-card__flow">
           <div class="wf-card__flow-label">共 ${w.nodes.length} 步</div>
@@ -103,14 +103,18 @@ function renderWorkflows(workflows) {
         </div>
         <div class="wf-card__footer">
           <span>单文件运行 · 本地数据</span>
-          <span class="wf-card__run">免费运行 <i>→</i></span>
+          <a class="wf-card__run" href="${w.url}" target="_blank" rel="noopener noreferrer">免费运行 <i>→</i></a>
         </div>
       </article>
     `;
   }).join('');
 
   workflowGrid.querySelectorAll('article[data-url]').forEach(card => {
-    card.addEventListener('click', () => runWorkflow(card.dataset.url));
+    card.addEventListener('click', (event) => {
+      // 卡片内的标题链接与「免费运行」链接自行处理跳转，避免重复打开
+      if (event.target.closest('a')) return;
+      runWorkflow(card.dataset.url);
+    });
   });
 }
 

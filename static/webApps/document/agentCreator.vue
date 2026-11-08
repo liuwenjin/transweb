@@ -6,6 +6,8 @@
       <div
         v-if="statusMessage && step !== 'result'"
         class="appleNotice"
+        :role="statusType === 'error' ? 'alert' : 'status'"
+        aria-live="polite"
         :class="{
           'appleNotice--success': statusType === 'success',
           'appleNotice--error': statusType === 'error',
@@ -173,7 +175,8 @@
                 <div class="appleProgress" data-edit-id="37">
                   <el-progress
                     :percentage="progress"
-                    :stroke-width="4"
+                    :stroke-width="8"
+                    color="#00703c"
                     :show-text="false"
                     data-edit-id="38"
                   ></el-progress>
@@ -1362,11 +1365,6 @@ export default {
   transform: translateY(1px);
 }
 
-.appleBtn--primary.el-button--primary ::v-deep span {
-  position: relative;
-  z-index: 2;
-}
-
 .appleBtn--primary.el-button--primary.is-disabled,
 .appleBtn--primary.el-button--primary.is-disabled:hover {
   background: var(--apple-blue);
@@ -1526,15 +1524,6 @@ export default {
 .appleProgress {
   width: 320px;
   max-width: 100%;
-}
-
-.appleProgress ::v-deep .el-progress-bar__outer {
-  background-color: var(--apple-separator);
-}
-
-.appleProgress ::v-deep .el-progress-bar__inner {
-  background-color: var(--apple-text) !important;
-  transition: width 0.3s var(--ease-out);
 }
 
 .appleProgress__text {
@@ -1956,4 +1945,396 @@ export default {
     animation: none;
   }
 }
+
+/* ==========================================================================
+   GOV.UK 服务设计规范适配层
+   - 19px 正文、GDS 绿主按钮、白色输入面板、黄色键盘焦点
+   - 直角、1px 描边、无阴影；错误 / 成功使用 GDS 红绿
+   ========================================================================== */
+.agentCreatorRoot {
+  --gds-black: #0b0c0c;
+  --gds-blue: #1d70b8;
+  --gds-green: #00703c;
+  --gds-green-hover: #005a30;
+  --gds-green-shadow: #002d18;
+  --gds-red: #d4351c;
+  --gds-yellow: #ffdd00;
+  --gds-grey: #f3f2f1;
+  --gds-border: #b1b4b6;
+  --gds-secondary: #505a5f;
+  --gds-font: "GDS Transport", Arial, "Noto Sans SC", "Source Han Sans SC",
+    "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+
+  --apple-bg: #ffffff;
+  --apple-card: #ffffff;
+  --apple-text: var(--gds-black);
+  --apple-text-2: var(--gds-secondary);
+  --apple-text-3: #6f777b;
+  --apple-blue: var(--gds-green);
+  --apple-blue-hover: var(--gds-green-hover);
+  --apple-blue-active: var(--gds-green-shadow);
+  --apple-blue-soft: var(--gds-grey);
+  --apple-blue-ring: var(--gds-border);
+  --apple-green: var(--gds-green);
+  --apple-green-soft: #e8f2ec;
+  --apple-red: var(--gds-red);
+  --apple-red-soft: #fbe9e7;
+  --apple-border: var(--gds-border);
+  --apple-separator: var(--gds-border);
+  --apple-field: #ffffff;
+  --apple-card-border: var(--gds-border);
+  --apple-border-strong: var(--gds-black);
+  --apple-field-hover: var(--gds-grey);
+  --apple-line-soft: var(--gds-border);
+  --apple-shadow-card: none;
+  --apple-shadow-hover: none;
+  --font-apple: var(--gds-font);
+  --font-serif: var(--gds-font);
+
+  padding: 20px;
+  background: transparent;
+  color: var(--gds-black);
+  font-family: var(--gds-font);
+  font-size: 1.1875rem;
+  line-height: 1.5;
+
+  --el-color-primary: var(--gds-green);
+  --el-color-primary-light-3: var(--gds-green-hover);
+  --el-border-radius-base: 0;
+  --el-border-color: var(--gds-border);
+  --el-text-color-primary: var(--gds-black);
+  --el-font-size-base: 1.1875rem;
+  --el-component-size-large: 44px;
+}
+
+.agentCreatorRoot .appleShell {
+  max-width: 760px;
+  border: 0;
+  box-shadow: none;
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+}
+
+.agentCreatorRoot .appleNotice {
+  margin-bottom: 20px;
+  padding: 15px;
+  border: 0;
+  border-left: 10px solid var(--gds-border);
+  background: transparent;
+  color: var(--gds-black);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0;
+}
+
+.agentCreatorRoot .appleNotice--success {
+  border-left-color: var(--gds-green);
+}
+
+.agentCreatorRoot .appleNotice--error {
+  border-left-color: var(--gds-red);
+  background: transparent;
+  color: var(--gds-red);
+}
+
+.agentCreatorRoot .appleNotice--info {
+  border-left-color: var(--gds-blue);
+}
+
+.agentCreatorRoot .appleNotice__icon {
+  color: inherit;
+}
+
+.agentCreatorRoot .appleStage {
+  min-height: 420px;
+}
+
+.agentCreatorRoot .appleTitle {
+  margin: 0 0 15px;
+  font-family: var(--gds-font);
+  font-size: 2.25rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0;
+  color: var(--gds-black);
+}
+
+.agentCreatorRoot .appleTitle--sm {
+  font-size: 1.75rem;
+}
+
+.agentCreatorRoot .appleField {
+  margin-bottom: 20px;
+}
+
+.agentCreatorRoot .appleSubtitle {
+  font-size: 1.1875rem;
+  line-height: 1.5;
+  letter-spacing: 0;
+  color: var(--gds-secondary);
+}
+
+.agentCreatorRoot .appleDropzone {
+  width: 100%;
+  max-width: 560px;
+  margin: 0 auto;
+  min-height: 220px;
+  padding: 30px 24px;
+  border: 2px dashed var(--gds-border);
+  border-radius: 0;
+  background: #ffffff;
+  box-shadow: none;
+}
+
+.agentCreatorRoot .appleDropzone:hover,
+.agentCreatorRoot .appleDropzone--active,
+.agentCreatorRoot .appleDropzone--dragging {
+  border-color: var(--gds-black);
+  background: var(--gds-grey);
+}
+
+.agentCreatorRoot .appleDropzone:focus-visible {
+  outline: 4px solid var(--gds-yellow);
+  outline-offset: 0;
+  box-shadow: 0 0 0 2px var(--gds-black);
+}
+
+.agentCreatorRoot .appleDropzone:active {
+  transform: none;
+}
+
+.agentCreatorRoot .appleDropzone__glyph {
+  border: 1px solid var(--gds-border);
+  background: #ffffff;
+  box-shadow: none;
+}
+
+.agentCreatorRoot .appleDropzone__glyph::before {
+  border-color: var(--gds-border);
+  background: var(--gds-grey);
+}
+
+.agentCreatorRoot .appleDropzone__glyph::after {
+  background: var(--gds-border);
+  box-shadow: 0 6px var(--gds-border), 0 12px var(--gds-border);
+}
+
+.agentCreatorRoot .appleDropzone__action {
+  font-family: var(--gds-font);
+  font-size: 1.1875rem;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.agentCreatorRoot .appleDropzone__hint {
+  margin-top: 10px;
+  font-size: 1rem;
+  line-height: 1.5;
+  letter-spacing: 0;
+  color: var(--gds-secondary);
+}
+
+.agentCreatorRoot .appleDropzone__row {
+  font-size: 1.1875rem;
+}
+
+.agentCreatorRoot .appleDropzone__size {
+  font-size: 1rem;
+  color: var(--gds-secondary);
+}
+
+.agentCreatorRoot .appleBtn.el-button {
+  height: 44px;
+  padding: 8px 15px 7px;
+  border-width: 2px;
+  border-radius: 0;
+  font-family: var(--gds-font);
+  font-size: 1.1875rem;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+.agentCreatorRoot .appleBtn--primary.el-button--primary {
+  height: 48px;
+  border-color: transparent;
+  background: var(--gds-green);
+  color: #ffffff;
+  box-shadow: 0 2px 0 var(--gds-green-shadow);
+}
+
+.agentCreatorRoot .appleBtn--primary.el-button--primary::after {
+  display: none;
+}
+
+.agentCreatorRoot .appleBtn--primary.el-button--primary:hover {
+  background: var(--gds-green-hover);
+  border-color: var(--gds-green-hover);
+  color: #ffffff;
+  box-shadow: 0 2px 0 var(--gds-green-shadow);
+  transform: none;
+}
+
+.agentCreatorRoot .appleBtn--primary.el-button--primary:not(.is-disabled):active {
+  background: var(--gds-green-hover);
+  border-color: var(--gds-green-hover);
+  box-shadow: none;
+  transform: none;
+}
+
+.agentCreatorRoot .appleBtn--primary.el-button--primary:focus-visible {
+  background: var(--gds-yellow);
+  border-color: var(--gds-yellow);
+  color: var(--gds-black);
+  outline: 3px solid transparent;
+  outline-offset: 0;
+  box-shadow: 0 2px 0 var(--gds-black);
+}
+
+.agentCreatorRoot .appleBtn--primary.el-button--primary.is-disabled,
+.agentCreatorRoot .appleBtn--primary.el-button--primary.is-disabled:hover {
+  background: var(--gds-grey);
+  border-color: var(--gds-grey);
+  color: var(--gds-secondary);
+  box-shadow: none;
+  opacity: 1;
+}
+
+.agentCreatorRoot .appleBtn--secondary.el-button {
+  background: var(--gds-grey);
+  border-color: transparent;
+  color: var(--gds-black);
+  box-shadow: 0 2px 0 #929191;
+}
+
+.agentCreatorRoot .appleBtn--secondary.el-button:hover {
+  background: #dbdad9;
+  border-color: transparent;
+  color: var(--gds-black);
+}
+
+.agentCreatorRoot .appleBtn--link {
+  height: 44px;
+  font-size: 1.1875rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--gds-blue);
+  text-decoration: underline;
+  border-bottom: 0;
+  text-underline-offset: 0.1578em;
+}
+
+.agentCreatorRoot .appleBtn--link:hover {
+  color: var(--gds-blue);
+  text-decoration-thickness: 3px;
+}
+
+.agentCreatorRoot .appleBtn--block.el-button {
+  width: min(560px, 100%);
+}
+
+.agentCreatorRoot .appleTrustNote {
+  margin-top: 15px;
+  font-size: 1rem;
+  line-height: 1.5;
+  letter-spacing: 0;
+  color: var(--gds-secondary);
+}
+
+.agentCreatorRoot .appleWait__title {
+  font-family: var(--gds-font);
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  color: var(--gds-black);
+}
+
+.agentCreatorRoot .appleWait__desc {
+  font-size: 1.1875rem;
+  line-height: 1.5;
+  letter-spacing: 0;
+  color: var(--gds-secondary);
+}
+
+.agentCreatorRoot .appleProgress__text {
+  margin-top: 10px;
+  font-size: 1rem;
+  letter-spacing: 0;
+  color: var(--gds-secondary);
+}
+
+.agentCreatorRoot .appleLabel {
+  font-size: 1rem;
+  color: var(--gds-secondary);
+}
+
+.agentCreatorRoot .appleUrl {
+  font-size: 1.1875rem;
+  color: var(--gds-black);
+  word-break: break-all;
+}
+
+.agentCreatorRoot .appleQr__hint {
+  font-size: 1rem;
+  color: var(--gds-secondary);
+}
+
+.agentCreatorRoot .appleUsageTrigger {
+  min-height: 44px;
+  font-size: 1rem;
+  color: var(--gds-blue);
+  text-decoration: underline;
+}
+
+.agentCreatorRoot .appleUsagePopover__head,
+.agentCreatorRoot .appleUsagePopover__label {
+  font-size: 1rem;
+  color: var(--gds-black);
+}
+
+.agentCreatorRoot .appleUsagePopover__label small {
+  font-size: 0.875rem;
+  color: var(--gds-secondary);
+}
+
+.agentCreatorRoot .appleUsagePopover__value {
+  font-family: var(--gds-font);
+  font-size: 1.5rem;
+  color: var(--gds-black);
+}
+
+.agentCreatorRoot .appleBadge {
+  border-radius: 0;
+  background: var(--gds-green);
+  color: #ffffff;
+}
+
+.agentCreatorRoot .el-button:focus-visible {
+  outline: 3px solid transparent;
+  outline-offset: 0;
+  background: var(--gds-yellow);
+  color: var(--gds-black);
+  box-shadow: 0 2px 0 var(--gds-black);
+}
+
+@media (max-width: 640px) {
+  .agentCreatorRoot {
+    padding: 15px;
+  }
+
+  .agentCreatorRoot .appleShell {
+    padding: 20px 15px;
+    border: 0;
+  }
+
+  .agentCreatorRoot .appleStage {
+    min-height: 420px;
+  }
+
+  .agentCreatorRoot .appleTitle {
+    font-size: 2rem;
+  }
+}
+
 </style>

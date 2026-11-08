@@ -57,6 +57,7 @@
                 >
               </span>
               <span
+                class="inputTextareaWrap"
                 style="
                   display: inline-block;
                   width: 100%;
@@ -68,6 +69,7 @@
                 <el-input
                   v-model="textContent"
                   :placeholder="meta.inputPlaceholder"
+                  :aria-label="meta.inputPlaceholder"
                   :max="9"
                   :min="9"
                   :rows="9"
@@ -78,6 +80,7 @@
                 </el-input>
               </span>
               <span
+                class="inputActionGroup"
                 style="
                   position: absolute;
                   text-align: right;
@@ -92,6 +95,7 @@
                   type="primary"
                   text
                   size="small"
+                  class="config-model-btn"
                   ><el-icon><Setting /></el-icon>算力</el-button
                 >
                 <!-- <el-select
@@ -350,11 +354,13 @@
         <header
           class="tw-flex tw-flex-col md:tw-flex-row tw-justify-between tw-items-start md:tw-items-center tw-mb-6 tw-space-y-4 md:tw-space-y-0"
         >
-          <div class="tw-w-full md:tw-w-96">
+          <div class="community-search-group tw-w-full md:tw-w-96">
             <el-input
+              class="community-search-input"
               @change="searchAppCards()"
               v-model="meta.communityInfo.searchText"
               :placeholder="meta.communityInfo.searchPlaceholder"
+              :aria-label="meta.communityInfo.searchPlaceholder"
               clearable
               :rounded="true"
               :style="{
@@ -370,19 +376,13 @@
             </el-input>
             <div
               v-if="!!isPartner"
-              style="
-                width: 80px;
-                display: inline-block;
-                float: right;
-                text-align: right;
-              "
-              class="tw-w-full md:tw-w-auto tw-justify-end"
+              class="community-owner-wrap tw-w-full md:tw-w-auto tw-justify-end"
             >
               <el-select
                 @change="searchAppCards()"
                 v-model="meta.communityInfo.selectedOwner"
-                placeholder="Owned by everyone"
-                class="tw-w-40"
+                placeholder="所有创作者"
+                class="community-owner-select tw-w-40"
                 style="width: 100%; display: inline-block; border-radius: 0px"
               >
                 <el-option label="所有" value="all"></el-option>
@@ -536,16 +536,20 @@
     </div>
     <el-dialog
       v-model="configDialog.visible"
-      class="custom-dragging-style"
+      class="custom-dragging-style input-config-dialog"
       :title="configDialog.title"
-      width="400"
+      width="600"
+      align-center
     >
       <el-form
         :label-width="configDialog.formData.labelWidth"
         label-position="left"
         :model="configDialog.value"
       >
-        <el-form-item :label="configDialog.formData.data[0].label">
+        <el-form-item>
+          <template #label>
+            <span class="config-label-text" style="white-space: nowrap;">{{ configDialog.formData.data[0].label }}</span>
+          </template>
           <el-select
             size="small"
             @change="handleChangeConfig(configDialog.formData.data[0])"
@@ -562,10 +566,10 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item
-          v-if="configDialog.value.apiName === 'custom'"
-          :label="configDialog.formData.data[1].label"
-        >
+        <el-form-item v-if="configDialog.value.apiName === 'custom'">
+          <template #label>
+            <span class="config-label-text" style="white-space: nowrap;">{{ configDialog.formData.data[1].label }}</span>
+          </template>
           <el-input
             size="small"
             placeholder="输入 API 的 URL"
@@ -573,7 +577,10 @@
             clearable
           ></el-input>
         </el-form-item>
-        <el-form-item :label="configDialog.formData.data[2].label">
+        <el-form-item>
+          <template #label>
+            <span class="config-label-text" style="white-space: nowrap;">{{ configDialog.formData.data[2].label }}</span>
+          </template>
           <el-select
             size="small"
             v-if="configDialog.value.apiName !== 'custom'"
@@ -600,10 +607,10 @@
             clearable
           ></el-input>
         </el-form-item>
-        <el-form-item
-          v-if="configDialog.value.apiName === 'custom'"
-          :label="configDialog.formData.data[3].label"
-        >
+        <el-form-item v-if="configDialog.value.apiName === 'custom'">
+          <template #label>
+            <span class="config-label-text" style="white-space: nowrap;">{{ configDialog.formData.data[3].label }}</span>
+          </template>
           <el-input
             size="small"
             type="password"
@@ -612,39 +619,44 @@
             clearable
           ></el-input>
         </el-form-item>
-        <el-form-item
-          label="价格(输入)"
-          v-if="configDialog.value.apiName !== 'custom'"
-        >
-          <span>
+        <el-form-item v-if="configDialog.value.apiName !== 'custom'">
+          <template #label>
+            <span class="config-label-text" style="white-space: nowrap;">价格(输入)</span>
+          </template>
+          <span class="config-value">
             {{
               configDialog.formData.priceMap[
                 configDialog.value.model || defaultModel
               ].in
             }}
           </span>
-          (积分 / 百万 tokens)
+          <span class="config-price-unit config-value">(积分 / 百万 tokens)</span>
         </el-form-item>
-        <el-form-item
-          label="价格(输出)"
-          v-if="configDialog.value.apiName !== 'custom'"
-        >
-          <span>
+        <el-form-item v-if="configDialog.value.apiName !== 'custom'">
+          <template #label>
+            <span class="config-label-text" style="white-space: nowrap;">价格(输出)</span>
+          </template>
+          <span class="config-value">
             {{
               configDialog.formData.priceMap[
                 configDialog.value.model || defaultModel
               ].out
             }}
           </span>
-          (积分 / 百万 tokens)
+          <span class="config-price-unit config-value">(积分 / 百万 tokens)</span>
         </el-form-item>
-        <el-form-item
-          v-if="configDialog.value.apiName !== 'custom'"
-          label="佣金比例"
-        >
-          0.1
+        <el-form-item v-if="configDialog.value.apiName !== 'custom'">
+          <template #label>
+            <span class="config-label-text" style="white-space: nowrap;">佣金比例</span>
+          </template>
+          <span class="config-value">0.1</span>
         </el-form-item>
-        <el-form-item v-else label="价格(转发)"> 100 积分 / 次 </el-form-item>
+        <el-form-item v-else>
+          <template #label>
+            <span class="config-label-text" style="white-space: nowrap;">价格(转发)</span>
+          </template>
+          <span class="config-value">100 积分 / 次</span>
+        </el-form-item>
       </el-form>
       <template #footer>
         <div class="dialog-footer">
@@ -705,7 +717,7 @@ export default {
         },
         title: "配置参数",
         formData: {
-          labelWidth: 100,
+          labelWidth: 140,
           taxRateMap: {
             白山云: 0.1,
             modelRouter: 0.1,
@@ -2575,92 +2587,6 @@ export default {
   text-shadow: -1px 1px rgba(26, 26, 30, 0.2);
 }
 
-/* 主按钮：墨色直角 */
-:deep(.el-button--primary) {
-  --el-button-bg-color: var(--muse-primary, #1a1a1e);
-  --el-button-border-color: var(--muse-primary, #1a1a1e);
-  --el-button-hover-bg-color: var(--muse-primary-hover, #2b2b31);
-  --el-button-hover-border-color: var(--muse-primary-hover, #2b2b31);
-  --el-button-active-bg-color: var(--muse-primary-active, #000000);
-  --el-button-active-border-color: var(--muse-primary-active, #000000);
-  --el-button-text-color: #ffffff;
-  border-radius: 0px;
-  font-weight: 600;
-}
-
-/* 卡片：16px 圆角 + 悬浮上浮 */
-:deep(.el-card) {
-  border-radius: var(--radius-3xl) !important;
-  transition: all var(--duration-base) ease;
-}
-
-:deep(.el-card.is-hover-shadow:hover) {
-  transform: translateY(-2px);
-  box-shadow: var(--glass-shadow-hover) !important;
-}
-
-/* 弹窗：16px 圆角玻璃卡片 */
-:deep(.el-dialog) {
-  border-radius: var(--radius-3xl, 16px) !important;
-  overflow: hidden;
-  box-shadow: 0 25px 50px -12px rgba(20, 20, 30, 0.16) !important;
-}
-
-:deep(.el-dialog__header) {
-  margin-right: 0;
-  padding: 20px 24px 12px;
-  border-bottom: 1px solid var(--muse-border, #fafafc);
-}
-
-:deep(.el-dialog__title) {
-  font-weight: 700;
-  font-size: 1.125rem;
-  color: var(--muse-text, #1a1a1e);
-}
-
-:deep(.el-dialog__body) {
-  padding: 20px 24px;
-  color: var(--muse-text, #1a1a1e);
-}
-
-:deep(.el-dialog__footer) {
-  padding: 12px 24px 20px;
-  border-top: 1px solid var(--muse-border, #fafafc);
-}
-
-/* 输入 / 选择器：直角 + 墨色焦点环 */
-:deep(.el-select__wrapper),
-:deep(.el-input__wrapper),
-:deep(.el-textarea__inner) {
-  border-radius: var(--radius-lg, 10px);
-}
-
-:deep(.el-input__wrapper.is-focus),
-:deep(.el-select__wrapper.is-focused),
-:deep(.el-textarea__inner:focus) {
-  box-shadow: 0 0 0 1px var(--muse-primary, #1a1a1e) inset !important;
-}
-
-:deep(.el-form-item__label) {
-  color: var(--muse-text-secondary, #6e6e73);
-  font-weight: 500;
-}
-
-/* 标签：墨色浅底胶囊 */
-:deep(.el-tag) {
-  --el-tag-bg-color: var(--muse-primary-soft, #f3f3f5);
-  --el-tag-border-color: var(--muse-primary-ring, #e7e7eb);
-  --el-tag-text-color: var(--muse-primary-hover, #2b2b31);
-  border-radius: 0px;
-  font-weight: 500;
-}
-
-/* 开关：墨色 */
-:deep(.el-switch.is-checked .el-switch__core) {
-  background-color: var(--muse-primary, #1a1a1e);
-  border-color: var(--muse-primary, #1a1a1e);
-}
-
 /* Tailwind 蓝色工具类对齐墨色 */
 .tw-text-blue-600,
 .tw-text-blue-500 {
@@ -2679,4 +2605,1069 @@ export default {
 .tw-border-blue-200 {
   border-color: #e7e7eb !important;
 }
+
+/* ==========================================================================
+   GOV.UK 服务设计规范适配层
+   - 表单与主操作遵循 GDS：19px 正文、44px 控件、绿主按钮、黄色焦点
+   - 保留页面原有深色 Hero，仅收敛卡片、输入与按钮
+   ========================================================================== */
+.oneKeyContentArea {
+  --gds-black: #0b0c0c;
+  --gds-blue: #1d70b8;
+  --gds-green: #00703c;
+  --gds-green-hover: #005a30;
+  --gds-green-shadow: #002d18;
+  --gds-red: #d4351c;
+  --gds-yellow: #ffdd00;
+  --gds-grey: #f3f2f1;
+  --gds-border: #b1b4b6;
+  --gds-secondary: #505a5f;
+  --gds-font: "GDS Transport", Arial, "Noto Sans SC", "Source Han Sans SC",
+    "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+
+  --muse-primary: var(--gds-green);
+  --muse-primary-hover: var(--gds-green-hover);
+  --muse-primary-active: var(--gds-green-shadow);
+  --muse-text: var(--gds-black);
+  --muse-text-secondary: var(--gds-secondary);
+  --muse-text-tertiary: #6f777b;
+  --muse-border: var(--gds-border);
+  --muse-border-strong: var(--gds-black);
+  --muse-surface: #ffffff;
+  --muse-card: #ffffff;
+  --muse-bg: #ffffff;
+  --font-system: var(--gds-font);
+
+  font-family: var(--gds-font);
+  font-size: 1.1875rem;
+  line-height: 1.5;
+
+  --el-color-primary: var(--gds-green);
+  --el-color-primary-light-3: var(--gds-green-hover);
+  --el-color-success: var(--gds-green);
+  --el-color-warning: var(--gds-red);
+  --el-color-danger: var(--gds-red);
+  --el-border-radius-base: 0;
+  --el-card-border-radius: 0;
+  --el-dialog-border-radius: 0;
+  --el-border-color: var(--gds-border);
+  --el-input-border-color: var(--gds-black);
+  --el-input-focus-border-color: var(--gds-black);
+  --el-text-color-primary: var(--gds-black);
+  --el-text-color-regular: var(--gds-black);
+  --el-font-size-base: 1.1875rem;
+  --el-component-size-large: 44px;
+  --el-component-size: 44px;
+}
+
+.oneKeyContentArea .sloganInfoArea {
+  padding: 48px 20px 36px;
+}
+
+.oneKeyContentArea .sloganInfoArea > p:nth-child(1) {
+  font-size: clamp(2rem, 4vw, 3rem) !important;
+  font-weight: 700 !important;
+  line-height: 1.15 !important;
+  letter-spacing: 0 !important;
+}
+
+.oneKeyContentArea .sloganInfoArea > p:nth-child(2) {
+  font-size: 1.1875rem !important;
+  line-height: 1.5 !important;
+  text-shadow: none;
+}
+
+.oneKeyContentArea .inputContentArea {
+  padding: 24px;
+  border: 1px solid var(--gds-border);
+  border-radius: 0;
+  background: #ffffff;
+  box-shadow: none;
+}
+
+.oneKeyContentArea .inputContentArea:focus-within {
+  outline: 3px solid var(--gds-yellow);
+  outline-offset: 0;
+  box-shadow: inset 0 0 0 2px var(--gds-black);
+}
+
+.oneKeyContentArea .stepItemArea {
+  font-size: 1.1875rem;
+}
+
+.oneKeyContentArea .stepItemArea .el-textarea__inner {
+  font-size: 1.1875rem !important;
+  line-height: 1.5 !important;
+  padding: 15px !important;
+}
+
+.oneKeyContentArea .stepItemArea :focus-within {
+  outline: 3px solid var(--gds-yellow);
+  outline-offset: 0;
+}
+
+.oneKeyContentArea .el-input:focus-within,
+.oneKeyContentArea .el-select:focus-within,
+.oneKeyContentArea .el-textarea:focus-within {
+  outline: 3px solid var(--gds-yellow);
+  outline-offset: 0;
+}
+
+.oneKeyContentArea .el-card {
+  border-radius: 0 !important;
+}
+
+.oneKeyContentArea .el-dialog {
+  border-radius: 0 !important;
+}
+
+.oneKeyContentArea .shiny-button.el-button {
+  min-height: 48px;
+  padding: 10px 18px;
+  border: 2px solid transparent;
+  border-radius: 0;
+  background: var(--gds-green) !important;
+  background-image: none !important;
+  color: #ffffff !important;
+  font-family: var(--gds-font);
+  font-size: 1.1875rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  box-shadow: 0 2px 0 var(--gds-green-shadow) !important;
+  transform: none !important;
+}
+
+.oneKeyContentArea .shiny-button.el-button:hover {
+  background: var(--gds-green-hover) !important;
+  border-color: var(--gds-green-hover);
+  color: #ffffff !important;
+  box-shadow: 0 2px 0 var(--gds-green-shadow) !important;
+  transform: none !important;
+}
+
+.oneKeyContentArea .shiny-button.el-button:focus-visible {
+  background: var(--gds-yellow) !important;
+  border-color: var(--gds-yellow);
+  color: var(--gds-black) !important;
+  outline: 3px solid transparent;
+  outline-offset: 0;
+  box-shadow: 0 2px 0 var(--gds-black) !important;
+}
+
+.oneKeyContentArea .shiny-button.el-button.is-disabled {
+  background: var(--gds-grey) !important;
+  color: var(--gds-secondary) !important;
+  box-shadow: none !important;
+}
+
+.oneKeyContentArea .idea-section-container {
+  font-family: var(--gds-font);
+}
+
+.oneKeyContentArea .section-title {
+  margin-top: 20px;
+  color: var(--gds-black);
+  font-family: var(--gds-font);
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.oneKeyContentArea .ideas-buttons-row {
+  gap: 10px;
+  padding-top: 15px;
+}
+
+.oneKeyContentArea .idea-button {
+  min-height: 44px;
+  padding: 8px 15px;
+  border: 1px solid var(--gds-border);
+  border-radius: 0;
+  background: #ffffff;
+  color: var(--gds-black);
+  font-family: var(--gds-font);
+  font-size: 1rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  backdrop-filter: none;
+  box-shadow: none;
+}
+
+.oneKeyContentArea .idea-button:hover {
+  border-color: var(--gds-black);
+  background: var(--gds-grey);
+  color: var(--gds-black);
+  transform: none;
+  box-shadow: none;
+}
+
+.oneKeyContentArea .idea-button:focus-visible {
+  outline: 3px solid transparent;
+  outline-offset: 0;
+  background: var(--gds-yellow);
+  border-color: var(--gds-yellow);
+  color: var(--gds-black);
+  box-shadow: 0 2px 0 var(--gds-black);
+}
+
+.oneKeyContentArea .el-button {
+  border-radius: 0;
+  font-family: var(--gds-font);
+}
+
+.oneKeyContentArea .el-button:focus-visible {
+  outline: 3px solid transparent;
+  outline-offset: 0;
+  background: var(--gds-yellow) !important;
+  border-color: var(--gds-yellow) !important;
+  color: var(--gds-black) !important;
+  box-shadow: 0 2px 0 var(--gds-black) !important;
+}
+
+.oneKeyContentArea .myAppsArea h5,
+.oneKeyContentArea .communityArea h5 {
+  font-family: var(--gds-font) !important;
+  font-size: 2rem !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+  color: var(--gds-black) !important;
+}
+
+.oneKeyContentArea .communityArea p {
+  font-size: 1.1875rem !important;
+  line-height: 1.5 !important;
+  color: var(--gds-black) !important;
+}
+
+.oneKeyContentArea .myAppsArea .el-card,
+.oneKeyContentArea .communityArea .el-card {
+  border: 1px solid var(--gds-border) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  background: #ffffff;
+}
+
+.oneKeyContentArea .myAppsArea .el-card:hover,
+.oneKeyContentArea .communityArea .el-card:hover {
+  border-color: var(--gds-black) !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.oneKeyContentArea .contentCardItem h3 {
+  font-family: var(--gds-font);
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--gds-black);
+}
+
+.oneKeyContentArea .contentCardItem .tw-text-sm,
+.oneKeyContentArea .contentCardItem .tw-text-xs {
+  font-size: 1rem !important;
+  color: var(--gds-secondary) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .oneKeyContentArea *,
+  .oneKeyContentArea *::before,
+  .oneKeyContentArea *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+.oneKeyContentArea .community-search-group {
+  display: flex !important;
+  align-items: center !important;
+  width: 100% !important;
+  height: 48px !important;
+  max-width: 640px !important;
+  margin: 0 auto !important;
+  float: none !important;
+}
+
+.oneKeyContentArea .community-search-input {
+  flex: 1 1 auto !important;
+  width: auto !important;
+  height: 48px !important;
+  min-width: 0 !important;
+  display: flex !important;
+  align-items: center;
+  border-radius: 0 !important;
+}
+
+.oneKeyContentArea .community-search-input .el-input__wrapper {
+  height: 48px !important;
+  min-height: 48px !important;
+  padding: 0 15px !important;
+  border: 2px solid #0b0c0c !important;
+  border-radius: 0 !important;
+  background: #ffffff !important;
+  box-shadow: none !important;
+}
+
+.oneKeyContentArea .community-search-input .el-input__wrapper.is-focus {
+  outline: 3px solid #ffdd00 !important;
+  outline-offset: 0 !important;
+  box-shadow: inset 0 0 0 2px #0b0c0c !important;
+}
+
+.oneKeyContentArea .community-owner-wrap {
+  flex: 0 0 132px !important;
+  width: 132px !important;
+  height: 48px !important;
+  float: none !important;
+  text-align: left !important;
+}
+
+.oneKeyContentArea .community-owner-select {
+  width: 100% !important;
+  height: 48px !important;
+}
+
+.oneKeyContentArea .community-owner-select .el-select__wrapper {
+  height: 48px !important;
+  min-height: 48px !important;
+  padding: 0 12px !important;
+  border: 2px solid #0b0c0c !important;
+  border-left: 0 !important;
+  border-radius: 0 !important;
+  background: #f3f2f1 !important;
+  box-shadow: none !important;
+}
+
+.oneKeyContentArea .community-owner-select .el-select__wrapper.is-focused {
+  outline: 3px solid #ffdd00 !important;
+  outline-offset: 0 !important;
+}
+
+.oneKeyContentArea .community-owner-select .el-select__placeholder,
+.oneKeyContentArea .community-owner-select .el-select__selected-item {
+  font-size: 1.1875rem !important;
+  color: #0b0c0c !important;
+}
+
+@media (max-width: 400px) {
+  .oneKeyContentArea .community-owner-wrap {
+    flex-basis: 116px !important;
+    width: 116px !important;
+  }
+
+  .oneKeyContentArea .community-owner-select .el-select__placeholder,
+  .oneKeyContentArea .community-owner-select .el-select__selected-item {
+    font-size: 1rem !important;
+  }
+}
+</style>
+
+<style>
+/* ==========================================================================
+   input.vue 布局精修（非 scoped：Element Plus 内部节点不继承组件作用域）
+   --------------------------------------------------------------------------
+   1. 文本框与操作条上下分层，正文不会再被按钮遮挡
+   2. 示例入口使用自适应网格，不再出现横向裁切或落单
+   3. 社区区限制内容宽度并修正 h5/p 的默认外边距
+   ========================================================================== */
+.oneKeyContentArea .stepItemArea .el-textarea__inner {
+  border: 2px solid #0b0c0c !important;
+  border-radius: 0 !important;
+  padding: 15px !important;
+  font-size: 1.1875rem !important;
+  line-height: 1.5 !important;
+  color: #0b0c0c !important;
+  box-shadow: none !important;
+  resize: none;
+}
+
+.oneKeyContentArea .stepItemArea .el-textarea__inner::placeholder {
+  color: #505a5f !important;
+  opacity: 1;
+}
+
+.oneKeyContentArea .stepItemArea .el-textarea__inner:focus {
+  border-color: #0b0c0c !important;
+  outline: 3px solid #ffdd00 !important;
+  outline-offset: 0 !important;
+  box-shadow: inset 0 0 0 2px #0b0c0c !important;
+}
+
+/* 示例按钮：桌面换行；不再裁切最后一个入口 */
+.oneKeyContentArea .ideas-buttons-row {
+  flex-wrap: wrap !important;
+  overflow: visible !important;
+  gap: 10px !important;
+  padding-bottom: 0 !important;
+}
+
+.oneKeyContentArea .clone-app-button {
+  margin-right: 0 !important;
+}
+
+/* 社区 / 我的应用：限制阅读宽度，消除 100% + padding 造成的横向溢出 */
+.oneKeyContentArea .communityArea,
+.oneKeyContentArea .myAppsArea {
+  float: none !important;
+  clear: both !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  max-width: 1020px !important;
+  margin: 30px auto 0 !important;
+  padding: 20px 30px !important;
+}
+
+.oneKeyContentArea .communityArea h5 {
+  margin: 0 0 10px !important;
+  padding: 0 !important;
+  font-size: 2rem !important;
+  line-height: 1.2 !important;
+}
+
+.oneKeyContentArea .communityArea > p {
+  margin: 0 0 30px !important;
+  padding: 0 !important;
+  font-size: 1.1875rem !important;
+  line-height: 1.5 !important;
+}
+
+.oneKeyContentArea .communityArea > .tw-min-h-screen {
+  min-height: 0 !important;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+@media (max-width: 640px) {
+  .oneKeyContentArea .communityArea,
+  .oneKeyContentArea .myAppsArea {
+    padding: 16px 20px !important;
+  }
+
+  .oneKeyContentArea .communityArea h5 {
+    font-size: 1.75rem !important;
+  }
+
+}
+
+/* 统一盒模型：避免 100% 宽度叠加 padding 造成移动端横向溢出 */
+.oneKeyContentArea,
+.oneKeyContentArea .sloganInfoArea,
+.oneKeyContentArea .aiGenerateArea,
+.oneKeyContentArea .inputContentArea,
+.oneKeyContentArea .communityArea,
+.oneKeyContentArea .myAppsArea {
+  box-sizing: border-box !important;
+}
+
+.oneKeyContentArea .aiGenerateArea {
+  width: 100% !important;
+}
+
+.oneKeyContentArea .inputContentArea {
+  width: 100% !important;
+  max-width: 750px !important;
+}
+
+/* 输入区右下角的操作按钮组：不再固定 300px，随卡片宽度收缩 */
+.oneKeyContentArea .stepItemArea > span[style*="position: absolute"] {
+  width: auto !important;
+  max-width: calc(100% - 14px) !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.oneKeyContentArea .stepItemArea .shiny-button {
+  max-width: 100% !important;
+  min-width: 0;
+}
+
+@media (max-width: 640px) {
+  .oneKeyContentArea .inputContentArea {
+    padding: 20px !important;
+  }
+}
+
+/* 社区标题与说明保持外层深色底的白色文字，避免在紫色渐变上对比度不足 */
+.oneKeyContentArea .communityArea h5,
+.oneKeyContentArea .communityArea > p {
+  color: #ffffff !important;
+}
+
+/* 示例入口改为自适应网格：桌面 2×2，移动端单列，避免最后一项单独成行 */
+.oneKeyContentArea .ideas-buttons-row {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)) !important;
+  gap: 10px !important;
+  overflow: visible !important;
+}
+
+.oneKeyContentArea .idea-button {
+  width: 100%;
+  justify-content: center;
+}
+
+/* 卡片底部与顶部留白对齐：去掉示例区额外的 10px 下内边距 */
+.oneKeyContentArea .idea-section-container {
+  padding: 10px 0 0 !important;
+}
+
+/* 社区搜索：桌面居中收窄，与标题形成稳定的中轴；移动端保持整行 */
+.oneKeyContentArea .communityArea header {
+  justify-content: center !important;
+}
+
+.oneKeyContentArea .communityArea header > div {
+  width: 100% !important;
+  max-width: 640px !important;
+  margin: 0 auto !important;
+}
+
+.oneKeyContentArea .communityArea .el-input,
+.oneKeyContentArea .communityArea .el-input__wrapper {
+  width: 100% !important;
+  border-radius: 0 !important;
+  background: #ffffff !important;
+  box-shadow: none !important;
+}
+
+.oneKeyContentArea .communityArea .el-input__wrapper {
+  min-height: 50px;
+  padding: 0 15px !important;
+  border: 2px solid #0b0c0c !important;
+}
+
+.oneKeyContentArea .communityArea .el-input__wrapper.is-focus,
+.oneKeyContentArea .communityArea .el-input__wrapper:focus-within {
+  outline: 3px solid #ffdd00 !important;
+  outline-offset: 0 !important;
+  box-shadow: inset 0 0 0 2px #0b0c0c !important;
+}
+
+.oneKeyContentArea .communityArea .el-input__inner {
+  font-size: 1.1875rem !important;
+  color: #0b0c0c !important;
+}
+
+.oneKeyContentArea .communityArea footer a {
+  color: #ffffff !important;
+  text-decoration: underline;
+}
+
+/* 输入区悬浮按钮与文本框内边距对齐：右、下均 15px */
+.oneKeyContentArea .stepItemArea > span[style*="position: absolute"] {
+  right: 15px !important;
+  bottom: 15px !important;
+}
+
+@media (max-width: 640px) {
+  .oneKeyContentArea .communityArea header > div {
+    max-width: 100% !important;
+  }
+}
+
+/* Hero 文案限制行宽，避免大字号长句铺满整屏 */
+.oneKeyContentArea .sloganInfoArea > p {
+  max-width: 960px;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+@media (max-width: 640px) {
+  .oneKeyContentArea .sloganInfoArea > p {
+    max-width: 100%;
+  }
+}
+
+/* ==========================================================================
+   输入区操作条：从文本框内绝对定位改为下方独立一行
+   --------------------------------------------------------------------------
+   避免长文本、清空按钮与生成按钮互相遮挡；桌面左右分布，移动端上下排列。
+   ========================================================================== */
+.oneKeyContentArea .stepItemArea {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  column-gap: 12px;
+  row-gap: 12px;
+  align-items: center;
+  width: 100% !important;
+  float: none !important;
+}
+
+.oneKeyContentArea .inputTextareaWrap {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  display: block !important;
+  width: 100% !important;
+  height: auto !important;
+  float: none !important;
+}
+
+.oneKeyContentArea .stepItemArea .optionsArea {
+  grid-column: 1;
+  grid-row: 2;
+  position: static !important;
+  left: auto !important;
+  bottom: auto !important;
+  z-index: auto !important;
+  justify-self: start;
+}
+
+.oneKeyContentArea .stepItemArea .optionsArea .el-button {
+  float: none !important;
+  height: 44px !important;
+  padding: 0 15px !important;
+  border: 2px solid #b1b4b6 !important;
+  border-radius: 0 !important;
+  background: #ffffff !important;
+  color: #0b0c0c !important;
+  font-size: 1rem !important;
+  box-shadow: none !important;
+}
+
+.oneKeyContentArea .inputActionGroup {
+  grid-column: 2;
+  grid-row: 2;
+  position: static !important;
+  width: auto !important;
+  max-width: 100% !important;
+  right: auto !important;
+  bottom: auto !important;
+  justify-self: end;
+  margin-right: 15px;
+  display: flex !important;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+@media (max-width: 640px) {
+  /* 移动端同样把三个操作放在同一行：清空左侧，算力 + 生成右侧 */
+  .oneKeyContentArea .stepItemArea {
+    display: grid !important;
+    grid-template-columns: auto minmax(0, 1fr);
+    column-gap: 8px;
+    row-gap: 12px;
+    align-items: center;
+  }
+
+  .oneKeyContentArea .inputTextareaWrap {
+    grid-column: 1 / -1;
+    grid-row: 1;
+  }
+
+  .oneKeyContentArea .stepItemArea .optionsArea {
+    grid-column: 1;
+    grid-row: 2;
+    justify-self: start;
+    align-self: center;
+  }
+
+  .oneKeyContentArea .inputActionGroup {
+    grid-column: 2;
+    grid-row: 2;
+    justify-self: end;
+    align-self: center;
+    width: auto !important;
+    margin-right: 15px;
+  }
+}
+
+@media (max-width: 360px) {
+  .oneKeyContentArea .inputActionGroup {
+    gap: 4px;
+  }
+
+  .oneKeyContentArea .inputActionGroup .el-button {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+    font-size: 0.875rem !important;
+  }
+
+  .oneKeyContentArea .inputActionGroup .shiny-button {
+    max-width: 150px !important;
+  }
+}
+
+@media (max-width: 370px) {
+  .oneKeyContentArea .section-title {
+    font-size: 1.375rem !important;
+    line-height: 1.4 !important;
+  }
+}
+
+@media (max-width: 360px) {
+  /* 320px 下标题与克隆入口同排，缩小标题避免句号单独掉行 */
+  .oneKeyContentArea .section-title {
+    font-size: 1.125rem !important;
+    line-height: 1.4 !important;
+  }
+}
+
+/* ==========================================================================
+   操作条按钮与算力配置对话框
+   --------------------------------------------------------------------------
+   1. 清空 / 算力 / 生成三个按钮统一 48px 高，同一水平线
+   2. 算力配置对话框加宽并禁止标签折行
+   3. 表单控件 44px、2px 描边，与输入卡片保持一致
+   ========================================================================== */
+.oneKeyContentArea .inputActionGroup {
+  align-items: center;
+}
+
+.oneKeyContentArea .inputActionGroup .el-button {
+  height: 48px !important;
+  border-radius: 0 !important;
+  font-size: 1rem !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.oneKeyContentArea .inputActionGroup .el-button + .el-button {
+  margin-left: 0 !important;
+}
+
+.oneKeyContentArea .inputActionGroup .config-model-btn {
+  padding: 0 14px !important;
+  border: 2px solid #b1b4b6 !important;
+  background: #ffffff !important;
+  color: #0b0c0c !important;
+  font-weight: 400 !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.oneKeyContentArea .inputActionGroup .config-model-btn:hover {
+  border-color: #0b0c0c !important;
+  background: #f3f2f1 !important;
+  color: #0b0c0c !important;
+}
+
+.oneKeyContentArea .inputActionGroup .config-model-btn .el-icon {
+  font-size: 16px;
+}
+
+.oneKeyContentArea .inputActionGroup .shiny-button {
+  height: 48px !important;
+}
+
+.oneKeyContentArea .stepItemArea .optionsArea .el-button {
+  height: 48px !important;
+  padding: 0 15px !important;
+  border: 2px solid #b1b4b6 !important;
+  border-radius: 0 !important;
+  background: #ffffff !important;
+  color: #0b0c0c !important;
+  font-size: 1rem !important;
+  box-shadow: none !important;
+}
+
+.oneKeyContentArea .stepItemArea .optionsArea .el-button:hover {
+  border-color: #0b0c0c !important;
+  background: #f3f2f1 !important;
+}
+
+/* --------------------------------------------------------------------------
+   算力配置对话框
+   -------------------------------------------------------------------------- */
+.input-config-dialog.el-dialog {
+  width: min(600px, calc(100vw - 30px)) !important;
+  max-width: calc(100vw - 30px) !important;
+  max-height: calc(100vh - 32px);
+  padding: 0 !important;
+  border: 1px solid #b1b4b6 !important;
+  border-radius: 0 !important;
+  background: #ffffff;
+  box-shadow: 0 16px 48px rgba(11, 12, 12, 0.18) !important;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+  height: auto !important;
+}
+
+.input-config-dialog .el-dialog__header {
+  flex: none;
+  margin: 0 !important;
+  padding: 24px 56px 16px 24px !important;
+  border-bottom: 1px solid #b1b4b6;
+}
+
+.input-config-dialog .el-dialog__title {
+  font-size: 1.5rem !important;
+  font-weight: 700 !important;
+  line-height: 1.3 !important;
+  color: #0b0c0c !important;
+}
+
+.input-config-dialog .el-dialog__headerbtn {
+  top: 12px !important;
+  right: 12px !important;
+  width: 40px;
+  height: 40px;
+  border-radius: 0;
+  color: #505a5f;
+}
+
+.input-config-dialog .el-dialog__headerbtn:hover {
+  background: #f3f2f1;
+  color: #0b0c0c;
+}
+
+.input-config-dialog .el-dialog__headerbtn .el-dialog__close {
+  color: #505a5f !important;
+  font-size: 20px;
+}
+
+.input-config-dialog .el-dialog__headerbtn:hover .el-dialog__close {
+  color: #0b0c0c !important;
+}
+
+.input-config-dialog .el-dialog__headerbtn:focus-visible {
+  outline: 3px solid #ffdd00;
+  outline-offset: 0;
+}
+
+.input-config-dialog .el-dialog__body {
+  flex: 1 1 auto;
+  padding: 24px !important;
+  overflow-y: auto;
+  color: #0b0c0c;
+  font-size: 1rem;
+}
+
+.input-config-dialog .el-dialog__footer {
+  flex: none;
+  padding: 20px 24px !important;
+  border-top: 1px solid #b1b4b6;
+}
+
+.input-config-dialog .dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.input-config-dialog .el-dialog__footer .el-button {
+  height: 44px;
+  min-width: 96px;
+  padding: 0 20px;
+  border-radius: 0;
+  font-size: 1rem;
+  font-weight: 400;
+  box-shadow: none;
+  transform: none;
+}
+
+.input-config-dialog .el-dialog__footer .el-button:not(.el-button--primary) {
+  border: 2px solid #b1b4b6;
+  background: #ffffff;
+  color: #0b0c0c;
+}
+
+.input-config-dialog .el-dialog__footer .el-button:not(.el-button--primary):hover {
+  border-color: #0b0c0c;
+  background: #f3f2f1;
+}
+
+.input-config-dialog .el-dialog__footer .el-button--primary {
+  border: 2px solid #00703c;
+  background: #00703c;
+  color: #ffffff;
+}
+
+.input-config-dialog .el-dialog__footer .el-button--primary:hover {
+  border-color: #005a30;
+  background: #005a30;
+  color: #ffffff;
+}
+
+.input-config-dialog .el-dialog__footer .el-button:focus-visible {
+  outline: 3px solid #ffdd00;
+  outline-offset: 0;
+}
+
+.input-config-dialog .el-form-item {
+  margin-bottom: 18px;
+}
+
+.input-config-dialog .el-form-item:last-child {
+  margin-bottom: 0;
+}
+
+.input-config-dialog .el-form-item__label {
+  width: 140px !important;
+  min-width: 140px !important;
+  min-height: 44px;
+  padding-right: 12px !important;
+  color: #505a5f !important;
+  font-size: 1rem !important;
+  font-weight: 400 !important;
+  line-height: 1.5 !important;
+  white-space: nowrap !important;
+  word-break: keep-all;
+  overflow-wrap: normal;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+.input-config-dialog .el-form-item__content {
+  margin-left: 0 !important;
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  color: #0b0c0c;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.input-config-dialog .el-input,
+.input-config-dialog .el-select {
+  width: 100%;
+}
+
+.input-config-dialog .el-input__wrapper,
+.input-config-dialog .el-select__wrapper {
+  min-height: 44px;
+  padding: 0 12px;
+  border-radius: 0 !important;
+  background: #ffffff !important;
+  box-shadow: 0 0 0 2px #0b0c0c inset !important;
+}
+
+.input-config-dialog .el-input__inner,
+.input-config-dialog .el-select__placeholder,
+.input-config-dialog .el-select__selected-item {
+  font-size: 1rem !important;
+  color: #0b0c0c !important;
+}
+
+.input-config-dialog .el-input__wrapper.is-focus,
+.input-config-dialog .el-select__wrapper.is-focused {
+  outline: 3px solid #ffdd00 !important;
+  outline-offset: 0 !important;
+  box-shadow: 0 0 0 2px #0b0c0c inset !important;
+}
+
+.input-config-dialog .config-value {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #0b0c0c;
+}
+
+.input-config-dialog .config-price-unit {
+  white-space: nowrap;
+  font-size: 1rem;
+  color: #505a5f;
+}
+
+@media (max-width: 640px) {
+  .input-config-dialog.el-dialog {
+    width: calc(100vw - 24px) !important;
+    max-width: calc(100vw - 24px) !important;
+    margin: 12px auto !important;
+    max-height: calc(100vh - 24px);
+  }
+
+  .input-config-dialog .el-dialog__header {
+    padding: 20px 52px 14px 20px !important;
+  }
+
+  .input-config-dialog .el-dialog__title {
+    font-size: 1.25rem !important;
+  }
+
+  .input-config-dialog .el-dialog__body {
+    padding: 20px !important;
+  }
+
+  .input-config-dialog .el-dialog__footer {
+    padding: 16px 20px !important;
+  }
+
+  .input-config-dialog .el-dialog__footer .el-button {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 0 12px;
+  }
+
+  .input-config-dialog .el-form-item {
+    display: block;
+  }
+
+  .input-config-dialog .el-form-item__label {
+    display: block;
+    width: auto !important;
+    min-width: 0 !important;
+    min-height: 0;
+    padding: 0 0 6px !important;
+    white-space: nowrap !important;
+    line-height: 1.4;
+  }
+
+  .input-config-dialog .el-form-item__content {
+    margin-left: 0 !important;
+  }
+}
+
+@media (max-width: 360px) {
+  .oneKeyContentArea .inputActionGroup {
+    gap: 4px;
+  }
+
+  .oneKeyContentArea .stepItemArea .optionsArea .el-button {
+    padding: 0 10px !important;
+    font-size: 0.875rem !important;
+  }
+
+  .oneKeyContentArea .inputActionGroup .config-model-btn {
+    padding: 0 8px !important;
+    font-size: 0.875rem !important;
+  }
+
+  .oneKeyContentArea .inputActionGroup .config-model-btn .el-icon {
+    font-size: 14px;
+  }
+
+  .oneKeyContentArea .inputActionGroup .shiny-button {
+    padding: 0 10px !important;
+    font-size: 0.875rem !important;
+  }
+}
+
+/* 窄屏把三个按钮收进同一行：保持 48px 高度，压缩的只有横向内边距 */
+@media (max-width: 400px) {
+  .oneKeyContentArea .stepItemArea .optionsArea .el-button {
+    padding: 0 10px !important;
+    font-size: 0.875rem !important;
+  }
+
+  .oneKeyContentArea .inputActionGroup .config-model-btn {
+    padding: 0 8px !important;
+    font-size: 0.875rem !important;
+  }
+
+  .oneKeyContentArea .inputActionGroup .shiny-button {
+    padding: 0 10px !important;
+    font-size: 0.875rem !important;
+  }
+}
+
+@media (max-width: 330px) {
+  .oneKeyContentArea .inputActionGroup .shiny-button {
+    padding: 0 5px !important;
+  }
+}
+
+/* 搜索框 + 创建者筛选：同一高度、无缝拼接为一个整体 */
 </style>

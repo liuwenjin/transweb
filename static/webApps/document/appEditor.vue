@@ -1,5 +1,5 @@
 <template>
-  <div ref="appContainerArea" :style="{ padding: isSolo || content.isSolo ? '0px' : ''}" class="tw-w-full tw-h-full tw-pt-10 appContainerArea tw-relative tw-animate-fadeIn">
+  <div ref="appContainerArea" :style="{ padding: isSolo || content.isSolo ? '0px' : ''}" class="tw-w-full tw-h-full tw-pt-14 appContainerArea tw-relative tw-animate-fadeIn">
     <el-card :style="paddingStyle" class="tw-w-full tw-h-full tw-shadow-lg tw-rounded-xl tw-border-0 tw-transform tw-transition-transform tw-duration-500">
       <div ref="appContentItem" class="tw-w-full tw-h-full">
         ...
@@ -24,7 +24,7 @@
         <span v-if="editable && editable !== 'false'" class="settingPopoverItem publishStatusArea tw-align-middle tw-leading-none">
           <el-dropdown v-if="!inIframe" class="opOptionItem tw-align-middle tw-leading-none" trigger="click" :persistent="true" :teleported="false" append-to="parent" style="margin-left: 5px; display: inline-block;">
             <span class="el-dropdown-link">
-              <el-button text size="small">
+              <el-button text size="small" title="复制或下载应用" aria-label="复制或下载应用">
                 <el-icon>
                   <el-icon>
                     <memo />
@@ -49,7 +49,7 @@
           </el-dropdown>
           <el-dropdown class="moreOptionItem tw-align-middle tw-leading-none" trigger="click" :persistent="true" :teleported="false" append-to="parent" style="margin-left: 5px; display: inline-block;">
             <span class="el-dropdown-link">
-              <el-button text size="small">
+              <el-button text size="small" title="编辑应用" aria-label="编辑应用">
                 <el-icon>
                   <edit />
                 </el-icon>
@@ -71,7 +71,7 @@
 
             <el-popover placement="bottom-start" :width="300" :teleported="false" append-to="parent" trigger="click">
               <template #reference>
-                <el-button size="small" text type="primary">
+                <el-button size="small" text type="primary" title="应用设置" aria-label="应用设置">
                   <el-icon>
                     <setting />
                   </el-icon>
@@ -166,14 +166,14 @@
           <span @click="openCurrentPage()" v-if="inIframe" class="tw-pr-2 tw-align-middle tw-cursor-pointer">{{ content.title }}
 
           </span>
-          <el-input clearable v-model="currentIdInput" size="small" :style="{ width: flag ? '200px': '320px'}" :placeholder="flag ? '输入 Agent ID' : '输入 Skill ID'">
+          <el-input clearable v-model="currentIdInput" size="small" :aria-label="flag ? 'Agent ID' : 'Skill ID'" :style="{ width: flag ? '200px': '320px'}" :placeholder="flag ? '输入 Agent ID' : '输入 Skill ID'">
             <template #prepend>
               <el-icon>
                 <arrow-right-bold />
               </el-icon>
             </template>
             <template #append>
-              <el-button size="small" icon="Link" @click="entryNextAgent()">
+              <el-button size="small" icon="Link" title="打开" aria-label="打开" @click="entryNextAgent()">
 
               </el-button>
             </template>
@@ -187,7 +187,7 @@
       </div>
     </slot>
     <input ref="hiddenFileInput" type="file" accept="image/*" class="tw-hidden" @change="onFileSelected($event)" data-edit-id="109" />
-    <el-dialog v-model="configDialog.visible" class="custom-dragging-style" :title="configDialog.title" width="400">
+    <el-dialog v-model="configDialog.visible" class="custom-dragging-style config-dialog app-editor-dialog" :title="configDialog.title" width="520" align-center>
       <el-form :label-width="configDialog.formData.labelWidth" label-position="left" :model="configDialog.value">
         <el-form-item :label="configDialog.formData.data[0].label">
           <el-select size="small" @change="handleChangeConfig(configDialog.formData.data[0])" :placeholder="configDialog.formData.data[0].placeholder" v-model="configDialog.value[configDialog.formData.data[0].prop]">
@@ -213,14 +213,14 @@
             {{currentPrice.in || "[需联系创作者]"}}
           </span>
           <el-input-number style="margin-right: 5px;" :min="1000" size="small" v-else v-model="configDialog.value.inputPrice"></el-input-number>
-          (积分 / 百万 tokens)
+          <span class="price-unit">(积分 / 百万 tokens)</span>
         </el-form-item>
         <el-form-item label="价格(输出)">
           <span v-if="configDialog.value.apiName !== 'custom'">
             {{currentPrice.out || "[需联系创作者]"}}
           </span>
           <el-input-number :min="1000" style="margin-right: 5px;" size="small" v-else v-model="configDialog.value.outputPrice"></el-input-number>
-          (积分 / 百万 tokens)
+          <span class="price-unit">(积分 / 百万 tokens)</span>
         </el-form-item>
         <el-form-item label="佣金比例">
           {{ taxRate.base }} (创作者: {{ taxRate.author }}, 平台: {{ taxRate.platform }})
@@ -236,7 +236,7 @@
       </template>
     </el-dialog>
 
-    <el-dialog v-model="knowledgesDialog.visible" :title="knowledgesDialog.title" width="600" class="custom-dragging-style">
+    <el-dialog v-model="knowledgesDialog.visible" :title="knowledgesDialog.title" width="640" class="custom-dragging-style knowledge-dialog app-editor-dialog" align-center>
       <div class="knowledges-dialog-body">
         <div v-for="(kb, index) in content.knowledges" :key="index" class="knowledge-item">
           <div class="knowledge-item-header">
@@ -1616,6 +1616,8 @@
   /* 页面背景 — 纸白 + 细点纹理 */
   .appContainerArea {
     position: relative;
+    box-sizing: border-box;
+    padding-top: 56px;
     font-family: var(--font-system);
     color: var(--muse-text);
     background-color: var(--muse-bg);
@@ -1834,10 +1836,6 @@
     border-radius: 0px;
   }
 
-  .custom-dragging-style {
-    border: 2px dashed var(--el-color-primary);
-  }
-
   .knowledges-dialog-body {
     max-height: 60vh;
     overflow-y: auto;
@@ -1905,9 +1903,6 @@
     background: rgba(26, 26, 30, 0.03) !important;
   }
 
-  .custom-dragging-style {
-    border-color: var(--muse-primary, #1a1a1e) !important;
-  }
 
   .settingItem .settingEditor .appImage .el-image {
     background-color: var(--muse-card, #f8f8fa);
@@ -1921,90 +1916,6 @@
 
   .knowledge-item-title {
     color: var(--muse-text, #1a1a1e);
-  }
-
-  /* 主按钮：墨色直角 */
-  :deep(.el-button--primary) {
-    --el-button-bg-color: var(--muse-primary, #1a1a1e);
-    --el-button-border-color: var(--muse-primary, #1a1a1e);
-    --el-button-hover-bg-color: var(--muse-primary-hover, #2b2b31);
-    --el-button-hover-border-color: var(--muse-primary-hover, #2b2b31);
-    --el-button-active-bg-color: var(--muse-primary-active, #000000);
-    --el-button-active-border-color: var(--muse-primary-active, #000000);
-    --el-button-text-color: #ffffff;
-    border-radius: 0px;
-    font-weight: 600;
-  }
-
-  :deep(.el-button--primary:not(.is-disabled):hover) {
-    transform: translateY(-1px);
-    box-shadow: 0 6px 16px rgba(26, 26, 30, 0.20);
-  }
-
-  :deep(.el-button--primary:not(.is-disabled):active) {
-    transform: translateY(0) scale(0.98);
-  }
-
-  /* 弹窗：16px 圆角玻璃卡片 */
-  :deep(.el-dialog) {
-    border-radius: var(--radius-3xl, 16px) !important;
-    overflow: hidden;
-    box-shadow: 0 25px 50px -12px rgba(20, 20, 30, 0.16) !important;
-  }
-
-  :deep(.el-dialog__header) {
-    margin-right: 0;
-    padding: 20px 24px 12px;
-    border-bottom: 1px solid var(--muse-border, #fafafc);
-  }
-
-  :deep(.el-dialog__title) {
-    font-weight: 700;
-    font-size: 1.125rem;
-    color: var(--muse-text, #1a1a1e);
-  }
-
-  :deep(.el-dialog__body) {
-    padding: 20px 24px;
-    color: var(--muse-text, #1a1a1e);
-  }
-
-  :deep(.el-dialog__footer) {
-    padding: 12px 24px 20px;
-    border-top: 1px solid var(--muse-border, #fafafc);
-  }
-
-  /* 输入 / 选择器：直角 + 墨色焦点环 */
-  :deep(.el-select__wrapper),
-  :deep(.el-input__wrapper),
-  :deep(.el-textarea__inner) {
-    border-radius: var(--radius-lg, 10px);
-  }
-
-  :deep(.el-input__wrapper.is-focus),
-  :deep(.el-select__wrapper.is-focused),
-  :deep(.el-textarea__inner:focus) {
-    box-shadow: 0 0 0 1px var(--muse-primary, #1a1a1e) inset !important;
-  }
-
-  :deep(.el-form-item__label) {
-    color: var(--muse-text-secondary, #6e6e73);
-    font-weight: 500;
-  }
-
-  /* 标签：墨色浅底胶囊 */
-  :deep(.el-tag) {
-    --el-tag-bg-color: var(--muse-primary-soft, #f3f3f5);
-    --el-tag-border-color: var(--muse-primary-ring, #e7e7eb);
-    --el-tag-text-color: var(--muse-primary-hover, #2b2b31);
-    border-radius: 0px;
-    font-weight: 500;
-  }
-
-  /* 开关：墨色 */
-  :deep(.el-switch.is-checked .el-switch__core) {
-    background-color: var(--muse-primary, #1a1a1e);
-    border-color: var(--muse-primary, #1a1a1e);
   }
 
   /* Tailwind 蓝色工具类对齐墨色 */
@@ -2025,4 +1936,435 @@
   .tw-border-blue-200 {
     border-color: #e7e7eb !important;
   }
+</style>
+
+<style>
+/* ==========================================================================
+   appEditor 页面框架与对话框精修
+   --------------------------------------------------------------------------
+   1. 顶部工具条与卡片拉开层级，工具条 32px 控件统一垂直居中
+   2. 对话框去掉虚线框，统一 520/640 宽度、24px 标题与 44px 控件
+   3. 表单、知识库卡片、底部按钮使用同一套留白与描边
+   ========================================================================== */
+.appContainerArea .componentInfoArea {
+  left: 16px !important;
+  top: 12px !important;
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+  color: #505a5f;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.appContainerArea .componentInfoArea > span {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+}
+
+.appContainerArea .publishStatusArea {
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+  gap: 4px;
+}
+
+.appContainerArea .componentInfoArea .el-dropdown,
+.appContainerArea .publishStatusArea > span {
+  margin-left: 0 !important;
+}
+
+.appContainerArea .componentInfoArea .el-button {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border-radius: 0;
+  color: #505a5f;
+}
+
+.appContainerArea .componentInfoArea .el-button:hover {
+  background: #f3f2f1;
+  color: #0b0c0c;
+}
+
+.appContainerArea .componentInfoArea .el-button:focus-visible {
+  outline: 3px solid #ffdd00;
+  outline-offset: 0;
+}
+
+.appContainerArea .entryNextAgent {
+  margin-left: 8px !important;
+}
+
+.appContainerArea .entryNextAgent .el-input {
+  width: 320px;
+}
+
+.appContainerArea .entryNextAgent .el-input__wrapper {
+  min-height: 32px;
+  border-radius: 0;
+  box-shadow: 0 0 0 1px #b1b4b6 inset;
+}
+
+.appContainerArea .entryNextAgent .el-input__wrapper.is-focus {
+  box-shadow: 0 0 0 2px #0b0c0c inset;
+}
+
+.appContainerArea .buttonOptionArea {
+  top: 12px !important;
+  right: 16px !important;
+  padding-right: 0 !important;
+}
+
+.appContainerArea .buttonOptionArea .el-button {
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 0;
+  color: #1a1a1e;
+  font-size: 14px;
+}
+
+.appContainerArea .buttonOptionArea .el-button:hover {
+  background: #f3f2f1;
+}
+
+.appContainerArea .el-switch.is-checked .el-switch__core {
+  border-color: #1a1a1e !important;
+  background-color: #1a1a1e !important;
+}
+
+@media (max-width: 760px) {
+  .appContainerArea .entryNextAgent {
+    display: none !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   对话框：实线、直角、24px 标题、44px 控件
+   -------------------------------------------------------------------------- */
+.app-editor-dialog.el-dialog {
+  width: min(520px, calc(100vw - 30px)) !important;
+  max-width: calc(100vw - 30px) !important;
+  max-height: calc(100vh - 32px);
+  padding: 0 !important;
+  border: 1px solid #d9d9de !important;
+  border-radius: 0 !important;
+  background: #ffffff;
+  box-shadow: 0 16px 48px rgba(20, 20, 30, 0.18) !important;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+  height: auto !important;
+}
+
+.app-editor-dialog.knowledge-dialog.el-dialog {
+  width: min(640px, calc(100vw - 30px)) !important;
+}
+
+.app-editor-dialog .el-dialog__header {
+  flex: none;
+  margin: 0 !important;
+  padding: 24px 56px 16px 24px !important;
+  border-bottom: 1px solid #e7e7eb;
+}
+
+.app-editor-dialog .el-dialog__title {
+  font-size: 1.5rem !important;
+  font-weight: 600 !important;
+  line-height: 1.3 !important;
+  color: #0b0c0c !important;
+}
+
+.app-editor-dialog .el-dialog__headerbtn {
+  top: 12px !important;
+  right: 12px !important;
+  width: 40px;
+  height: 40px;
+  border-radius: 0;
+  color: #505a5f;
+}
+
+.app-editor-dialog .el-dialog__headerbtn:hover {
+  background: #f3f2f1;
+  color: #0b0c0c;
+}
+
+.app-editor-dialog .el-dialog__headerbtn .el-dialog__close {
+  color: #505a5f !important;
+  font-size: 20px;
+}
+
+.app-editor-dialog .el-dialog__headerbtn:hover .el-dialog__close {
+  color: #0b0c0c !important;
+}
+
+.app-editor-dialog .el-dialog__headerbtn:focus-visible {
+  outline: 3px solid #ffdd00;
+  outline-offset: 0;
+}
+
+.app-editor-dialog .el-dialog__body {
+  flex: 1 1 auto;
+  padding: 24px !important;
+  overflow-y: auto;
+  color: #0b0c0c;
+  font-size: 1rem;
+}
+
+.app-editor-dialog .el-dialog__footer {
+  flex: none;
+  padding: 20px 24px !important;
+  border-top: 1px solid #e7e7eb;
+}
+
+.app-editor-dialog .dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.app-editor-dialog .el-dialog__footer .el-button {
+  height: 44px;
+  min-width: 96px;
+  padding: 0 20px;
+  border-radius: 0;
+  font-size: 1rem;
+  font-weight: 400;
+  box-shadow: none;
+  transform: none;
+}
+
+.app-editor-dialog .el-dialog__footer .el-button:not(.el-button--primary) {
+  border: 2px solid #b1b4b6;
+  background: #ffffff;
+  color: #0b0c0c;
+}
+
+.app-editor-dialog .el-dialog__footer .el-button:not(.el-button--primary):hover {
+  background: #f3f2f1;
+  border-color: #0b0c0c;
+}
+
+.app-editor-dialog .el-dialog__footer .el-button--primary {
+  border: 2px solid #1a1a1e;
+  background: #1a1a1e;
+  color: #ffffff;
+}
+
+.app-editor-dialog .el-dialog__footer .el-button--primary:hover {
+  border-color: #2b2b31;
+  background: #2b2b31;
+  color: #ffffff;
+}
+
+.app-editor-dialog .el-dialog__footer .el-button:focus-visible,
+.app-editor-dialog .el-button:focus-visible {
+  outline: 3px solid #ffdd00;
+  outline-offset: 0;
+}
+
+.app-editor-dialog .el-form-item {
+  margin-bottom: 18px;
+}
+
+.app-editor-dialog .el-form-item__label {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding-right: 12px;
+  color: #505a5f !important;
+  font-size: 1rem !important;
+  font-weight: 400 !important;
+  line-height: 1.5;
+}
+
+.app-editor-dialog .el-form-item__content {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  color: #0b0c0c;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.app-editor-dialog .el-input,
+.app-editor-dialog .el-select,
+.app-editor-dialog .el-input-number {
+  width: 100%;
+}
+
+.app-editor-dialog .el-input__wrapper,
+.app-editor-dialog .el-select__wrapper {
+  min-height: 44px;
+  padding: 0 12px;
+  border-radius: 0 !important;
+  background: #ffffff !important;
+  box-shadow: 0 0 0 2px #0b0c0c inset !important;
+}
+
+.app-editor-dialog .el-input__inner,
+.app-editor-dialog .el-select__placeholder,
+.app-editor-dialog .el-select__selected-item {
+  font-size: 1rem !important;
+  color: #0b0c0c !important;
+}
+
+.app-editor-dialog .el-textarea__inner {
+  padding: 12px !important;
+  border: 2px solid #0b0c0c !important;
+  border-radius: 0 !important;
+  font-size: 1rem !important;
+  line-height: 1.5 !important;
+  color: #0b0c0c !important;
+  box-shadow: none !important;
+}
+
+.app-editor-dialog .el-input__wrapper.is-focus,
+.app-editor-dialog .el-select__wrapper.is-focused,
+.app-editor-dialog .el-textarea__inner:focus {
+  outline: 3px solid #ffdd00 !important;
+  outline-offset: 0 !important;
+  box-shadow: 0 0 0 2px #0b0c0c inset !important;
+}
+
+.app-editor-dialog .price-unit {
+  display: inline-block;
+  margin-left: 6px;
+  color: #505a5f;
+  font-size: 1rem;
+}
+
+/* 知识库卡片 */
+.knowledge-dialog .knowledges-dialog-body {
+  max-height: calc(100vh - 320px);
+  overflow-y: auto;
+  padding-right: 0;
+}
+
+.knowledge-dialog .knowledge-item {
+  padding: 16px;
+  margin-bottom: 16px;
+  border: 1px solid #d9d9de;
+  background: #fafafa;
+}
+
+.knowledge-dialog .knowledge-item:last-of-type {
+  margin-bottom: 12px;
+}
+
+.knowledge-dialog .knowledge-item-header {
+  margin-bottom: 12px;
+}
+
+.knowledge-dialog .knowledge-item-title {
+  color: #0b0c0c;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.knowledge-dialog .knowledge-item .el-form-item {
+  margin-bottom: 14px;
+}
+
+.knowledge-dialog .knowledge-item .el-form-item:last-child {
+  margin-bottom: 0;
+}
+
+.knowledge-dialog .add-knowledge-btn {
+  width: 100%;
+  height: 44px;
+  border: 2px solid #1a1a1e;
+  border-radius: 0;
+  background: #ffffff;
+  color: #1a1a1e;
+  font-size: 1rem;
+}
+
+.knowledge-dialog .add-knowledge-btn:hover {
+  background: #f3f2f1;
+  border-color: #1a1a1e;
+  color: #1a1a1e;
+}
+
+.knowledge-dialog .el-button--danger.is-text {
+  height: 32px;
+  color: #d4351c !important;
+  font-size: 1rem;
+}
+
+.knowledge-dialog .el-input-group__append {
+  height: 44px;
+  padding: 0 15px;
+  border: 2px solid #0b0c0c !important;
+  border-left: 0 !important;
+  border-radius: 0 !important;
+  background: #f3f2f1 !important;
+  box-shadow: none !important;
+  color: #0b0c0c !important;
+}
+
+.knowledge-dialog .el-input-group__append .el-button {
+  height: 40px;
+  padding: 0 8px;
+  border: 0;
+  background: transparent;
+  color: #0b0c0c !important;
+  font-size: 1rem;
+  box-shadow: none;
+}
+
+@media (max-width: 640px) {
+  .app-editor-dialog.el-dialog,
+  .app-editor-dialog.knowledge-dialog.el-dialog {
+    width: calc(100vw - 24px) !important;
+    max-width: calc(100vw - 24px) !important;
+    margin: 12px auto !important;
+    max-height: calc(100vh - 24px);
+  }
+
+  .app-editor-dialog .el-dialog__header {
+    padding: 20px 52px 14px 20px !important;
+  }
+
+  .app-editor-dialog .el-dialog__title {
+    font-size: 1.25rem !important;
+  }
+
+  .app-editor-dialog .el-dialog__body {
+    padding: 20px !important;
+  }
+
+  .app-editor-dialog .el-dialog__footer {
+    padding: 16px 20px !important;
+  }
+
+  .app-editor-dialog .el-dialog__footer .el-button {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 0 12px;
+  }
+
+  .app-editor-dialog .el-form-item {
+    display: block;
+  }
+
+  .app-editor-dialog .el-form-item__label {
+    display: block;
+    width: auto !important;
+    min-height: 0;
+    padding: 0 0 6px !important;
+    line-height: 1.4;
+  }
+
+  .app-editor-dialog .el-form-item__content {
+    margin-left: 0 !important;
+  }
+
+  .knowledge-dialog .knowledges-dialog-body {
+    max-height: calc(100vh - 300px);
+  }
+}
 </style>

@@ -5,7 +5,7 @@
   >
     <!-- 顶部 Header -->
     <div
-      class="tw-flex-none tw-mb-3 tw-flex tw-items-center tw-justify-between tw-border-b tw-border-slate-200 tw-pb-2.5"
+      class="cloneHeader tw-flex-none tw-mb-3 tw-flex tw-items-center tw-justify-between tw-border-b tw-border-slate-200 tw-pb-2.5"
     >
       <div class="tw-flex tw-items-center tw-gap-2">
         <div class="tw-w-2.5 tw-h-2.5 tw-rounded-full tw-bg-[#1a1a1e]"></div>
@@ -13,7 +13,7 @@
           应用克隆与预览面板
         </h3>
       </div>
-      <span class="tw-text-[11px] tw-font-mono tw-text-slate-400"
+      <span class="cloneHeaderMeta tw-text-[11px] tw-font-mono tw-text-slate-400"
         >TransWeb Engine Integrated</span
       >
     </div>
@@ -23,12 +23,13 @@
       <!-- 模式切换：在线 URL / 本地文件 -->
       <div class="tw-flex tw-items-center tw-gap-3">
         <div
-          class="tw-inline-flex tw-p-0.5 tw-bg-slate-100 tw-rounded-none tw-border tw-border-slate-200"
+          class="cloneModeTabs tw-inline-flex tw-p-0.5 tw-bg-slate-100 tw-rounded-none tw-border tw-border-slate-200"
         >
           <button
             type="button"
             class="cloneModeBtn"
             :class="{ 'is-active': cloneMode === 'url' }"
+            :aria-pressed="cloneMode === 'url'"
             @click="switchCloneMode('url')"
           >
             <i class="el-icon-link"></i>在线 URL 克隆
@@ -37,6 +38,7 @@
             type="button"
             class="cloneModeBtn"
             :class="{ 'is-active': cloneMode === 'local' }"
+            :aria-pressed="cloneMode === 'local'"
             @click="switchCloneMode('local')"
           >
             <i class="el-icon-folder-opened"></i>本地文件克隆
@@ -45,9 +47,10 @@
       </div>
 
       <!-- 模式 A：在线 URL 解析 -->
-      <div v-show="cloneMode === 'url'" class="tw-flex tw-gap-2">
+      <div v-show="cloneMode === 'url'" class="cloneUrlRow tw-flex tw-gap-2">
         <el-input
           v-model.trim="manifestUrl"
+          aria-label="manifest.json 的完整 URL"
           placeholder="请输入 manifest.json 的完整 URL..."
           clearable
           :disabled="loading || confirming"
@@ -206,7 +209,7 @@
         </div>
 
         <!-- 一键克隆按钮 -->
-        <div class="tw-flex tw-items-center tw-justify-end tw-gap-2">
+        <div class="localCloneBar tw-flex tw-items-center tw-justify-end tw-gap-2">
           <span class="tw-text-[11px] tw-text-slate-400">
             <i class="el-icon-info"></i>
             {{
@@ -248,6 +251,8 @@
       <div
         v-if="statusMessage && !isCloned"
         class="tw-px-3 tw-py-1.5 tw-rounded-none tw-text-xs tw-flex tw-items-center tw-gap-2 tw-transition-all"
+        :role="statusType === 'error' ? 'alert' : 'status'"
+        aria-live="polite"
         :class="{
           'tw-bg-emerald-50 tw-text-emerald-700 tw-border tw-border-emerald-200':
             statusType === 'success',
@@ -277,7 +282,7 @@
       >
         <!-- 新增：模拟浏览器地址栏，展示并可一键复制 Iframe URL -->
         <div
-          class="tw-flex-none tw-bg-slate-100 tw-px-3 tw-py-2 tw-border-b tw-border-slate-200 tw-flex tw-items-center tw-gap-2"
+          class="previewUrlBar tw-flex-none tw-bg-slate-100 tw-px-3 tw-py-2 tw-border-b tw-border-slate-200 tw-flex tw-items-center tw-gap-2"
         >
           <span
             class="tw-text-xs tw-font-semibold tw-text-slate-500 tw-whitespace-nowrap tw-flex tw-items-center tw-gap-1"
@@ -287,13 +292,13 @@
 
           <!-- 极简地址展示框 -->
           <div
-            class="tw-flex-1 tw-bg-white tw-border tw-border-slate-200 tw-rounded-none tw-px-2.5 tw-py-1 tw-text-xs tw-font-mono tw-text-slate-700 tw-truncate tw-select-all"
+            class="clonePreviewAddress tw-flex-1 tw-bg-white tw-border tw-border-slate-200 tw-rounded-none tw-px-2.5 tw-py-1 tw-text-xs tw-font-mono tw-text-slate-700 tw-truncate tw-select-all"
           >
             {{ currentAppUrl }}
           </div>
 
           <!-- 功能按钮：一键复制 & 新标签页打开 -->
-          <div class="tw-flex tw-items-center tw-gap-1">
+          <div class="clonePreviewActions tw-flex tw-items-center tw-gap-1">
             <el-button
               size="small"
               type="text"
@@ -331,6 +336,7 @@
 
           <iframe
             :src="currentAppUrl"
+            title="克隆应用预览"
             class="tw-w-full tw-h-full tw-border-none"
             @load="iframeLoading = false"
           ></iframe>
@@ -344,7 +350,7 @@
       >
         <!-- IDE Header / Tab 栏 -->
         <div
-          class="tw-flex-none tw-flex tw-items-center tw-justify-between tw-bg-[#1a1a1e] tw-px-3 tw-pt-2 tw-border-b tw-border-slate-800"
+          class="cloneIdeHeader tw-flex-none tw-flex tw-items-center tw-justify-between tw-bg-[#1a1a1e] tw-px-3 tw-pt-2 tw-border-b tw-border-slate-800"
         >
           <div class="tw-flex tw-items-center tw-gap-1.5 tw-px-1 tw-pb-2">
             <span
@@ -358,9 +364,11 @@
             ></span>
           </div>
 
-          <div class="tw-flex tw-gap-1">
+          <div class="tw-flex tw-gap-1" role="tablist" aria-label="克隆内容视图">
             <button
               type="button"
+              role="tab"
+              :aria-selected="activeTab === 'code'"
               class="tw-px-4 tw-py-1.5 tw-text-xs tw-font-mono tw-rounded-none tw-transition-all tw-duration-150 tw-border-t-2 tw-outline-none cursor-pointer"
               :class="
                 activeTab === 'code'
@@ -373,6 +381,8 @@
             </button>
             <button
               type="button"
+              role="tab"
+              :aria-selected="activeTab === 'prompt'"
               class="tw-px-4 tw-py-1.5 tw-text-xs tw-font-mono tw-rounded-none tw-transition-all tw-duration-150 tw-border-t-2 tw-outline-none cursor-pointer"
               :class="
                 activeTab === 'prompt'
@@ -775,43 +785,6 @@ export default {
   background-size: auto, auto, 26px 26px;
 }
 
-/* ============================================
-   白与空 统一 · Element Plus 控件
-   ============================================ */
-:deep(.el-button--primary) {
-  --el-button-bg-color: var(--muse-primary, #1a1a1e);
-  --el-button-border-color: var(--muse-primary, #1a1a1e);
-  --el-button-hover-bg-color: var(--muse-primary-hover, #2b2b31);
-  --el-button-hover-border-color: var(--muse-primary-hover, #2b2b31);
-  --el-button-active-bg-color: var(--muse-primary-active, #000000);
-  --el-button-active-border-color: var(--muse-primary-active, #000000);
-  --el-button-text-color: #ffffff;
-  border-radius: 0px;
-  font-weight: 600;
-}
-
-:deep(.el-button--primary:not(.is-disabled):hover) {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(26, 26, 30, 0.20);
-}
-
-:deep(.el-button--primary:not(.is-disabled):active) {
-  transform: translateY(0) scale(0.98);
-}
-
-:deep(.el-button--success) {
-  border-radius: 0px;
-  font-weight: 600;
-}
-
-:deep(.el-input__wrapper) {
-  border-radius: var(--radius-lg, 10px);
-}
-
-:deep(.el-input__wrapper.is-focus) {
-  box-shadow: 0 0 0 1px var(--muse-primary, #1a1a1e) inset !important;
-}
-
 /* 模式切换按钮 */
 .cloneModeBtn {
   display: inline-flex;
@@ -862,5 +835,389 @@ export default {
 }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #a5a5aa;
+}
+
+/* ==========================================================================
+   GOV.UK 服务设计规范适配层
+   - 16px 最小正文、19px 主要说明；GDS 绿按钮与黄色焦点
+   - 直角卡片、1px 描边；代码面板保留深色但放大字号
+   ========================================================================== */
+.cloneAppRoot {
+  --gds-black: #0b0c0c;
+  --gds-blue: #1d70b8;
+  --gds-green: #00703c;
+  --gds-green-hover: #005a30;
+  --gds-green-shadow: #002d18;
+  --gds-red: #d4351c;
+  --gds-yellow: #ffdd00;
+  --gds-grey: #f3f2f1;
+  --gds-border: #b1b4b6;
+  --gds-secondary: #505a5f;
+  --gds-font: "GDS Transport", Arial, "Noto Sans SC", "Source Han Sans SC",
+    "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+
+  --muse-primary: var(--gds-green);
+  --muse-primary-hover: var(--gds-green-hover);
+  --muse-primary-active: var(--gds-green-shadow);
+  --muse-text: var(--gds-black);
+  --muse-text-secondary: var(--gds-secondary);
+  --muse-text-tertiary: #6f777b;
+  --muse-border: var(--gds-border);
+  --muse-border-strong: var(--gds-black);
+  --muse-bg: #ffffff;
+  --muse-surface: #ffffff;
+  --muse-card: #ffffff;
+  --font-system: var(--gds-font);
+
+  max-width: 1020px;
+  padding: 20px 15px;
+  background: #ffffff;
+  font-family: var(--gds-font);
+  color: var(--gds-black);
+  font-size: 1.1875rem;
+  line-height: 1.5;
+
+  --el-color-primary: var(--gds-green);
+  --el-color-primary-light-3: var(--gds-green-hover);
+  --el-color-success: var(--gds-green);
+  --el-color-danger: var(--gds-red);
+  --el-border-radius-base: 0;
+  --el-border-color: var(--gds-border);
+  --el-text-color-primary: var(--gds-black);
+  --el-input-border-color: var(--gds-black);
+  --el-input-focus-border-color: var(--gds-black);
+  --el-dialog-border-radius: 0;
+  --el-card-border-radius: 0;
+  --el-font-size-base: 1.1875rem;
+  --el-font-size-small: 1rem;
+  --el-component-size-small: 44px;
+  --el-component-size: 44px;
+}
+
+.cloneAppRoot h3,
+.cloneAppRoot h3.tw-text-sm {
+  font-family: var(--gds-font) !important;
+  font-size: 1.5rem !important;
+  font-weight: 700 !important;
+  line-height: 1.25 !important;
+  color: var(--gds-black) !important;
+}
+
+/* 顶部说明与状态信息：不低于 16px */
+.cloneAppRoot [class*="tw-text-[10px]"],
+.cloneAppRoot [class*="tw-text-[11px]"],
+.cloneAppRoot .tw-text-xs,
+.cloneAppRoot .tw-text-sm {
+  font-size: 1rem !important;
+  line-height: 1.5 !important;
+}
+
+.cloneAppRoot .cloneModeBtn {
+  min-height: 44px;
+  padding: 8px 15px;
+  border: 1px solid transparent;
+  border-radius: 0;
+  background: #ffffff;
+  color: var(--gds-black);
+  font-family: var(--gds-font);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.25;
+  cursor: pointer;
+}
+
+.cloneAppRoot .cloneModeBtn + .cloneModeBtn {
+  border-left: 1px solid var(--gds-border);
+}
+
+.cloneAppRoot .cloneModeBtn.is-active {
+  background: var(--gds-black);
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.cloneAppRoot .cloneModeBtn:focus-visible {
+  outline: 3px solid transparent;
+  outline-offset: 0;
+  background: var(--gds-yellow);
+  color: var(--gds-black);
+  box-shadow: 0 2px 0 var(--gds-black);
+}
+
+.cloneAppRoot .localFileCard {
+  border: 1px solid var(--gds-border) !important;
+  border-radius: 0;
+  background: #ffffff;
+  padding: 15px !important;
+}
+
+.cloneAppRoot .localFileCard:hover {
+  border-color: var(--gds-black) !important;
+}
+
+.cloneAppRoot .el-input {
+  font-size: 1rem;
+}
+
+.cloneAppRoot .el-input:focus-within {
+  outline: 3px solid var(--gds-yellow);
+  outline-offset: 0;
+}
+
+.cloneAppRoot .el-input__wrapper {
+  box-shadow: inset 0 0 0 2px var(--gds-black) !important;
+}
+
+.cloneAppRoot .el-input__wrapper {
+  min-height: 44px;
+  border-radius: 0 !important;
+  box-shadow: inset 0 0 0 2px var(--gds-black) !important;
+}
+
+.cloneAppRoot .el-input__wrapper.is-focus {
+  box-shadow: inset 0 0 0 2px var(--gds-black),
+    0 0 0 3px var(--gds-yellow) !important;
+}
+
+.cloneAppRoot .el-button {
+  min-height: 44px;
+  padding: 8px 15px;
+  border-radius: 0 !important;
+  font-family: var(--gds-font);
+  font-size: 1rem;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+.cloneAppRoot .el-button:focus-visible {
+  outline: 3px solid transparent;
+  outline-offset: 0;
+  background: var(--gds-yellow) !important;
+  border-color: var(--gds-yellow) !important;
+  color: var(--gds-black) !important;
+  box-shadow: 0 2px 0 var(--gds-black) !important;
+}
+
+.cloneAppRoot .el-button--primary,
+.cloneAppRoot .el-button--success {
+  background: var(--gds-green) !important;
+  border-color: var(--gds-green) !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 0 var(--gds-green-shadow) !important;
+}
+
+.cloneAppRoot .el-button--primary:hover,
+.cloneAppRoot .el-button--success:hover {
+  background: var(--gds-green-hover) !important;
+  border-color: var(--gds-green-hover) !important;
+}
+
+.cloneAppRoot .el-button--primary.is-disabled,
+.cloneAppRoot .el-button--success.is-disabled {
+  background: var(--gds-grey) !important;
+  border-color: var(--gds-grey) !important;
+  color: var(--gds-secondary) !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+}
+
+.cloneAppRoot .tw-bg-slate-100,
+.cloneAppRoot .tw-bg-white {
+  background-color: #ffffff !important;
+}
+
+.cloneAppRoot [class*="tw-bg-[#1a1a1e]"] {
+  background-color: var(--gds-black) !important;
+}
+
+.cloneAppRoot [class*="tw-bg-[#fafafc]"] {
+  background-color: #ffffff !important;
+}
+
+/* IDE 代码面板：保留深色底，字号抬到 16px */
+.cloneAppRoot pre,
+.cloneAppRoot pre code {
+  font-size: 1rem !important;
+  line-height: 1.6 !important;
+}
+
+.cloneAppRoot [class*="tw-text-[10px]"].tw-font-mono {
+  font-size: 1rem !important;
+}
+
+.cloneAppRoot .tw-text-slate-400 {
+  color: #b1b4b6 !important;
+}
+
+.cloneAppRoot button[role="tab"] {
+  min-height: 44px;
+  padding: 8px 15px;
+  color: #b1b4b6 !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-top: 3px solid transparent !important;
+  font-family: var(--gds-font);
+  font-size: 1rem !important;
+  line-height: 1.25;
+}
+
+.cloneAppRoot button[role="tab"][aria-selected="true"] {
+  color: #ffffff !important;
+  border-top-color: #ffffff !important;
+  font-weight: 700;
+}
+
+.cloneAppRoot button[role="tab"]:focus-visible {
+  outline: 3px solid var(--gds-yellow);
+  outline-offset: 0;
+  color: var(--gds-black) !important;
+  background: var(--gds-yellow) !important;
+}
+
+.cloneAppRoot h3.tw-text-sm {
+  font-size: 1.5rem !important;
+}
+
+@media (max-width: 640px) {
+  .cloneAppRoot {
+    height: 100dvh !important;
+    padding: 12px;
+  }
+
+  .cloneAppRoot > * {
+    min-width: 0;
+  }
+
+  .cloneAppRoot h3 {
+    font-size: 1.25rem !important;
+  }
+
+  /* 顶部标题条：隐藏装饰性英文，避免把标题挤到换行 */
+  .cloneHeader {
+    flex-wrap: wrap;
+    gap: 4px 8px;
+  }
+
+  .cloneHeaderMeta {
+    display: none !important;
+  }
+
+  /* 模式切换：等宽铺满 */
+  .cloneModeTabs {
+    width: 100%;
+  }
+
+  .cloneModeTabs .cloneModeBtn {
+    flex: 1 1 0;
+    justify-content: center;
+    padding-left: 8px;
+    padding-right: 8px;
+    white-space: nowrap;
+  }
+
+  /* URL 克隆：输入框独占一行，两个按钮并排 */
+  .cloneUrlRow {
+    flex-wrap: wrap;
+    row-gap: 8px;
+  }
+
+  .cloneUrlRow .el-input {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+
+  .cloneUrlRow .el-button {
+    flex: 1 1 0;
+    margin-left: 0 !important;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  /* 本地克隆操作条 */
+  .localCloneBar {
+    flex-wrap: wrap;
+    row-gap: 8px;
+  }
+
+  .localCloneBar > span {
+    flex: 1 1 140px;
+    min-width: 0;
+  }
+
+  .localCloneBar .el-button {
+    flex: 0 0 auto;
+  }
+
+  /* 克隆成功后的地址栏：地址独占一行 */
+  .previewUrlBar {
+    flex-wrap: wrap;
+    row-gap: 8px;
+  }
+
+  .previewUrlBar > span:first-child {
+    flex: 0 0 auto;
+  }
+
+  .clonePreviewAddress {
+    flex: 1 1 100%;
+    order: 2;
+  }
+
+  .clonePreviewActions {
+    order: 3;
+    margin-left: auto;
+  }
+
+  /* IDE 头部：隐藏右侧占位，Tab 可横向收缩 */
+  .cloneIdeHeader {
+    gap: 6px;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .cloneIdeHeader [role="tablist"] {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .cloneIdeHeader [role="tablist"]::-webkit-scrollbar {
+    display: none;
+  }
+
+  .cloneIdeHeader [role="tab"] {
+    padding: 8px 10px !important;
+    font-size: 0.875rem !important;
+    white-space: nowrap;
+  }
+
+  .cloneIdeHeader .tw-w-12 {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) and (max-height: 620px) {
+  /* 矮屏（如 iPhone SE）：允许整页纵向滚动，避免代码区被压到不可用 */
+  .cloneAppRoot {
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+  }
+
+  .cloneAppRoot > .tw-flex-1 {
+    min-height: 220px;
+  }
+}
+
+@media (max-width: 360px) {
+  /* 极窄屏让出装饰性红黄绿灯，保证两个 Tab 完整可见 */
+  .cloneIdeHeader > div:first-child {
+    display: none;
+  }
+
+  .cloneIdeHeader [role="tab"] {
+    padding: 8px 8px !important;
+    font-size: 0.8125rem !important;
+  }
 }
 </style>

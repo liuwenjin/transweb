@@ -1,0 +1,2802 @@
+/* ==========================================================================
+   GOV.UK 服务设计规范适配层
+   --------------------------------------------------------------------------
+   依据 GOV.UK Design System 与 GOV.UK Service Manual：
+   - 颜色：govuk-colour("black") #0b0c0c、blue #1d70b8、green #00703c、
+     focus #ffdd00、border #b1b4b6、light-grey #f3f2f1
+   - 字号：正文 19px，H1 48px / H2 36px / H3 24px，最小正文 16px
+   - 间距：5px 基准；内容宽度 960px（容器 1020px）
+   - 焦点：3px 透明轮廓 + 黄色底 + 4px 黑色下边线，键盘可见
+   - 组件：跳转链接、阶段横幅、面包屑、按钮、标签、页脚、表单、
+     错误提示、摘要列表、错误摘要、嵌入文本、警告文本、面板
+   本文件在三页原有样式之后加载，用于统一三页的政府数字服务外观。
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. 设计令牌
+   -------------------------------------------------------------------------- */
+
+:root:root {
+  /* GOV.UK 色板 */
+  --gds-black: #0b0c0c;
+  --gds-blue: #1d70b8;
+  --gds-dark-blue: #003078;
+  --gds-light-blue: #5694ca;
+  --gds-green: #00703c;
+  --gds-green-hover: #005a30;
+  --gds-green-shadow: #002d18;
+  --gds-red: #d4351c;
+  --gds-yellow: #ffdd00;
+  --gds-light-grey: #f3f2f1;
+  --gds-mid-grey: #b1b4b6;
+  --gds-dark-grey: #505a5f;
+  --gds-border: #b1b4b6;
+  --gds-secondary-text: #505a5f;
+
+  /* GDS Transport 为 GOV.UK 专用字体，未获授权时按规范回退到 Arial，
+     中文回退到各平台系统黑体，保证字重与可读性 */
+  --gds-font: "GDS Transport", Arial, "Noto Sans SC", "Source Han Sans SC",
+    "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Helvetica, sans-serif;
+  --gds-font-mono: "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
+
+  /* 覆盖三页原有的「白与空」令牌，使既有组件自动落到政府数字服务色板 */
+  --paper: #ffffff;
+  --paper-2: var(--gds-light-grey);
+  --card: #ffffff;
+  --white: #ffffff;
+  --ink: var(--gds-black);
+  --gray: var(--gds-secondary-text);
+  --text-body: var(--gds-black);
+  --light: #6f777b;
+  --line: var(--gds-border);
+  --glow: var(--gds-light-grey);
+  --serif: var(--gds-font);
+  --sans: var(--gds-font);
+  --ease: cubic-bezier(.2, .7, .2, 1);
+
+  /* 布局 */
+  --gds-width: 1020px;
+  --gds-gutter: 30px;
+  --gds-focus-width: 3px;
+}
+
+/* --------------------------------------------------------------------------
+   2. 基础排版
+   -------------------------------------------------------------------------- */
+
+html {
+  background: #ffffff;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+html body {
+  margin: 0;
+  background: #ffffff !important;
+  color: var(--gds-black) !important;
+  font-family: var(--gds-font) !important;
+  font-size: 1.1875rem; /* 19px */
+  line-height: 1.5;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body p {
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+
+body p:last-child {
+  margin-bottom: 0;
+}
+
+h1, h2, h3, h4, h5, h6,
+.hero-title,
+.section-title,
+.case-title,
+.audience-title,
+.module-title,
+.wf-hero__title,
+.wf-card__title,
+.wf-final__title,
+.hub-title,
+.hub-empty h2,
+.doc-title,
+.hero-presets__title {
+  font-family: var(--gds-font) !important;
+  color: var(--gds-black) !important;
+  font-weight: 700 !important;
+  letter-spacing: 0 !important;
+}
+
+/* GOV.UK 字阶：H1 48 / H2 36 / H3 24 */
+.hero-title,
+.wf-hero__title,
+.hub-title {
+  font-size: clamp(2rem, 5vw, 3rem) !important;
+  line-height: 1.09 !important;
+  margin-bottom: 30px;
+}
+
+.section-title,
+.wf-main .text-center.max-w-3xl h2,
+.hub-empty h2,
+.wf-final__title,
+.hero-presets__title {
+  font-size: clamp(1.5rem, 3vw, 2.25rem) !important;
+  line-height: 1.2 !important;
+  margin-bottom: 20px;
+}
+
+.case-title,
+.audience-title,
+.module-title,
+.wf-card__title,
+.doc-title {
+  font-size: 1.5rem !important;
+  line-height: 1.25 !important;
+}
+
+.faq-text {
+  font-size: 1.1875rem !important;
+  font-weight: 700;
+  line-height: 1.4 !important;
+}
+
+/* --------------------------------------------------------------------------
+   3. 链接与焦点
+   -------------------------------------------------------------------------- */
+
+a {
+  color: var(--gds-blue);
+  text-decoration: underline;
+  text-decoration-thickness: max(1px, .0625rem);
+  text-underline-offset: .1578em;
+}
+
+a:hover {
+  color: var(--gds-dark-blue);
+  text-decoration-thickness: max(3px, .1875rem);
+  text-decoration-skip-ink: none;
+}
+
+a:visited {
+  color: #4c2c92;
+}
+
+a:active {
+  color: var(--gds-black);
+}
+
+/* 仅键盘可见的焦点：黄色底 + 黑色下边线，与 GOV.UK Frontend 一致 */
+a:focus-visible,
+button:focus-visible,
+summary:focus-visible,
+[role="button"]:focus-visible,
+[tabindex]:focus-visible {
+  outline: var(--gds-focus-width) solid transparent;
+  outline-offset: 0;
+  background-color: var(--gds-yellow);
+  color: var(--gds-black);
+  box-shadow: 0 -2px var(--gds-yellow), 0 4px var(--gds-black);
+  text-decoration: none;
+}
+
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: var(--gds-focus-width) solid var(--gds-yellow);
+  outline-offset: 0;
+  background-color: #ffffff;
+  color: var(--gds-black);
+  box-shadow: inset 0 0 0 2px var(--gds-black);
+}
+
+::selection {
+  background: var(--gds-yellow);
+  color: var(--gds-black);
+}
+
+/* --------------------------------------------------------------------------
+   4. 跳转链接、宽度容器、阶段横幅、面包屑
+   -------------------------------------------------------------------------- */
+
+.govuk-skip-link {
+  position: absolute !important;
+  left: -9999em;
+  top: 0;
+  z-index: 9999;
+  padding: 10px 15px;
+  background: var(--gds-yellow);
+  color: var(--gds-black);
+  font-size: 1rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.govuk-skip-link:focus,
+.govuk-skip-link:focus-visible {
+  left: 0;
+  background: var(--gds-yellow);
+  color: var(--gds-black);
+  box-shadow: none;
+}
+
+.govuk-width-container,
+.footer,
+.wf-footer,
+.hub-footer,
+.section {
+  max-width: var(--gds-width) !important;
+}
+
+.govuk-width-container {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+@media (min-width: 641px) {
+  .govuk-width-container {
+    padding: 0 30px;
+  }
+}
+
+.govuk-phase-banner {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--gds-border);
+}
+
+.govuk-phase-banner__content {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 10px;
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.25;
+  color: var(--gds-black);
+}
+
+.govuk-phase-banner__content__tag {
+  margin-right: 0;
+}
+
+.govuk-warning-text + .govuk-phase-banner {
+  border-top: 1px solid var(--gds-border);
+}
+
+.govuk-tag {
+  display: inline-block;
+  padding: 2px 8px 0;
+  border: 0;
+  border-radius: 0;
+  background: var(--gds-blue);
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.govuk-tag--grey {
+  background: var(--gds-light-grey);
+  color: var(--gds-black);
+}
+
+.govuk-breadcrumbs {
+  margin-top: 15px;
+  margin-bottom: 10px;
+  font-size: 1rem;
+  line-height: 1.25;
+}
+
+.govuk-breadcrumbs__list {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.govuk-breadcrumbs__list-item {
+  position: relative;
+  margin-left: 10px;
+  padding-left: 15.655px;
+  margin-bottom: 5px;
+}
+
+.govuk-breadcrumbs__list-item:first-child {
+  margin-left: 0;
+  padding-left: 0;
+}
+
+.govuk-breadcrumbs__list-item:not(:first-child)::before {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: -1px;
+  width: 7px;
+  height: 7px;
+  border: solid;
+  border-width: 1px 1px 0 0;
+  border-color: var(--gds-dark-grey);
+  transform: rotate(45deg);
+}
+
+.govuk-breadcrumbs__link {
+  color: var(--gds-blue);
+}
+
+/* --------------------------------------------------------------------------
+   5. 页眉（三页统一为 GOV.UK 黑色服务页眉）
+   -------------------------------------------------------------------------- */
+
+.header,
+.wf-header,
+.hub-header {
+  position: relative !important;
+  top: auto;
+  left: auto;
+  right: auto;
+  height: auto !important;
+  overflow: visible;
+  background: var(--gds-black) !important;
+  border-top: 0;
+  border-bottom: 10px solid var(--gds-blue) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: none;
+}
+
+.header.is-scrolled {
+  background: var(--gds-black) !important;
+  border-bottom-color: var(--gds-blue) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.header-inner,
+.wf-header__inner,
+.hub-header__inner {
+  width: 100%;
+  max-width: var(--gds-width);
+  height: auto !important;
+  min-height: 0;
+  margin: 0 auto !important;
+  padding: 10px 15px !important;
+  gap: 20px;
+  align-items: center;
+}
+
+@media (min-width: 641px) {
+  .header-inner,
+  .wf-header__inner,
+  .hub-header__inner {
+    padding: 10px 30px !important;
+  }
+}
+
+.logo,
+.wf-logo,
+.hub-logo {
+  color: #ffffff !important;
+  text-decoration: none;
+  gap: 2px;
+}
+
+.logo-name,
+.wf-logo__name,
+.hub-logo__name {
+  color: #ffffff !important;
+  font-size: 1.5rem !important;
+  font-weight: 700 !important;
+  line-height: 1.1 !important;
+  letter-spacing: 0 !important;
+}
+
+.logo-sub,
+.wf-logo__sub,
+.hub-logo__sub {
+  color: #ffffff !important;
+  opacity: .85;
+  font-size: .875rem !important;
+  line-height: 1.25 !important;
+  letter-spacing: 0 !important;
+}
+
+.page-mark {
+  height: auto !important;
+  min-height: 0;
+  padding: 2px 6px !important;
+  background: transparent !important;
+  border: 2px solid #ffffff;
+  color: #ffffff !important;
+  font-size: .875rem !important;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: .02em !important;
+}
+
+/* 主导航：白字、下划线只在 hover / focus 出现 */
+.nav,
+.wf-nav,
+.hub-nav {
+  gap: 24px;
+}
+
+.nav > a,
+.nav > .twf-drop > .twf-toggle,
+.wf-nav > a,
+.hub-nav > a {
+  color: #ffffff !important;
+  font-size: 1.1875rem !important;
+  font-weight: 400;
+  line-height: 1.25;
+  letter-spacing: 0 !important;
+  text-decoration: none;
+  padding: 12px 0;
+}
+
+.nav > a:hover,
+.nav > .twf-drop > .twf-toggle:hover,
+.wf-nav > a:hover,
+.hub-nav > a:hover {
+  color: #ffffff !important;
+  text-decoration: underline;
+  text-decoration-thickness: 3px;
+  text-underline-offset: .2em;
+}
+
+.nav > a.active,
+.wf-nav > a.is-active,
+.hub-nav > a.is-active {
+  color: #ffffff !important;
+  font-weight: 700;
+  box-shadow: inset 0 -4px 0 #ffffff;
+}
+
+.nav > a:focus-visible,
+.nav > .twf-drop > .twf-toggle:focus-visible,
+.wf-nav > a:focus-visible,
+.hub-nav > a:focus-visible {
+  color: var(--gds-black) !important;
+  background-color: var(--gds-yellow);
+  box-shadow: 0 -2px var(--gds-yellow), 0 4px var(--gds-black);
+  text-decoration: none;
+}
+
+/* 二级下拉：白底、蓝字，避免与黑色页眉的白色导航项混淆 */
+.twf-menu {
+  background: #ffffff !important;
+  border: 1px solid var(--gds-border) !important;
+  box-shadow: 0 4px 0 rgba(11, 12, 12, .15) !important;
+  padding: 5px 0 !important;
+  min-width: 240px;
+}
+
+.twf-menu a {
+  color: var(--gds-blue) !important;
+  font-size: 1rem !important;
+  padding: 10px 15px !important;
+  text-decoration: underline;
+}
+
+.twf-menu a:hover {
+  color: var(--gds-dark-blue) !important;
+  background: var(--gds-light-grey) !important;
+}
+
+/* 页眉右侧控件 */
+.header-right,
+.wf-header__actions,
+.hub-actions {
+  gap: 12px;
+}
+
+.lang-toggle {
+  height: 44px !important;
+  min-width: 44px;
+  padding: 0 10px !important;
+  border: 2px solid #ffffff !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: #ffffff !important;
+  font-size: 1rem !important;
+  font-weight: 700;
+  letter-spacing: 0 !important;
+}
+
+.lang-toggle:hover {
+  background: #ffffff !important;
+  color: var(--gds-black) !important;
+}
+
+.menu-toggle,
+.wf-menu-btn,
+.hub-menu-btn {
+  color: #ffffff !important;
+}
+
+.menu-toggle span,
+.wf-menu-lines > span,
+.hub-menu-lines > span,
+.wf-menu-x > span,
+.hub-menu-x > span {
+  background: #ffffff !important;
+}
+
+/* 页眉内的主要操作按钮保持 GOV.UK 绿色按钮 */
+.wf-header__actions > .wf-btn,
+.hub-actions > .hub-btn {
+  background: var(--gds-green) !important;
+  color: #ffffff !important;
+  border: 2px solid transparent !important;
+  box-shadow: 0 2px 0 var(--gds-green-shadow) !important;
+  font-size: 1rem !important;
+  padding: 8px 12px !important;
+  text-decoration: none !important;
+}
+
+/* 登录组件的按钮在黑色页眉上需要清晰可见 */
+#loginMenuItem .login-main-btn {
+  background: var(--gds-green) !important;
+  border-color: var(--gds-green) !important;
+  color: #ffffff !important;
+  border-radius: 0 !important;
+  box-shadow: 0 2px 0 var(--gds-green-shadow) !important;
+  font-size: 1rem !important;
+}
+
+#loginMenuItem .user-trigger-btn {
+  background: #ffffff !important;
+  border: 2px solid #ffffff !important;
+  color: var(--gds-black) !important;
+  border-radius: 0 !important;
+  font-size: 1rem !important;
+}
+
+/* 移动端展开菜单使用黑底白字 */
+@media (max-width: 900px) {
+
+  .header .nav,
+  .wf-mobile,
+  .hub-mobile {
+    background: var(--gds-black) !important;
+    border-bottom: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .header .nav a,
+  .header .nav .twf-toggle,
+  .wf-mobile > a,
+  .hub-mobile > a {
+    color: #ffffff !important;
+    font-size: 1.1875rem !important;
+    border-bottom: 1px solid #3f4442 !important;
+    padding: 14px 15px !important;
+    text-decoration: none;
+  }
+
+  .header .nav a:hover,
+  .header .nav .twf-toggle:hover,
+  .wf-mobile > a:hover,
+  .hub-mobile > a:hover {
+    text-decoration: underline;
+    text-decoration-thickness: 3px;
+  }
+
+  .wf-mobile__actions .wf-btn,
+  .hub-mobile__actions .hub-btn,
+  .wf-mobile__github {
+    width: 100%;
+    margin: 10px 0;
+  }
+
+  .twf-menu,
+  .twf-drop.open .twf-menu {
+    background: var(--gds-black) !important;
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .twf-menu a {
+    color: #ffffff !important;
+    background: transparent !important;
+    border-bottom: 1px solid #3f4442;
+  }
+
+  .twf-menu a:hover {
+    background: #2b2c2c !important;
+    color: #ffffff !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   6. 服务导航（首页二级导航 / 工作流页内导航）
+   -------------------------------------------------------------------------- */
+
+.index-subnav,
+.wf-subnav {
+  position: static !important;
+  height: auto !important;
+  background: var(--gds-light-grey) !important;
+  border-top: 1px solid var(--gds-border) !important;
+  border-bottom: 1px solid var(--gds-border) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.index-subnav__inner,
+.wf-subnav__inner {
+  width: 100%;
+  max-width: var(--gds-width);
+  height: auto !important;
+  min-height: 50px;
+  margin: 0 auto !important;
+  padding: 0 15px;
+  gap: 24px;
+  overflow-x: auto;
+}
+
+@media (min-width: 641px) {
+  .index-subnav__inner,
+  .wf-subnav__inner {
+    padding: 0 30px;
+  }
+}
+
+.index-subnav a,
+.wf-subnav a {
+  color: var(--gds-blue) !important;
+  font-size: 1rem !important;
+  line-height: 1.25;
+  letter-spacing: 0 !important;
+  text-decoration: underline;
+  text-underline-offset: .1578em;
+  padding: 14px 0;
+}
+
+.index-subnav a:hover,
+.wf-subnav a:hover {
+  color: var(--gds-dark-blue) !important;
+  text-decoration-thickness: 3px;
+}
+
+/* --------------------------------------------------------------------------
+   7. 正文容器与区块
+   -------------------------------------------------------------------------- */
+
+.section {
+  width: 100% !important;
+  max-width: var(--gds-width) !important;
+  margin: 0 auto !important;
+  padding: 60px 15px !important;
+  scroll-margin-top: 20px;
+}
+
+@media (min-width: 641px) {
+  .section {
+    padding: 80px 30px !important;
+  }
+}
+
+.section-header {
+  max-width: 720px;
+  margin-bottom: 40px;
+}
+
+.hero {
+  min-height: 0 !important;
+  padding: 48px 24px 56px !important;
+  background: #ffffff;
+}
+
+.hero-presets {
+  margin-top: 48px;
+  padding-top: 40px;
+  scroll-margin-top: 20px;
+}
+
+.eyebrow,
+.hero-eyebrow,
+.wf-eyebrow,
+.hub-eyebrow {
+  margin-bottom: 15px !important;
+  color: var(--gds-secondary-text) !important;
+  font-size: 1rem !important;
+  font-weight: 700;
+  letter-spacing: .05em !important;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
+.hero-subtitle,
+.section-description,
+.wf-hero__desc,
+.hub-desc,
+.wf-main .text-center.max-w-3xl p,
+.wf-final__desc,
+.hub-empty p {
+  color: var(--gds-black) !important;
+  font-size: 1.1875rem !important;
+  line-height: 1.5 !important;
+  letter-spacing: 0 !important;
+  max-width: 680px;
+}
+
+.hero-subtitle {
+  margin-top: 0;
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.hero-subtitle span {
+  display: inline;
+}
+
+.hero-title {
+  max-width: 960px;
+  text-align: center;
+  font-weight: 700 !important;
+  text-wrap: balance;
+}
+
+.hero-title span {
+  display: block;
+}
+
+.hero-actions {
+  margin-top: 30px;
+  gap: 15px;
+}
+
+.preset-question {
+  font-size: 1.1875rem !important;
+  font-weight: 700 !important;
+  line-height: 1.4 !important;
+}
+
+.preset-meta,
+.preset-index,
+.case-number,
+.process-number,
+.faq-index,
+.social-proof,
+.hero-presets__desc,
+.hero-trust,
+.comparison,
+.compare-badge,
+.compare-title,
+.compare-text,
+.audience-kicker,
+.audience-desc,
+.audience-list li,
+.audience-link,
+.deploy-block__caption,
+.deploy-config__index,
+.deploy-config__badge,
+.deploy-config__kicker,
+.deploy-config__overview,
+.deploy-config__note,
+.deploy-activate__hint,
+.deploy-tips__item,
+.wf-eyebrow,
+.wf-hero__meta,
+.wf-card__category,
+.wf-card__desc,
+.wf-card__flow-label,
+.wf-card__nodes,
+.wf-card__footer,
+.wf-card__run,
+.hub-cat,
+.hub-cat__count,
+.hub-meta,
+.hub-empty p {
+  font-size: 1rem !important;
+  letter-spacing: 0 !important;
+  line-height: 1.5 !important;
+}
+
+.social-proof {
+  margin-top: 30px;
+  color: var(--gds-secondary-text) !important;
+}
+
+/* 嵌入文本：GDS inset text */
+.hero-trust {
+  margin-top: 25px;
+  padding: 15px !important;
+  border: 0 !important;
+  border-left: 10px solid var(--gds-border) !important;
+  background: transparent !important;
+  color: var(--gds-black) !important;
+  font-size: 1rem !important;
+  text-align: left;
+}
+
+/* --------------------------------------------------------------------------
+   8. 按钮
+   -------------------------------------------------------------------------- */
+
+.hero-cta,
+.wf-btn,
+.hub-btn,
+.audience-cta,
+.generate-btn,
+.deploy-more__btn,
+.hero-cta-alt,
+.audience-cta--ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 10px 18px !important;
+  border: 2px solid transparent !important;
+  border-radius: 0 !important;
+  background: var(--gds-green) !important;
+  color: #ffffff !important;
+  font-family: var(--gds-font) !important;
+  font-size: 1.1875rem !important;
+  font-weight: 400 !important;
+  line-height: 1.19 !important;
+  letter-spacing: 0 !important;
+  text-decoration: none !important;
+  box-shadow: 0 2px 0 var(--gds-green-shadow) !important;
+  transform: none !important;
+  transition: background-color .15s ease, box-shadow .15s ease;
+}
+
+.hero-cta:hover,
+.wf-btn:hover,
+.hub-btn:hover,
+.audience-cta:hover,
+.generate-btn:hover,
+.deploy-more__btn:hover {
+  background: var(--gds-green-hover) !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 0 var(--gds-green-shadow) !important;
+  transform: none !important;
+}
+
+.hero-cta:active,
+.wf-btn:active,
+.hub-btn:active,
+.audience-cta:active,
+.generate-btn:active {
+  top: 2px;
+  box-shadow: none !important;
+}
+
+.hero-cta:focus-visible,
+.wf-btn:focus-visible,
+.hub-btn:focus-visible,
+.audience-cta:focus-visible,
+.generate-btn:focus-visible,
+.deploy-more__btn:focus-visible {
+  background-color: var(--gds-yellow) !important;
+  color: var(--gds-black) !important;
+  border-color: var(--gds-yellow) !important;
+  box-shadow: 0 2px 0 var(--gds-black) !important;
+}
+
+/* 次要按钮：GDS secondary button */
+.wf-btn--ghost,
+.hub-btn--ghost,
+.audience-cta--ghost {
+  background: var(--gds-light-grey) !important;
+  color: var(--gds-black) !important;
+  border-color: transparent !important;
+  box-shadow: 0 2px 0 #929191 !important;
+}
+
+.wf-btn--ghost:hover,
+.hub-btn--ghost:hover,
+.audience-cta--ghost:hover {
+  background: #dbdad9 !important;
+  color: var(--gds-black) !important;
+}
+
+/* 文字链接式操作 */
+.hero-cta-alt,
+.audience-link {
+  display: inline;
+  min-height: 0;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  color: var(--gds-blue) !important;
+  font-size: 1.1875rem !important;
+  line-height: 1.5 !important;
+  text-decoration: underline !important;
+  box-shadow: none !important;
+}
+
+.hero-cta-alt:hover,
+.audience-link:hover {
+  color: var(--gds-dark-blue) !important;
+  text-decoration-thickness: 3px !important;
+}
+
+/* --------------------------------------------------------------------------
+   9. 卡片与列表
+   -------------------------------------------------------------------------- */
+
+.preset-card,
+.case,
+.audience-card,
+.process-item,
+.pricing,
+.compare-side,
+.module-card,
+.deploy-block,
+.deploy-config__item,
+.wf-card,
+.wf-window,
+.hub-search,
+.panel {
+  background: #ffffff !important;
+  border: 1px solid var(--gds-border) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.preset-card:hover,
+.case:hover,
+.audience-card:hover,
+.wf-card:hover,
+.module-card:hover {
+  border-color: var(--gds-black) !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.preset-card:focus-visible {
+  background: #ffffff !important;
+  outline: 4px solid var(--gds-yellow);
+  outline-offset: 0;
+  box-shadow: 0 0 0 2px var(--gds-black) !important;
+}
+
+.preset-card,
+.preset-card:visited {
+  color: var(--gds-black) !important;
+  text-decoration: none !important;
+}
+
+.preset-card:hover .preset-question {
+  text-decoration: underline;
+  text-decoration-thickness: 3px;
+  text-underline-offset: .15em;
+}
+
+.preset-arrow {
+  color: var(--gds-blue) !important;
+}
+
+.case-desc,
+.audience-desc,
+.module-desc,
+.wf-card__desc {
+  color: var(--gds-black) !important;
+  font-size: 1.1875rem !important;
+  line-height: 1.5 !important;
+  letter-spacing: 0 !important;
+}
+
+.wf-card__title {
+  color: var(--gds-black) !important;
+  text-decoration: none;
+}
+
+/* 工作流卡片里的「免费运行」按 GDS 链接处理 */
+.wf-card__run {
+  color: var(--gds-blue) !important;
+  text-decoration: underline;
+  text-underline-offset: .1578em;
+}
+
+/* --------------------------------------------------------------------------
+   10. 表单
+   -------------------------------------------------------------------------- */
+
+.govuk-form-group {
+  margin-bottom: 20px;
+}
+
+.govuk-label {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 1.1875rem;
+  font-weight: 400;
+  color: var(--gds-black);
+}
+
+.govuk-hint {
+  margin-bottom: 15px;
+  color: var(--gds-secondary-text);
+  font-size: 1.1875rem;
+}
+
+.govuk-input {
+  width: 100%;
+  height: 40px;
+  margin-top: 0;
+  padding: 5px;
+  border: 2px solid var(--gds-black);
+  border-radius: 0;
+  background-color: #ffffff;
+  font-size: 1.1875rem;
+  line-height: 1.25;
+  color: var(--gds-black);
+}
+
+.govuk-input:focus {
+  outline: 3px solid var(--gds-yellow);
+  outline-offset: 0;
+  box-shadow: inset 0 0 0 2px var(--gds-black);
+}
+
+.govuk-error-message {
+  margin-bottom: 15px;
+  color: var(--gds-red);
+  font-size: 1.1875rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.govuk-form-group--error .govuk-input {
+  border-color: var(--gds-red);
+}
+
+.govuk-error-summary {
+  margin-bottom: 30px;
+  padding: 20px;
+  border: 5px solid var(--gds-red);
+}
+
+.govuk-error-summary__title {
+  margin: 0 0 20px;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.govuk-error-summary__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.govuk-error-summary__list a {
+  color: var(--gds-red);
+  font-weight: 700;
+}
+
+/* 搜索框按 GDS 输入框处理，覆盖各页原有细边框 */
+#search-input,
+.hub-search #search-input,
+.wf-main input[type="text"] {
+  height: 44px !important;
+  border: 2px solid var(--gds-black) !important;
+  border-radius: 0 !important;
+  background: #ffffff !important;
+  color: var(--gds-black) !important;
+  font-size: 1.1875rem !important;
+  line-height: 1.25;
+}
+
+#search-input:focus,
+.hub-search #search-input:focus {
+  border-color: var(--gds-black) !important;
+  box-shadow: inset 0 0 0 2px var(--gds-black) !important;
+  outline: 3px solid var(--gds-yellow);
+  outline-offset: 0;
+}
+
+#search-input::placeholder {
+  color: var(--gds-secondary-text);
+  opacity: 1;
+}
+
+.hub-search kbd {
+  display: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   11. 侧栏分类、标签与元信息
+   -------------------------------------------------------------------------- */
+
+.hub-cat {
+  padding: 10px 0 !important;
+  color: var(--gds-black) !important;
+  text-align: left;
+  border-bottom: 1px solid var(--gds-border) !important;
+}
+
+.hub-cat:hover {
+  color: var(--gds-dark-blue) !important;
+  text-decoration: underline;
+}
+
+.hub-cat.is-active {
+  color: var(--gds-black) !important;
+  font-weight: 700;
+  padding-left: 10px !important;
+  border-left: 5px solid var(--gds-blue);
+}
+
+.hub-cat__count {
+  color: var(--gds-secondary-text) !important;
+}
+
+.hub-meta {
+  padding-top: 15px;
+  border-top: 1px solid var(--gds-border);
+  color: var(--gds-secondary-text) !important;
+}
+
+/* SkillHub 卡片由 Tailwind 工具类渲染，统一为 GDS 卡片 */
+#agent-grid > article {
+  background: #ffffff !important;
+  border: 1px solid var(--gds-border) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 25px !important;
+  color: var(--gds-black) !important;
+}
+
+#agent-grid > article:hover {
+  border-color: var(--gds-black) !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+#agent-grid h3 {
+  color: var(--gds-black) !important;
+  font-family: var(--gds-font) !important;
+  font-size: 1.5rem !important;
+  font-weight: 700 !important;
+  line-height: 1.25 !important;
+}
+
+#agent-grid p {
+  color: var(--gds-black) !important;
+  font-size: 1.1875rem !important;
+  line-height: 1.5 !important;
+}
+
+#agent-grid .text-xs,
+#agent-grid .text-sm,
+#agent-grid [class*="text-slate-400"],
+#agent-grid [class*="text-slate-500"] {
+  font-size: 1rem !important;
+  color: var(--gds-secondary-text) !important;
+}
+
+#agent-grid span[class*="bg-emerald"] {
+  background: transparent !important;
+  border: 1px solid var(--gds-border);
+  color: var(--gds-black) !important;
+  font-size: 1rem !important;
+  border-radius: 0 !important;
+}
+
+/* 分类 chip */
+.hub-cat-chip {
+  border: 1px solid var(--gds-border) !important;
+  border-radius: 0 !important;
+  background: #ffffff !important;
+  color: var(--gds-blue) !important;
+  font-size: 1rem !important;
+  padding: 6px 10px !important;
+  text-decoration: underline;
+}
+
+.hub-cat-chip.is-active {
+  background: var(--gds-black) !important;
+  color: #ffffff !important;
+  border-color: var(--gds-black) !important;
+  text-decoration: none;
+}
+
+/* --------------------------------------------------------------------------
+   12. 表格、详情、摘要列表
+   -------------------------------------------------------------------------- */
+
+.govuk-table,
+.wf-main details table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1.1875rem;
+}
+
+.govuk-table th,
+.govuk-table td,
+.wf-main details table th,
+.wf-main details table td {
+  padding: 10px 20px 10px 0;
+  border-bottom: 1px solid var(--gds-border);
+  text-align: left;
+  vertical-align: top;
+}
+
+.govuk-table th,
+.wf-main details table th {
+  font-weight: 700;
+}
+
+.govuk-summary-list {
+  margin: 0 0 30px;
+  font-size: 1.1875rem;
+}
+
+.govuk-summary-list__row {
+  display: flex;
+  justify-content: space-between;
+  gap: 30px;
+  padding: 15px 0;
+  border-bottom: 1px solid var(--gds-border);
+}
+
+.govuk-summary-list__key {
+  width: 35%;
+  font-weight: 700;
+}
+
+.govuk-summary-list__value {
+  flex: 1;
+}
+
+.govuk-inset-text {
+  margin: 30px 0;
+  padding: 15px;
+  border-left: 10px solid var(--gds-border);
+  color: var(--gds-black);
+  font-size: 1.1875rem;
+}
+
+.govuk-warning-text {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  font-size: 1.1875rem;
+  font-weight: 700;
+}
+
+.govuk-warning-text__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 35px;
+  height: 35px;
+  border: 3px solid var(--gds-black);
+  border-radius: 50%;
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.govuk-panel {
+  margin-bottom: 30px;
+  padding: 35px;
+  border: 5px solid var(--gds-green);
+  text-align: center;
+}
+
+.govuk-panel__title {
+  margin: 0 0 20px;
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.govuk-details {
+  margin-bottom: 20px;
+  font-size: 1.1875rem;
+}
+
+.govuk-details__summary {
+  display: inline-block;
+  padding-left: 25px;
+  color: var(--gds-blue);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: .1578em;
+}
+
+/* --------------------------------------------------------------------------
+   13. 页脚（GDS footer）
+   -------------------------------------------------------------------------- */
+
+.govuk-footer {
+  margin-top: 0;
+  padding: 40px 0 25px;
+  border-top: 1px solid var(--gds-border);
+  background: var(--gds-light-grey);
+  color: var(--gds-black);
+  font-size: 1.1875rem;
+  line-height: 1.5;
+}
+
+.govuk-footer__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 30px;
+}
+
+.govuk-footer__meta-item--grow {
+  flex: 1 1 320px;
+}
+
+.govuk-footer__heading {
+  margin: 0 0 10px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.govuk-footer__quote {
+  margin: 0 0 20px;
+  color: var(--gds-black);
+  font-size: 1.1875rem;
+}
+
+.govuk-footer__inline-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 20px;
+  margin: 0 0 20px;
+  padding: 0;
+  list-style: none;
+}
+
+.govuk-footer__link {
+  color: var(--gds-black) !important;
+  text-decoration: underline;
+  text-decoration-thickness: max(1px, .0625rem);
+  text-underline-offset: .1578em;
+}
+
+.govuk-footer__link:hover {
+  color: var(--gds-black) !important;
+  text-decoration-thickness: max(3px, .1875rem);
+}
+
+.govuk-footer__copy {
+  margin: 0;
+  color: var(--gds-secondary-text);
+  font-size: 1rem;
+}
+
+.govuk-footer__copy a {
+  color: var(--gds-black) !important;
+}
+
+/* --------------------------------------------------------------------------
+   14. 法律文档浮层
+   -------------------------------------------------------------------------- */
+
+.doc-eyebrow {
+  color: var(--gds-secondary-text) !important;
+  font-size: 1rem !important;
+  font-weight: 700;
+  letter-spacing: .05em !important;
+}
+
+.doc-title {
+  margin-top: 10px;
+}
+
+.doc-date {
+  color: var(--gds-secondary-text) !important;
+  font-size: 1rem !important;
+  line-height: 1.5 !important;
+  letter-spacing: 0 !important;
+}
+
+.doc-section h3 {
+  font-size: 1.5rem !important;
+  font-weight: 700 !important;
+  line-height: 1.25 !important;
+  margin-top: 30px;
+}
+
+.doc-section p,
+.doc-body p {
+  color: var(--gds-black) !important;
+  font-size: 1.1875rem !important;
+  line-height: 1.5 !important;
+  letter-spacing: 0 !important;
+}
+
+.doc-row-label {
+  color: var(--gds-black) !important;
+  font-size: 1rem !important;
+  font-weight: 700;
+}
+
+.doc-row-value {
+  color: var(--gds-black) !important;
+  font-size: 1.1875rem !important;
+  line-height: 1.5 !important;
+}
+
+.doc-row-value em {
+  color: var(--gds-secondary-text) !important;
+  font-size: 1rem !important;
+  font-style: normal;
+}
+
+.copy-btn {
+  color: var(--gds-blue) !important;
+  font-size: 1.1875rem !important;
+  text-decoration: underline;
+}
+
+.copy-hint {
+  color: var(--gds-secondary-text) !important;
+  font-size: 1rem !important;
+}
+
+/* --------------------------------------------------------------------------
+   15. 可访问性辅助类
+   -------------------------------------------------------------------------- */
+
+.govuk-visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  clip: rect(0 0 0 0) !important;
+  clip-path: inset(50%) !important;
+  border: 0 !important;
+  white-space: nowrap !important;
+}
+
+.govuk-\!-margin-bottom-0 {
+  margin-bottom: 0 !important;
+}
+
+/* 尊重「减少动态效果」的系统设置 */
+@media (prefers-reduced-motion: reduce) {
+
+  html,
+  .contentItemArea {
+    scroll-behavior: auto !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+  }
+}
+
+/* 窄屏下保证 320px 仍可回流阅读 */
+@media (max-width: 400px) {
+
+  .hero,
+  .section {
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+  }
+
+  .govuk-width-container,
+  .header-inner,
+  .wf-header__inner,
+  .hub-header__inner {
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+  }
+
+  .hero-cta,
+  .wf-btn,
+  .hub-btn {
+    width: 100%;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   16. 打印
+   -------------------------------------------------------------------------- */
+
+@media print {
+
+  .header,
+  .wf-header,
+  .hub-header,
+  .index-subnav,
+  .wf-subnav,
+  .govuk-phase-banner,
+  .floating-toolbar,
+  .toolbar-window {
+    display: none !important;
+  }
+
+  body {
+    color: #000000;
+    background: #ffffff;
+  }
+
+  a {
+    color: #000000;
+    text-decoration: underline;
+  }
+
+  .hero,
+  .section {
+    padding: 0 !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   17. 三页共用的布局修正
+   -------------------------------------------------------------------------- */
+
+/* 页眉改为随文档流滚动后，不再需要为固定页眉预留顶部内边距 */
+body {
+  padding-top: 0 !important;
+}
+
+/* 工作流页：hero 与正文同处 main 地标内，仍保持整页纵向伸展 */
+.wf-page-main {
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 auto;
+  width: 100%;
+}
+
+.wf-page-main > .wf-main {
+  flex: 1 0 auto;
+}
+
+/* 首页内容区保留独立滚动，但页眉不再固定 */
+.contentItemArea {
+  padding-top: 0 !important;
+}
+
+/* 面包屑与页面标题之间留出 GDS 间距 */
+.hub-main > .govuk-breadcrumbs {
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+
+/* 移动端页眉：品牌与操作区分行，避免登录区、语言切换与菜单按钮挤出视口 */
+@media (max-width: 640px) {
+
+  .header-inner {
+    flex-wrap: wrap;
+    row-gap: 8px;
+  }
+
+  .brand-lockup {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .header-right {
+    flex: 1 0 100%;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+
+  .logo-name {
+    font-size: 1.25rem !important;
+  }
+
+  .logo-sub {
+    font-size: .75rem !important;
+  }
+
+  .page-mark {
+    font-size: .75rem !important;
+    padding: 1px 5px !important;
+  }
+
+  #loginMenuItem .login-main-btn,
+  #loginMenuItem .user-trigger-btn {
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* 标题按词义均衡换行，避免末行只剩一个字 */
+  .hero-title,
+  .hub-title,
+  .wf-hero__title,
+  .section-title {
+    text-wrap: balance;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   18. 字号兜底：正文与元信息不小于 GOV.UK 规定的 16px
+   -------------------------------------------------------------------------- */
+
+.process-text,
+.process-title,
+.case-desc,
+.audience-desc,
+.audience-list li,
+.module-desc,
+.faq-answer-inner p,
+.hero-presets__desc,
+.compare-text,
+.deploy-config__title,
+.deploy-activate__hint,
+.deploy-tips__item,
+.wf-final__desc,
+.hub-empty p {
+  font-size: 1.1875rem !important;
+  line-height: 1.5 !important;
+}
+
+.module-index,
+.case-number,
+.process-number,
+.faq-index,
+.preset-index,
+.preset-meta,
+.social-proof,
+.deploy-config__index,
+.deploy-config__badge,
+.deploy-config__kicker,
+.deploy-config__overview,
+.deploy-config__note,
+.deploy-reference__caption,
+.deploy-block__caption,
+.deploy-config__cmd,
+.deploy-config__cmd code,
+.copy-hint,
+.wf-card__hot,
+.wf-card__category,
+.wf-card__flow-label,
+.wf-card__nodes,
+.wf-card__footer,
+.wf-card__run,
+.wf-hero__meta,
+.hub-meta,
+.hub-cat__count,
+#result-count,
+#clear-filter,
+.wf-cat {
+  font-size: 1rem !important;
+  line-height: 1.5 !important;
+}
+
+.deploy-config__title {
+  font-size: 1.1875rem !important;
+}
+
+/* 终端命令与行内代码：16px 等宽字体，保证放大后仍可读 */
+.term-line__code,
+.deploy-config__cmd code,
+.deploy-tips code,
+.term {
+  font-size: 1rem !important;
+  line-height: 1.6 !important;
+}
+
+/* 工作流页大量使用 Tailwind 工具类，统一抬到可读字号 */
+.wf-main p {
+  font-size: 1.1875rem !important;
+  line-height: 1.5 !important;
+}
+
+.wf-main [class*="text-xs"],
+.wf-main [class*="text-sm"],
+.wf-main [class*="text-[13px]"],
+.wf-main [class*="text-[14px]"],
+.wf-main [class*="text-[15px]"] {
+  font-size: 1rem !important;
+}
+
+.wf-main button[class*="text-xs"],
+.wf-main button[class*="text-sm"] {
+  font-size: 1rem !important;
+}
+
+/* SkillHub 卡片元信息（分类、标签、预览次数、立即运行）保持 16px */
+#agent-grid span[class*="text-"],
+#agent-grid p[class*="text-"] {
+  font-size: 1rem !important;
+  line-height: 1.5 !important;
+}
+
+#agent-grid span[class*="text-2xl"],
+#agent-grid span[class*="text-3xl"],
+#agent-grid span[class*="text-4xl"] {
+  font-size: 1.5rem !important;
+}
+
+/* 浮动工具栏：图标按钮，文字作为辅助标签保留 14px 并加大触控面积 */
+.toolbar-btn {
+  width: 60px !important;
+  min-height: 56px;
+  font-size: .875rem !important;
+}
+
+/* 弹层关闭按钮：44px 触控目标，深色图标 */
+.panel-close {
+  width: 44px !important;
+  height: 44px !important;
+  color: var(--gds-black) !important;
+}
+
+.panel-close span {
+  height: 2px !important;
+  background: var(--gds-black) !important;
+}
+
+/* 页眉副标题、页脚小字为品牌与法务辅助信息，保持 14px / 16px */
+.logo-sub,
+.wf-logo__sub,
+.hub-logo__sub,
+.page-mark {
+  font-size: .875rem !important;
+}
+
+/* SkillHub 卡片内部的字号由较高优先级选择器锁定，这里按同等优先级覆盖 */
+#agent-grid > article h2,
+#agent-grid > article h3 {
+  font-size: 1.5rem !important;
+  line-height: 1.25 !important;
+  font-weight: 700 !important;
+}
+
+#agent-grid > article span.inline-flex:not(.run-btn) {
+  font-size: 1rem !important;
+  letter-spacing: 0 !important;
+  line-height: 1.5 !important;
+}
+
+#agent-grid > article p {
+  font-size: 1.1875rem !important;
+  line-height: 1.5 !important;
+}
+
+#agent-grid > article .mt-4.flex.flex-wrap.gap-2,
+#agent-grid > article .mt-3.flex.flex-wrap.gap-2 {
+  font-size: 1rem !important;
+  line-height: 1.5 !important;
+}
+
+#agent-grid > article > .mt-8 {
+  font-size: 1rem !important;
+  line-height: 1.5 !important;
+}
+
+#agent-grid > article .mt-4.flex.flex-wrap.gap-2 > span,
+#agent-grid > article .mt-3.flex.flex-wrap.gap-2 > span {
+  font-size: 1rem !important;
+}
+
+.hub-cat-chip__count {
+  font-size: .875rem !important;
+}
+
+/* 工作流分类与结果计数 */
+.wf-cat {
+  font-size: 1rem !important;
+  padding-bottom: 10px !important;
+}
+
+#result-count,
+#clear-filter {
+  font-size: 1rem !important;
+  color: var(--gds-secondary-text) !important;
+}
+
+/* 工作流页装饰性编号与文件名：提高对比度，避免浅灰文字低于 4.5:1 */
+.wf-main [class*="text-brand-600/20"] {
+  color: var(--gds-secondary-text) !important;
+}
+
+.wf-main [class*="text-slate-400"],
+.wf-main [class*="text-gray-400"] {
+  color: var(--gds-secondary-text) !important;
+}
+
+/* 工作流卡片：标题与「免费运行」都是真实链接，键盘可直接打开 */
+.wf-card__title a,
+.wf-card__title a:visited {
+  color: var(--gds-black) !important;
+  text-decoration: none;
+}
+
+.wf-card__title a:hover {
+  color: var(--gds-black) !important;
+  text-decoration: underline;
+  text-decoration-thickness: 3px;
+  text-underline-offset: .15em;
+}
+
+.wf-card__run {
+  color: var(--gds-blue) !important;
+  text-decoration: underline !important;
+  text-underline-offset: .1578em;
+}
+
+.wf-card__run:hover {
+  color: var(--gds-dark-blue) !important;
+  text-decoration-thickness: 3px !important;
+}
+
+/* SkillHub「立即运行」链接 */
+#agent-grid > article .run-btn {
+  color: var(--gds-blue) !important;
+  text-decoration: underline;
+  text-underline-offset: .1578em;
+}
+
+#agent-grid > article .run-btn:hover {
+  color: var(--gds-dark-blue) !important;
+  text-decoration-thickness: 3px;
+}
+
+/* 抽屉浮层的关闭与外部打开按钮：44px 触控目标 */
+#close-drawer-btn,
+#drawer-external-link {
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gds-black) !important;
+}
+
+/* 抽屉关闭时不能被键盘或读屏访问 */
+#drawer-container[aria-hidden="true"] {
+  visibility: hidden;
+}
+
+#drawer-container[aria-hidden="false"] {
+  visibility: visible;
+}
+
+@media (max-width: 900px) {
+
+  /* 下拉菜单贴住蓝色页眉底线，不覆盖它 */
+  .header .nav,
+  .wf-mobile,
+  .hub-mobile {
+    top: calc(100% + 10px) !important;
+  }
+
+  /* 移动端当前项用下划线，而不是占满整行的内阴影 */
+  .header .nav a.active {
+    box-shadow: none !important;
+    text-decoration: underline;
+    text-decoration-thickness: 3px;
+    text-underline-offset: .2em;
+  }
+}
+
+@media (max-width: 640px) {
+
+  /* 小屏页眉只保留服务名，当前页由菜单中的 aria-current 表达 */
+  .page-mark {
+    display: none !important;
+  }
+}
+
+/* FAQ：问题作为三级标题，按钮样式保持不变 */
+.faq-heading {
+  margin: 0;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+}
+
+/* 搜索框上方可见标签与输入框的 GDS 间距 */
+.govuk-label + .relative,
+.govuk-label + .hub-search {
+  margin-top: 0;
+}
+
+@media (max-width: 640px) {
+
+  /* 浮动工具栏改为右下角横向排列，并给正文留出安全距离，避免遮挡最后一屏 */
+  .floating-toolbar {
+    top: auto !important;
+    bottom: 12px;
+    right: 12px;
+    transform: none !important;
+    flex-direction: row;
+  }
+
+  .toolbar-btn {
+    width: 52px !important;
+    min-height: 48px;
+    font-size: .75rem !important;
+  }
+
+  .contentItemArea {
+    padding-bottom: 72px;
+  }
+}
+
+/* index.js 会注入颜色为 #007bff 的链接样式；按 GOV.UK 蓝色与对比度要求覆盖 */
+main a:not([class]),
+.govuk-link {
+  color: var(--gds-blue) !important;
+}
+
+main a:not([class]):hover,
+.govuk-link:hover {
+  color: var(--gds-dark-blue) !important;
+}
+
+/* 与 GDS 960px 内容宽度对齐：页眉、面包屑与正文同一条左边界 */
+.hero-presets {
+  width: min(960px, 100%) !important;
+}
+
+@media (min-width: 641px) {
+
+  .wf-hero__inner {
+    width: 100% !important;
+    max-width: 1020px !important;
+    padding-left: 30px !important;
+    padding-right: 30px !important;
+  }
+
+  .wf-main {
+    width: 100% !important;
+    max-width: 1020px !important;
+    padding: 72px 30px 84px !important;
+  }
+}
+
+@media (min-width: 901px) {
+
+  .hub-shell {
+    width: 100% !important;
+    max-width: 1020px !important;
+    padding: 40px 30px 64px !important;
+  }
+}
+
+/* 工作流首屏：左文右图，中文标题限制在 40px 以内并给文字列更多空间 */
+@media (min-width: 901px) {
+
+  .wf-hero__inner {
+    grid-template-columns: minmax(0, 1.08fr) minmax(0, .92fr) !important;
+    gap: 48px !important;
+  }
+}
+
+.wf-hero__title {
+  font-size: clamp(2rem, 3.2vw, 2.5rem) !important;
+  line-height: 1.15 !important;
+  text-wrap: balance;
+}
+
+@media (min-width: 641px) {
+
+  .wf-hero {
+    padding-top: 56px !important;
+    padding-bottom: 56px !important;
+  }
+}
+
+/* 跳转链接把焦点交给 main 时，不给整页加黄色焦点底 */
+main:focus,
+main:focus-visible,
+main[tabindex]:focus,
+main[tabindex]:focus-visible {
+  outline: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* 页眉不再固定后，锚点与侧栏不再需要为固定页眉预留偏移 */
+.wf-main > section {
+  scroll-margin-top: 20px !important;
+}
+
+#pc-categories {
+  top: 20px !important;
+}
+
+/* 窄屏下未登录组件尚未挂载时不占位，避免页眉出现 140px 空白槽位；
+   桌面端仍保留槽位，登录组件挂载时不引发布局跳动 */
+@media (max-width: 900px) {
+  #loginMenuItem:empty {
+    display: none !important;
+    flex: 0 0 0;
+    width: 0;
+    min-width: 0;
+    max-width: 0;
+  }
+}
+
+@media (max-width: 640px) {
+
+  /* 服务导航在窄屏换行，避免把链接藏在横向滚动区之外 */
+  .index-subnav__inner,
+  .wf-subnav__inner {
+    flex-wrap: wrap;
+    overflow: visible;
+    gap: 0 20px;
+    min-height: 0;
+    padding-top: 6px;
+    padding-bottom: 6px;
+  }
+
+  .index-subnav a,
+  .wf-subnav a {
+    padding: 8px 0;
+  }
+}
+
+/* 中文主标题的分行更均衡，避免末行只剩一个助词 */
+.hero-title span {
+  display: block;
+  text-wrap: balance;
+}
+
+/* ==========================================================================
+   19. 对齐与留白精修
+   --------------------------------------------------------------------------
+   统一 5px 间距基准、960px 内容宽度与纵向节奏；避免标题孤字、
+   卡片内容拥挤、区块间距忽大忽小。
+   ========================================================================== */
+
+:root:root {
+  --gds-space-1: 5px;
+  --gds-space-2: 10px;
+  --gds-space-3: 15px;
+  --gds-space-4: 20px;
+  --gds-space-5: 25px;
+  --gds-space-6: 30px;
+  --gds-space-8: 40px;
+  --gds-space-10: 50px;
+  --gds-space-12: 60px;
+  --gds-space-16: 80px;
+}
+
+/* 中文长段落按语义换行，避免末行只剩两个字 */
+.section-description,
+.hero-subtitle,
+.wf-hero__desc,
+.wf-main p,
+.wf-final__desc,
+.hub-desc,
+.case-desc,
+.audience-desc,
+.module-desc,
+.faq-answer-inner p,
+.doc-section p,
+.govuk-footer__quote {
+  text-wrap: pretty;
+}
+
+.section-title,
+.case-title,
+.audience-title,
+.module-title,
+.wf-card__title,
+.hub-title,
+.appleTitle {
+  text-wrap: balance;
+}
+
+/* 区块：统一上下留白与标题间距 */
+.section {
+  padding: 72px 30px !important;
+}
+
+.section-header {
+  margin-bottom: 36px;
+}
+
+.eyebrow,
+.hero-eyebrow,
+.wf-eyebrow,
+.hub-eyebrow {
+  margin-bottom: 12px !important;
+}
+
+.section-description {
+  margin-top: 15px !important;
+  max-width: 680px;
+}
+
+@media (max-width: 640px) {
+  .section {
+    padding: 48px 15px !important;
+  }
+
+  .section-header {
+    margin-bottom: 28px;
+  }
+}
+
+/* 首页：案例卡与流程卡降低高度，避免大片空白 */
+@media (min-width: 641px) {
+  .case {
+    height: auto !important;
+    min-height: 320px;
+    padding: 30px !important;
+  }
+
+  .case-title {
+    margin-top: 30px !important;
+  }
+
+  .case-mark {
+    right: 28px;
+    bottom: 28px;
+  }
+
+  .process-item {
+    min-height: 340px;
+    padding: 36px 30px 32px !important;
+  }
+
+  .process-item:not(:first-child) {
+    padding-left: 30px !important;
+  }
+
+  .audience-card {
+    min-height: 340px;
+    padding: 30px !important;
+  }
+
+  .module-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 20px !important;
+  }
+
+  .module-card {
+    min-height: 220px;
+    padding: 25px !important;
+  }
+}
+
+/* 首页：案例、流程、模块的边框与内边距保持同一节奏 */
+.cases,
+.audience-grid,
+.module-grid {
+  gap: 20px !important;
+}
+
+.preset-grid {
+  gap: 20px !important;
+}
+
+.preset-card {
+  padding: 25px !important;
+}
+
+/* 工作流：首屏与正文的纵向节奏 */
+@media (min-width: 641px) {
+  .wf-hero {
+    padding-top: 48px !important;
+    padding-bottom: 48px !important;
+  }
+
+  .wf-main {
+    padding-top: 60px !important;
+    padding-bottom: 80px !important;
+    gap: 64px !important;
+  }
+}
+
+.wf-main .text-center.max-w-3xl {
+  margin-bottom: 32px !important;
+}
+
+.wf-main .text-center.max-w-3xl p {
+  margin-top: 12px !important;
+}
+
+.wf-card {
+  padding: 24px !important;
+}
+
+/* SkillHub：侧栏、标题、搜索与卡片的间距 */
+@media (min-width: 901px) {
+  .hub-shell {
+    padding-top: 36px !important;
+    padding-bottom: 64px !important;
+  }
+}
+
+.hub-intro {
+  margin-bottom: 32px !important;
+}
+
+.hub-desc {
+  margin-top: 15px !important;
+}
+
+.hub-grid {
+  gap: 20px !important;
+  margin-top: 24px !important;
+}
+
+#agent-grid > article {
+  padding: 24px !important;
+}
+
+.hub-meta {
+  margin-top: 12px;
+  padding-top: 12px;
+}
+
+/* 页脚与页面主内容使用同一左右边界和纵向留白 */
+.govuk-footer {
+  padding-top: 40px;
+  padding-bottom: 30px;
+}
+
+.govuk-footer__inline-list {
+  margin-bottom: 15px;
+}
+
+/* 小屏：避免卡片内边距过大导致内容挤压 */
+@media (max-width: 640px) {
+  .case,
+  .audience-card,
+  .module-card,
+  .wf-card,
+  #agent-grid > article {
+    padding: 20px !important;
+  }
+
+  .preset-card {
+    padding: 20px !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .module-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .module-card {
+    min-height: 0;
+    padding: 24px !important;
+  }
+}
+
+/* 案例卡：为右下角图标预留空间，正文不再与图标重叠 */
+@media (min-width: 641px) {
+  .case-desc {
+    padding-right: 100px;
+  }
+}
+
+/* 区块导语用更均衡的分行，消除末行孤字 */
+.section-description,
+.wf-main .text-center.max-w-3xl p,
+.hub-desc {
+  text-wrap: balance;
+}
+
+/* 模块卡图标与编号顶线对齐 */
+.module-illustration {
+  margin-top: 2px;
+}
+
+/* 首页区块之间的留白：96px 总间距，避免相邻区块各 72px 造成过大空场 */
+.section {
+  padding-top: 48px !important;
+  padding-bottom: 48px !important;
+}
+
+@media (max-width: 640px) {
+  .section {
+    padding-top: 36px !important;
+    padding-bottom: 36px !important;
+  }
+}
+
+@media (max-width: 640px) {
+  /* 窄屏主标题缩到 30px，避免「的」单独换行 */
+  .hero-title {
+    font-size: 1.875rem !important;
+    line-height: 1.15 !important;
+  }
+
+  /* 阶段横幅：说明与反馈链接分行，避免末尾只剩一个字 */
+  .govuk-phase-banner__text {
+    display: block;
+  }
+
+  .govuk-phase-banner__text a {
+    display: block;
+    margin-top: 3px;
+  }
+}
+
+@media (max-width: 640px) {
+  /* 反馈链接独占一行后，不再保留行末句号，避免出现单独一行的标点 */
+  .govuk-phase-banner__text [data-i18n="phase.period"] {
+    display: none;
+  }
+}
+
+/* 主标题占满可用宽度，避免 flex 居中时收缩成过窄的文本列 */
+.hero-title {
+  width: 100%;
+}
+
+/* 移除面包屑后，Skill 广场顶部保留与工作流页一致的呼吸感 */
+@media (min-width: 901px) {
+  .hub-shell {
+    padding-top: 48px !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .govuk-phase-banner__period {
+    display: none;
+  }
+}
+
+@media (max-width: 900px) {
+  /* Skill 广场分类在窄屏换行，避免最后一个分类被截断 */
+  #mobile-categories {
+    flex-wrap: wrap;
+    overflow-x: visible;
+    row-gap: 8px;
+  }
+}
+
+/* 页眉右侧：语言切换与登录组件使用同一 44px 行高，上下居中对齐 */
+.header-right {
+  min-height: 44px;
+  align-items: center;
+}
+
+.header-right > * {
+  align-self: center;
+}
+
+#loginMenuItem {
+  height: 44px !important;
+  min-height: 44px !important;
+  align-items: center;
+}
+
+/* 登录区域与语言切换同一高度；英文按钮文案不被 140px 槽位截断 */
+#loginMenuItem {
+  flex-basis: 170px !important;
+  width: 170px !important;
+  min-width: 170px !important;
+  max-width: 170px !important;
+}
+
+@media (max-width: 640px) {
+  #loginMenuItem {
+    flex-basis: 150px !important;
+    width: 150px !important;
+    min-width: 150px !important;
+    max-width: 150px !important;
+  }
+
+  #loginMenuItem .login-main-btn {
+    max-width: 150px;
+  }
+}
+
+/* ==========================================================================
+   移动端首页页眉：品牌与右侧操作保持同一行
+   --------------------------------------------------------------------------
+   375/320px 下页面由 adjustStyle 缩放到 480px 画布，实际排版宽度约 450px：
+   品牌约 110px + 登录 150px + 语言 44px + 菜单 36px + 间距，可单行容纳。
+   ========================================================================== */
+@media (max-width: 640px) {
+  .header-inner {
+    flex-wrap: nowrap !important;
+    row-gap: 0 !important;
+    gap: 12px;
+  }
+
+  .brand-lockup {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .header-right {
+    flex: 0 0 auto !important;
+    width: auto !important;
+    margin-left: auto;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+
+  .logo-name {
+    display: block;
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .logo-sub {
+    display: block;
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  #loginMenuItem {
+    flex-basis: 150px !important;
+    width: 150px !important;
+    min-width: 150px !important;
+    max-width: 150px !important;
+  }
+}
+
+/* ==========================================================================
+   20. 卡片内留白统一 + FAQ 列表对齐 workflow.html
+   --------------------------------------------------------------------------
+   卡片统一 24px 内边距（移动端 20px）；大型面板 32px。
+   FAQ 改为与工作流页一致的独立描边卡片：24px 内边距、右侧 chevron。
+   ========================================================================== */
+.preset-card,
+.case,
+.audience-card,
+.module-card,
+.compare-side,
+.wf-card,
+#agent-grid > article {
+  padding: 24px !important;
+}
+
+.process-item {
+  padding: 24px 24px 24px 0 !important;
+}
+
+.process-item:not(:first-child) {
+  padding-left: 24px !important;
+}
+
+.case-mark {
+  right: 24px !important;
+  bottom: 24px !important;
+}
+
+.case-title {
+  margin-top: 24px !important;
+}
+
+.pricing,
+.deploy-block {
+  padding: 32px !important;
+}
+
+@media (max-width: 640px) {
+  .preset-card,
+  .case,
+  .audience-card,
+  .module-card,
+  .process-item,
+  .compare-side,
+  .wf-card,
+  #agent-grid > article,
+  .pricing,
+  .deploy-block {
+    padding: 20px !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   FAQ：与 workflow.html 的 details 卡片一致
+   -------------------------------------------------------------------------- */
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  border-top: 0 !important;
+}
+
+.faq-item {
+  border: 1px solid var(--gds-border) !important;
+  background: #ffffff;
+  padding: 0 !important;
+}
+
+.faq-item.open {
+  border-color: var(--gds-black) !important;
+}
+
+.faq-question {
+  width: 100%;
+  padding: 20px 24px !important;
+  gap: 16px !important;
+  background: #ffffff !important;
+  border: 0 !important;
+}
+
+.faq-question:hover {
+  background: var(--gds-light-grey) !important;
+}
+
+.faq-question:focus-visible {
+  outline: 3px solid transparent;
+  outline-offset: 0;
+  background: var(--gds-yellow) !important;
+  color: var(--gds-black) !important;
+  box-shadow: 0 2px 0 var(--gds-black);
+}
+
+.faq-index {
+  display: none !important;
+}
+
+.faq-text {
+  flex: 1;
+  min-width: 0;
+  font-size: 1.1875rem !important;
+  font-weight: 700 !important;
+  line-height: 1.4 !important;
+  color: var(--gds-black);
+}
+
+/* 用 chevron 替代原有 +/− 图标，与工作流 FAQ 一致 */
+.faq-toggle {
+  display: none !important;
+}
+
+.faq-question::after {
+  content: "";
+  flex: none;
+  width: 10px;
+  height: 10px;
+  margin-left: 8px;
+  border-right: 2px solid var(--gds-black);
+  border-bottom: 2px solid var(--gds-black);
+  transform: rotate(45deg) translateY(-3px);
+  transition: transform 0.2s ease;
+}
+
+.faq-item.open .faq-question::after {
+  transform: rotate(-135deg) translateY(-2px);
+}
+
+.faq-answer-inner {
+  padding: 0 24px 24px !important;
+}
+
+.faq-answer-inner p {
+  max-width: 720px;
+  font-size: 1.1875rem !important;
+  line-height: 1.5 !important;
+  color: var(--gds-black) !important;
+}
+
+@media (max-width: 640px) {
+  .faq-question {
+    padding: 16px 20px !important;
+    font-size: 1rem !important;
+  }
+
+  .faq-text {
+    font-size: 1rem !important;
+  }
+
+  .faq-answer-inner {
+    padding: 0 20px 20px !important;
+  }
+
+  .faq-answer-inner p {
+    font-size: 1rem !important;
+  }
+}
+
+/* FAQ 最终对齐 workflow.html：16px 问题与答案、24px 内边距、灰边卡片 */
+.faq-item.open {
+  border-color: var(--gds-border) !important;
+}
+
+.faq-question {
+  padding: 24px !important;
+  background: #ffffff !important;
+}
+
+.faq-question:hover {
+  background: #ffffff !important;
+}
+
+.faq-text {
+  font-size: 1rem !important;
+  font-weight: 600 !important;
+}
+
+.faq-question::after {
+  width: 12px;
+  height: 12px;
+}
+
+.faq-answer-inner {
+  padding: 0 24px 24px !important;
+}
+
+.faq-answer-inner p {
+  font-size: 1rem !important;
+  line-height: 1.5 !important;
+}
+
+@media (max-width: 640px) {
+  .faq-question {
+    padding: 16px 20px !important;
+  }
+
+  .faq-answer-inner {
+    padding: 0 20px 20px !important;
+  }
+}
+
+@media (max-width: 640px) {
+  /* 移动端案例卡为右下角图标保留底部空间，正文不与图标重叠 */
+  .case {
+    padding: 20px 20px 96px !important;
+  }
+}
+
+/* ==========================================================================
+   21. 「激活功能模块」列表与 QUESTIONS 卡片列表保持一致
+   --------------------------------------------------------------------------
+   独立描边卡片 + 16px 间距 + 24px 内边距 + 右侧 chevron；
+   保留首项「最高优先级」标签，作为状态信息而非装饰编号。
+   ========================================================================== */
+.deploy-config {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 24px !important;
+  border-top: 0 !important;
+}
+
+.deploy-config__item {
+  border: 1px solid var(--gds-border) !important;
+  background: #ffffff;
+}
+
+.deploy-config__item.is-priority .deploy-config__head,
+.deploy-config__item[open] .deploy-config__head {
+  background: #ffffff !important;
+}
+
+.deploy-config__head {
+  gap: 14px !important;
+  padding: 24px !important;
+  background: #ffffff !important;
+  color: var(--gds-black);
+  list-style: none;
+}
+
+.deploy-config__head:hover {
+  background: #ffffff !important;
+}
+
+.deploy-config__head:focus-visible {
+  outline: 3px solid transparent !important;
+  outline-offset: 0;
+  background: var(--gds-yellow) !important;
+  color: var(--gds-black) !important;
+  box-shadow: 0 2px 0 var(--gds-black);
+}
+
+/* 与 FAQ 一致：不显示编号，用 chevron 表达展开状态 */
+.deploy-config__index {
+  display: none !important;
+}
+
+.deploy-config__title {
+  flex: 1;
+  min-width: 0;
+  font-size: 1rem !important;
+  font-weight: 600 !important;
+  line-height: 1.4 !important;
+  letter-spacing: 0 !important;
+  color: var(--gds-black);
+}
+
+.deploy-config__badge {
+  flex: none;
+  padding: 2px 8px !important;
+  background: var(--gds-blue) !important;
+  color: #ffffff !important;
+  font-size: 1rem !important;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: 0 !important;
+  text-transform: none;
+}
+
+.deploy-config__plus {
+  display: none !important;
+}
+
+.deploy-config__head::after {
+  content: "";
+  flex: none;
+  width: 12px;
+  height: 12px;
+  margin-left: 2px;
+  border-right: 2px solid var(--gds-black);
+  border-bottom: 2px solid var(--gds-black);
+  transform: rotate(45deg) translateY(-3px);
+  transition: transform 0.2s ease;
+}
+
+.deploy-config__item[open] .deploy-config__head::after {
+  transform: rotate(-135deg) translateY(-2px);
+}
+
+.deploy-config__body {
+  padding: 0 24px 24px !important;
+}
+
+.deploy-config__kicker {
+  margin-bottom: 8px !important;
+  color: var(--gds-secondary) !important;
+  font-size: 1rem !important;
+  font-weight: 700;
+  letter-spacing: 0 !important;
+}
+
+.deploy-config__overview {
+  margin: 0 0 16px !important;
+  color: var(--gds-black) !important;
+  font-size: 1rem !important;
+  line-height: 1.5 !important;
+}
+
+.deploy-config__note {
+  margin: 16px 0 0 !important;
+  color: var(--gds-secondary) !important;
+  font-size: 1rem !important;
+  line-height: 1.5 !important;
+}
+
+.deploy-config__cmd {
+  margin: 0 !important;
+  padding: 15px !important;
+  border: 1px solid var(--gds-border) !important;
+  background: var(--gds-light-grey) !important;
+  font-size: 1rem !important;
+  line-height: 1.6 !important;
+  overflow-x: auto;
+}
+
+@media (max-width: 640px) {
+  .deploy-config {
+    margin-top: 20px !important;
+    gap: 12px;
+  }
+
+  .deploy-config__head {
+    padding: 16px 20px !important;
+    gap: 10px !important;
+  }
+
+  .deploy-config__body {
+    padding: 0 20px 20px !important;
+  }
+
+  .deploy-config__badge {
+    font-size: 0.875rem !important;
+  }
+}

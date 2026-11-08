@@ -1542,4 +1542,267 @@ export default {
   pointer-events: none;
   filter: blur(0.5px);
 }
+
+/* ==========================================================================
+   GOV.UK 服务设计规范适配层
+   - 白色画布、1px 描边、直角；紫色光效收敛为 GDS 蓝绿
+   - 文字不低于 16px；动画尊重「减少动态效果」
+   ========================================================================== */
+.aigc-loader {
+  min-height: 420px;
+  --gds-black: #0b0c0c;
+  --gds-blue: #1d70b8;
+  --gds-green: #00703c;
+  --gds-yellow: #ffdd00;
+  --gds-grey: #f3f2f1;
+  --gds-border: #b1b4b6;
+  --gds-secondary: #505a5f;
+  --gds-font: "GDS Transport", Arial, "Noto Sans SC", "Source Han Sans SC",
+    "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+
+  border-radius: 0;
+  background: #ffffff;
+  border: 1px solid var(--gds-border);
+  box-shadow: none;
+  font-family: var(--gds-font);
+  color: var(--gds-black);
+}
+
+.aigc-canvas {
+  opacity: 0.18;
+  mix-blend-mode: normal;
+}
+
+.aigc-grid {
+  background-image: linear-gradient(
+      to right,
+      rgba(177, 180, 182, 0.35) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      rgba(177, 180, 182, 0.35) 1px,
+      transparent 1px
+    ),
+    radial-gradient(circle at 1px 1px, rgba(29, 112, 184, 0.18) 1px, transparent 0);
+  background-size: 64px 64px, 64px 64px, 16px 16px;
+}
+
+.aigc-spotlight {
+  background: radial-gradient(
+    ellipse 60% 50% at 50% 40%,
+    rgba(255, 255, 255, 0.85) 0%,
+    transparent 70%
+  );
+}
+
+.aigc-topline {
+  height: 3px;
+  border-radius: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--gds-blue) 30%,
+    var(--gds-green) 70%,
+    transparent 100%
+  );
+}
+
+.aigc-step-header {
+  width: min(760px, calc(100% - 40px));
+  margin: 0 auto 20px;
+  padding: 15px;
+  background: var(--gds-grey);
+  border: 1px solid var(--gds-border);
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.aigc-step-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 0;
+  background: var(--gds-blue);
+  box-shadow: none;
+  animation: none;
+}
+
+.aigc-step-prefix {
+  font-family: var(--gds-font);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--gds-secondary);
+  letter-spacing: 0.05em;
+}
+
+.aigc-step-text {
+  margin-top: 3px;
+  font-size: 1.1875rem;
+  font-weight: 700;
+  color: var(--gds-black);
+  letter-spacing: 0;
+}
+
+.aigc-step-progress span {
+  width: 24px;
+  height: 4px;
+  border-radius: 0;
+  background: var(--gds-border);
+}
+
+.aigc-step-progress span.active {
+  background: var(--gds-blue);
+  box-shadow: none;
+}
+
+.aigc-console {
+  width: min(760px, calc(100% - 40px));
+  margin: 0 auto;
+  background: #ffffff;
+  border: 1px solid var(--gds-border);
+  border-radius: 0;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.aigc-console::before {
+  display: none;
+}
+
+.aigc-console-header {
+  padding: 12px 15px;
+  background: var(--gds-grey);
+  border-bottom: 1px solid var(--gds-border);
+}
+
+.console-tag {
+  width: 24px;
+  height: 24px;
+  border-radius: 0;
+  background: var(--gds-black);
+  color: #ffffff;
+  font-size: 1rem;
+  box-shadow: none;
+}
+
+.console-title {
+  font-family: var(--gds-font);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--gds-black);
+  letter-spacing: 0.02em;
+}
+
+.aigc-console-body {
+  padding: 20px;
+  color: var(--gds-black);
+  font-family: var(--gds-font);
+  font-size: 1.1875rem;
+  line-height: 1.5;
+  letter-spacing: 0;
+  text-shadow: none;
+}
+
+.aigc-cursor {
+  width: 2px;
+  height: 1.1em;
+  background: var(--gds-black);
+  box-shadow: none;
+  border-radius: 0;
+}
+
+.aigcvis-hint {
+  max-width: min(760px, calc(100% - 40px));
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 15px;
+  background: #ffffff;
+  border: 1px solid var(--gds-border);
+  border-radius: 0;
+  box-shadow: none;
+  backdrop-filter: none;
+  animation: none;
+}
+
+.aigcvis-hint-icon {
+  font-family: var(--gds-font);
+  font-size: 1rem;
+  color: var(--gds-secondary);
+  background: none;
+  -webkit-text-fill-color: currentColor;
+}
+
+.aigcvis-hint-phase {
+  padding: 2px 6px;
+  border-radius: 0;
+  background: var(--gds-black);
+  color: #ffffff;
+  font-family: var(--gds-font);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  box-shadow: none;
+}
+
+.aigcvis-hint-text {
+  min-width: 0;
+  color: var(--gds-black);
+  font-size: 1.1875rem;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+.aigcvis-hint-percent {
+  min-width: 44px;
+  color: var(--gds-black);
+  font-family: var(--gds-font);
+  font-size: 1rem;
+  font-weight: 700;
+  background: none;
+  -webkit-text-fill-color: currentColor;
+}
+
+.aigcvis-hint-dots i {
+  background: var(--gds-blue);
+  border-radius: 0;
+  animation: none;
+}
+
+.aigcvis-core-percent {
+  font-family: var(--gds-font);
+  font-size: 1rem;
+}
+
+.aigcvis-prompt {
+  font-family: var(--gds-font);
+  font-size: 1rem;
+}
+
+.aigcvis-progressbar {
+  height: 4px;
+  background: var(--gds-grey);
+  border-radius: 0;
+}
+
+.aigcvis-progressbar-fill {
+  background: var(--gds-blue);
+  border-radius: 0;
+  box-shadow: none;
+  animation: none;
+}
+
+.aigcvis-progressbar-shimmer {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aigc-loader *,
+  .aigc-loader *::before,
+  .aigc-loader *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
 </style>

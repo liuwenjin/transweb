@@ -662,7 +662,7 @@
         maxHeight: "400px",
         position: "relative",
         margin: "auto",
-        background: "linear-gradient(to bottom right, #6951FF, #10EDC5)",
+        background: "#ffffff",
         "border-radius": "5px",
         overflow: "hidden",
         border: "solid 1px #ddd",
@@ -742,7 +742,7 @@
       style = style || {
         width: "95%",
         height: "95%",
-        background: "linear-gradient(to bottom right, #6951FF, #10EDC5)",
+        background: "#ffffff",
         "border-radius": "5px",
         overflow: "hidden",
         border: "solid 1px #ddd",
