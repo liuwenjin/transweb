@@ -34,7 +34,10 @@
       y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
     })(window, document, "clarity", "script", "xejk2rx33f");
   </script>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- 锁定初始缩放：首页会把 body 缩放到 480/530px 画布，
+       允许浏览器再对宽页面做一次自动缩放会让内容变窄、右侧留白。 -->
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no" />
   <title>AI Agent / 数字员工生成器｜上传资料，约 3 分钟生成专属助手 - TransWeb</title>
 
   <!-- ==================== 基础 SEO ==================== -->
@@ -310,6 +313,22 @@
 
     .contentItemArea.is-legal-open {
       overflow: hidden;
+    }
+
+    /* 窄屏画布内不保留滚动条占位。
+       鸿蒙浏览器可能使用非叠加滚动条，15px 的槽位会把 480px 画布的内容
+       挤窄，表现为右侧留白、整页偏左。滚动仍可通过触摸/滚轮完成。 */
+    @media (max-width: 900px) {
+      .contentItemArea {
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        scrollbar-gutter: auto;
+      }
+
+      .contentItemArea::-webkit-scrollbar {
+        width: 0;
+        height: 0;
+      }
     }
 
     button,
@@ -1510,19 +1529,16 @@
       grid-template-columns: repeat(3, 1fr);
     }
 
+    /* 三张卡片共用同一套内边距，左右留白保持一致 */
     .process-item {
       min-height: 380px;
 
-      padding: 44px 40px 36px 0;
+      padding: 44px 40px 36px;
 
       display: flex;
       flex-direction: column;
 
       border-right: 1px solid var(--line);
-    }
-
-    .process-item {
-      padding-left: 40px;
     }
 
     .process-item:last-child {
@@ -1557,29 +1573,32 @@
       line-height: 1.95;
     }
 
-    /* 三列插画统一落在同一条基线上，纵线因此有了收束 */
+    /* 三列插画共用同一块 150×70 画布，底边对齐，尺寸完全一致 */
     .process-visual {
       flex: 0 0 auto;
       height: 84px;
 
       margin-top: auto;
-      padding-top: 44px;
+      padding-top: 14px;
 
       display: flex;
       align-items: flex-end;
     }
 
-    /* absorb */
-
-    .absorb-lines {
-      width: 150px;
-      height: 70px;
-
+    /* 三幅插画统一为 150×60 的可视区域，画布内上下各留 5px */
+    .absorb-lines,
+    .distill-tree,
+    .respond-box {
       position: relative;
+      flex: 0 0 auto;
 
-      /* 让三幅插画的「可见底边」落在同一条基线上 */
-      margin-bottom: -5px;
+      width: 150px;
+      height: 60px;
+
+      margin-bottom: 5px;
     }
+
+    /* absorb */
 
     .absorb-lines span {
       position: absolute;
@@ -1590,64 +1609,55 @@
 
       height: 1px;
 
-      background: #c3bfb5;
+      background: #bdb9af;
 
-      transform-origin: right;
+      /* 只做透明度呼吸，避免缩放让插画看起来比另外两幅小 */
       animation: converge 4.5s infinite ease-in-out;
     }
 
     .absorb-lines span:nth-child(1) {
-      top: 8px;
+      top: 0;
     }
 
     .absorb-lines span:nth-child(2) {
-      top: 22px;
+      top: 15px;
     }
 
     .absorb-lines span:nth-child(3) {
-      top: 36px;
+      top: 30px;
     }
 
     .absorb-lines span:nth-child(4) {
-      top: 50px;
+      top: 45px;
     }
 
     .absorb-lines span:nth-child(5) {
-      top: 64px;
+      top: 59px;
     }
 
     @keyframes converge {
 
       0%,
       100% {
-        transform: scaleX(1);
+        opacity: 1;
       }
 
       50% {
-        transform: scaleX(.72);
+        opacity: .75;
       }
     }
 
     /* distill */
-
-    .distill-tree {
-      width: 150px;
-      height: 70px;
-
-      position: relative;
-
-      margin-bottom: -15px;
-    }
 
     .distill-tree::before {
       content: "";
 
       position: absolute;
 
-      left: 20px;
-      top: 35px;
+      left: 0;
+      top: 30px;
 
-      width: 110px;
+      width: 100%;
 
       height: 1px;
 
@@ -1667,39 +1677,34 @@
     }
 
     .distill-tree span:nth-child(1) {
-      left: 18px;
-      top: 33px;
+      left: 0;
+      top: 27px;
     }
 
     .distill-tree span:nth-child(2) {
-      left: 54px;
-      top: 17px;
+      left: 71px;
+      top: 0;
     }
 
     .distill-tree span:nth-child(3) {
-      left: 54px;
-      top: 50px;
+      left: 71px;
+      top: 55px;
     }
 
     .distill-tree span:nth-child(4) {
-      left: 105px;
-      top: 17px;
+      left: 140px;
+      top: 0;
     }
 
     .distill-tree span:nth-child(5) {
-      left: 105px;
-      top: 50px;
+      left: 140px;
+      top: 55px;
     }
 
     /* respond */
 
     .respond-box {
-      width: 150px;
-      height: 68px;
-
-      border: 1px solid #c9c5bb;
-
-      position: relative;
+      border: 1px solid #bdb9af;
     }
 
     .respond-box::before {
@@ -1708,8 +1713,8 @@
       position: absolute;
 
       left: 15px;
-      right: 25px;
-      top: 20px;
+      right: 15px;
+      top: 19px;
 
       height: 1px;
 
@@ -2128,6 +2133,100 @@
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 24px;
+    }
+
+    /* 完整功能模块：默认收起，summary 作为展开 / 收起开关 */
+    .module-disclosure {
+      margin-top: 0;
+    }
+
+    .module-disclosure__summary {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+
+      padding: 20px 0;
+
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+
+      cursor: pointer;
+      list-style: none;
+      color: var(--ink);
+    }
+
+    .module-disclosure__summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .module-disclosure__summary::marker {
+      content: "";
+    }
+
+    .module-disclosure__label {
+      font-size: 13px;
+      letter-spacing: .02em;
+    }
+
+    .module-disclosure__meta {
+      color: var(--gray);
+      font-size: 10.5px;
+      letter-spacing: .12em;
+      white-space: nowrap;
+    }
+
+    .module-disclosure__label-close {
+      display: none;
+    }
+
+    .module-disclosure[open] .module-disclosure__label-open {
+      display: none;
+    }
+
+    .module-disclosure[open] .module-disclosure__label-close {
+      display: inline;
+    }
+
+    .module-disclosure__icon {
+      position: relative;
+      flex: none;
+      width: 11px;
+      height: 11px;
+      margin-left: auto;
+
+      color: #615e57;
+
+      transition: transform .3s ease;
+    }
+
+    .module-disclosure__icon::before,
+    .module-disclosure__icon::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+
+      background: currentColor;
+    }
+
+    .module-disclosure__icon::before {
+      width: 11px;
+      height: 1px;
+      transform: translate(-50%, -50%);
+    }
+
+    .module-disclosure__icon::after {
+      width: 1px;
+      height: 11px;
+      transform: translate(-50%, -50%);
+    }
+
+    .module-disclosure[open] .module-disclosure__icon {
+      transform: rotate(45deg);
+    }
+
+    .module-disclosure .module-grid {
+      margin-top: 24px;
     }
 
     .module-card {
@@ -2752,11 +2851,8 @@
        避免「结构化构建」在行尾只落一个「建」字 */
     @media (min-width: 901px) and (max-width: 1100px) {
       .process-item {
-        padding-right: 28px;
-      }
-
-      .process-item {
         padding-left: 28px;
+        padding-right: 28px;
       }
 
       .process-title {
@@ -4144,10 +4240,6 @@
         border-bottom: 1px solid var(--line);
       }
 
-      .process-item {
-        padding-left: 0;
-      }
-
       .process-item:last-child {
         border-bottom: 0;
       }
@@ -4528,6 +4620,7 @@
             <span class="logo-name" data-i18n="logo">Trans-Agent</span>
             <span class="logo-sub" data-i18n="logo.sub">AI 数字员工平台</span>
           </a>
+          <span class="page-mark" data-i18n="nav.home">首页</span>
         </div>
 
         <nav class="nav" id="nav" aria-label="主导航">
@@ -4592,7 +4685,7 @@
 
         document.documentElement.lang = "en";
 
-        var nodes = document.querySelectorAll("#nav [data-i18n]");
+        var nodes = document.querySelectorAll("#nav [data-i18n], .page-mark[data-i18n]");
         for (var i = 0; i < nodes.length; i++) {
           var key = nodes[i].getAttribute("data-i18n");
           if (navEn[key]) nodes[i].textContent = navEn[key];
@@ -5217,8 +5310,18 @@
         </div>
 
 
-        <!-- 功能模块 -->
-        <div class="module-grid">
+        <!-- 功能模块：默认收起，点击展开完整列表 -->
+        <details class="module-disclosure" id="deployModules">
+          <summary class="module-disclosure__summary">
+            <span class="module-disclosure__label">
+              <span class="module-disclosure__label-open" data-i18n="deploy.modules.show">查看完整功能模块</span>
+              <span class="module-disclosure__label-close" data-i18n="deploy.modules.hide">收起功能模块</span>
+            </span>
+            <span class="module-disclosure__meta" data-i18n="deploy.modules.meta">6 个功能模块</span>
+            <span class="module-disclosure__icon" aria-hidden="true"></span>
+          </summary>
+
+          <div class="module-grid">
 
           <!-- 01 无代码生成 Agent / Skill -->
           <article class="module-card module-card--agent">
@@ -5381,7 +5484,8 @@
 
           </article>
 
-        </div>
+          </div>
+        </details>
 
 
         <!-- 部署步骤（后台管理指令作为附属参考） -->
@@ -6353,26 +6457,155 @@ transweb wxpay check</code></pre>
 
   </div>
 
-  <script defer src="https://transweb.cn/index.js"></script>
+  <script defer src="https://transweb.cn/index.js"
+    onload="window.__applyHomeCanvas && window.__applyHomeCanvas()"></script>
   <script defer src="admin/getAppConfig?callback=webCpu.appConfigCallback"></script>
-  
+
   <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      // 窄屏下由 WebTool.adjustStyle 把页面缩放到 480/530px 画布，
-      // 保证内嵌编辑器与生成器组件在手机上仍保持完整布局。
-      let tRadio = Number(WebTool.urlQuery(location.href, "transformRadio"));
-      if (tRadio !== 1) {
-        WebTool.adjustStyle(480, 530);
+    /* =========================
+       首页窄屏画布：530px + 整体缩放
+       ========================= */
+    (function () {
+      /* 530px 是页眉单行容纳“品牌 + 当前页标识 + 语言/登录/菜单”的最小画布宽度。
+         更窄的视口统一缩放到 530px，避免标识与按钮重叠。 */
+      var CANVAS_MIN = 530;
+      var CANVAS_MAX = 530;
+      var skipCanvas = false;
+      var applied = false;
+      var lastWidth = -1;
+      var pending = false;
+      var settleTimer = null;
+
+      try {
+        var rawRadio = new URLSearchParams(location.search).get("transformRadio");
+        skipCanvas = rawRadio !== null && Number(rawRadio) === 1;
+      } catch (error) {
+        skipCanvas = /[?&]transformRadio=1(?:&|$)/.test(location.search);
       }
-      window.transformRadio = tRadio;
-      
-      let qParams = WebTool.getQueryParams();
-      let documentId = qParams.id;
-      if (documentId || qParams.input || qParams.url || qParams.inputData || qParams.inputItem) {
-        let url = WebTool.attachParams("/agent.html", qParams);
-        location.href = url;
+
+      function resetCanvas() {
+        var body = document.body;
+        if (!body) return;
+
+        body.style.width = "";
+        body.style.height = "";
+        body.style.transform = "";
+        body.style.transformOrigin = "";
+        body.removeAttribute("scaleFlag");
+        window.transformRadio = 1;
       }
-    });
+
+      /* WebTool.adjustStyle 用 body.clientWidth 判断画布宽度。缩放后
+         body.clientWidth 会一直等于 480/530，所以每次重算前都要先清空
+         内联样式，否则旋转/折叠屏展开后仍会按旧宽度计算，整页发生偏移。
+         最后再按实际布局视口宽度校正一次，保证缩放后的 body 正好铺满屏幕。 */
+      function fitCanvasToViewport() {
+        var body = document.body;
+        var canvasWidth = parseFloat(body.style.width);
+        if (!canvasWidth) return;
+
+        var viewportWidth = document.documentElement.clientWidth ||
+          window.innerWidth || 0;
+        if (!viewportWidth) return;
+
+        var scale = viewportWidth / canvasWidth;
+
+        body.style.transformOrigin = "0 0";
+        body.style.transform = "scale(" + scale.toFixed(6) + ")";
+        body.style.height = (100 * canvasWidth / viewportWidth).toFixed(4) + "%";
+        window.transformRadio = scale;
+      }
+
+      window.__applyHomeCanvas = function () {
+        if (!document.body) return;
+
+        if (skipCanvas) {
+          resetCanvas();
+          lastWidth = document.documentElement.clientWidth || 0;
+          applied = true;
+          return;
+        }
+
+        resetCanvas();
+
+        if (window.WebTool && typeof WebTool.adjustStyle === "function") {
+          WebTool.adjustStyle(CANVAS_MIN, CANVAS_MAX);
+        }
+
+        fitCanvasToViewport();
+
+        lastWidth = document.documentElement.clientWidth || 0;
+        applied = true;
+      };
+
+      function scheduleCanvas() {
+        if (pending) return;
+        pending = true;
+
+        var run = function () {
+          pending = false;
+
+          var width = document.documentElement.clientWidth || 0;
+          if (width && width === lastWidth) return;
+
+          window.__applyHomeCanvas();
+        };
+
+        if (window.requestAnimationFrame) window.requestAnimationFrame(run);
+        else setTimeout(run, 16);
+
+        // 横竖屏切换 / 折叠屏展开时，部分鸿蒙浏览器会在动画结束后
+        // 才稳定布局视口宽度；延迟再校正一次，避免停留在中间态。
+        if (settleTimer) clearTimeout(settleTimer);
+        settleTimer = setTimeout(function () {
+          settleTimer = null;
+
+          var width = document.documentElement.clientWidth || 0;
+          if (width && width === lastWidth) return;
+
+          window.__applyHomeCanvas();
+        }, 300);
+      }
+
+      window.addEventListener("resize", scheduleCanvas, { passive: true });
+      window.addEventListener("orientationchange", scheduleCanvas, { passive: true });
+
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener("resize", scheduleCanvas, { passive: true });
+      }
+
+      document.addEventListener("visibilitychange", function () {
+        if (!document.hidden) scheduleCanvas();
+      });
+
+      // 资源加载完成 / 页面从缓存恢复时，视口可能才稳定；
+      // 只有画布实际宽度和视口不一致时才重算，避免无谓的整页重排。
+      function refitIfMismatch() {
+        var width = document.documentElement.clientWidth || 0;
+        if (!width) return;
+
+        var bodyWidth = document.body.getBoundingClientRect().width;
+        if (Math.abs(bodyWidth - width) > 0.5) {
+          lastWidth = -1;
+          window.__applyHomeCanvas();
+        }
+      }
+
+      window.addEventListener("load", refitIfMismatch, { once: true });
+      window.addEventListener("pageshow", refitIfMismatch);
+
+      document.addEventListener("DOMContentLoaded", function () {
+        // index.js 因网络原因未触发 onload 时兜底
+        if (!applied) window.__applyHomeCanvas();
+
+        let qParams = WebTool.getQueryParams();
+        let documentId = qParams.id;
+        if (documentId || qParams.input || qParams.url || qParams.inputData || qParams.inputItem) {
+          let url = WebTool.attachParams("/agent.html", qParams);
+          location.href = url;
+        }
+      });
+    })();
 
 
     /* =========================
@@ -6470,6 +6703,9 @@ transweb wxpay check</code></pre>
           "compare.ai.text": "上传即用，无需任何技术背景。持续服务、随时交付他人，透明消费、按需扣费。",
           "deploy.title": "本地部署，数据与算力都归你掌控。",
           "deploy.desc": "通过安装包一键自托管部署。下面是部署步骤（含后台管理指令参考）、激活功能模块所需的 root 登录凭据、API / 模型 / 微信支付 / 短信验证码配置，以及平台包含的完整功能模块。",
+          "deploy.modules.show": "查看完整功能模块",
+          "deploy.modules.hide": "收起功能模块",
+          "deploy.modules.meta": "6 个功能模块",
           "deploy.m1.title": "无代码生成 AI Agent / Skill",
           "deploy.m1.desc": "上传一份资料一键生成 Agent，一句话无代码生成 Skill，无需写 Prompt、搭数据库，通常 3 分钟内即可上岗。",
           "deploy.m2.title": "工作流引擎",
@@ -7198,7 +7434,7 @@ transweb wxpay check</code></pre>
       var overlay = document.getElementById("legalOverlay");
       if (!overlay) return;
 
-      // 移动端 body 会被 adjustStyle 整体缩放；把浮层挂到 <html> 下，
+      // 移动端 body 会被首页画布脚本整体缩放；把浮层挂到 <html> 下，
       // 脱离 body 的 transform 与页面滚动容器，才能真正铺满视口。
       if (overlay.parentNode !== document.documentElement) {
         document.documentElement.appendChild(overlay);

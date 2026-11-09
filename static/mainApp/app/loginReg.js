@@ -37,16 +37,14 @@ transweb_loginReg({
     inputChecker: {
       mobile: function (v) {
         var ret = {
-          result: true,
+          result: false,
           message: ""
         };
         if (!v) {
           ret.message = webCpu.messages[lang].phoneErrorTips1
         } else {
-          // var reg = /^[0-9]{11,}$/;
-          // if (reg.test(v)) {
-          //   ret.result = true;
-          // }
+          // 账号可以是手机号或邮箱，这里只拦截空值，格式交给服务端校验。
+          ret.result = true;
         }
         return ret;
       },
@@ -92,20 +90,26 @@ transweb_loginReg({
       if (typeof (callback) === "function") {
         ret = callback(v);
       }
-      $(input).removeClass("is-valid");
-      $(input).removeClass("is-invalid");
-      var tRet = $(input).hasClass("numberInput");
+      var $input = $(input);
+      var $field = $input.closest(".loginRegInput");
+      var $error = $field.find(".text-danger");
+      $input.removeClass("is-valid");
+      $input.removeClass("is-invalid");
+      var tRet = $input.hasClass("numberInput");
       if (ret.result) {
         if (!tRet) {
-          $(input).addClass("is-valid");
+          $input.addClass("is-valid");
         }
-        $(input).parent().find(".text-danger").hide();
+        $field.removeClass("is-invalid-field");
+        $input.attr("aria-invalid", "false");
+        $error.hide();
       } else {
         if (!tRet) {
-          $(input).addClass("is-invalid");
+          $input.addClass("is-invalid");
         }
-        $(input).parent().find(".text-danger").html(ret.message);
-        $(input).parent().find(".text-danger").show();
+        $field.addClass("is-invalid-field");
+        $input.attr("aria-invalid", "true");
+        $error.html(ret.message).show();
       }
       return ret.result;
     },

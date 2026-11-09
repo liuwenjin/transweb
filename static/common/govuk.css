@@ -409,17 +409,28 @@ select:focus-visible {
   letter-spacing: 0 !important;
 }
 
+/* 当前页标识是辅助信息：去掉描边与底色，降低对比度，用细分隔线表达层级，
+   避免与页眉里带白色描边的按钮（如语言切换）混淆 */
 .page-mark {
   height: auto !important;
   min-height: 0;
-  padding: 2px 6px !important;
+  padding: 0 !important;
   background: transparent !important;
-  border: 2px solid #ffffff;
-  color: #ffffff !important;
+  border: 0 !important;
+  color: rgba(255, 255, 255, .58) !important;
   font-size: .875rem !important;
-  font-weight: 700;
+  font-weight: 400;
   line-height: 1.25;
-  letter-spacing: .02em !important;
+  letter-spacing: .06em !important;
+}
+
+.page-mark::before {
+  content: "";
+  display: block;
+  width: 1px;
+  height: 11px;
+  margin-right: 9px;
+  background: rgba(255, 255, 255, .24);
 }
 
 /* 主导航：白字、下划线只在 hover / focus 出现 */
@@ -1602,8 +1613,7 @@ body {
   }
 
   .page-mark {
-    font-size: .75rem !important;
-    padding: 1px 5px !important;
+    font-size: .8125rem !important;
   }
 
   #loginMenuItem .login-main-btn,
@@ -1742,11 +1752,10 @@ body {
   background: var(--gds-black) !important;
 }
 
-/* 页眉副标题、页脚小字为品牌与法务辅助信息，保持 14px / 16px */
+/* 页眉副标题与页脚小字为品牌与法务辅助信息，保持 14px / 16px */
 .logo-sub,
 .wf-logo__sub,
-.hub-logo__sub,
-.page-mark {
+.hub-logo__sub {
   font-size: .875rem !important;
 }
 
@@ -1886,9 +1895,9 @@ body {
   }
 }
 
-@media (max-width: 640px) {
+@media (min-width: 901px) {
 
-  /* 小屏页眉只保留服务名，当前页由菜单中的 aria-current 表达 */
+  /* 桌面端导航已标示当前页，页眉只保留品牌，避免重复 */
   .page-mark {
     display: none !important;
   }
@@ -2146,11 +2155,6 @@ main[tabindex]:focus-visible {
 
   .process-item {
     min-height: 340px;
-    padding: 36px 30px 32px !important;
-  }
-
-  .process-item:not(:first-child) {
-    padding-left: 30px !important;
   }
 
   .audience-card {
@@ -2398,10 +2402,11 @@ main[tabindex]:focus-visible {
 }
 
 /* ==========================================================================
-   移动端首页页眉：品牌与右侧操作保持同一行
+   移动端页眉：保持单行，靠 530px 画布缩放留出空间
    --------------------------------------------------------------------------
-   375/320px 下页面由 adjustStyle 缩放到 480px 画布，实际排版宽度约 450px：
-   品牌约 110px + 登录 150px + 语言 44px + 菜单 36px + 间距，可单行容纳。
+   首页在窄屏下由 WebTool.adjustStyle 缩放到 530px 画布；该宽度按
+   “品牌 + 当前页标识 + 语言/登录/菜单”排成一行所需的宽度确定，避免互相覆盖。
+   技能广场/工作流同样使用 530px 画布，英文副标题较长时也不会压到语言切换。
    ========================================================================== */
 @media (max-width: 640px) {
   .header-inner {
@@ -2463,12 +2468,32 @@ main[tabindex]:focus-visible {
   padding: 24px !important;
 }
 
-.process-item {
-  padding: 24px 24px 24px 0 !important;
+/* HOW IT WORKS：三张卡片共用同一套内边距、边框与插画尺寸 */
+.process {
+  /* 卡片自身已有上边框，去掉容器顶线避免 2px 叠线 */
+  border-top: 0 !important;
 }
 
-.process-item:not(:first-child) {
-  padding-left: 24px !important;
+.process-item {
+  padding: 24px !important;
+}
+
+/* 三列并排时，卡片相邻边共用 1px 分隔线 */
+@media (min-width: 901px) {
+  .process-item {
+    border-right-width: 0 !important;
+  }
+
+  .process-item:last-child {
+    border-right-width: 1px !important;
+  }
+}
+
+/* 单列堆叠时，卡片上下相接处共用 1px 分隔线 */
+@media (max-width: 900px) {
+  .process-item:not(:first-child) {
+    border-top: 0 !important;
+  }
 }
 
 .case-mark {

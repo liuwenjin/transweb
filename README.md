@@ -237,7 +237,8 @@ transweb/
 ├── gulpfile.js           # 前端组件打包任务
 ├── package.json          # 依赖与脚本（npm run init / npm run test）
 ├── scripts/
-│   └── init.js           # 初始化脚本（生成运行时目录与 .env）
+│   ├── init.js           # 初始化脚本（生成运行时目录与 .env）
+│   └── i18n-extract.js   # 从页面标注里抽取中文词条（生成 i18n/*.zh.json）
 ├── .env.example          # 环境变量样例（密钥/数据库/模型 Key）
 ├── LICENSE               # ISC 许可证
 ├── README.md
@@ -252,6 +253,32 @@ transweb/
     ├── workflow/         # 工作流引擎与文档/示例
     └── bucket/           # 应用 / 素材 / 个人空间
 ```
+
+### 静态页中英切换
+
+首页（`index.html`）、Skill 广场（`skillHub.html`）、工作流（`workflow.html`）三页共用一套切换规则：
+`?lang=en` 优先，其次 `localStorage.appLang`，默认中文；切换时同步地址栏，刷新后保持上次选择。
+
+| 文件 | 作用 |
+| --- | --- |
+| `static/i18n/page.js` | Skill 广场 / 工作流两页共用的切换引擎（渲染标注、标题与 meta、`applangchange` 事件、`__t__()`） |
+| `static/i18n/en.json` | 全站共用英文词条（导航、页脚、隐私政策 / 服务条款 / 无障碍声明） |
+| `static/i18n/skillHub.zh.json`、`skillHub.en.json` | 技能广场页词条 |
+| `static/i18n/workflow.zh.json`、`workflow.en.json` | 工作流页词条 |
+| `scripts/i18n-extract.js` | 从页面标注里重新抽取 `*.zh.json`，避免页面中文与词典漂移 |
+
+页面标注约定：`data-i18n`（纯文本）、`data-i18n-html`（含 `<span>` 等行内标签）、
+`data-i18n-aria`、`data-i18n-alt`、`data-i18n-title`、`data-i18n-placeholder`。
+改完页面里的中文文案后重跑一次抽取脚本：
+
+```bash
+node scripts/i18n-extract.js static/skillHub.html
+node scripts/i18n-extract.js static/workflow.html
+```
+
+JS 动态生成的文案（分类名、卡片上的「N 步 / 免费运行」等）走 `window.__t__()` / `window.__tf__()`；
+中文放在页面内联的 `window.__PAGE_I18N__.zh`，英文放在对应的 `*.en.json`。
+列表类内容（发布的 Skill、工作流卡片标题与简介）按作者填写的原文展示，只翻译界面文案。
 
 ### 快速开始
 

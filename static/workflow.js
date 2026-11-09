@@ -1,5 +1,14 @@
+// 切换中英后重绘分类、卡片与计数
+window.addEventListener('applangchange', function () {
+  if (!workflowGrid) return;
+  renderCategories();
+  applyFilter();
+});
+
 document.addEventListener('DOMContentLoaded', function () {
   let qParams = WebTool.urlQuery(location.href);
+  // ?lang= 只用于中英切换，不应触发跳到 agent 页
+  delete qParams.lang;
   if (Object.keys(qParams).length !== 0) {
     location.href = WebTool.attachParams("agent.html", qParams);
   }
@@ -28,6 +37,90 @@ const WORKFLOWS = [
   { id: 'wf-16', title: '错题专项变式题助理', description: '分析错题，生成针对性变式题目，帮助学生巩固知识点并提升解题能力', category: '教学备课', iconKey: 'book-open', url: 'https://transweb.cn/workflow/docs/examples/practice4missed.html', nodes: ['错题分析', '出题练习'] }
 ];
 
+WORKFLOW_EN = {
+    "wf-1": ["Math Diagram Assistant",
+             "Reads the maths problem, plans the figure and writes a dynamic geometry script automatically",
+             "Data visualization", null,
+             ["Understand the problem", "Plan the drawing", "Generate and render"]],
+    "wf-1.1": ["MathBox 3D Visualization Agent",
+               "Turns natural-language geometry and function logic into high-quality 3D animated rendering code",
+               "Data visualization", null,
+               ["Parse intent & plan", "Render with MathBox"]],
+    "wf-2": ["Academic Paper Assistant",
+             "Supports the whole research pipeline: feasibility review, literature review and pre-submission checks",
+             "Research", "Hot",
+             ["Feasibility check", "Literature review", "Experiment plan", "First draft", "Pre-submission review"]],
+    "wf-3": ["Long-form Article Writer",
+             "Built for newsletters and social accounts: from a high-performing topic to a polished long read",
+             "Content creation", null,
+             ["Content planning", "Long-form draft", "Polishing"]],
+    "wf-4": ["Multi-channel Marketing Assistant",
+             "Coordinates several AIs to produce long articles, short videos and visuals for an omni-channel campaign",
+             "Content creation", null,
+             ["Pain-point analysis", "Long article", "Short posts", "Video script", "SVG illustration"]],
+    "wf-5": ["Fable Story Generator",
+             "Combines storytelling with illustration to produce an educational illustrated story in one run",
+             "Content creation", null,
+             ["Fable story", "Cover illustration"]],
+    "wf-6": ["Math Visualisation Presenter",
+             "Turns abstract maths concepts into intuitive, interactive demonstration animations",
+             "Lesson prep", null,
+             ["Animation script", "Technical plan", "Animation build"]],
+    "wf-7": ["Contract Risk Review",
+             "Parses contracts automatically, flags commercial gaps and compliance risks, then exports a report",
+             "Legal & compliance", null,
+             ["Structure", "Basic checks", "Commercial risk", "Compliance", "Summary report"]],
+    "wf-8": ["High-converting Landing Page",
+             "Describe your product's edge and get a polished, high-converting commercial landing page",
+             "Content creation", "Recommended",
+             ["Copywriting", "Build the page", "Polish the page"]],
+    "wf-9": ["Math Culture & Micro-lessons",
+             "Digs into the background of a topic and produces cross-subject modelling plans and micro-lesson designs",
+             "Lesson prep", null,
+             ["Animation script", "Technical plan", "Animation build"]],
+    "wf-10": ["Viral Cover Designer",
+              "Matches the style of your topic and generates attractive social-post covers in batches",
+              "Content creation", "Hot",
+              ["Note copy", "Generate covers", "Polish covers"]],
+    "wf-11": ["Physics Simulation",
+              "Turns abstract physical principles and quantitative descriptions into visual simulation animations",
+              "Lesson prep", null,
+              ["Simulation plan", "Simulation build"]],
+    "wf-12": ["Tiered Variant Problem Bank",
+              "Builds a graded set of variants around a core topic, from basic consolidation to stretch problems",
+              "Lesson prep", null,
+              ["Concept explanation", "Basic problems", "Skill-building problems", "Challenge problems"]],
+    "wf-13": ["Math Modeling & Data Analysis",
+              "Parses large datasets, builds a mathematical model and exports a professional visual report",
+              "Data visualization", null,
+              ["Math modeling", "Visualization"]],
+    "wf-14": ["Mock Exam Paper Generator",
+              "Follows the exam syllabus and question trends to generate a full mock paper with worked solutions and vector diagrams",
+              "Lesson prep", "Recommended",
+              ["Generate questions", "Lay out the paper"]],
+    "wf-15": ["Math Visualization Assistant",
+              "Takes a formula or a visual brief and generates a dynamic geometry script, rendered as an interactive figure",
+              "Data visualization", null,
+              ["Plan the drawing", "Generate and render"]],
+    "wf-16": ["Wrong-answer Variant Coach",
+              "Analyses a wrong answer and generates targeted variants to consolidate the concept and improve problem solving",
+              "Lesson prep", null,
+              ["Error analysis", "Practice questions"]],
+};
+
+// 英文文案与数据分开放：新增一条工作流时，在 WORKFLOW_EN 里补一行即可
+WORKFLOWS.forEach(workflow => {
+  const translated = WORKFLOW_EN[workflow.id];
+  if (!translated) return;
+
+  const [title, description, category, hot, nodes] = translated;
+  workflow.titleEn = title;
+  workflow.descEn = description;
+  workflow.categoryEn = category;
+  if (hot) workflow.hotEn = hot;
+  workflow.nodesEn = nodes;
+});
+
 const CATEGORY_TONE = {
   '教学备课': { icon: 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-300', chip: 'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300' },
   '内容创作': { icon: 'bg-rose-50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-300', chip: 'bg-rose-50 text-rose-700 dark:bg-rose-500/10 dark:text-rose-300' },
@@ -38,6 +131,66 @@ const CATEGORY_TONE = {
 
 function toneOf(category) {
   return CATEGORY_TONE[category] || CATEGORY_TONE['教学备课'];
+}
+
+/* =========================
+   中英切换：页面文案统一走 window.__t__()
+   （词典在 i18n/workflow.zh.json 与 i18n/workflow.en.json，
+    JS 动态生成的文案在 workflow.html 的 __PAGE_I18N__.zh 里）
+========================= */
+
+const CATEGORY_EN = {
+  '数据可视化': 'Data visualization',
+  '学术科研': 'Research',
+  '内容创作': 'Content creation',
+  '教学备课': 'Lesson prep',
+  '法律合规': 'Legal & compliance'
+};
+
+function isEn() {
+  return (window.__APP_LANG__ || 'zh') === 'en';
+}
+
+function t(key, fallback) {
+  if (typeof window.__t__ === 'function') {
+    const value = window.__t__(key, fallback);
+    if (value !== undefined && value !== null) return value;
+  }
+  return fallback !== undefined ? fallback : key;
+}
+
+function tf(key, vars, fallback) {
+  return String(t(key, fallback === undefined ? key : fallback)).replace(/\{(\w+)\}/g, (whole, name) => (
+    vars && vars[name] !== undefined ? vars[name] : whole
+  ));
+}
+
+function esc(value) {
+  return String(value === undefined || value === null ? '' : value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function categoryLabel(category) {
+  if (category === '全部') return t('wf.cat.all', '全部');
+  if (!isEn()) return category;
+  return CATEGORY_EN[category] || category;
+}
+
+// 卡片文案：切到英文时换成英文译名，没有译名就保留原文
+function localizedWorkflow(workflow) {
+  const en = isEn();
+  return {
+    ...workflow,
+    title: en && workflow.titleEn ? workflow.titleEn : workflow.title,
+    description: en && workflow.descEn ? workflow.descEn : workflow.description,
+    categoryLabel: categoryLabel(workflow.category),
+    hot: en && workflow.hotEn ? workflow.hotEn : workflow.hot,
+    nodes: (en && workflow.nodesEn ? workflow.nodesEn : workflow.nodes) || []
+  };
 }
 
 let activeCategory = '全部';
@@ -52,9 +205,11 @@ const clearFilterBtn = document.getElementById('clear-filter');
 const emptyState = document.getElementById('empty-state');
 
 function renderCategories() {
+  if (!categoryTags) return;
+
   const categories = ['全部', ...new Set(WORKFLOWS.map(w => w.category))];
   categoryTags.innerHTML = categories.map(cat => `
-    <button class="wf-cat ${cat === activeCategory ? 'is-active' : ''}" data-category="${cat}">${cat}</button>
+    <button class="wf-cat ${cat === activeCategory ? 'is-active' : ''}" data-category="${esc(cat)}" aria-pressed="${cat === activeCategory}">${esc(categoryLabel(cat))}</button>
   `).join('');
 
   categoryTags.querySelectorAll('button').forEach(btn => {
@@ -72,7 +227,7 @@ function runWorkflow(url) {
 
 function miniNodeMap(nodes) {
   return nodes.map((node, i) => `
-    <span>${node}</span>${i < nodes.length - 1 ? '<i>→</i>' : ''}
+    <span>${esc(node)}</span>${i < nodes.length - 1 ? '<i>→</i>' : ''}
   `).join('');
 }
 
@@ -81,29 +236,30 @@ function renderWorkflows(workflows) {
     workflowGrid.innerHTML = '';
     emptyState.classList.remove('hidden');
     emptyState.classList.add('flex');
-    resultCount.textContent = '共 0 个工作流';
+    resultCount.textContent = tf('wf.count', { n: 0 }, '共 0 个工作流');
     return;
   }
 
   emptyState.classList.add('hidden');
   emptyState.classList.remove('flex');
-  resultCount.textContent = `共 ${workflows.length} 个工作流`;
+  resultCount.textContent = tf('wf.count', { n: workflows.length }, `共 ${workflows.length} 个工作流`);
 
-  workflowGrid.innerHTML = workflows.map((w, index) => {
+  workflowGrid.innerHTML = workflows.map(item => {
+    const w = localizedWorkflow(item);
     return `
-      <article class="wf-card" data-url="${w.url}" data-title="${w.title}">
+      <article class="wf-card" data-url="${esc(w.url)}" data-title="${esc(w.title)}">
         <div>
-          <span class="wf-card__category">${w.category}</span>${w.hot ? `<span class="wf-card__hot">${w.hot}</span>` : ''}
+          <span class="wf-card__category">${esc(w.categoryLabel)}</span>${w.hot ? `<span class="wf-card__hot">${esc(w.hot)}</span>` : ''}
         </div>
-        <h3 class="wf-card__title"><a class="wf-card__link" href="${w.url}" target="_blank" rel="noopener noreferrer">${w.title}</a></h3>
-        <p class="wf-card__desc">${w.description}</p>
+        <h3 class="wf-card__title"><a class="wf-card__link" href="${esc(w.url)}" target="_blank" rel="noopener noreferrer">${esc(w.title)}</a></h3>
+        <p class="wf-card__desc">${esc(w.description)}</p>
         <div class="wf-card__flow">
-          <div class="wf-card__flow-label">共 ${w.nodes.length} 步</div>
+          <div class="wf-card__flow-label">${esc(tf('wf.card.steps', { n: w.nodes.length }, `共 ${w.nodes.length} 步`))}</div>
           <div class="wf-card__nodes">${miniNodeMap(w.nodes)}</div>
         </div>
         <div class="wf-card__footer">
-          <span>单文件运行 · 本地数据</span>
-          <a class="wf-card__run" href="${w.url}" target="_blank" rel="noopener noreferrer">免费运行 <i>→</i></a>
+          <span>${esc(t('wf.card.meta', '单文件运行 · 本地数据'))}</span>
+          <a class="wf-card__run" href="${esc(w.url)}" target="_blank" rel="noopener noreferrer">${esc(t('wf.card.run', '免费运行'))} <i>→</i></a>
         </div>
       </article>
     `;
@@ -122,8 +278,13 @@ function applyFilter() {
   const q = searchQuery.toLowerCase().trim();
   const filtered = WORKFLOWS.filter(w => {
     const matchesCategory = activeCategory === '全部' || w.category === activeCategory;
-    const matchesQuery = !q || w.title.toLowerCase().includes(q) || w.description.toLowerCase().includes(q) || w.nodes.some(n => n.toLowerCase().includes(q));
-    return matchesCategory && matchesQuery;
+    if (!q) return matchesCategory;
+
+    // 中英两套文案都参与匹配，切到英文后搜英文也能命中
+    const haystack = [w.title, w.titleEn, w.description, w.descEn, w.category, categoryLabel(w.category),
+    ...(w.nodes || []), ...(w.nodesEn || [])]
+      .filter(Boolean).join(' ').toLowerCase();
+    return matchesCategory && haystack.includes(q);
   });
 
   clearFilterBtn.classList.toggle('hidden', activeCategory === '全部' && !searchQuery);
