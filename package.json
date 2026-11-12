@@ -5,7 +5,9 @@
     "main": "webServer.js",
     "scripts": {
         "test": "gulp",
-        "init": "node scripts/init.js"
+        "init": "node scripts/init.js",
+        "growth": "node growth/cli.mjs",
+        "growth:serve": "node growth/server.mjs"
     },
     "author": "liuwenjin",
     "license": "ISC",

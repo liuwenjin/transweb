@@ -748,45 +748,10 @@
         border: "solid 1px #ddd",
       };
       card = card || document.body;
+      // 套餐目录由 recharge.vue 从服务端 /wxProducts 拉取，避免前端价目表与后端不一致
       app = app || {
         url: webCpu.documentPrefix + "/mainApp/app/recharge.vue",
         className: "ElementVueItem",
-        dsl: {
-          data: {
-            productList: [
-              {
-                price: 500,
-                tokens: 5000,
-                id: "tokens_70000",
-              },
-              {
-                price: 1000,
-                tokens: 10000,
-                id: "tokens_10000",
-              },
-              {
-                price: 2000,
-                tokens: 21000,
-                id: "tokens_70000",
-              },
-              {
-                price: 5000,
-                tokens: 60000,
-                id: "tokens_70000",
-              },
-              {
-                price: 30000,
-                tokens: 350000,
-                id: "tokens_350000",
-              },
-              {
-                price: 95000,
-                tokens: 1000000,
-                id: "tokens_1000000",
-              },
-            ],
-          },
-        },
       };
       let _self = this;
       app.dsl = app.dsl || {};
@@ -1092,8 +1057,9 @@
           let json1 = WebTool.extractJSON(tData[1].outputText);
           let json2 = WebTool.extractJSON(tData[3].outputText);
           webCpu.appConfig = webCpu.appConfig || {};
-          webCpu.appConfig.currentAppType =
-            webCpu.appConfig.currentAppType || json0.inputType;
+          // webCpu.appConfig.currentAppType =
+            // webCpu.appConfig.currentAppType || json0.inputType;
+          webCpu.appConfig.currentAppType = "text";
 
           this.adapter.getAppTemplate(
             {},

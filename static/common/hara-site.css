@@ -1,0 +1,823 @@
+/* ==========================================================================
+   原研哉「白与空」站点主题
+   --------------------------------------------------------------------------
+   仅用于 index.html / workflow.html / skillHub.html 的页面级样式；
+   登录条 / 登录弹窗由各自组件的 scoped 样式维护，不在本文件内覆盖。
+   纸白、墨色、发丝线、直角、克制留白；不改变任何交互逻辑。
+   ========================================================================== */
+
+/* 站点固定为纸白主题：显式声明 color-scheme，避免系统深色模式下
+   浏览器把滚动条、表单控件和默认画布渲染成深色，与浅色页面割裂；
+   根画布同步为纸白，避免 iOS 回弹时露出浏览器默认的白底 */
+html {
+  color-scheme: light;
+  /* 页面内联样式用 html, body { background: var(--paper) !important }
+     锁过画布；这里用同优先级、后加载的 !important 把根画布拉回纸白 */
+  background: #fafaf9 !important;
+}
+
+/* --------------------------------------------------------------------------
+   1. 令牌
+   -------------------------------------------------------------------------- */
+html body.hara {
+  --hara-paper: #fafaf9;
+  --hara-paper-2: #f4f4f1;
+  --hara-surface: #ffffff;
+  --hara-ink: #1a1a1e;
+  --hara-ink-soft: #2b2b31;
+  --hara-secondary: #6f6f6a;
+  --hara-tertiary: #a3a39e;
+  --hara-line: #e6e6e2;
+  --hara-line-strong: #b9b9b4;
+  --hara-hover: #f4f4f1;
+  --hara-ring: rgba(26, 26, 30, 0.1);
+
+  --gds-black: #1a1a1e !important;
+  --gds-blue: #1a1a1e !important;
+  --gds-dark-blue: #1a1a1e !important;
+  --gds-light-blue: #6f6f6a !important;
+  --gds-green: #1a1a1e !important;
+  --gds-green-hover: #2b2b31 !important;
+  --gds-green-shadow: #000000 !important;
+  --gds-red: #8e3b33 !important;
+  --gds-yellow: #ffffff !important;
+  --gds-light-grey: #f4f4f1 !important;
+  --gds-mid-grey: #e6e6e2 !important;
+  --gds-dark-grey: #6f6f6a !important;
+  --gds-border: #e6e6e2 !important;
+  --gds-secondary: #6f6f6a !important;
+  --gds-secondary-text: #6f6f6a !important;
+
+  --paper: #fafaf9 !important;
+  --paper-2: #f4f4f1 !important;
+  --card: #ffffff !important;
+  --white: #ffffff !important;
+  --ink: #1a1a1e !important;
+  --gray: #6f6f6a !important;
+  --text-body: #1a1a1e !important;
+  --light: #8a8a85 !important;
+  --line: #e6e6e2 !important;
+  --glow: #f4f4f1 !important;
+  --serif: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif !important;
+  --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif !important;
+  --gds-font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif !important;
+  --radius: 0;
+}
+
+html body.hara {
+  margin: 0;
+  background: var(--hara-paper) !important;
+  color: var(--hara-ink) !important;
+  font-family: var(--sans) !important;
+  -webkit-font-smoothing: antialiased;
+}
+
+body.hara h1,
+body.hara h2,
+body.hara h3,
+body.hara h4,
+body.hara h5,
+body.hara h6,
+body.hara .hero-title,
+body.hara .section-title,
+body.hara .case-title,
+body.hara .audience-title,
+body.hara .module-title,
+body.hara .wf-hero__title,
+body.hara .wf-card__title,
+body.hara .wf-final__title,
+body.hara .hub-title,
+body.hara .doc-title {
+  color: var(--hara-ink) !important;
+  letter-spacing: -0.01em !important;
+}
+
+/* 正文排版不进入登录弹窗：登录面板的文案、协议与控件由 loginDialog.vue 维护 */
+body.hara p:where(:not(.loginRegItemArea *)),
+body.hara li:where(:not(.loginRegItemArea *)),
+body.hara .govuk-body:where(:not(.loginRegItemArea *)) {
+  color: var(--hara-ink);
+}
+
+body.hara a:where(:not(.loginContentArea *):not(.loginRegItemArea *)) {
+  color: var(--hara-ink);
+}
+
+/* 焦点：细墨线，替代黄色高亮；登录条 / 登录弹窗保留各自组件的焦点样式 */
+body.hara :focus-visible:where(:not(.loginContentArea *):not(.loginRegItemArea *)) {
+  outline: 2px solid var(--hara-ink) !important;
+  outline-offset: 2px !important;
+  box-shadow: none !important;
+}
+
+body.hara .govuk-skip-link:focus {
+  background: var(--hara-surface) !important;
+  color: var(--hara-ink) !important;
+  outline: 2px solid var(--hara-ink) !important;
+  outline-offset: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   2. 页眉 / 导航
+   -------------------------------------------------------------------------- */
+body.hara .header,
+body.hara .wf-header,
+body.hara .hub-header {
+  background: var(--hara-paper) !important;
+  border-bottom: 1px solid var(--hara-line) !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+}
+
+body.hara .header.is-scrolled {
+  background: var(--hara-paper) !important;
+  border-bottom-color: var(--hara-line) !important;
+}
+
+body.hara .logo,
+body.hara .wf-logo,
+body.hara .hub-logo {
+  color: var(--hara-ink) !important;
+}
+
+body.hara .logo-name,
+body.hara .wf-logo__name,
+body.hara .hub-logo__name {
+  color: var(--hara-ink) !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.01em !important;
+}
+
+body.hara .logo-sub,
+body.hara .wf-logo__sub,
+body.hara .hub-logo__sub {
+  color: var(--hara-secondary) !important;
+  opacity: 1 !important;
+}
+
+body.hara .nav > a,
+body.hara .nav > .twf-drop > .twf-toggle,
+body.hara .wf-nav > a,
+body.hara .hub-nav > a {
+  color: var(--hara-secondary) !important;
+  font-weight: 400 !important;
+}
+
+body.hara .nav > a:hover,
+body.hara .nav > .twf-drop > .twf-toggle:hover,
+body.hara .wf-nav > a:hover,
+body.hara .hub-nav > a:hover {
+  color: var(--hara-ink) !important;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+body.hara .nav > a.active,
+body.hara .wf-nav > a.is-active,
+body.hara .hub-nav > a.is-active {
+  color: var(--hara-ink) !important;
+  font-weight: 600 !important;
+  box-shadow: inset 0 -2px 0 var(--hara-ink) !important;
+}
+
+body.hara .nav > a:focus-visible,
+body.hara .wf-nav > a:focus-visible,
+body.hara .hub-nav > a:focus-visible {
+  color: var(--hara-ink) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+body.hara .lang-toggle {
+  height: 44px !important;
+  min-height: 44px !important;
+  min-width: 44px;
+  border: 1px solid var(--hara-line-strong) !important;
+  background: var(--hara-surface) !important;
+  color: var(--hara-ink) !important;
+  font-weight: 500 !important;
+}
+
+body.hara .lang-toggle:hover {
+  background: var(--hara-hover) !important;
+  color: var(--hara-ink) !important;
+}
+
+body.hara .menu-toggle,
+body.hara .wf-menu-btn,
+body.hara .hub-menu-btn {
+  color: var(--hara-ink) !important;
+}
+
+body.hara .menu-toggle span,
+body.hara .wf-menu-lines > span,
+body.hara .hub-menu-lines > span,
+body.hara .wf-menu-x > span,
+body.hara .hub-menu-x > span {
+  background-color: var(--hara-ink) !important;
+}
+
+body.hara .twf-menu {
+  background: var(--hara-surface) !important;
+  border: 1px solid var(--hara-line) !important;
+  box-shadow: 0 12px 32px rgba(20, 20, 20, 0.08) !important;
+}
+
+body.hara .twf-menu a {
+  color: var(--hara-ink) !important;
+  text-decoration: none !important;
+}
+
+body.hara .twf-menu a:hover {
+  background: var(--hara-hover) !important;
+  color: var(--hara-ink) !important;
+}
+
+/* 二级导航 */
+body.hara .index-subnav,
+body.hara .wf-subnav {
+  background: var(--hara-paper-2) !important;
+  border-color: var(--hara-line) !important;
+}
+
+body.hara .index-subnav a,
+body.hara .wf-subnav a {
+  color: var(--hara-secondary) !important;
+  text-decoration: none !important;
+  border-bottom: 2px solid transparent;
+}
+
+body.hara .index-subnav a:hover,
+body.hara .wf-subnav a:hover {
+  color: var(--hara-ink) !important;
+  border-bottom-color: var(--hara-ink);
+}
+
+body.hara .index-subnav a.is-active,
+body.hara .wf-subnav a.is-active {
+  color: var(--hara-ink) !important;
+  border-bottom-color: var(--hara-ink);
+}
+
+/* --------------------------------------------------------------------------
+   3. 阶段横幅 / 标签 / 链接
+   -------------------------------------------------------------------------- */
+body.hara .govuk-phase-banner {
+  border-color: var(--hara-line) !important;
+}
+
+body.hara .govuk-phase-banner__content {
+  color: var(--hara-secondary) !important;
+}
+
+body.hara .govuk-tag {
+  background: var(--hara-ink) !important;
+  color: #ffffff !important;
+  font-weight: 500 !important;
+}
+
+body.hara .govuk-link {
+  color: var(--hara-ink) !important;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.1578em;
+}
+
+body.hara .govuk-link:hover {
+  color: var(--hara-ink-soft) !important;
+  text-decoration-thickness: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   4. 按钮
+   -------------------------------------------------------------------------- */
+body.hara .govuk-button,
+body.hara .hero-cta,
+body.hara .wf-btn,
+body.hara .hub-btn {
+  min-height: 46px;
+  height: auto;
+  padding: 12px 22px;
+  border: 1px solid var(--hara-ink) !important;
+  border-radius: 0 !important;
+  background: var(--hara-ink) !important;
+  color: #ffffff !important;
+  font-family: var(--sans) !important;
+  font-size: 1rem !important;
+  font-weight: 500 !important;
+  line-height: 1.3 !important;
+  box-shadow: none !important;
+  text-decoration: none !important;
+}
+
+body.hara .govuk-button:hover,
+body.hara .hero-cta:hover,
+body.hara .wf-btn:hover,
+body.hara .hub-btn:hover {
+  background: var(--hara-ink-soft) !important;
+  border-color: var(--hara-ink-soft) !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+/* 次要按钮 / 幽灵按钮：上面的基类已经填充了墨色底，
+   这里必须同步把底色还原为纸白；否则文字与底色同为墨色，
+   按钮会变成一块没有文字的黑色矩形（Hero、页脚 CTA 均受影响） */
+body.hara .govuk-button--secondary,
+body.hara .wf-btn--ghost,
+body.hara .hub-btn--ghost {
+  background: transparent !important;
+  border-color: var(--hara-line-strong) !important;
+  color: var(--hara-ink) !important;
+  box-shadow: none !important;
+}
+
+body.hara .hero-cta-alt {
+  color: var(--hara-ink) !important;
+}
+
+body.hara .govuk-button--secondary:hover,
+body.hara .hero-cta-alt:hover,
+body.hara .wf-btn--ghost:hover,
+body.hara .hub-btn--ghost:hover {
+  background: var(--hara-hover) !important;
+  border-color: var(--hara-ink) !important;
+  color: var(--hara-ink) !important;
+}
+
+body.hara .govuk-button:focus-visible,
+body.hara .hero-cta:focus-visible,
+body.hara .wf-btn:focus-visible,
+body.hara .hub-btn:focus-visible {
+  background: var(--hara-ink) !important;
+  color: #ffffff !important;
+  outline: 2px solid var(--hara-ink) !important;
+  outline-offset: 3px !important;
+  box-shadow: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   5. 区块 / 卡片
+   -------------------------------------------------------------------------- */
+body.hara .hero,
+body.hara .section,
+body.hara .hero-presets {
+  background: var(--hara-paper) !important;
+}
+
+body.hara .hero {
+  padding-top: 64px !important;
+  padding-bottom: 72px !important;
+}
+
+body.hara .section {
+  padding-top: 80px !important;
+  padding-bottom: 80px !important;
+}
+
+body.hara .preset-card,
+body.hara .case,
+body.hara .audience-card,
+body.hara .module-card,
+body.hara .process-item,
+body.hara .pricing,
+body.hara .compare-side,
+body.hara .deploy-block,
+body.hara .wf-card,
+body.hara #agent-grid > article,
+body.hara .faq-item {
+  border: 1px solid var(--hara-line) !important;
+  border-radius: 0 !important;
+  background: var(--hara-surface) !important;
+  box-shadow: none !important;
+}
+
+body.hara .preset-card:hover,
+body.hara .case:hover,
+body.hara .audience-card:hover,
+body.hara .module-card:hover,
+body.hara .wf-card:hover,
+body.hara #agent-grid > article:hover {
+  border-color: var(--hara-ink) !important;
+  box-shadow: none !important;
+}
+
+body.hara .compare-side:first-child {
+  background: var(--hara-paper-2) !important;
+}
+
+/* 序号是区块的信息层级之一（01 / DEFINE），不能只当装饰；
+   原 tertiary 在纸白上的对比度只有 2.5:1，小字号几乎看不清 */
+body.hara .preset-index,
+body.hara .case-number,
+body.hara .module-index,
+body.hara .faq-index {
+  color: var(--hara-secondary) !important;
+}
+
+body.hara .case-mark,
+body.hara .module-illustration,
+body.hara .preset-arrow {
+  color: var(--hara-secondary) !important;
+}
+
+body.hara .process-item {
+  border-width: 0 1px 0 0 !important;
+}
+
+body.hara .process-item:last-child {
+  border-right: 0 !important;
+}
+
+body.hara .pricing {
+  background: var(--hara-surface) !important;
+}
+
+body.hara .deploy-block {
+  background: var(--hara-surface) !important;
+}
+
+/* --------------------------------------------------------------------------
+   6. FAQ / details / 表格 / 代码
+   -------------------------------------------------------------------------- */
+body.hara .faq-list {
+  border-top: 0 !important;
+}
+
+body.hara .faq-item {
+  border: 1px solid var(--hara-line) !important;
+}
+
+body.hara .faq-question {
+  background: var(--hara-surface) !important;
+  border: 0 !important;
+}
+
+body.hara .faq-question:hover {
+  background: var(--hara-hover) !important;
+}
+
+body.hara .faq-text {
+  color: var(--hara-ink) !important;
+}
+
+body.hara .faq-answer-inner p {
+  color: var(--hara-secondary) !important;
+}
+
+body.hara .faq-question::after,
+body.hara .deploy-config__head::after {
+  border-color: var(--hara-ink) !important;
+}
+
+body.hara .wf-main details,
+body.hara details {
+  border-color: var(--hara-line) !important;
+  box-shadow: none !important;
+}
+
+body.hara summary {
+  color: var(--hara-ink);
+}
+
+body.hara table thead {
+  background: var(--hara-paper-2) !important;
+}
+
+body.hara table th,
+body.hara table td {
+  border-color: var(--hara-line) !important;
+}
+
+body.hara pre,
+body.hara code {
+  color: var(--hara-ink);
+}
+
+body.hara pre {
+  border-color: var(--hara-line) !important;
+  background: var(--hara-paper-2) !important;
+}
+
+body.hara .deploy-config__cmd {
+  border-color: var(--hara-line) !important;
+  background: var(--hara-paper-2) !important;
+}
+
+/* --------------------------------------------------------------------------
+   7. 表单
+   -------------------------------------------------------------------------- */
+body.hara .govuk-input,
+body.hara .govuk-select,
+body.hara .govuk-textarea,
+body.hara select,
+body.hara textarea {
+  border: 1px solid var(--hara-line-strong) !important;
+  border-radius: 0 !important;
+  background: var(--hara-surface) !important;
+  color: var(--hara-ink) !important;
+  box-shadow: none !important;
+}
+
+body.hara .govuk-input:focus,
+body.hara .govuk-select:focus,
+body.hara .govuk-textarea:focus,
+body.hara select:focus,
+body.hara textarea:focus {
+  border-color: var(--hara-ink) !important;
+  outline: 2px solid var(--hara-ink) !important;
+  outline-offset: 2px !important;
+  box-shadow: none !important;
+}
+
+/* 搜索组合框：与 input.vue 的社区搜索同款
+   单条 1px 发丝线 / 直角 / focus 仅换线色，无内嵌边框与焦点环 */
+body.hara .hub-search,
+body.hara .wf-search {
+  position: relative;
+  height: 44px;
+  box-sizing: border-box;
+  border: 1px solid var(--hara-line-strong) !important;
+  border-radius: 0 !important;
+  background: var(--hara-surface) !important;
+  box-shadow: none !important;
+  transition: border-color 160ms ease;
+}
+
+body.hara .hub-search:hover,
+body.hara .wf-search:hover,
+body.hara .hub-search:focus-within,
+body.hara .wf-search:focus-within {
+  border-color: var(--hara-ink) !important;
+}
+
+/* 图标容器：不再自带边框、底色与内部分隔线 */
+body.hara .hub-search > div,
+body.hara .wf-search > div {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding-left: 14px !important;
+  color: var(--hara-tertiary) !important;
+}
+
+body.hara #market .wf-search > div {
+  padding-left: 14px !important;
+  color: var(--hara-tertiary) !important;
+}
+
+body.hara .hub-search > div svg,
+body.hara .wf-search > div svg {
+  width: 16px !important;
+  height: 16px !important;
+  color: var(--hara-tertiary) !important;
+}
+
+body.hara .hub-search #search-input,
+body.hara .wf-search #search-input {
+  width: 100% !important;
+  height: 100% !important;
+  padding: 0 16px 0 42px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  outline: none !important;
+  background: transparent !important;
+  color: var(--hara-ink) !important;
+  font-family: var(--sans) !important;
+  font-size: 0.875rem !important;
+  line-height: 1.4 !important;
+  box-shadow: none !important;
+}
+
+body.hara .hub-search #search-input::placeholder,
+body.hara .wf-search #search-input::placeholder {
+  /* placeholder 属于需要阅读的提示文本，用次级墨色而非装饰级淡墨 */
+  color: var(--hara-secondary) !important;
+  opacity: 1;
+}
+
+body.hara .hub-search #search-input:focus,
+body.hara .wf-search #search-input:focus,
+body.hara .hub-search #search-input:focus-visible,
+body.hara .wf-search #search-input:focus-visible {
+  border: 0 !important;
+  outline: none !important;
+  outline-offset: 0 !important;
+  box-shadow: none !important;
+}
+
+/* 快捷键提示不参与边框组合，隐藏后保持与 input.vue 一致的单线结构 */
+body.hara .hub-search kbd,
+body.hara #search-kbd {
+  display: none !important;
+}
+
+body.hara .hub-cat-chip {
+  border: 1px solid var(--hara-line) !important;
+  border-radius: 0 !important;
+  background: var(--hara-surface) !important;
+  color: var(--hara-secondary) !important;
+}
+
+body.hara .hub-cat-chip:hover {
+  border-color: var(--hara-ink) !important;
+  color: var(--hara-ink) !important;
+}
+
+body.hara .hub-cat-chip.is-active {
+  background: var(--hara-ink) !important;
+  border-color: var(--hara-ink) !important;
+  color: #ffffff !important;
+}
+
+/* --------------------------------------------------------------------------
+   8. 页脚
+   -------------------------------------------------------------------------- */
+body.hara .govuk-footer {
+  border-top: 1px solid var(--hara-line) !important;
+  background: var(--hara-paper) !important;
+  color: var(--hara-secondary) !important;
+}
+
+body.hara .govuk-footer__heading,
+body.hara .govuk-footer__quote,
+body.hara .govuk-footer__link,
+body.hara .govuk-footer__copy,
+body.hara .govuk-footer__copy a {
+  color: var(--hara-ink) !important;
+}
+
+body.hara .govuk-footer__link:hover {
+  color: var(--hara-ink-soft) !important;
+}
+
+/* --------------------------------------------------------------------------
+   9. 登录条 / 登录弹窗
+   --------------------------------------------------------------------------
+   这两个组件不参与站点主题，样式由自身 scoped 样式维护
+   （loginBar.vue / loginDialog.vue）。本文件中的通用元素规则也已用
+   :not(.loginContentArea *) / :not(.loginRegItemArea *) 排除两者，
+   避免页面级 !important 覆盖组件内的描边、焦点与配色。
+   -------------------------------------------------------------------------- */
+
+/* --------------------------------------------------------------------------
+   10. 移动端留白
+   -------------------------------------------------------------------------- */
+@media (max-width: 640px) {
+  body.hara .hero {
+    padding: 40px 18px 48px !important;
+  }
+
+  body.hara .section {
+    padding: 48px 18px !important;
+  }
+}
+
+body.hara ::selection {
+  background: var(--hara-ink);
+  color: #ffffff;
+}
+
+@media (max-width: 640px) {
+  body.hara .process-item {
+    border-width: 1px !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   11. 移动端菜单：纸白面板 + 墨色文字，保证对比度
+   -------------------------------------------------------------------------- */
+@media (max-width: 900px) {
+  body.hara .header .nav,
+  body.hara .wf-mobile,
+  body.hara .hub-mobile {
+    top: 100% !important;
+    background: var(--hara-surface) !important;
+    border: 1px solid var(--hara-line) !important;
+    border-top: 0 !important;
+    box-shadow: 0 16px 40px rgba(20, 20, 20, 0.1) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  body.hara .header .nav a,
+  body.hara .header .nav .twf-toggle,
+  body.hara .wf-mobile > a,
+  body.hara .hub-mobile > a {
+    color: var(--hara-ink) !important;
+    border-bottom-color: var(--hara-line) !important;
+  }
+
+  body.hara .header .nav a:hover,
+  body.hara .header .nav .twf-toggle:hover,
+  body.hara .wf-mobile > a:hover,
+  body.hara .hub-mobile > a:hover {
+    color: var(--hara-ink) !important;
+    background: var(--hara-hover) !important;
+  }
+
+  body.hara .header .nav a.active,
+  body.hara .wf-mobile > a.is-active,
+  body.hara .hub-mobile > a.is-active {
+    color: var(--hara-ink) !important;
+    text-decoration: underline !important;
+    text-decoration-thickness: 2px !important;
+    text-underline-offset: 0.2em !important;
+    box-shadow: none !important;
+  }
+
+  body.hara .twf-menu,
+  body.hara .twf-drop.open .twf-menu {
+    background: var(--hara-surface) !important;
+    border: 1px solid var(--hara-line) !important;
+    box-shadow: 0 12px 32px rgba(20, 20, 20, 0.1) !important;
+  }
+
+  body.hara .twf-menu a {
+    color: var(--hara-ink) !important;
+    border-bottom-color: var(--hara-line) !important;
+  }
+
+  body.hara .twf-menu a:hover {
+    color: var(--hara-ink) !important;
+    background: var(--hara-hover) !important;
+  }
+}
+
+/* 移动端左上角栏目标识：由黑底白字改为纸底墨字，避免在 Hara 页眉中不可见 */
+body.hara .page-mark {
+  color: var(--hara-secondary) !important;
+  font-weight: 500;
+}
+
+body.hara .page-mark::before {
+  background: var(--hara-line-strong) !important;
+}
+
+/* --------------------------------------------------------------------------
+   12. 挂到 <html> 下的浮层（条款弹窗 / 微信与 AI 客服浮窗）
+   --------------------------------------------------------------------------
+   这些节点不在 body.hara 的作用域里，拿不到上面的 --gds-* 覆盖，
+   会退回 GOV.UK 的蓝色链接、紫色已访问状态与 #b1b4b6 描边，
+   和站点墨色主题冲突。这里单独补齐令牌与焦点色。
+   -------------------------------------------------------------------------- */
+.overlay,
+.toolbar-window {
+  /* 浮层在 <html> 下，需重新声明令牌，否则会落到 GOV.UK 的
+     #b1b4b6 描边与 #0b0c0c 文字，与主站的发丝线和墨色不一致 */
+  --paper: #fafaf9;
+  --white: #ffffff;
+  --ink: #1a1a1e;
+  --gray: #6f6f6a;
+  --text-body: #1a1a1e;
+  --light: #8a8a85;
+  --line: #e6e6e2;
+  --gds-black: #1a1a1e;
+  --gds-blue: #1a1a1e;
+  --gds-dark-blue: #1a1a1e;
+  --gds-border: #e6e6e2;
+  --gds-light-grey: #f4f4f1;
+  --gds-mid-grey: #e6e6e2;
+  --gds-dark-grey: #6f6f6a;
+  --gds-secondary-text: #6f6f6a;
+}
+
+.overlay,
+.overlay .panel {
+  color: var(--ink);
+}
+
+.overlay a,
+.overlay .copy-btn {
+  color: var(--ink) !important;
+}
+
+/* 复制按钮自带下边线，页面上不再叠加链接下划线 */
+.overlay .copy-btn {
+  text-decoration: none !important;
+}
+
+.overlay a:hover,
+.overlay .copy-btn:hover {
+  color: var(--ink) !important;
+}
+
+.overlay .copy-hint {
+  color: var(--gray) !important;
+}
+
+.overlay :focus-visible,
+.toolbar-window :focus-visible {
+  outline: 2px solid var(--ink) !important;
+  outline-offset: 2px !important;
+  box-shadow: none !important;
+}
+
+.overlay ::selection,
+.toolbar-window ::selection {
+  background: var(--ink);
+  color: #ffffff;
+}

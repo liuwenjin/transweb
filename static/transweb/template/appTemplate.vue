@@ -6,7 +6,7 @@
   >
     <div
       v-if="(isSolo || content.isSolo) && dataEditable"
-      class="wizard-navbar tw-flex tw-pt-2 tw-px-1 tw-items-center tw-justify-between tw-max-w-7xl tw-mx-auto tw-pb-6 tw-w-full"
+      class="wizard-navbar tw-flex tw-items-center tw-justify-between tw-max-w-7xl tw-mx-auto tw-w-full"
       data-edit-id="100"
     >
       <div
@@ -20,15 +20,12 @@
         >
           <slot v-if="step === 0" data-edit-id="292">
             <div
-              style="background-color: var(--academic-accent)"
-              class="tw-w-10 tw-h-10 tw-text-center tw-bg-academic-primary tw-rounded-lg tw-flex tw-items-center tw-justify-center tw-transition-transform group-hover:tw-scale-110"
+              class="logo-badge tw-flex tw-items-center tw-justify-center"
               data-edit-id="409"
             >
-              <span
-                class="tw-text-white tw-font-bold tw-w-24"
-                data-edit-id="410"
-                >{{ icon || "∑" }}</span
-              >
+              <span class="logo-badge-icon" data-edit-id="410">{{
+                icon || "∑"
+              }}</span>
             </div>
             <span class="logo-text" data-edit-id="242">
               <span class="title-text" data-edit-id="368">{{ title }}</span>
@@ -188,25 +185,25 @@
           </slot>
         </h3>
       </div>
-      <div class="tw-flex tw-items-center" data-edit-id="103">
+      <div class="navbar-actions" data-edit-id="103">
         <slot v-if="step === 0 && !flag">
-          <el-button class="wizard-action-btn" @click="openFeedbackDialog()">
+          <el-button
+            class="wizard-action-btn navbar-action-btn"
+            @click="openFeedbackDialog()"
+          >
             问题反馈
           </el-button>
         </slot>
-        <div
-          appName="loginRegItem"
-          component="CardItem"
-          :documentId="query ? query.documentId : ''"
-          class="tw-opacity-100 refined-user-card"
-          :style="{
-            width: '135px',
-            marginLeft: '15px',
-            height: '30px',
-            borderLeft: 'solid 1px #ddd',
-          }"
-          data-edit-id="104"
-        ></div>
+        <span class="navbar-divider" aria-hidden="true"></span>
+        <div class="navbar-account">
+          <div
+            appName="loginRegItem"
+            component="CardItem"
+            :documentId="query ? query.documentId : ''"
+            class="login-bar-card refined-user-card"
+            data-edit-id="104"
+          ></div>
+        </div>
       </div>
     </div>
 
@@ -628,6 +625,9 @@
 .wizard-navbar {
   position: relative;
   z-index: 1000;
+  gap: 20px;
+  padding: 10px 4px 18px;
+  box-sizing: border-box;
 }
 
 .versionIndexSpan {
@@ -651,15 +651,76 @@
   );
 }
 
+/* 右侧操作区：按钮与账号区共用同一条垂直中心线 */
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 0 0 auto;
+}
+
+.navbar-action-btn {
+  height: 40px;
+  padding: 0 16px;
+}
+
+.navbar-action-btn:focus-visible {
+  outline: 2px solid var(--academic-primary-ring);
+  outline-offset: 2px;
+}
+
+.navbar-divider {
+  flex: 0 0 auto;
+  width: 1px;
+  height: 22px;
+  background: var(--academic-border-strong);
+  border-radius: 1px;
+}
+
+/* 登录 / 用户区：容纳 loginBar 44px 的切换按钮并垂直居中 */
+.navbar-account {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex: 0 0 auto;
+  width: 135px;
+  height: 44px;
+}
+
+/* loginBar 由 CardItem 渲染，尺寸跟随账号区 */
+.login-bar-card {
+  width: 100%;
+  height: 100%;
+}
+
 .logoInfoArea {
-  width: calc(100% - 160px);
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .logo-title {
   display: flex;
   align-items: center;
   gap: 12px;
+  min-width: 0;
   font-family: var(--font-system);
+}
+
+.logo-badge {
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--academic-accent) 0%, #fbbf24 100%);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.26),
+    inset 0 1px 0 rgba(255, 255, 255, 0.34);
+}
+
+.logo-badge-icon {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1;
 }
 
 .refined-logo {
@@ -682,11 +743,15 @@
 }
 
 .logo-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3px;
+  flex: 1 1 auto;
+  min-width: 0;
   color: var(--academic-text);
   letter-spacing: -0.01em;
-  display: inline-block;
-  width: calc(100% - 160px);
-  line-height: 18px;
+  line-height: 1.3;
 }
 
 .upload-btn {
@@ -708,17 +773,22 @@
 .title-text {
   font-size: 16px;
   font-weight: 600;
-  display: block;
+  line-height: 1.35;
   color: var(--academic-text);
   letter-spacing: 0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .slogn-text {
   font-size: 12px;
-  display: block;
   font-weight: 400;
+  line-height: 1.4;
   color: var(--academic-text-secondary);
-  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .refined-user-card {
@@ -1454,9 +1524,38 @@
     padding: 9px 14px !important;
   }
 
+  /* 窄屏：操作区换行，避免登录按钮被挤出可视区 */
+  .wizard-navbar {
+    flex-wrap: wrap;
+    row-gap: 10px;
+    padding: 10px 4px 14px;
+  }
+
+  .navbar-actions {
+    margin-left: auto;
+    gap: 8px;
+  }
+
+  .logo-title {
+    gap: 10px;
+  }
+
+  .logo-badge {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+  }
+
+  .logo-badge-icon {
+    font-size: 18px;
+  }
+
   .logo-text {
     font-size: 15px;
-    width: auto;
+  }
+
+  .navbar-divider {
+    height: 18px;
   }
 
   .refined-logo {

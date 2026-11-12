@@ -316,7 +316,7 @@ function render() {
                         </div>
 
                         <div class="mt-8 pt-5 border-t border-slate-200/50 dark:border-slate-700/50 flex items-center justify-between text-sm text-slate-400 relative z-10 font-medium">
-                            <span class="flex items-center gap-1.5 opacity-80"><i data-lucide="eye" class="w-4 h-4"></i> ${esc(tf('card.preview', { n: agent.views }, `预览 ${agent.views} 次`))}</span>
+                            <span class="flex items-center gap-1.5"><i data-lucide="eye" class="w-4 h-4"></i> ${esc(tf('card.preview', { n: agent.views }, `预览 ${agent.views} 次`))}</span>
                             ${agent.url && agent.url !== '#' ? `<a href="${esc(agent.url)}" target="_blank" rel="noopener noreferrer" data-url="${esc(agent.url)}" data-title="${esc(agent.name)}" title="${esc(tf('card.runTitle', { name: agent.name }, `运行 ${agent.name}`))}" class="inline-flex cursor-pointer items-center gap-1.5 font-bold text-brand-500 dark:text-brand-400 hover:text-brand-600 dark:hover:text-brand-300 group/link transition-colors duration-300 run-btn">
                                 ${esc(t('card.run', '立即运行'))}
                                 <i data-lucide="arrow-up-right" class="w-4 h-4 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 transition-transform duration-300"></i>

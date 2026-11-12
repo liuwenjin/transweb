@@ -1,79 +1,89 @@
 <template>
-  <div :sizeFlag="sizeFlag" class="codeEditorArea">
-    <div class="appListArea" v-if="sizeFlag" ref="appList"></div>
-    <div v-else class="listOptionArea">
-      <el-button
-        class="newAppBtn"
-        @click="openNewAppDialog()"
-        :disabled="!editable"
-        type="primary"
-        size="small"
-        >{{ $t("addTips") }}</el-button
-      >
-      <el-dropdown
-        @command="handleCommand"
-        size="small"
-        class="indexItem"
-        placement="top-start"
-      >
-        <span class="el-dropdown-link" style="font-size: 12px">
-          索引
-          <el-icon class="el-icon--right">
-            <arrow-down />
-          </el-icon>
-        </span>
-        <template #dropdown>
-          <el-dropdown-menu>
-            <slot v-for="(item, i) in appList">
-              <el-dropdown-item :command="i">{{
-                item.cardName
-              }}</el-dropdown-item>
-            </slot>
-          </el-dropdown-menu>
-        </template>
-      </el-dropdown>
-      <span v-if="!sizeFlag" class="currentItem">
-        <span
-          class="cardNameItem ellipsis"
-          :title="currentApp.label || currentApp.cardName"
-          ><i class="bi bi-file-earmark-code-fill"></i
-          >{{ currentApp.label || currentApp.cardName || "-" }}
-        </span>
-        <span class="topOptionArea">
-          <el-button
-            :disabled="!changeFlag"
-            @click="syncAppCollection()"
-            size="small"
-            type="primary"
-            plain
-            >{{ $t("save") }}</el-button
-          ></span
-        >
-      </span>
-    </div>
+  <div class="codeEditorArea">
+    <div v-if="sizeFlag" ref="appList" class="appListArea"></div>
     <div class="editorArea">
-      <slot v-if="appList.length !== 0">
-        <span v-if="sizeFlag" class="currentItem">
-          <span class="cardNameItem ellipsis"
-            ><i class="bi bi-file-earmark-code-fill"></i
-            >{{ currentApp.label || currentApp.cardName || "-" }}
+      <div class="editorToolbar">
+        <div v-if="!sizeFlag" class="toolbarMain">
+          <el-button
+            class="newAppBtn"
+            @click="openNewAppDialog()"
+            :disabled="!editable"
+            type="primary"
+            size="small"
+            >{{ $t("addTips") }}</el-button
+          >
+          <el-dropdown
+            @command="handleCommand"
+            size="small"
+            class="indexItem"
+            :class="{ 'is-empty': appList.length === 0 }"
+            placement="bottom-start"
+            trigger="click"
+            :disabled="appList.length === 0"
+          >
+            <span class="el-dropdown-link">
+              <span class="indexLabel">索引</span>
+              <el-icon class="indexCaret"><arrow-down /></el-icon>
+            </span>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item
+                  v-for="(item, i) in appList"
+                  :key="item.cardName || i"
+                  :command="i"
+                >
+                  <span class="dropdownItemLabel">{{
+                    item.label || item.cardName
+                  }}</span>
+                  <i
+                    v-if="i === current"
+                    class="bi bi-check2 dropdownCheck"
+                    aria-hidden="true"
+                  ></i>
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
+        </div>
+        <div v-if="appList.length !== 0" class="currentItem">
+          <span
+            class="cardNameItem"
+            :title="currentApp.label || currentApp.cardName || ''"
+          >
+            <i
+              class="bi bi-file-earmark-code-fill cardNameIcon"
+              aria-hidden="true"
+            ></i>
+            <span class="cardNameText">{{
+              currentApp.label || currentApp.cardName || "-"
+            }}</span>
           </span>
+          <span
+            v-if="changeFlag"
+            class="dirtyDot"
+            role="img"
+            aria-label="有未保存的修改"
+            title="有未保存的修改"
+          ></span>
           <span class="topOptionArea">
             <el-popover
-              class="box-item"
               trigger="click"
-              :width="500"
-              placement="bottom"
+              :width="promptPanelWidth"
+              placement="bottom-end"
             >
               <template #reference>
-                <el-button :loading="aigcLoading" size="small">
-                  <el-icon style="margin-right: 3px" v-if="!aigcLoading"
+                <el-button
+                  :disabled="aigcLoading || appList.length === 0"
+                  :loading="aigcLoading"
+                  size="small"
+                >
+                  <el-icon v-if="!aigcLoading" class="changeIcon"
                     ><magic-stick></magic-stick></el-icon
                   >变更
                 </el-button>
               </template>
               <template #default>
-                <div class="promptInputArea" style="position: relative">
+                <div class="promptPanel">
                   <el-input
                     placeholder="请输入变更描述内容..."
                     :rows="5"
@@ -82,31 +92,39 @@
                     v-loading="aigcLoading"
                     type="textarea"
                   ></el-input>
-                  <el-button
-                    :disabled="aigcLoading"
-                    :loading="aigcLoading"
-                    @click="aigcNewVirsion()"
-                    style="position: absolute; bottom: 0px; right: 0px"
-                    size="small"
-                    >生成新版本</el-button
-                  >
+                  <div class="promptFooter">
+                    <span class="promptHint"
+                      >生成后可预览并确认替换当前代码</span
+                    >
+                    <el-button
+                      :disabled="aigcLoading"
+                      :loading="aigcLoading"
+                      @click="aigcNewVirsion()"
+                      size="small"
+                      type="primary"
+                      >生成新版本</el-button
+                    >
+                  </div>
                 </div>
               </template>
             </el-popover>
             <el-button
-              :disabled="isRequesting || !changeFlag"
+              :disabled="isRequesting || !changeFlag || appList.length === 0"
               :loading="isRequesting"
               @click="syncAppTemplate()"
               size="small"
               type="primary"
-              plain
               >{{ $t("save") }}</el-button
-            ></span
-          >
-        </span>
-        <div class="codeEditorItem" ref="mainCodeEditor"></div>
-      </slot>
-      <el-empty v-else :description="emptyTips"></el-empty>
+            >
+          </span>
+        </div>
+      </div>
+      <div class="editorContent">
+        <slot v-if="appList.length !== 0">
+          <div class="codeEditorItem" ref="mainCodeEditor"></div>
+        </slot>
+        <el-empty v-else :description="emptyTips"></el-empty>
+      </div>
     </div>
   </div>
 </template>
@@ -447,6 +465,10 @@ export default {
   computed: {
     currentApp() {
       return this.appList[this.current] || {};
+    },
+    promptPanelWidth() {
+      const viewportWidth = window.innerWidth || 1200;
+      return Math.max(240, Math.min(420, viewportWidth - 64));
     },
   },
   mounted() {
@@ -1048,8 +1070,29 @@ ${prompt}`;
       });
     },
     handleCommand(code) {
-      this.current = code;
-      this.initEditor();
+      if (code === this.current) {
+        return false;
+      }
+      var switchTo = () => {
+        this.current = code;
+        this.changeFlag = false;
+        this.initEditor();
+      };
+      if (!this.changeFlag) {
+        switchTo();
+        return false;
+      }
+      this.$confirm(
+        "当前模板有修改，确认不先保存再切换新模板吗？",
+        "提示",
+        {
+          confirmButtonText: "确认切换新模板",
+          cancelButtonText: "稍等",
+          type: "warning",
+        }
+      )
+        .then(switchTo)
+        .catch(function () {});
     },
 
     searchArray(arr, key, v) {
@@ -1069,143 +1112,229 @@ ${prompt}`;
 
 <style scoped>
 .codeEditorArea {
-  float: left;
   position: relative;
+  display: flex;
   width: 100%;
   height: 100%;
-  padding-left: 320px;
-}
-
-.codeEditorArea[sizeFlag="false"] {
-  padding-left: 0px;
-}
-
-.CodeEditor div {
-  line-height: 1.5;
-}
-
-span,
-label {
-  line-height: inherit;
-}
-
-.codeEditorArea[sizeFlag="false"] .listOptionArea {
-  position: relative;
-  float: left;
-  width: 100%;
-  height: 30px;
-  line-height: 30px;
-}
-
-.listOptionArea .indexItem {
-  display: inline-block;
-  vertical-align: middle;
-}
-
-.newAppBtn {
-  float: left;
-  margin-right: 20px;
-  margin-left: -10px;
-  vertical-align: middle;
-  margin-top: 5px;
-}
-
-.codeEditorArea[sizeFlag="false"] .editorArea {
-  height: calc(100% - 30px);
-  margin-top: 10px;
-  width: calc(100% + 60px);
-  margin-left: -30px;
-}
-
-.codeEditorArea[sizeFlag="false"] .currentItem {
-  left: 130px;
-  width: calc(100% - 120px);
-  top: 0px;
+  min-height: 0;
+  box-sizing: border-box;
 }
 
 .appListArea {
-  position: absolute;
-  left: 0px;
+  position: relative;
+  flex: 0 0 300px;
   width: 300px;
   height: 100%;
-  top: 0px;
+  min-height: 0;
+  margin-right: 24px;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 .editorArea {
-  float: left;
   position: relative;
-  width: 100%;
-  height: 100%;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
 }
 
-.codeEditorItem {
-  height: 100%;
-  position: relative;
-  padding-top: 40px;
+.editorToolbar {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  min-height: 48px;
+  padding: 4px 0 12px;
+  box-sizing: border-box;
 }
 
-.codeEditorArea[sizeFlag="false"] .codeEditorItem {
-  padding-top: 0px;
+.toolbarMain {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 8px;
 }
 
-.el-tabs,
-.el-tab-pane {
-  position: relative;
-  height: 100%;
+.newAppBtn {
+  flex: 0 0 auto;
 }
 
-.el-tabs__header {
-  margin-bottom: 0px;
+.indexItem {
+  flex: 0 0 auto;
 }
 
-.el-tabs__nav {
-  float: right;
+.indexItem .el-dropdown-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 24px;
+  padding: 0 8px;
+  border-radius: 4px;
+  color: var(--el-text-color-regular);
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+  outline: none;
+  transition: color 0.2s ease, background-color 0.2s ease;
 }
 
-.el-tabs__item.is-active {
-  background: #fff;
+.indexItem .el-dropdown-link:hover {
+  color: var(--el-color-primary);
+  background-color: var(--el-color-primary-light-5);
 }
 
-.el-tabs__content {
-  height: calc(100% - 40px);
-  border-bottom: solid 1px #ddd;
+.indexItem .el-dropdown-link:focus-visible {
+  box-shadow: 0 0 0 2px var(--el-color-primary-light-5);
+}
+
+.indexItem.is-empty .el-dropdown-link {
+  color: var(--el-text-color-placeholder);
+  background-color: transparent;
+  cursor: not-allowed;
+}
+
+.indexLabel {
+  line-height: 1;
+}
+
+.indexCaret {
+  font-size: 10px;
 }
 
 .currentItem {
-  position: absolute;
-  width: 100%;
-  display: inline-block;
-  top: 10px;
-  left: 0px;
-  z-index: 3;
-}
-
-.codeEditorItem > .CardItem {
-  border-top: solid 1px #ddd;
-}
-
-.topOptionArea {
-  float: right;
-  display: inline-block;
-  color: #999;
-  margin-right: 0px;
-}
-
-.codeEditorArea[sizeFlag="false"] .topOptionArea {
-  margin-right: -5px;
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
 }
 
 .cardNameItem {
-  float: left;
-  max-width: 360px;
+  display: inline-flex;
+  flex: 0 1 auto;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  max-width: 100%;
+  color: var(--el-text-color-primary);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 22px;
 }
 
-.cardNameItem > i {
-  margin-right: 5px;
+.cardNameIcon {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background-color: var(--el-color-primary-light-5);
+  color: var(--el-color-primary);
+  font-size: 12px;
 }
 
-.el-empty {
-  margin-top: 20px;
-  margin-left: -240px;
+.cardNameText {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dirtyDot {
+  flex: 0 0 auto;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--el-color-warning);
+  box-shadow: 0 0 0 3px rgba(255, 122, 0, 0.12);
+}
+
+.topOptionArea {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.topOptionArea .el-button + .el-button {
+  margin-left: 0;
+}
+
+.changeIcon {
+  margin-right: 4px;
+}
+
+.editorContent {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.codeEditorItem {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-top: 1px solid var(--el-border-color-light);
+  box-sizing: border-box;
+}
+
+.editorContent > .el-empty {
+  height: 100%;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.promptPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.promptFooter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  justify-content: space-between;
+}
+
+.promptHint {
+  flex: 1 1 160px;
+  min-width: 0;
+  color: var(--el-text-color-secondary);
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.promptFooter .el-button {
+  flex: 0 0 auto;
+  margin-left: auto;
+}
+
+.dropdownItemLabel {
+  display: inline-block;
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.dropdownCheck {
+  margin-left: 8px;
+  color: var(--el-color-primary);
+  vertical-align: middle;
+}
+
+@media (max-width: 560px) {
+  .currentItem {
+    flex-basis: 100%;
+  }
 }
 </style>

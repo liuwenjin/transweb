@@ -184,7 +184,7 @@
           </slot>
         </h3>
       </div>
-      <div class="tw-flex tw-items-center" data-edit-id="103">
+      <div class="wizard-navbar__actions tw-flex tw-items-center" data-edit-id="103">
         <slot v-if="step === 0 && !flag">
           <el-button class="wizard-action-btn" @click="openFeedbackDialog()">
             问题反馈
@@ -194,13 +194,7 @@
           appName="loginRegItem"
           :documentId="query && query.documentId"
           component="CardItem"
-          class="tw-opacity-100 refined-user-card"
-          :style="{
-            width: '135px',
-            marginLeft: '15px',
-            height: '30px',
-            borderLeft: 'solid 1px #ddd',
-          }"
+          class="tw-opacity-100 refined-user-card wizard-user-card"
           data-edit-id="104"
         ></div>
       </div>
@@ -1431,6 +1425,74 @@
 /* ============================================
    响应式微调
    ============================================ */
+
+  /* ============================================
+     顶栏垂直居中润色 · wizard-navbar
+     ============================================ */
+  .wizard-navbar {
+    --user-card-offset: 4px;
+    --wizard-control-height: 32px;
+    /* 覆盖 tw-pt-2 / tw-pb-6 的不对称留白：总高度不变，内容回到几何中线 */
+    padding-top: 16px !important;
+    padding-bottom: 16px !important;
+    display: flex;
+    align-items: center;
+  }
+
+  .wizard-navbar__actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    flex: 0 0 auto;
+  }
+
+  .wizard-navbar__actions > * {
+    flex: 0 0 auto;
+  }
+
+  .wizard-action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .wizard-navbar__actions :focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--academic-accent, rgba(26, 26, 30, 0.25));
+  }
+
+  /* 宿主 CardItem 挂载点：外部回补下沉量，不触碰其内部排印 */
+  .wizard-user-card {
+    width: 135px;
+    height: var(--wizard-control-height);
+    margin-left: 15px;
+    box-sizing: border-box;
+    position: relative;
+    display: flex;
+    align-items: center;
+    transform: translateY(calc(-1 * var(--user-card-offset)));
+  }
+
+  .wizard-user-card::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 1px;
+    height: var(--wizard-control-height);
+    background: var(--academic-border, #e7e7eb);
+    transform: translateY(calc(-50% + var(--user-card-offset)));
+    pointer-events: none;
+  }
+
+  @media (max-width: 640px) {
+    .wizard-user-card {
+      width: 104px;
+      margin-left: 8px;
+    }
+  }
+
 @media (max-width: 640px) {
   .wizard-input-panel,
   .wizard-result-panel {

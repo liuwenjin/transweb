@@ -172,7 +172,6 @@ app.use((req, res, next) => {
     "demo": "https://transweb.cn/skill.html?id=580dd5317774579b532c19ae36011774&solo=true",
     "skill": "https://transweb.cn/skill.html",
     "agent": "https://transweb.cn/index.html",
-    "creator": "https://transweb.cn/creator.html",
     "workflow": "https://transweb.cn/workflow.html",
     "skills": "https://transweb.cn/skillHub.html",
     "math": "https://transweb.cn/workflow/math.html",
@@ -260,22 +259,112 @@ app.use(session({
   } // 过期时间（毫秒）
 }));
 
-// 个人空间文件存放在 static/bucket/personal 下，必须先于 express.static 鉴权，
-// 否则静态中间件会绕过 folderName 校验，造成越权下载。
-// 这里同时校验「已登录」与「目录归属」，杜绝跨用户读取（IDOR）。
+// 静态资源路径守卫：先解码，再拒绝 "." / ".." 路径段、反斜杠与空字节。
+// serve-static 会折叠这些写法，若不在入口拦截：
+//   /x/../admin.html                    → 绕过后台闸门打开 admin.html
+//   /bucket/personal/<自己>/../<他人>/  → 绕过个人空间归属校验
+// 正常业务路径不会包含整段 "." / ".."，因此直接返回 400（fail-closed）。
 app.use(function (req, res, next) {
-  if (req.path.indexOf("/bucket/personal/") !== 0) return next();
-  checkRequestToken(req);
-  const sData = (req.session && req.session.data) || {};
-  if (sData.logined !== true) {
-    res.status(403).json({ ret: 1, message: "请先登录后再访问个人空间。" });
+  let decoded = "";
+  try {
+    decoded = decodeURIComponent(req.path || "");
+  } catch (e) {
+    res.status(400).json({ ret: 1, message: "非法的资源路径。" });
     return;
   }
+  if (
+    decoded.indexOf("\0") !== -1 ||
+    decoded.indexOf("\\") !== -1 ||
+    /(^|\/)\.\.?(\/|$)/.test(decoded)
+  ) {
+    res.status(400).json({ ret: 1, message: "非法的资源路径。" });
+    return;
+  }
+  // serve-static 会用解码并折叠连续斜杠后的路径匹配文件；后续鉴权必须基于同一份路径判断，
+  // 否则 //admin.html、/bucket//personal/...、/bucket/person%61l/... 都可能绕过前缀校验。
+  req.pathDecoded = decoded.replace(/\/{2,}/g, "/") || "/";
+  next();
+});
+
+// 个人空间文件存放在 static/bucket/personal 下，必须先于 express.static 鉴权，
+// 否则静态中间件会绕过 folderName 校验，造成越权下载。
+//
+// 读取权限与 /user/getDocumentData 对齐（同样由 common.js 的 documentAccess 驱动）：
+//   public —— 免登录读取；login —— 登录后可读；owner —— 仅目录归属者本人可读。
+// 写操作（上传/重命名/删除）不参与分级，始终要求本人登录，避免 public 被用于篡改他人文件。
+// public 只放行具体文件，目录浏览仍需登录：与接口「必须知道 key 才能读取」的语义一致，
+// 也避免匿名枚举他人空间里的文件名。注意：静态文件无法像 getDocumentData 那样裁剪字段，
+// public 会原样暴露文件内容；若文件含密钥等敏感字段，请把对应级别设为 login / owner。
+const PERSONAL_BUCKET_PREFIX = "/bucket/personal/";
+// 个人空间子目录 → 集合名，用于套用 documentAccess.tables 的按集合覆盖
+// （document 对应文档；app/webApps/layout/other 存放技能/Agent 资源，对应 pptItem）
+const PERSONAL_BUCKET_TABLES = {
+  document: "document",
+  app: "pptItem",
+  webApps: "pptItem",
+  layout: "pptItem",
+  other: "pptItem"
+};
+const DOCUMENT_ACCESS_LEVELS = ["public", "login", "owner"];
+
+// 与 interface/test.js 的 resolveDocumentAccess 同规则：集合覆盖优先，其次全局默认，非法值回退 public
+function resolveDocumentAccess(tableName) {
+  const access = (commonData && commonData.documentAccess) || {};
+  const level =
+    (tableName && access.tables && access.tables[tableName]) || access.level || "public";
+  return DOCUMENT_ACCESS_LEVELS.indexOf(level) !== -1 ? level : "public";
+}
+
+app.use(function (req, res, next) {
+  const reqPath = req.pathDecoded || req.path;
+  if (reqPath.indexOf(PERSONAL_BUCKET_PREFIX) !== 0) return next();
+  checkRequestToken(req);
+
+  const sData = (req.session && req.session.data) || {};
   const owner = String(sData.folderName || "");
-  const sub = req.path.slice("/bucket/personal/".length);
-  const reqFolder = sub.split("/")[0];
-  if (!owner || reqFolder !== owner) {
-    res.status(403).json({ ret: 1, message: "无权访问该资源。" });
+  const sub = reqPath.slice(PERSONAL_BUCKET_PREFIX.length);
+  const segments = sub.split("/");
+  const reqFolder = segments[0] || "";
+  // 与 getDocumentData 一致：session 里有 folderName 才视为已登录
+  const logined = sData.logined === true && !!owner;
+  const isOwner = logined && reqFolder === owner;
+  const isRead = req.method === "GET" || req.method === "HEAD";
+
+  const deny = function (message) {
+    res.status(403).json({ ret: 1, message: message });
+  };
+
+  // 写操作：只允许目录归属者本人
+  if (!isRead) {
+    if (!isOwner) {
+      deny(logined ? "无权访问该资源。" : "请先登录后再访问个人空间。");
+      return;
+    }
+    return next();
+  }
+
+  const level = resolveDocumentAccess(PERSONAL_BUCKET_TABLES[segments[1]] || "");
+
+  if (level === "public") {
+    // 免登录仅限具体文件；目录浏览仍需登录
+    if (sub && sub.charAt(sub.length - 1) !== "/") return next();
+    if (!logined) {
+      deny("请先登录后再访问个人空间。");
+      return;
+    }
+    return next();
+  }
+
+  if (!logined) {
+    deny("请先登录后再访问个人空间。");
+    return;
+  }
+
+  if (level === "login") return next();
+
+  // owner：仅归属者本人可读
+  if (!isOwner) {
+    deny("无权访问该资源。");
     return;
   }
   next();
@@ -287,7 +376,8 @@ app.use(function (req, res, next) {
 // 每个请求现算，初始化完成后无需重启即自动关闭。
 const adminGate = require("./custom/AdminGate.js");
 app.use(function (req, res, next) {
-  if (!adminGate.isAdminPage(req.path) || adminGate.enabled()) {
+  // 用解码后的路径判断，避免 /admin%2Ehtml 这类写法绕过闸门
+  if (!adminGate.isAdminPage(req.pathDecoded || req.path) || adminGate.enabled()) {
     next();
     return;
   }
@@ -1008,14 +1098,25 @@ let queryOrder = function (tradeNo, callback, appId) {
 
 }
 
+// 充值套餐目录：前端下单前拉取，保证 product_id 与 /wxOrder 使用的价目表一致
+app.get("/wxProducts", function (req, res) {
+  // 价目表可能随运营调整，禁止中间层缓存
+  res.set("Cache-Control", "no-store");
+  WebTool.requestTool.sendData({
+    code: 0,
+    data: PaymentOrder.getProducts()
+  }, req, res);
+});
+
 app.post("/wxOrder", function (req, res) {
   req.session.data = req.session.data || {};
 
   // P0-2：价格与积分由服务端价目表决定，客户端只允许指定 product_id
-  const productId = req.body.product_id || "";
+  const productId = String(req.body.product_id || "").trim();
   const product = PaymentOrder.PRODUCTS[productId];
   if (!product) {
-    return WebTool.requestTool.sendData({ code: 1, msg: "无效的充值套餐" }, req, res);
+    console.warn("[wxOrder] 无效的充值套餐 product_id:", productId || "(empty)");
+    return WebTool.requestTool.sendData({ code: 1, msg: "无效的充值套餐", product_id: productId }, req, res);
   }
   const price = product.price;   // 分
   const tokens = product.tokens;
@@ -1099,9 +1200,12 @@ app.post("/wxOrder", function (req, res) {
         let xmlParser = new xml2js.Parser({ explicitArray: false, ignoreAttrs: true });
         xmlParser.parseString(body, function (err, data) {
           data = (data && data.xml) || {};
+          // 统一业务返回码：0 表示成功，非 0 表示失败，前端据此展示 msg
+          const returnCode = data.return_code === "SUCCESS" ? 0 : 1;
           let responseData = {
-            code: data.return_code,
-            message: data.return_msg,
+            code: returnCode,
+            msg: data.return_msg || (returnCode === 0 ? "success" : "请求支付失败"),
+            message: data.return_msg || "",
             payUrl: data.code_url,
             out_trade_no: outTradeNo,
             prepay_id: data.prepay_id,

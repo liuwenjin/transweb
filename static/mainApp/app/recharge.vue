@@ -296,6 +296,12 @@ export default {
         { price: 24000, tokens: 300000000, id: "tokens_99", tips: "3亿积分" },
       ],
       interface: {
+        getProducts: {
+          url: webCpu.documentPrefix + "/wxProducts",
+          requestType: "get",
+          dataType: "json",
+          timeout: 8000,
+        },
         getWxOrder: {
           url: webCpu.documentPrefix + "/wxOrder",
           requestType: "post",
@@ -461,27 +467,117 @@ export default {
 
     // 初始化组件（显示内容、创建订单等）
     initComponent() {
-      // 如果有 pending 信息（从 sessionStorage 恢复）
-      const pendingIndex = sessionStorage.getItem("pendingProductIndex");
-      if (pendingIndex !== null) {
-        this.selected = parseInt(pendingIndex);
-        sessionStorage.removeItem("pendingProductIndex");
-        this.pendingPay = true;
-        this.autoPayAfterAuth = true;
-      }
+      // 先从服务端拉取套餐目录，保证下发的 product_id 与后端价目表一致
+      this.loadProducts(() => {
+        // 如果有 pending 信息（从 sessionStorage 恢复）
+        const pendingIndex = sessionStorage.getItem("pendingProductIndex");
+        if (pendingIndex !== null) {
+          this.selected = parseInt(pendingIndex);
+          if (this.selected >= this.productList.length) {
+            this.selected = this.productList.length - 1;
+          }
+          sessionStorage.removeItem("pendingProductIndex");
+          this.pendingPay = true;
+          this.autoPayAfterAuth = true;
+        }
 
-      // 如果是 PC 端，直接创建订单；移动端微信环境如果没有 openid，则等待用户点击支付时授权
-      if (!this.isMobile) {
-        this.inited = false;
-        this.updateProductBill();
-      } else if (this.isWechat && !this.openid && !this.isMiniProgram) {
-        // 微信环境且无 openid，显示卡片但不自动创建订单
-        this.inited = true;
-      } else {
-        // 其他情况：非微信移动端或有 openid 的微信环境，正常创建订单
-        this.inited = true;
-        this.updateProductBill();
+        // 如果是 PC 端，直接创建订单；移动端微信环境如果没有 openid，则等待用户点击支付时授权
+        if (!this.isMobile) {
+          this.inited = false;
+          this.updateProductBill();
+        } else if (this.isWechat && !this.openid && !this.isMiniProgram) {
+          // 微信环境且无 openid，显示卡片但不自动创建订单
+          this.inited = true;
+        } else {
+          // 其他情况：非微信移动端或有 openid 的微信环境，正常创建订单
+          this.inited = true;
+          this.updateProductBill();
+        }
+      });
+    },
+
+    // 拉取服务端套餐目录；接口不可用或返回异常时保留组件内置价目表
+    loadProducts(callback) {
+      const done = () => {
+        if (typeof callback === "function") callback();
+      };
+      if (!this.adapter || typeof this.adapter.getProducts !== "function") {
+        done();
+        return;
       }
+      const onSuccess = (res) => {
+        const list = this.normalizeProductList(res);
+        if (list.length) {
+          const currentId = (this.productList[this.selected] || {}).id;
+          this.productList = list;
+          const index = list.findIndex((item) => item.id === currentId);
+          this.selected = index > -1 ? index : 0;
+        }
+        done();
+      };
+      const onError = (err) => {
+        console.warn("获取充值套餐失败，使用本地价目表:", err);
+        done();
+      };
+      try {
+        this.adapter.getProducts({}, onSuccess, onError);
+      } catch (err) {
+        onError(err);
+      }
+    },
+
+    // 将服务端目录统一成 { id, price, tokens }，并过滤掉缺少关键字段的脏数据
+    normalizeProductList(res) {
+      const raw = Array.isArray(res)
+        ? res
+        : res && (Array.isArray(res.data) ? res.data : res.products || res.list);
+      if (!Array.isArray(raw)) return [];
+      return raw
+        .map((item) => {
+          const id = item && (item.id || item.product_id || item.productId);
+          const price = Number(item && item.price);
+          const tokens = Number(item && item.tokens);
+          if (
+            !id ||
+            !isFinite(price) ||
+            price <= 0 ||
+            !isFinite(tokens) ||
+            tokens <= 0
+          ) {
+            return null;
+          }
+          return {
+            id: String(id),
+            price: price,
+            tokens: tokens,
+            title: item.title || "",
+            description: item.description || "",
+            tips: this.formatProductTips(tokens),
+          };
+        })
+        .filter(Boolean);
+    },
+
+    // 套餐副标题：与组件内置文案保持一致（50万积分 / 3亿积分）
+    formatProductTips(tokens) {
+      if (tokens >= 100000000) {
+        return Number((tokens / 100000000).toFixed(2)) + "亿积分";
+      }
+      if (tokens >= 10000) {
+        return Number((tokens / 10000).toFixed(2)) + "万积分";
+      }
+      return tokens.toLocaleString("en-US") + "积分";
+    },
+
+    // 兼容旧调用方：套餐项没有 id 时，按价格 + 积分匹配服务端目录
+    findProductId(product) {
+      if (!product) return "";
+      const matched = this.productList.find(
+        (item) =>
+          Number(item.tokens) === Number(product.tokens) &&
+          Number(item.price) === Number(product.price)
+      );
+      return matched ? String(matched.id) : "";
     },
 
     // 通过 code 换取 openid（仅公众号环境使用）
@@ -632,6 +728,14 @@ export default {
     updateProductBill(d) {
       const _self = this;
       d = d || this.productList[this.selected];
+      // 只允许使用服务端目录中的 product_id：价格与积分由后端价目表决定
+      const productId = d && d.id ? String(d.id) : this.findProductId(d);
+      if (!productId) {
+        this.payLoading = false;
+        this.inited = true;
+        this.$message.error("套餐信息异常，请刷新页面后重试");
+        return;
+      }
       this.payLoading = true;
       this.orderState = "";
       this.wxPayParams = null;
@@ -647,27 +751,12 @@ export default {
         tradeType = "MWEB";
       }
 
-      // 构建请求参数
-      const currentHost = window.location.host;
-      let defaultId = `${this.appId || "transweb"}_${this.tokenRate || 100}_${
-        d.tokens
-      }_${d.price}_${new Date().getTime()}`;
+      // 请求参数与后端 /wxOrder 接口保持一致：只传 product_id，价格/积分为服务端权威数据
       const query = {
-        price: d.price,
-        product: d.tokens.toLocaleString("en-US") + "积分",
-        product_id: d.id || defaultId,
-        tokens: d.tokens,
+        product_id: productId,
         trade_type: tradeType,
-        scene_info:
-          tradeType === "MWEB"
-            ? {
-                h5_info: {
-                  type: "Wap",
-                  wap_url: "transweb.com.cn",
-                  wap_name: "TransWeb 智能生成服务",
-                },
-              }
-            : "",
+        type: this.isMiniProgram ? "wxApp" : "wxService",
+        folderName: localStorage.folderName,
       };
 
       // JSAPI 支付需要传递 openid
@@ -681,13 +770,25 @@ export default {
         query.openid = this.openid;
       }
 
-      query.type = this.isMiniProgram ? "wxApp" : "wxService";
-
-      query.folderName = localStorage.folderName;
-
       this.adapter.getWxOrder(
         query,
         function (tData) {
+          const code = tData && tData.code;
+          const failed =
+            code !== undefined &&
+            code !== 0 &&
+            String(code) !== "0" &&
+            String(code) !== "SUCCESS";
+          if (failed || !tData || !tData.out_trade_no) {
+            _self.payLoading = false;
+            _self.inited = true;
+            _self.orderState = "PAYERROR";
+            _self.$message.error(
+              (tData && (tData.msg || tData.message)) ||
+                "创建订单失败，请刷新页面后重试"
+            );
+            return;
+          }
           _self.tradeNo = tData.out_trade_no;
           _self.inited = true;
           _self.payLoading = false;

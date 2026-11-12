@@ -38,7 +38,7 @@
 
     gtag('config', 'G-X57JCN1S0T');
   </script>
-  <meta name="theme-color" content="#0b0c0c">
+  <meta name="theme-color" content="#fafaf9">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Trans-Workflow | 把一次性的 AI 对话，编成可复用的工作流</title>
@@ -1762,10 +1762,11 @@
 
   <!-- GOV.UK 服务设计规范适配层：在三页原有样式之后加载，统一页眉、页脚、字体与焦点状态 -->
   <link rel="stylesheet" href="common/govuk.css">
+  <link rel="stylesheet" href="common/hara-site.css">
 </head>
 
 <body
-  class="bg-[#fafafc] dark:bg-[#1a1a1e] text-slate-800 dark:text-slate-200 transition-colors duration-300 min-h-screen flex flex-col antialiased selection:bg-brand-500/20 selection:text-brand-600 dark:selection:text-brand-300">
+  class="hara bg-[#fafafc] dark:bg-[#1a1a1e] text-slate-800 dark:text-slate-200 transition-colors duration-300 min-h-screen flex flex-col antialiased selection:bg-brand-500/20 selection:text-brand-600 dark:selection:text-brand-300">
   <a class="govuk-skip-link" href="#main-content" data-i18n="skip.link">跳到主要内容</a>
   <!-- Google Tag Manager (noscript) -->
   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NFNM4T38" height="0" width="0"
@@ -1844,13 +1845,12 @@
   <section id="demo" class="wf-hero">
     <div class="wf-hero__inner">
       <div class="wf-hero__copy">
-        <div class="wf-eyebrow">AI WORKFLOW / SINGLE-FILE ENGINE</div>
         <h1 class="wf-hero__title"><span data-i18n="wf.hero.title.1">把一次性的 AI 对话，</span><br><span data-i18n="wf.hero.title.2">编成可复用的工作流。</span></h1>
         <p class="wf-hero__desc" data-i18n="wf.hero.desc">
           不用写后端，也不用部署服务器。选一个现成的工作流，或把几个 Skill 串成自己的；某个节点跑偏了，单独重跑、改一句，再继续。
         </p>
         <div class="wf-actions">
-          <a class="wf-btn wf-btn--lg" href="https://transweb.cn/workflow/mathFlow.html" target="_blank" rel="noopener" data-i18n="wf.hero.cta">免费编排工作流</a>
+          <a class="wf-btn wf-btn--lg" href="https://transweb.cn/workflow/index.html" target="_blank" rel="noopener" data-i18n="wf.hero.cta">免费编排工作流</a>
           <a class="wf-btn wf-btn--lg wf-btn--ghost" href="https://github.com/liuwenjin/trans-workflow" target="_blank" rel="noopener" data-i18n="wf.hero.gh">查看 GitHub 源码</a>
         </div>
         <div class="wf-hero__meta" data-i18n="wf.hero.meta">零服务器成本 · 数据只留在浏览器 · MIT 开源</div>
@@ -1880,7 +1880,7 @@
 
       <div class="space-y-4">
         <label class="govuk-label" for="search-input" data-i18n="wf.search.label">搜索工作流</label>
-        <div class="relative max-w-2xl">
+        <div class="relative max-w-2xl wf-search">
           <div
             class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 group-focus-within:text-brand-600 transition-colors z-10">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 sm:w-5 sm:h-5" fill="none" viewBox="0 0 24 24"
@@ -2219,19 +2219,20 @@
                   animation: dashFlow 1.2s linear infinite;
                 }
 
-                @media (prefers-color-scheme: dark) {
-                  .node-card {
-                    fill: #1a1a1e;
-                    stroke: #3a3a40;
-                  }
+                /* 深色变量跟随站点主题的 class 模式（tailwind darkMode: 'class'）。
+                   站点当前固定为纸白主题，若改用 prefers-color-scheme，
+                   系统深色模式下这些节点会变成黑底黑字，与浅色页面冲突。 */
+                .dark .node-card {
+                  fill: #1a1a1e;
+                  stroke: #3a3a40;
+                }
 
-                  .node-head {
-                    fill: #2b2b31;
-                  }
+                .dark .node-head {
+                  fill: #2b2b31;
+                }
 
-                  .node-text-main {
-                    fill: #fafafc;
-                  }
+                .dark .node-text-main {
+                  fill: #fafafc;
                 }
               </style>
               <filter id="node-shadow-2" x="-10%" y="-10%" width="120%" height="120%">
@@ -2449,19 +2450,20 @@
                   animation: dashFlow 1.2s linear infinite;
                 }
 
-                @media (prefers-color-scheme: dark) {
-                  .node-card {
-                    fill: #1a1a1e;
-                    stroke: #3a3a40;
-                  }
+                /* 深色变量跟随站点主题的 class 模式（tailwind darkMode: 'class'）。
+                   站点当前固定为纸白主题，若改用 prefers-color-scheme，
+                   系统深色模式下这些节点会变成黑底黑字，与浅色页面冲突。 */
+                .dark .node-card {
+                  fill: #1a1a1e;
+                  stroke: #3a3a40;
+                }
 
-                  .node-head {
-                    fill: #2b2b31;
-                  }
+                .dark .node-head {
+                  fill: #2b2b31;
+                }
 
-                  .node-text-main {
-                    fill: #fafafc;
-                  }
+                .dark .node-text-main {
+                  fill: #fafafc;
                 }
               </style>
               <filter id="node-shadow-1" x="-10%" y="-10%" width="120%" height="120%">

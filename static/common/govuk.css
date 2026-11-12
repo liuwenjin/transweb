@@ -31,6 +31,9 @@
   --gds-mid-grey: #b1b4b6;
   --gds-dark-grey: #505a5f;
   --gds-border: #b1b4b6;
+  /* 与 --gds-secondary-text 同值；此前只定义了后者，
+     导致 .deploy-config__kicker / __note 的 color: var(--gds-secondary) 失效 */
+  --gds-secondary: #505a5f;
   --gds-secondary-text: #505a5f;
 
   /* GDS Transport 为 GOV.UK 专用字体，未获授权时按规范回退到 Arial，
@@ -117,6 +120,7 @@ h1, h2, h3, h4, h5, h6,
 .hub-title {
   font-size: clamp(2rem, 5vw, 3rem) !important;
   line-height: 1.09 !important;
+  margin-top: 30px;
   margin-bottom: 30px;
 }
 
@@ -708,7 +712,7 @@ select:focus-visible {
 }
 
 .hero-presets {
-  margin-top: 48px;
+  margin-top: 88px;
   padding-top: 40px;
   scroll-margin-top: 20px;
 }
@@ -2438,10 +2442,11 @@ main[tabindex]:focus-visible {
 
   .logo-sub {
     display: block;
-    max-width: 150px;
+    max-width: 170px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    font-size: 0.75rem !important;
   }
 
   #loginMenuItem {

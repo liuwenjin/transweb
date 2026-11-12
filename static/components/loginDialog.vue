@@ -94,7 +94,6 @@
               inputmode="numeric"
               autocomplete="one-time-code"
               autocapitalize="off"
-              maxlength="6"
               spellcheck="false"
               enterkeyhint="done"
               required
@@ -186,7 +185,11 @@ export default {
 <style scoped>
 /* ==========================================================================
    GOV.UK 服务设计规范（GDS）登录面板
-   - 19px 正文、44px 表单控件、2px 墨色描边、黄色键盘焦点
+   - 19px 正文、44px 表单控件、黄色键盘焦点
+   - 单层描边：输入框、按钮、复选框各只保留一道边框，聚焦时只叠加焦点环，
+     不再用内阴影把描边加粗成双层
+   - 样式边界：所有规则以 :where(.loginRegItemArea) 收敛，且不增加选择器权重；
+     动画名统一加 loginDialog 前缀，避免污染页面其他组件
    - 错误提示始终位于输入框下方，不参与输入框内部布局
    ========================================================================== */
 .loginRegItemArea {
@@ -211,7 +214,6 @@ export default {
   width: 100%;
   height: 100%;
   padding: 24px 24px 20px;
-  border: 0;
   background: #ffffff;
   color: var(--gds-black);
   font-family: var(--gds-font);
@@ -255,7 +257,7 @@ export default {
 /* ==========================================================================
    标题
    ========================================================================== */
-.loginHeader {
+:where(.loginRegItemArea) .loginHeader {
   display: flex;
   flex: none;
   align-items: center;
@@ -271,7 +273,7 @@ export default {
   max-width: 480px;
 }
 
-.loginTitle {
+:where(.loginRegItemArea) .loginTitle {
   display: block;
   width: 100%;
   margin: 0;
@@ -285,7 +287,7 @@ export default {
 }
 
 /* 登录方式锚点：保留单一面板供外部逻辑读取 .nav-link.active / #numberLogin */
-.loginModeTabs {
+:where(.loginRegItemArea) .loginModeTabs {
   display: none !important;
 }
 
@@ -298,10 +300,10 @@ export default {
 
 .loginRegItemArea .tab-pane.show.active {
   display: block;
-  animation: loginPaneIn 0.35s var(--gds-ease);
+  animation: loginDialogPaneIn 0.35s var(--gds-ease);
 }
 
-@keyframes loginPaneIn {
+@keyframes loginDialogPaneIn {
   from {
     opacity: 0;
     transform: translateY(6px);
@@ -315,18 +317,18 @@ export default {
 /* ==========================================================================
    输入框：外层只负责纵向排列，描边与焦点统一交给 .fieldControl
    ========================================================================== */
-.loginRegInput {
+:where(.loginRegItemArea) .loginRegInput {
   position: relative;
   width: 100%;
   margin: 0;
   padding: 0;
 }
 
-.loginRegInput + .loginRegInput {
+:where(.loginRegItemArea) .loginRegInput + .loginRegInput {
   margin-top: 14px;
 }
 
-.fieldControl {
+:where(.loginRegItemArea) .fieldControl {
   position: relative;
   display: flex;
   align-items: center;
@@ -334,29 +336,27 @@ export default {
   height: 44px;
   padding: 0;
   background: #ffffff;
-  border: 2px solid var(--gds-black);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  border: 1px solid var(--gds-black);
+  transition: border-color 0.2s ease;
 }
 
-.fieldControl:focus-within {
-  border-color: var(--gds-black);
+/* 聚焦只保留一道黄色焦点环，取消原先叠加的内描边 */
+:where(.loginRegItemArea) .fieldControl:focus-within {
   outline: 3px solid var(--gds-yellow);
   outline-offset: 0;
-  box-shadow: inset 0 0 0 2px var(--gds-black);
 }
 
-.loginRegInput.is-invalid-field .fieldControl {
-  border-color: var(--gds-red);
-  box-shadow: inset 0 0 0 1px var(--gds-red);
+/* 错误态只改描边颜色，不再额外叠一层内阴影 */
+:where(.loginRegItemArea) .loginRegInput.is-invalid-field .fieldControl {
+  border-color: var(--gds-red) !important;
 }
 
-.loginRegInput.is-invalid-field .fieldControl:focus-within {
-  outline-color: var(--gds-yellow);
-  box-shadow: inset 0 0 0 2px var(--gds-black);
+:where(.loginRegItemArea) .loginRegInput.is-invalid-field .fieldControl:focus-within {
+  border-color: var(--gds-red) !important;
 }
 
 /* 输入框内嵌图标 */
-.fieldIcon {
+:where(.loginRegItemArea) .fieldIcon {
   position: absolute;
   left: 14px;
   top: 50%;
@@ -369,11 +369,11 @@ export default {
   transition: color 0.2s ease;
 }
 
-.fieldControl:focus-within .fieldIcon {
+:where(.loginRegItemArea) .fieldControl:focus-within .fieldIcon {
   color: var(--gds-black);
 }
 
-.loginRegInput input {
+:where(.loginRegItemArea) .loginRegInput input {
   width: 100%;
   height: 40px;
   margin: 0;
@@ -390,14 +390,14 @@ export default {
   box-shadow: none;
 }
 
-.loginRegInput input::placeholder {
+:where(.loginRegItemArea) .loginRegInput input::placeholder {
   color: var(--gds-secondary);
   font-size: 1.1875rem;
   opacity: 1;
 }
 
-.loginRegInput input:focus,
-.loginRegInput input:focus-visible {
+:where(.loginRegItemArea) .loginRegInput input:focus,
+:where(.loginRegItemArea) .loginRegInput input:focus-visible {
   outline: none;
   box-shadow: none;
 }
@@ -405,17 +405,17 @@ export default {
 /* ==========================================================================
    验证码输入：按钮回到文档流，输入框宽度随按钮文本自适应
    ========================================================================== */
-.integratedInput .fieldControl {
+:where(.loginRegItemArea) .integratedInput .fieldControl {
   padding-right: 4px;
 }
 
-.integratedInput input.numberInput {
+:where(.loginRegItemArea) .integratedInput input.numberInput {
   flex: 1;
   min-width: 0;
   padding: 0 8px 0 44px;
 }
 
-.getCodeBtn.el-button {
+:where(.loginRegItemArea) .getCodeBtn.el-button {
   position: static !important;
   flex: none;
   min-width: 44px;
@@ -429,35 +429,30 @@ export default {
   line-height: 1 !important;
   letter-spacing: 0 !important;
   background: var(--gds-green) !important;
-  border: 2px solid transparent !important;
+  border: 0 !important;
   border-radius: 0 !important;
-  box-shadow: 0 2px 0 var(--gds-green-shadow) !important;
-  cursor: pointer;
-  transition: background-color 0.2s ease, box-shadow 0.2s ease !important;
-}
-
-.getCodeBtn.el-button:hover {
-  background: var(--gds-green-hover) !important;
-  border-color: var(--gds-green-hover) !important;
-  box-shadow: 0 2px 0 var(--gds-green-shadow) !important;
-}
-
-.getCodeBtn.el-button:active {
-  transform: translateY(1px) !important;
   box-shadow: none !important;
+  cursor: pointer;
+  transition: background-color 0.2s ease !important;
 }
 
-.getCodeBtn.el-button:focus-visible {
+:where(.loginRegItemArea) .getCodeBtn.el-button:hover {
+  background: var(--gds-green-hover) !important;
+}
+
+:where(.loginRegItemArea) .getCodeBtn.el-button:active {
+  transform: translateY(1px) !important;
+}
+
+:where(.loginRegItemArea) .getCodeBtn.el-button:focus-visible {
   color: var(--gds-black) !important;
   background: var(--gds-yellow) !important;
-  border-color: var(--gds-yellow) !important;
   outline: 3px solid transparent;
   outline-offset: 0;
-  box-shadow: 0 2px 0 var(--gds-black) !important;
 }
 
 /* 倒计时提示 */
-.gettingCodetips {
+:where(.loginRegItemArea) .gettingCodetips {
   position: absolute;
   right: 12px;
   top: 50%;
@@ -475,7 +470,7 @@ export default {
 /* ==========================================================================
    错误提示：位于输入框下方，独立成行，不挤压输入框
    ========================================================================== */
-.text-danger {
+:where(.loginRegItemArea) .text-danger {
   display: none;
   width: 100%;
   margin: 6px 0 0;
@@ -490,7 +485,7 @@ export default {
 /* ==========================================================================
    协议区
    ========================================================================== */
-.agreementArea {
+:where(.loginRegItemArea) .agreementArea {
   position: relative;
   display: flex;
   flex-wrap: wrap;
@@ -504,11 +499,11 @@ export default {
   line-height: 1.5;
 }
 
-.agreementArea label {
+:where(.loginRegItemArea) .agreementArea label {
   margin-bottom: 0;
 }
 
-.agreeCheck {
+:where(.loginRegItemArea) .agreeCheck {
   display: inline-flex;
   align-items: center;
   gap: 10px;
@@ -516,7 +511,7 @@ export default {
   cursor: pointer;
 }
 
-.agreeInput {
+:where(.loginRegItemArea) .agreeInput {
   position: relative;
   appearance: none;
   -webkit-appearance: none;
@@ -525,20 +520,20 @@ export default {
   height: 24px;
   margin: 0;
   background: #ffffff;
-  border: 2px solid var(--gds-black);
+  border: 1px solid var(--gds-black);
   border-radius: 0;
   cursor: pointer;
 }
 
-.agreeInput:checked {
+:where(.loginRegItemArea) .agreeInput:checked {
   background: var(--gds-black);
 }
 
-.agreeInput:checked::after {
+:where(.loginRegItemArea) .agreeInput:checked::after {
   content: "";
   position: absolute;
-  left: 7px;
-  top: 2px;
+  left: 8px;
+  top: 3px;
   width: 6px;
   height: 12px;
   border: solid #ffffff;
@@ -546,20 +541,19 @@ export default {
   transform: rotate(45deg);
 }
 
-.agreeInput:focus-visible {
+:where(.loginRegItemArea) .agreeInput:focus-visible {
   outline: 3px solid var(--gds-yellow);
   outline-offset: 0;
-  box-shadow: 0 0 0 2px var(--gds-black);
 }
 
-.agreeLabel {
+:where(.loginRegItemArea) .agreeLabel {
   color: var(--gds-secondary);
   font-size: 1rem;
   line-height: 1.5;
   cursor: pointer;
 }
 
-.agreementLink {
+:where(.loginRegItemArea) .agreementLink {
   min-height: 24px;
   margin: 0 !important;
   padding: 0 !important;
@@ -575,21 +569,19 @@ export default {
   cursor: pointer;
 }
 
-.agreementLink:hover {
+:where(.loginRegItemArea) .agreementLink:hover {
   color: var(--gds-blue) !important;
   text-decoration-thickness: 3px !important;
 }
 
-.agreementLink:focus-visible {
+:where(.loginRegItemArea) .agreementLink:focus-visible {
   color: var(--gds-black) !important;
   background: var(--gds-yellow) !important;
   outline: 3px solid transparent;
   outline-offset: 0;
-  box-shadow: 0 -2px var(--gds-yellow), 0 4px var(--gds-black);
-  text-decoration: none !important;
 }
 
-.agreeHint {
+:where(.loginRegItemArea) .agreeHint {
   color: var(--gds-secondary);
   font-size: 1rem;
   line-height: 1.5;
@@ -598,12 +590,12 @@ export default {
 /* ==========================================================================
    主提交按钮
    ========================================================================== */
-.confirmBtnArea {
+:where(.loginRegItemArea) .confirmBtnArea {
   position: relative;
   width: 100%;
 }
 
-.confirmBtnArea .el-button {
+:where(.loginRegItemArea) .confirmBtnArea .el-button {
   width: 100% !important;
   height: 44px !important;
   padding: 8px 10px 7px !important;
@@ -614,50 +606,33 @@ export default {
   line-height: 1.2 !important;
   letter-spacing: 0 !important;
   background: var(--gds-green) !important;
-  border: 2px solid transparent !important;
+  border: 0 !important;
   border-radius: 0 !important;
-  box-shadow: 0 2px 0 var(--gds-green-shadow) !important;
-  transition: background-color 0.2s ease, box-shadow 0.2s ease !important;
+  box-shadow: none !important;
+  transition: background-color 0.2s ease !important;
 }
 
-.confirmBtnArea .el-button:hover {
+:where(.loginRegItemArea) .confirmBtnArea .el-button:hover {
   color: #ffffff !important;
   background: var(--gds-green-hover) !important;
-  border-color: var(--gds-green-hover) !important;
-  box-shadow: 0 2px 0 var(--gds-green-shadow) !important;
 }
 
-.confirmBtnArea .el-button:active {
+:where(.loginRegItemArea) .confirmBtnArea .el-button:active {
   transform: translateY(1px) !important;
-  box-shadow: none !important;
 }
 
-.confirmBtnArea .el-button:focus-visible {
+:where(.loginRegItemArea) .confirmBtnArea .el-button:focus-visible {
   color: var(--gds-black) !important;
   background: var(--gds-yellow) !important;
-  border-color: var(--gds-yellow) !important;
   outline: 3px solid transparent;
   outline-offset: 0;
-  box-shadow: 0 2px 0 var(--gds-black) !important;
 }
 
-.confirmBtnArea .el-button.is-disabled,
-.confirmBtnArea .el-button.is-loading {
+:where(.loginRegItemArea) .confirmBtnArea .el-button.is-disabled,
+:where(.loginRegItemArea) .confirmBtnArea .el-button.is-loading {
   color: var(--gds-secondary) !important;
   background: var(--gds-grey) !important;
-  border-color: var(--gds-grey) !important;
-  box-shadow: none !important;
   opacity: 1 !important;
-}
-
-/* ==========================================================================
-   键盘焦点
-   ========================================================================== */
-.loginRegItemArea .el-button:focus-visible,
-.loginRegItemArea .agreementLink:focus-visible,
-.agreeInput:focus-visible {
-  outline: 3px solid var(--gds-yellow);
-  outline-offset: 0;
 }
 
 /* ==========================================================================
@@ -668,15 +643,15 @@ export default {
     padding: 22px 18px 18px;
   }
 
-  .loginTitle {
+  :where(.loginRegItemArea) .loginTitle {
     font-size: 1.75rem;
   }
 
-  .agreementArea {
+  :where(.loginRegItemArea) .agreementArea {
     gap: 6px 8px;
   }
 
-  .gettingCodetips {
+  :where(.loginRegItemArea) .gettingCodetips {
     right: 8px;
   }
 }

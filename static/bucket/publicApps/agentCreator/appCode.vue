@@ -562,7 +562,7 @@ return {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding-bottom: 16px;
+    padding-block: 8px; /* 原仅底部留白，改为上下对称 */
     border-bottom: 1px solid var(--apple-separator);
   }
 
@@ -593,6 +593,7 @@ return {
     font-weight: 400;
     letter-spacing: 0.01em;
     color: var(--apple-text-3);
+    line-height: 1;
   }
 
   /* ============ 状态提示 ============ */

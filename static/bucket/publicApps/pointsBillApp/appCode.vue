@@ -170,7 +170,9 @@ return {
 .query-bar {
   gap: 8px;
   margin-bottom: 12px;
-}
+  display: flex;
+  align-items: center;
+  }
 
 .input {
   width: 150px;

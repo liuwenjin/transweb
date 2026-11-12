@@ -34,7 +34,7 @@
       y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
     })(window, document, "clarity", "script", "xejk2rx33f");
   </script>
-  <!-- 锁定初始缩放：首页会把 body 缩放到 480/530px 画布，
+  <!-- 锁定初始缩放：首页会把 body 缩放到 530px 画布，
        允许浏览器再对宽页面做一次自动缩放会让内容变窄、右侧留白。 -->
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no" />
@@ -47,7 +47,7 @@
     content="数字员工生成器, AI客服生成器, AI智能体生成器, AI Agent生成器, 上传文档生成AI助手, 上传PDF生成AI客服, 文档知识库问答机器人, 知识库问答生成器, 无代码生成数字员工, 无代码AI智能体, 企业知识库AI助手, 私有知识库问答, 文档知识库, 文档生成AI助手, 把文档变成AI客服, 网站AI客服机器人, 公众号AI客服, AI助教, 定制AI助手, TransWeb" />
   <meta name="author" content="TransWeb" />
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
-  <meta name="theme-color" content="#0b0c0c" />
+  <meta name="theme-color" content="#fafaf9" />
   <meta name="format-detection" content="telephone=no" />
   <link rel="canonical" href="https://transweb.cn/" />
 
@@ -74,7 +74,8 @@
   <!-- ==================== Twitter / X Card ==================== -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="数字员工生成器｜上传资料，约 3 分钟生成专属 AI 助手" />
-  <meta name="twitter:description" content="数字员工生成器：上传 PDF、Word 或 Markdown，无代码生成专属数字员工、AI 客服、知识库问答助手与 AI 助教，可绑定技能 / 工作流。链接二维码分享，按量计费、闲置零成本。" />
+  <meta name="twitter:description"
+    content="数字员工生成器：上传 PDF、Word 或 Markdown，无代码生成专属数字员工、AI 客服、知识库问答助手与 AI 助教，可绑定技能 / 工作流。链接二维码分享，按量计费、闲置零成本。" />
   <meta name="twitter:image" content="https://transweb.cn/assets/share.jpg" />
   <meta name="twitter:image:alt" content="数字员工生成器 - 上传资料，约 3 分钟生成专属 AI 助手" />
 
@@ -280,7 +281,10 @@
 
     html {
       scroll-behavior: smooth;
-      overflow-x: hidden;
+
+      /* 首页所有滚动都交给 .contentItemArea；锁住根滚动，
+         避免画布高度大于 html 时浏览器又出现一层整页滚动/偏移。 */
+      overflow: hidden;
       height: 100%;
 
       background: var(--paper);
@@ -292,6 +296,7 @@
       color: var(--ink);
       font-family: var(--sans);
       height: 100%;
+      overflow-x: hidden;
 
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
@@ -303,7 +308,11 @@
       z-index: 1;
       width: 100%;
       height: 100%;
-      overflow: auto;
+
+      /* 首页只纵向滚动。窄屏画布内若有个别元素因字体度量变宽，
+         横向滚动会让整页看起来“被拖偏”，这里直接裁掉横向溢出。 */
+      overflow-x: hidden;
+      overflow-y: auto;
       scroll-behavior: smooth;
 
       /* 打开条款浮层时会把溢出临时锁住；预留滚动条槽位，
@@ -316,7 +325,7 @@
     }
 
     /* 窄屏画布内不保留滚动条占位。
-       鸿蒙浏览器可能使用非叠加滚动条，15px 的槽位会把 480px 画布的内容
+       鸿蒙浏览器可能使用非叠加滚动条，15px 的槽位会把 530px 画布的内容
        挤窄，表现为右侧留白、整页偏左。滚动仍可通过触摸/滚轮完成。 */
     @media (max-width: 900px) {
       .contentItemArea {
@@ -421,7 +430,9 @@
       scrollbar-width: none;
     }
 
-    .index-subnav__inner::-webkit-scrollbar { display: none; }
+    .index-subnav__inner::-webkit-scrollbar {
+      display: none;
+    }
 
     .index-subnav a {
       flex: none;
@@ -432,7 +443,9 @@
       transition: color .3s ease;
     }
 
-    .index-subnav a:hover { color: var(--ink); }
+    .index-subnav a:hover {
+      color: var(--ink);
+    }
 
     .logo {
       flex: 0 0 auto;
@@ -2145,7 +2158,7 @@
       align-items: center;
       gap: 14px;
 
-      padding: 20px 0;
+      padding: 20px 32px;
 
       border-top: 1px solid var(--line);
       border-bottom: 1px solid var(--line);
@@ -2387,6 +2400,112 @@
       /* 固定灰色：外部组件样式会覆盖 --light，避免说明文字接近白底 */
       color: #615e57;
       font-size: 11px;
+    }
+
+    /* 部署卡片折叠：标题常显，主体内容默认收起，点击标题展开 */
+    .deploy-fold {
+      display: block;
+    }
+
+    .deploy-fold__head {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+
+      cursor: pointer;
+      list-style: none;
+    }
+
+    .deploy-fold__head::-webkit-details-marker {
+      display: none;
+    }
+
+    .deploy-fold__head::marker {
+      content: "";
+    }
+
+    .deploy-fold__heading {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .deploy-fold__heading .deploy-block__title,
+    .deploy-fold__heading .deploy-tips__title {
+      display: block;
+    }
+
+    /* 计数与开关固定在标题首行，说明文字换行时不会跟着下沉 */
+    .deploy-fold__meta {
+      flex: none;
+
+      padding-top: 4px;
+
+      color: #6b6962;
+      font-size: 12px;
+      letter-spacing: .08em;
+      white-space: nowrap;
+    }
+
+    .deploy-fold__icon {
+      position: relative;
+      flex: none;
+
+      width: 12px;
+      height: 12px;
+      margin-top: 6px;
+
+      color: #615e57;
+
+      transition:
+        color .3s ease,
+        transform .3s ease;
+    }
+
+    .deploy-fold__icon::before,
+    .deploy-fold__icon::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+
+      background: currentColor;
+    }
+
+    .deploy-fold__icon::before {
+      width: 12px;
+      height: 1px;
+      transform: translate(-50%, -50%);
+    }
+
+    .deploy-fold__icon::after {
+      width: 1px;
+      height: 12px;
+      transform: translate(-50%, -50%);
+    }
+
+    .deploy-fold__head:hover .deploy-fold__icon {
+      color: var(--ink);
+    }
+
+    .deploy-fold[open] .deploy-fold__icon {
+      color: var(--ink);
+      transform: rotate(45deg);
+    }
+
+    .deploy-fold[open] .deploy-fold__body {
+      animation: fold-reveal .32s ease both;
+    }
+
+    @keyframes fold-reveal {
+      from {
+        opacity: 0;
+        transform: translateY(-4px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     /* 部署步骤的附属参考：后台管理指令 */
@@ -2754,7 +2873,7 @@
     .deploy-tips {
       margin-top: 24px;
 
-      padding: 36px 38px;
+      padding: 36px 32px;
 
       background: var(--card);
       border: 1px solid var(--line);
@@ -2794,7 +2913,7 @@
     }
 
     /* 英文标签与后文之间留出词距；中文不加空格 */
-    html[lang="en"] .deploy-tips__item > strong {
+    html[lang="en"] .deploy-tips__item>strong {
       margin-right: .3em;
     }
 
@@ -4506,10 +4625,7 @@
       .toolbar-window--agent .toolbar-window__header {
         height: calc(52px + env(safe-area-inset-top));
         padding:
-          env(safe-area-inset-top)
-          calc(10px + env(safe-area-inset-right))
-          0
-          calc(18px + env(safe-area-inset-left));
+          env(safe-area-inset-top) calc(10px + env(safe-area-inset-right)) 0 calc(18px + env(safe-area-inset-left));
 
         cursor: default;
         touch-action: auto;
@@ -4602,9 +4718,10 @@
 
   <!-- GOV.UK 服务设计规范适配层：在三页原有样式之后加载，统一页眉、页脚、字体与焦点状态 -->
   <link rel="stylesheet" href="common/govuk.css">
+  <link rel="stylesheet" href="common/hara-site.css">
 </head>
 
-<body>
+<body class="hara">
   <a class="govuk-skip-link" href="#main-content" data-i18n="skip.link">跳到主要内容</a>
   <div class="contentItemArea">
 
@@ -4632,8 +4749,8 @@
         <div class="header-right">
           <button class="lang-toggle" id="langToggle" type="button" aria-label="Switch to English">EN</button>
           <div id="loginMenuItem"></div>
-          <button class="menu-toggle" id="menuToggle" type="button" aria-label="打开菜单" data-i18n-aria="nav.menu" aria-controls="nav"
-            aria-expanded="false">
+          <button class="menu-toggle" id="menuToggle" type="button" aria-label="打开菜单" data-i18n-aria="nav.menu"
+            aria-controls="nav" aria-expanded="false">
             <span></span>
             <span></span>
             <span></span>
@@ -4654,18 +4771,7 @@
       </div>
     </nav>
 
-    <!-- 阶段横幅：GOV.UK Service Manual 要求公开服务所处阶段并提供反馈入口 -->
-    <div class="govuk-width-container">
-      <div class="govuk-phase-banner">
-        <p class="govuk-phase-banner__content">
-          <strong class="govuk-tag govuk-phase-banner__content__tag" data-i18n="phase.tag">测试版</strong>
-          <span class="govuk-phase-banner__text">
-            <span data-i18n="phase.text">这是一个新服务，我们会持续改进。</span>
-            <a class="govuk-link" href="#contact" data-doc="contact" aria-haspopup="dialog" data-i18n="phase.link">告诉我们哪里可以做得更好</a><span data-i18n="phase.period">。</span>
-          </span>
-        </p>
-      </div>
-    </div>
+
 
     <!-- 语言刷新兜底：在完整词典异步加载前，先同步翻译导航，避免刷新后菜单短暂/残留中文 -->
     <script>
@@ -4738,22 +4844,20 @@
 ========================= -->
 
       <section class="hero">
-
-        <div class="hero-eyebrow" data-i18n="hero.eyebrow">AI DIGITAL EMPLOYEE / TRANS-AGENT</div>
-
         <h1 class="hero-title">
           <span data-i18n="hero.title.1">把静态文档变成</span>
           <span data-i18n="hero.title.2">24 小时在线的 AI 数字员工</span>
         </h1>
 
         <p class="hero-subtitle">
-          <span data-i18n="hero.subtitle.1">无需写 Prompt，上传 PDF / Word，3 分钟</span><span data-i18n="hero.subtitle.2">让你的企业知识库、教学教材、行业研报开口说话。</span>
+          <span data-i18n="hero.subtitle.1">无需写 Prompt，上传 PDF / Word，3 分钟</span><span
+            data-i18n="hero.subtitle.2">让你的企业知识库、教学教材、行业研报开口说话。</span>
         </p>
 
 
         <div class="hero-actions">
-          <button class="hero-cta" id="heroUploadCta" type="button" data-reveal-upload
-            aria-controls="agentCreatorArea" aria-expanded="false">
+          <button class="hero-cta" id="heroUploadCta" type="button" data-reveal-upload aria-controls="agentCreatorArea"
+            aria-expanded="false">
             <span data-i18n="hero.cta">免费上传资料，3 分钟生成</span>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
               stroke-linejoin="round" aria-hidden="true" focusable="false">
@@ -4764,14 +4868,7 @@
           <a class="hero-cta-alt" href="#heroPresets" data-i18n="hero.ctaAlt">或，先体验预置数字员工</a>
         </div>
 
-        <div class="hero-trust">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"
-            stroke-linejoin="round" aria-hidden="true" focusable="false">
-            <rect x="4" y="10" width="16" height="10" rx="1" />
-            <path d="M8 10V7a4 4 0 0 1 8 0v3" />
-          </svg>
-          <span data-i18n="hero.trust">采用 HTTPS 加密传输 · 严格按账号隔离 · 承诺绝不用于公共模型训练</span>
-        </div>
+
 
 
         <!--
@@ -4808,24 +4905,27 @@
 
           <div class="preset-grid">
 
-            <a class="preset-card" href="https://transweb.cn/agent.html?id=e3aea0746b06c50f2c9524e50c957674&amp;solo=true"
-              target="_blank" rel="noopener" data-demo-question="什么是数字员工？">
+            <a class="preset-card"
+              href="https://transweb.cn/agent.html?id=e3aea0746b06c50f2c9524e50c957674&amp;solo=true" target="_blank"
+              rel="noopener" data-demo-question="什么是数字员工？">
               <span class="preset-index">01 / DEFINE</span>
               <span class="preset-question" data-i18n="hero.demo1.q">什么是数字员工？</span>
               <span class="preset-meta" data-i18n="hero.demo1.meta">平台客服 · 产品定义</span>
               <span class="preset-arrow" aria-hidden="true">→</span>
             </a>
 
-            <a class="preset-card" href="https://transweb.cn/agent.html?id=e3aea0746b06c50f2c9524e50c957674&amp;solo=true"
-              target="_blank" rel="noopener" data-demo-question="3 分钟真的能生成吗？">
+            <a class="preset-card"
+              href="https://transweb.cn/agent.html?id=e3aea0746b06c50f2c9524e50c957674&amp;solo=true" target="_blank"
+              rel="noopener" data-demo-question="3 分钟真的能生成吗？">
               <span class="preset-index">02 / DELIVER</span>
               <span class="preset-question" data-i18n="hero.demo2.q">3 分钟真的能生成吗？</span>
               <span class="preset-meta" data-i18n="hero.demo2.meta">平台客服 · 交付时效</span>
               <span class="preset-arrow" aria-hidden="true">→</span>
             </a>
 
-            <a class="preset-card" href="https://transweb.cn/agent.html?id=e3aea0746b06c50f2c9524e50c957674&amp;solo=true"
-              target="_blank" rel="noopener" data-demo-question="上传的资料会被用于训练吗？">
+            <a class="preset-card"
+              href="https://transweb.cn/agent.html?id=e3aea0746b06c50f2c9524e50c957674&amp;solo=true" target="_blank"
+              rel="noopener" data-demo-question="上传的资料会被用于训练吗？">
               <span class="preset-index">03 / PRIVACY</span>
               <span class="preset-question" data-i18n="hero.demo3.q">上传的资料会被用于训练吗？</span>
               <span class="preset-meta" data-i18n="hero.demo3.meta">平台客服 · 资料安全</span>
@@ -4838,8 +4938,8 @@
 
 
         <p class="social-proof" data-i18n="social.proof">
-        为教育者、研究员与企业团队而设计
-      </p>
+          为教育者、研究员与企业团队而设计
+        </p>
 
       </section>
 
@@ -5309,185 +5409,6 @@
 
         </div>
 
-
-        <!-- 功能模块：默认收起，点击展开完整列表 -->
-        <details class="module-disclosure" id="deployModules">
-          <summary class="module-disclosure__summary">
-            <span class="module-disclosure__label">
-              <span class="module-disclosure__label-open" data-i18n="deploy.modules.show">查看完整功能模块</span>
-              <span class="module-disclosure__label-close" data-i18n="deploy.modules.hide">收起功能模块</span>
-            </span>
-            <span class="module-disclosure__meta" data-i18n="deploy.modules.meta">6 个功能模块</span>
-            <span class="module-disclosure__icon" aria-hidden="true"></span>
-          </summary>
-
-          <div class="module-grid">
-
-          <!-- 01 无代码生成 Agent / Skill -->
-          <article class="module-card module-card--agent">
-
-            <div class="module-head">
-              <div class="module-index">01 / NO-CODE</div>
-
-              <div class="module-illustration" aria-hidden="true">
-                <!-- 文档 + 生成火花 -->
-                <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5"
-                  stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M10 9.5A2.5 2.5 0 0 1 12.5 7h12.7L33 14.8V36a2.5 2.5 0 0 1-2.5 2.5h-18A2.5 2.5 0 0 1 10 36V9.5Z" />
-                  <path d="M25.2 7v7.8H33" />
-                  <path d="M15.5 21.5h11M15.5 26.5h7" />
-                  <path class="mi-accent" d="M39.5 19.1l1.5 3.9 3.9 1.5-3.9 1.5-1.5 3.9-1.5-3.9-3.9-1.5 3.9-1.5z" />
-                </svg>
-              </div>
-            </div>
-
-            <h3 class="module-title" data-i18n="deploy.m1.title">无代码生成 AI Agent / Skill</h3>
-
-            <p class="module-desc" data-i18n="deploy.m1.desc">
-              上传一份资料一键生成 Agent，一句话无代码生成 Skill，无需写 Prompt、搭数据库，通常 3 分钟内即可上岗。
-            </p>
-
-          </article>
-
-          <!-- 02 工作流引擎 -->
-          <article class="module-card module-card--workflow">
-
-            <div class="module-head">
-              <div class="module-index">02 / WORKFLOW</div>
-
-              <div class="module-illustration" aria-hidden="true">
-                <!-- 流程分支：一个节点分发到多条分支 -->
-                <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5"
-                  stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="15" y="6" width="18" height="9" rx="2.5" />
-                  <path d="M24 15v4a3 3 0 0 1-3 3h-3a3 3 0 0 0-3 3v6" />
-                  <path d="M24 15v4a3 3 0 0 0 3 3h3a3 3 0 0 1 3 3v6" />
-                  <rect x="7" y="31" width="16" height="10" rx="2.5" />
-                  <rect class="mi-accent" x="25" y="31" width="16" height="10" rx="2.5" />
-                </svg>
-              </div>
-            </div>
-
-            <h3 class="module-title" data-i18n="deploy.m2.title">工作流引擎</h3>
-
-            <p class="module-desc" data-i18n="deploy.m2.desc">
-              把多个 Skill 可视化编排成一条工作流，支持节点级回溯、暂停与人工干预（Human-in-the-Loop），一次编排反复复用。
-            </p>
-
-          </article>
-
-          <!-- 03 多模型协作 -->
-          <article class="module-card module-card--multi-llm">
-
-            <div class="module-head">
-              <div class="module-index">03 / MULTI-LLM</div>
-
-              <div class="module-illustration" aria-hidden="true">
-                <!-- 多个模型相互协作 -->
-                <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5"
-                  stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="24" cy="16" r="10" />
-                  <circle cx="15.5" cy="32" r="10" />
-                  <circle class="mi-accent" cx="32.5" cy="32" r="10" />
-                </svg>
-              </div>
-            </div>
-
-            <h3 class="module-title" data-i18n="deploy.m3.title">多模型协作</h3>
-
-            <p class="module-desc" data-i18n="deploy.m3.desc">
-              不同语言模型可通过不同 Skill 编排进同一条工作流，各司其职、接力完成多步骤任务，让多模型协同工作。
-            </p>
-
-          </article>
-
-          <!-- 04 AI 算力 / 模型接入 -->
-          <article class="module-card module-card--compute">
-
-            <div class="module-head">
-              <div class="module-index">04 / COMPUTE</div>
-
-              <div class="module-illustration" aria-hidden="true">
-                <!-- 算力芯片 -->
-                <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5"
-                  stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="14" y="14" width="20" height="20" rx="3.5" />
-                  <rect class="mi-accent" x="20" y="20" width="8" height="8" rx="1.5" />
-                  <path d="M19 14V9.5M24 14V9.5M29 14V9.5" />
-                  <path d="M19 34v4.5M24 34v4.5M29 34v4.5" />
-                  <path d="M14 19H9.5M14 24H9.5M14 29H9.5" />
-                  <path d="M34 19h4.5M34 24h4.5M34 29h4.5" />
-                </svg>
-              </div>
-            </div>
-
-            <h3 class="module-title" data-i18n="deploy.m4.title">AI 算力 / 模型接入</h3>
-
-            <p class="module-desc" data-i18n="deploy.m4.desc">
-              统一适配 DeepSeek、通义千问、智谱、月之暗面、火山等多家大模型与图片 / 语音供应商，支持自定义模型与 BYO-Key（自带 Key），文本、生图、图片输入（识图）三类默认模型可分别配置。
-            </p>
-
-          </article>
-
-          <!-- 05 用户账号系统 -->
-          <article class="module-card module-card--account">
-
-            <div class="module-head">
-              <div class="module-index">05 / ACCOUNT</div>
-
-              <div class="module-illustration" aria-hidden="true">
-                <!-- 账号 + 权限钥匙 -->
-                <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5"
-                  stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="15.5" cy="15" r="6" />
-                  <path d="M5.5 40c0-6 4.5-10 10-10s10 4 10 10" />
-                  <circle class="mi-accent" cx="35" cy="12.5" r="4.5" />
-                  <path class="mi-accent" d="M35 17v18" />
-                  <path class="mi-accent" d="M35 29h5.5M35 34h3.5" />
-                </svg>
-              </div>
-            </div>
-
-            <h3 class="module-title" data-i18n="deploy.m5.title">用户账号系统</h3>
-
-            <p class="module-desc" data-i18n="deploy.m5.desc">
-              配置短信服务后支持手机验证码登录 / 注册、账号与权限管理、会话与限流、API Key 管理；登录后即可查看「我的 Agent / Skill」与用量明细。
-            </p>
-
-          </article>
-
-          <!-- 06 积分系统（微信支付） -->
-          <article class="module-card module-card--credits">
-
-            <div class="module-head">
-              <div class="module-index">06 / CREDITS</div>
-
-              <div class="module-illustration" aria-hidden="true">
-                <!-- 积分币 + 充值标记 -->
-                <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5"
-                  stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="22" cy="25.5" r="13.5" />
-                  <path d="M16.8 19.5L22 25.4l5.2-5.9" />
-                  <path d="M22 25.4v7.4" />
-                  <path d="M17.6 27.6h8.8M17.6 30.8h8.8" />
-                  <circle class="mi-accent" cx="38.5" cy="9.5" r="5.5" />
-                  <path class="mi-accent" d="M38.5 6.6v5.8M35.6 9.5h5.8" />
-                </svg>
-              </div>
-            </div>
-
-            <h3 class="module-title" data-i18n="deploy.m6.title">积分系统（微信支付）</h3>
-
-            <p class="module-desc" data-i18n="deploy.m6.desc">
-              积分余额、消费与收入明细一目了然；微信支付 APIv2 下单参数可配置，回调验签与入账需按业务接入。按量计费、闲置零成本。
-            </p>
-
-          </article>
-
-          </div>
-        </details>
-
-
         <!-- 部署步骤（后台管理指令作为附属参考） -->
         <div class="deploy-grid">
 
@@ -5496,14 +5417,22 @@
             <div class="deploy-block__caption" data-i18n="deploy.steps.caption">安装包自托管（transweb-service）</div>
 
             <div class="term">
-              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code">npm install -g transweb-service@1.5.13</code></div>
-              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c" data-i18n="deploy.cmd.install"># 全局安装部署包</code></div>
-              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code">transweb init</code></div>
-              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c" data-i18n="deploy.cmd.init"># 初始化数据库（会清空数据，需确认）</code></div>
-              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code">transweb start</code></div>
-              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c" data-i18n="deploy.cmd.start"># 启动 MongoDB 与 Web 服务；首次打开初始化页面</code></div>
-              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code">transweb status</code></div>
-              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c" data-i18n="deploy.cmd.status"># 查看访问地址、局域网地址与初始化状态</code></div>
+              <div class="term-line"><span class="term-line__num"></span><code
+                  class="term-line__code">npm install -g transweb-service@1.5.13</code></div>
+              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"
+                  data-i18n="deploy.cmd.install"># 全局安装部署包</code></div>
+              <div class="term-line"><span class="term-line__num"></span><code
+                  class="term-line__code">transweb init</code></div>
+              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"
+                  data-i18n="deploy.cmd.init"># 初始化数据库（会清空数据，需确认）</code></div>
+              <div class="term-line"><span class="term-line__num"></span><code
+                  class="term-line__code">transweb start</code></div>
+              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"
+                  data-i18n="deploy.cmd.start"># 启动 MongoDB 与 Web 服务；首次打开初始化页面</code></div>
+              <div class="term-line"><span class="term-line__num"></span><code
+                  class="term-line__code">transweb status</code></div>
+              <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"
+                  data-i18n="deploy.cmd.status"># 查看访问地址、局域网地址与初始化状态</code></div>
             </div>
 
             <div class="deploy-reference">
@@ -5518,148 +5447,400 @@
                 </summary>
 
                 <div class="term">
-                  <div class="term-line"><span class="term-line__num"></span><code class="term-line__code">transweb config list|get|set|unset &lt;common|app&gt; &lt;path&gt;</code></div>
-                  <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c" data-i18n="deploy.cmd.config"># 读写 common.js / appConfig.js 配置（点分路径定位）</code></div>
-                  <div class="term-line"><span class="term-line__num"></span><code class="term-line__code">transweb access list|set|skill|agent [public|login|owner]</code></div>
-                  <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c" data-i18n="deploy.cmd.access"># 文档/技能/Agent 读取权限：免登陆 / 所有人登录 / 发布者登录</code></div>
-                  <div class="term-line"><span class="term-line__num"></span><code class="term-line__code">transweb env list|get|set|unset [KEY]</code></div>
-                  <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c" data-i18n="deploy.cmd.env"># 管理 .env 环境变量（密钥以掩码显示）</code></div>
-                  <div class="term-line"><span class="term-line__num"></span><code class="term-line__code">transweb wxpay list|check|set|unset</code></div>
-                  <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c" data-i18n="deploy.cmd.wxpay"># 查看 / 设置微信支付全部参数</code></div>
-                  <div class="term-line"><span class="term-line__num"></span><code class="term-line__code">transweb admin status|hide|show</code></div>
-                  <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c" data-i18n="deploy.cmd.admin"># 查看后台状态；隐藏 / 恢复后台入口</code></div>
-                  <div class="term-line"><span class="term-line__num"></span><code class="term-line__code">transweb default model|image|image-input</code></div>
-                  <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c" data-i18n="deploy.cmd.default"># 查看 / 设置文本、生图、图片输入默认模型</code></div>
-                  <div class="term-line"><span class="term-line__num"></span><code class="term-line__code">transweb model list|add|update|remove</code></div>
-                  <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c" data-i18n="deploy.cmd.model"># 管理模型与费率（支持 --from）</code></div>
-                  <div class="term-line"><span class="term-line__num"></span><code class="term-line__code">transweb api list|add|update|remove</code></div>
-                  <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c" data-i18n="deploy.cmd.api"># 管理 API 网关与 Key</code></div>
-                  <div class="term-line"><span class="term-line__num"></span><code class="term-line__code">transweb mongodb status|install</code></div>
-                  <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c" data-i18n="deploy.cmd.mongo"># 查看 MongoDB 状态 / 一键安装</code></div>
-                  <div class="term-line"><span class="term-line__num"></span><code class="term-line__code">transweb uninstall [--purge]</code></div>
-                  <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c" data-i18n="deploy.cmd.uninstall"># 卸载服务（--purge 连同数据一并清除）</code></div>
+                  <div class="term-line"><span class="term-line__num"></span><code
+                      class="term-line__code">transweb config list|get|set|unset &lt;common|app&gt; &lt;path&gt;</code>
+                  </div>
+                  <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"
+                      data-i18n="deploy.cmd.config"># 读写 common.js / appConfig.js 配置（点分路径定位）</code></div>
+                  <div class="term-line"><span class="term-line__num"></span><code
+                      class="term-line__code">transweb access list|set|skill|agent [public|login|owner]</code></div>
+                  <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"
+                      data-i18n="deploy.cmd.access"># 文档/技能/Agent 读取权限：免登陆 / 所有人登录 / 发布者登录</code></div>
+                  <div class="term-line"><span class="term-line__num"></span><code
+                      class="term-line__code">transweb env list|get|set|unset [KEY]</code></div>
+                  <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"
+                      data-i18n="deploy.cmd.env"># 管理 .env 环境变量（密钥以掩码显示）</code></div>
+                  <div class="term-line"><span class="term-line__num"></span><code
+                      class="term-line__code">transweb wxpay list|check|set|unset</code></div>
+                  <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"
+                      data-i18n="deploy.cmd.wxpay"># 查看 / 设置微信支付全部参数</code></div>
+                  <div class="term-line"><span class="term-line__num"></span><code
+                      class="term-line__code">transweb admin status|hide|show</code></div>
+                  <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"
+                      data-i18n="deploy.cmd.admin"># 查看后台状态；隐藏 / 恢复后台入口</code></div>
+                  <div class="term-line"><span class="term-line__num"></span><code
+                      class="term-line__code">transweb default model|image|image-input</code></div>
+                  <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"
+                      data-i18n="deploy.cmd.default"># 查看 / 设置文本、生图、图片输入默认模型</code></div>
+                  <div class="term-line"><span class="term-line__num"></span><code
+                      class="term-line__code">transweb model list|add|update|remove</code></div>
+                  <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"
+                      data-i18n="deploy.cmd.model"># 管理模型与费率（支持 --from）</code></div>
+                  <div class="term-line"><span class="term-line__num"></span><code
+                      class="term-line__code">transweb api list|add|update|remove</code></div>
+                  <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"
+                      data-i18n="deploy.cmd.api"># 管理 API 网关与 Key</code></div>
+                  <div class="term-line"><span class="term-line__num"></span><code
+                      class="term-line__code">transweb mongodb status|install</code></div>
+                  <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"
+                      data-i18n="deploy.cmd.mongo"># 查看 MongoDB 状态 / 一键安装</code></div>
+                  <div class="term-line"><span class="term-line__num"></span><code
+                      class="term-line__code">transweb uninstall [--purge]</code></div>
+                  <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"
+                      data-i18n="deploy.cmd.uninstall"># 卸载服务（--purge 连同数据一并清除）</code></div>
                 </div>
               </details>
             </div>
           </div>
 
           <div class="deploy-block deploy-block--wide">
-            <div class="deploy-block__title" data-i18n="deploy.activate.title">激活功能模块</div>
-            <div class="deploy-block__caption" data-i18n="deploy.activate.caption">按优先级配置以下项目；点击标题展开配置概述与说明</div>
+            <!-- 激活功能模块：默认收起，点击标题展开配置清单与提示 -->
+            <details class="deploy-fold" id="deployActivate">
+              <summary class="deploy-fold__head">
+                <span class="deploy-fold__heading">
+                  <span class="deploy-block__title" data-i18n="deploy.activate.title">激活功能模块</span>
+                  <span class="deploy-block__caption" data-i18n="deploy.activate.caption">按优先级配置 root
+                    凭据、算力、模型、支付与登录验证码；展开后可逐项查看说明</span>
+                </span>
+                <span class="deploy-fold__meta" data-i18n="deploy.activate.meta">5 项配置</span>
+                <span class="deploy-fold__icon" aria-hidden="true"></span>
+              </summary>
 
-            <div class="deploy-config">
-              <details class="deploy-config__item is-priority">
-                <summary class="deploy-config__head">
-                  <span class="deploy-config__index">01</span>
-                  <span class="deploy-config__title" data-i18n="deploy.activate.root.label">root 管理账号</span>
-                  <span class="deploy-config__badge" data-i18n="deploy.activate.priority">最高优先级</span>
-                  <span class="deploy-config__plus" aria-hidden="true"></span>
-                </summary>
-                <div class="deploy-config__body">
-                  <div class="deploy-config__kicker" data-i18n="deploy.activate.overview">配置概述</div>
-                  <p class="deploy-config__overview" data-i18n="deploy.activate.root.overview">最高优先级：先取得管理端登录凭据，再配置算力、支付与登录验证码。</p>
-                  <pre class="deploy-config__cmd"><code>transweb root accessKey
+              <div class="deploy-fold__body">
+                <div class="deploy-config">
+                  <details class="deploy-config__item is-priority">
+                    <summary class="deploy-config__head">
+                      <span class="deploy-config__index">01</span>
+                      <span class="deploy-config__title" data-i18n="deploy.activate.root.label">root 管理账号</span>
+                      <span class="deploy-config__badge" data-i18n="deploy.activate.priority">最高优先级</span>
+                      <span class="deploy-config__plus" aria-hidden="true"></span>
+                    </summary>
+                    <div class="deploy-config__body">
+                      <div class="deploy-config__kicker" data-i18n="deploy.activate.overview">配置概述</div>
+                      <p class="deploy-config__overview" data-i18n="deploy.activate.root.overview">
+                        最高优先级：先取得管理端登录凭据，再配置算力、支付与登录验证码。</p>
+                      <pre class="deploy-config__cmd"><code>transweb root accessKey
 transweb root accessKey --json</code></pre>
-                  <p class="deploy-config__note" data-i18n="deploy.activate.root.desc">transweb root accessKey 输出 root 管理账号与万能验证；默认 transweb / transweb$harness。登录选「验证码登录」，验证码填万能验证。</p>
-                </div>
-              </details>
+                      <p class="deploy-config__note" data-i18n="deploy.activate.root.desc">transweb root accessKey 输出
+                        root 管理账号与万能验证；默认 transweb / transweb$harness。登录选「验证码登录」，验证码填万能验证。</p>
+                    </div>
+                  </details>
 
-              <details class="deploy-config__item">
-                <summary class="deploy-config__head">
-                  <span class="deploy-config__index">02</span>
-                  <span class="deploy-config__title" data-i18n="deploy.activate.api.label">算力供应方</span>
-                  <span class="deploy-config__plus" aria-hidden="true"></span>
-                </summary>
-                <div class="deploy-config__body">
-                  <div class="deploy-config__kicker" data-i18n="deploy.activate.overview">配置概述</div>
-                  <p class="deploy-config__overview" data-i18n="deploy.activate.api.overview">一个算力供应方对应一个 apiName；至少配置 1 个。</p>
-                  <pre class="deploy-config__cmd"><code>transweb api add &lt;apiName&gt; \
+                  <details class="deploy-config__item">
+                    <summary class="deploy-config__head">
+                      <span class="deploy-config__index">02</span>
+                      <span class="deploy-config__title" data-i18n="deploy.activate.api.label">算力供应方</span>
+                      <span class="deploy-config__plus" aria-hidden="true"></span>
+                    </summary>
+                    <div class="deploy-config__body">
+                      <div class="deploy-config__kicker" data-i18n="deploy.activate.overview">配置概述</div>
+                      <p class="deploy-config__overview" data-i18n="deploy.activate.api.overview">一个算力供应方对应一个
+                        apiName；至少配置 1 个。</p>
+                      <pre class="deploy-config__cmd"><code>transweb api add &lt;apiName&gt; \
   --url &lt;url&gt; \
   --key &lt;apiKey&gt;</code></pre>
-                  <p class="deploy-config__note" data-i18n="deploy.activate.api.desc">apiName 是自定义接入名（示例 dmxapi，也可以叫 深度求索），后续模型通过 --api-name 引用；--key 写入 .env 的 API_KEY_*，common.js 只保留引用。</p>
-                </div>
-              </details>
+                      <p class="deploy-config__note" data-i18n="deploy.activate.api.desc">apiName 是自定义接入名（示例 dmxapi，也可以叫
+                        深度求索），后续模型通过 --api-name 引用；--key 写入 .env 的 API_KEY_*，common.js 只保留引用。</p>
+                    </div>
+                  </details>
 
-              <details class="deploy-config__item">
-                <summary class="deploy-config__head">
-                  <span class="deploy-config__index">03</span>
-                  <span class="deploy-config__title" data-i18n="deploy.activate.model.label">model</span>
-                  <span class="deploy-config__plus" aria-hidden="true"></span>
-                </summary>
-                <div class="deploy-config__body">
-                  <div class="deploy-config__kicker" data-i18n="deploy.activate.overview">配置概述</div>
-                  <p class="deploy-config__overview" data-i18n="deploy.activate.model.overview">模型挂在算力供应方下；至少配置 1 个，并设为默认模型。</p>
-                  <pre class="deploy-config__cmd"><code data-i18n="deploy.cmd.modelAdd">transweb model add &lt;model&gt; \
+                  <details class="deploy-config__item">
+                    <summary class="deploy-config__head">
+                      <span class="deploy-config__index">03</span>
+                      <span class="deploy-config__title" data-i18n="deploy.activate.model.label">model</span>
+                      <span class="deploy-config__plus" aria-hidden="true"></span>
+                    </summary>
+                    <div class="deploy-config__body">
+                      <div class="deploy-config__kicker" data-i18n="deploy.activate.overview">配置概述</div>
+                      <p class="deploy-config__overview" data-i18n="deploy.activate.model.overview">模型挂在算力供应方下；至少配置 1
+                        个，并设为默认模型。</p>
+                      <pre class="deploy-config__cmd"><code data-i18n="deploy.cmd.modelAdd">transweb model add &lt;model&gt; \
   --api-name &lt;apiName&gt; \
   --input &lt;rate&gt; --output &lt;rate&gt; \
   --context &lt;context&gt; --from &lt;国内|国外&gt;
 
 transweb default model --model &lt;model&gt;</code></pre>
-                  <p class="deploy-config__note" data-i18n="deploy.activate.model.desc">至少 1 个，包含 apiName、费率与 from。费率 = 积分与 token 的比例：1 个 AI token 对应多少积分，输入 / 输出分别计费；from 填 国内 或 国外，context 为上下文 token 数。配置后执行 transweb default model 设为默认。</p>
-                </div>
-              </details>
+                      <p class="deploy-config__note" data-i18n="deploy.activate.model.desc">至少 1 个，包含 apiName、费率与
+                        from。费率 = 积分与 token 的比例：1 个 AI token 对应多少积分，输入 / 输出分别计费；from 填 国内 或 国外，context 为上下文 token
+                        数。配置后执行 transweb default model 设为默认。</p>
+                    </div>
+                  </details>
 
-              <details class="deploy-config__item">
-                <summary class="deploy-config__head">
-                  <span class="deploy-config__index">04</span>
-                  <span class="deploy-config__title" data-i18n="deploy.activate.pay.label">微信支付</span>
-                  <span class="deploy-config__plus" aria-hidden="true"></span>
-                </summary>
-                <div class="deploy-config__body">
-                  <div class="deploy-config__kicker" data-i18n="deploy.activate.overview">配置概述</div>
-                  <p class="deploy-config__overview" data-i18n="deploy.activate.pay.overview">正式收款前配置微信支付 APIv2 参数；至少完成必填项。</p>
-                  <pre class="deploy-config__cmd"><code data-i18n="deploy.cmd.wxpaySet">transweb wxpay set &lt;参数&gt; &lt;值&gt;
+                  <details class="deploy-config__item">
+                    <summary class="deploy-config__head">
+                      <span class="deploy-config__index">04</span>
+                      <span class="deploy-config__title" data-i18n="deploy.activate.pay.label">微信支付</span>
+                      <span class="deploy-config__plus" aria-hidden="true"></span>
+                    </summary>
+                    <div class="deploy-config__body">
+                      <div class="deploy-config__kicker" data-i18n="deploy.activate.overview">配置概述</div>
+                      <p class="deploy-config__overview" data-i18n="deploy.activate.pay.overview">正式收款前配置微信支付 APIv2
+                        参数；至少完成必填项。</p>
+                      <pre class="deploy-config__cmd"><code data-i18n="deploy.cmd.wxpaySet">transweb wxpay set &lt;参数&gt; &lt;值&gt;
 transweb wxpay check</code></pre>
-                  <p class="deploy-config__note" data-i18n="deploy.activate.pay.desc">必填 WX_PAY_APP_ID、WX_PAY_MCH_ID、WX_PAY_APP_KEY（32 位 APIv2 密钥）、WX_PAY_ORDER_URL、WX_PAY_QUERY_URL；按需 WX_PAY_APP_SECRET、WX_PAY_NOTIFY、WX_PAY_APP_ID001 / SECRET001。用 transweb wxpay set 写入、wxpay check 校验；安装生成的 APP_KEY 是随机值，正式收款前替换为商户平台密钥。</p>
-                </div>
-              </details>
+                      <p class="deploy-config__note" data-i18n="deploy.activate.pay.desc">必填
+                        WX_PAY_APP_ID、WX_PAY_MCH_ID、WX_PAY_APP_KEY（32 位 APIv2 密钥）、WX_PAY_ORDER_URL、WX_PAY_QUERY_URL；按需
+                        WX_PAY_APP_SECRET、WX_PAY_NOTIFY、WX_PAY_APP_ID001 / SECRET001。用 transweb wxpay set 写入、wxpay check
+                        校验；安装生成的 APP_KEY 是随机值，正式收款前替换为商户平台密钥。</p>
+                    </div>
+                  </details>
 
-              <details class="deploy-config__item">
-                <summary class="deploy-config__head">
-                  <span class="deploy-config__index">05</span>
-                  <span class="deploy-config__title" data-i18n="deploy.activate.sms.label">登录验证码</span>
-                  <span class="deploy-config__plus" aria-hidden="true"></span>
-                </summary>
-                <div class="deploy-config__body">
-                  <div class="deploy-config__kicker" data-i18n="deploy.activate.overview">配置概述</div>
-                  <p class="deploy-config__overview" data-i18n="deploy.activate.sms.overview">用户登录 / 注册的短信验证码服务；未配置时手机验证码不可用。</p>
-                  <pre class="deploy-config__cmd"><code>transweb env set SEND_MESSAGE_API_KEY &lt;key&gt;</code></pre>
-                  <p class="deploy-config__note" data-i18n="deploy.activate.sms.desc">用户登录 / 注册的短信验证码服务 API Key：SEND_MESSAGE_API_KEY（螺丝帽短信）。用 transweb env set SEND_MESSAGE_API_KEY &lt;key&gt; 配置；未配置时手机验证码登录 / 注册不可用。</p>
+                  <details class="deploy-config__item">
+                    <summary class="deploy-config__head">
+                      <span class="deploy-config__index">05</span>
+                      <span class="deploy-config__title" data-i18n="deploy.activate.sms.label">登录验证码</span>
+                      <span class="deploy-config__plus" aria-hidden="true"></span>
+                    </summary>
+                    <div class="deploy-config__body">
+                      <div class="deploy-config__kicker" data-i18n="deploy.activate.overview">配置概述</div>
+                      <p class="deploy-config__overview" data-i18n="deploy.activate.sms.overview">用户登录 /
+                        注册的短信验证码服务；未配置时手机验证码不可用。</p>
+                      <pre
+                        class="deploy-config__cmd"><code>transweb env set SEND_MESSAGE_API_KEY &lt;key&gt;</code></pre>
+                      <p class="deploy-config__note" data-i18n="deploy.activate.sms.desc">用户登录 / 注册的短信验证码服务 API
+                        Key：SEND_MESSAGE_API_KEY（螺丝帽短信）。用 transweb env set SEND_MESSAGE_API_KEY &lt;key&gt;
+                        配置；未配置时手机验证码登录 / 注册不可用。</p>
+                    </div>
+                  </details>
                 </div>
-              </details>
-            </div>
 
-            <p class="deploy-activate__hint" data-i18n="deploy.activate.hint">展开各配置项查看命令；完成后用 transweb api list、transweb model list、transweb default list 检查 AI 配置，微信支付用 transweb wxpay check，短信 Key 用 transweb env get SEND_MESSAGE_API_KEY 检查。API / model 同名配置已存在时加 --force。transweb root accessKey 与 transweb env get ADMIN_ACCOUNT / POWER_ADMIN 读取同一份 .env；修改后需 transweb restart 生效。</p>
+                <p class="deploy-activate__hint" data-i18n="deploy.activate.hint">展开各配置项查看命令；完成后用 transweb api
+                  list、transweb model list、transweb default list 检查 AI 配置，微信支付用 transweb wxpay check，短信 Key 用 transweb
+                  env get SEND_MESSAGE_API_KEY 检查。API / model 同名配置已存在时加 --force。transweb root accessKey 与 transweb env
+                  get ADMIN_ACCOUNT / POWER_ADMIN 读取同一份 .env；修改后需 transweb restart 生效。</p>
+              </div>
+            </details>
           </div>
 
         </div>
 
+        <!-- 功能模块：默认收起，点击展开完整列表 -->
+        <details class="module-disclosure" id="deployModules">
+          <summary class="module-disclosure__summary">
+            <span class="module-disclosure__label">
+              <span class="module-disclosure__label-open" data-i18n="deploy.modules.show">查看完整功能模块</span>
+              <span class="module-disclosure__label-close" data-i18n="deploy.modules.hide">收起功能模块</span>
+            </span>
+            <span class="module-disclosure__meta" data-i18n="deploy.modules.meta">6 个功能模块</span>
+            <span class="module-disclosure__icon" aria-hidden="true"></span>
+          </summary>
 
-        <!-- 部署提示：开源地址 / 安全与运维提示（独立方框） -->
+          <div class="module-grid">
+
+            <!-- 01 无代码生成 Agent / Skill -->
+            <article class="module-card module-card--agent">
+
+              <div class="module-head">
+                <div class="module-index">01 / NO-CODE</div>
+
+                <div class="module-illustration" aria-hidden="true">
+                  <!-- 文档 + 生成火花 -->
+                  <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <path
+                      d="M10 9.5A2.5 2.5 0 0 1 12.5 7h12.7L33 14.8V36a2.5 2.5 0 0 1-2.5 2.5h-18A2.5 2.5 0 0 1 10 36V9.5Z" />
+                    <path d="M25.2 7v7.8H33" />
+                    <path d="M15.5 21.5h11M15.5 26.5h7" />
+                    <path class="mi-accent" d="M39.5 19.1l1.5 3.9 3.9 1.5-3.9 1.5-1.5 3.9-1.5-3.9-3.9-1.5 3.9-1.5z" />
+                  </svg>
+                </div>
+              </div>
+
+              <h3 class="module-title" data-i18n="deploy.m1.title">无代码生成 AI Agent / Skill</h3>
+
+              <p class="module-desc" data-i18n="deploy.m1.desc">
+                上传一份资料一键生成 Agent，一句话无代码生成 Skill，无需写 Prompt、搭数据库，通常 3 分钟内即可上岗。
+              </p>
+
+            </article>
+
+            <!-- 02 工作流引擎 -->
+            <article class="module-card module-card--workflow">
+
+              <div class="module-head">
+                <div class="module-index">02 / WORKFLOW</div>
+
+                <div class="module-illustration" aria-hidden="true">
+                  <!-- 流程分支：一个节点分发到多条分支 -->
+                  <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <rect x="15" y="6" width="18" height="9" rx="2.5" />
+                    <path d="M24 15v4a3 3 0 0 1-3 3h-3a3 3 0 0 0-3 3v6" />
+                    <path d="M24 15v4a3 3 0 0 0 3 3h3a3 3 0 0 1 3 3v6" />
+                    <rect x="7" y="31" width="16" height="10" rx="2.5" />
+                    <rect class="mi-accent" x="25" y="31" width="16" height="10" rx="2.5" />
+                  </svg>
+                </div>
+              </div>
+
+              <h3 class="module-title" data-i18n="deploy.m2.title">工作流引擎</h3>
+
+              <p class="module-desc" data-i18n="deploy.m2.desc">
+                把多个 Skill 可视化编排成一条工作流，支持节点级回溯、暂停与人工干预（Human-in-the-Loop），一次编排反复复用。
+              </p>
+
+            </article>
+
+            <!-- 03 多模型协作 -->
+            <article class="module-card module-card--multi-llm">
+
+              <div class="module-head">
+                <div class="module-index">03 / MULTI-LLM</div>
+
+                <div class="module-illustration" aria-hidden="true">
+                  <!-- 多个模型相互协作 -->
+                  <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <circle cx="24" cy="16" r="10" />
+                    <circle cx="15.5" cy="32" r="10" />
+                    <circle class="mi-accent" cx="32.5" cy="32" r="10" />
+                  </svg>
+                </div>
+              </div>
+
+              <h3 class="module-title" data-i18n="deploy.m3.title">多模型协作</h3>
+
+              <p class="module-desc" data-i18n="deploy.m3.desc">
+                不同语言模型可通过不同 Skill 编排进同一条工作流，各司其职、接力完成多步骤任务，让多模型协同工作。
+              </p>
+
+            </article>
+
+            <!-- 04 AI 算力 / 模型接入 -->
+            <article class="module-card module-card--compute">
+
+              <div class="module-head">
+                <div class="module-index">04 / COMPUTE</div>
+
+                <div class="module-illustration" aria-hidden="true">
+                  <!-- 算力芯片 -->
+                  <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <rect x="14" y="14" width="20" height="20" rx="3.5" />
+                    <rect class="mi-accent" x="20" y="20" width="8" height="8" rx="1.5" />
+                    <path d="M19 14V9.5M24 14V9.5M29 14V9.5" />
+                    <path d="M19 34v4.5M24 34v4.5M29 34v4.5" />
+                    <path d="M14 19H9.5M14 24H9.5M14 29H9.5" />
+                    <path d="M34 19h4.5M34 24h4.5M34 29h4.5" />
+                  </svg>
+                </div>
+              </div>
+
+              <h3 class="module-title" data-i18n="deploy.m4.title">AI 算力 / 模型接入</h3>
+
+              <p class="module-desc" data-i18n="deploy.m4.desc">
+                统一适配 DeepSeek、通义千问、智谱、月之暗面、火山等多家大模型与图片 / 语音供应商，支持自定义模型与 BYO-Key（自带 Key），文本、生图、图片输入（识图）三类默认模型可分别配置。
+              </p>
+
+            </article>
+
+            <!-- 05 用户账号系统 -->
+            <article class="module-card module-card--account">
+
+              <div class="module-head">
+                <div class="module-index">05 / ACCOUNT</div>
+
+                <div class="module-illustration" aria-hidden="true">
+                  <!-- 账号 + 权限钥匙 -->
+                  <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <circle cx="15.5" cy="15" r="6" />
+                    <path d="M5.5 40c0-6 4.5-10 10-10s10 4 10 10" />
+                    <circle class="mi-accent" cx="35" cy="12.5" r="4.5" />
+                    <path class="mi-accent" d="M35 17v18" />
+                    <path class="mi-accent" d="M35 29h5.5M35 34h3.5" />
+                  </svg>
+                </div>
+              </div>
+
+              <h3 class="module-title" data-i18n="deploy.m5.title">用户账号系统</h3>
+
+              <p class="module-desc" data-i18n="deploy.m5.desc">
+                配置短信服务后支持手机验证码登录 / 注册、账号与权限管理、会话与限流、API Key 管理；登录后即可查看「我的 Agent / Skill」与用量明细。
+              </p>
+
+            </article>
+
+            <!-- 06 积分系统（微信支付） -->
+            <article class="module-card module-card--credits">
+
+              <div class="module-head">
+                <div class="module-index">06 / CREDITS</div>
+
+                <div class="module-illustration" aria-hidden="true">
+                  <!-- 积分币 + 充值标记 -->
+                  <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <circle cx="22" cy="25.5" r="13.5" />
+                    <path d="M16.8 19.5L22 25.4l5.2-5.9" />
+                    <path d="M22 25.4v7.4" />
+                    <path d="M17.6 27.6h8.8M17.6 30.8h8.8" />
+                    <circle class="mi-accent" cx="38.5" cy="9.5" r="5.5" />
+                    <path class="mi-accent" d="M38.5 6.6v5.8M35.6 9.5h5.8" />
+                  </svg>
+                </div>
+              </div>
+
+              <h3 class="module-title" data-i18n="deploy.m6.title">积分系统（微信支付）</h3>
+
+              <p class="module-desc" data-i18n="deploy.m6.desc">
+                积分余额、消费与收入明细一目了然；微信支付 APIv2 下单参数可配置，回调验签与入账需按业务接入。按量计费、闲置零成本。
+              </p>
+
+            </article>
+
+          </div>
+        </details>
+
+        <!-- 部署提示：开源地址 / 安全与运维提示；默认收起，点击标题展开 -->
         <div class="deploy-tips">
-          <div class="deploy-tips__title" data-i18n="deploy.tips.title">部署提示</div>
-          <ul class="deploy-tips__list">
-            <li class="deploy-tips__item">
-              <strong data-i18n="deploy.tips.repo.label">开源地址：</strong><a href="https://github.com/liuwenjin/transweb" target="_blank" rel="noopener">github.com/liuwenjin/transweb</a>
-            </li>
-            <li class="deploy-tips__item">
-              <strong data-i18n="deploy.tips.security.label">上线前安全：</strong><span data-i18n="deploy.tips.security.before">务必执行</span> <code>transweb admin hide</code><span class="deploy-tips__gap" aria-hidden="true"> </span><span data-i18n="deploy.tips.security.after">，避免后台入口（admin.html / initAdmin.html）暴露到公网；公网部署再设</span> <code>TRANSWEB_DISABLE_ADMIN=1</code> <span data-i18n="deploy.tips.security.fallback">兜底。</span>
-            </li>
-            <li class="deploy-tips__item">
-              <strong data-i18n="deploy.tips.init.label">初始化页面：</strong><span data-i18n="deploy.tips.init.before">初始化完成前</span> <code>/initAdmin.html</code> <span data-i18n="deploy.tips.init.after">自动可访问，初始化完成后自动返回 404；再次进入后台执行</span> <code>transweb admin show</code><span data-i18n="deploy.tips.init.period">。</span>
-            </li>
-            <li class="deploy-tips__item">
-              <strong data-i18n="deploy.tips.first.label">首次初始化：</strong><span data-i18n="deploy.tips.first.text">自动安装应用依赖（约 543 个包）并下载 MongoDB 6.0.x（约 58MB）。</span>
-            </li>
-            <li class="deploy-tips__item">
-              <strong data-i18n="deploy.tips.data.label">数据目录：</strong><span data-i18n="deploy.tips.data.before">服务目录默认</span> <code>~/.transweb-service</code><span data-i18n="deploy.tips.data.after">，升级 npm 包不会丢失数据。</span>
-            </li>
-            <li class="deploy-tips__item">
-              <strong data-i18n="deploy.tips.lan.label">局域网访问：</strong><span data-i18n="deploy.tips.lan.before">其他设备可直接访问</span> <code>transweb status</code><span data-i18n="deploy.tips.lan.after">里显示的地址。</span>
-            </li>
-          </ul>
-        </div>
+          <details class="deploy-fold" id="deployTips">
+            <summary class="deploy-fold__head">
+              <span class="deploy-fold__heading">
+                <span class="deploy-tips__title" data-i18n="deploy.tips.title">部署提示</span>
+              </span>
+              <span class="deploy-fold__meta" data-i18n="deploy.tips.meta">6 条提示</span>
+              <span class="deploy-fold__icon" aria-hidden="true"></span>
+            </summary>
 
+            <div class="deploy-fold__body">
+              <ul class="deploy-tips__list">
+                <li class="deploy-tips__item">
+                  <strong data-i18n="deploy.tips.repo.label">开源地址：</strong><a
+                    href="https://github.com/liuwenjin/transweb" target="_blank"
+                    rel="noopener">github.com/liuwenjin/transweb</a>
+                </li>
+                <li class="deploy-tips__item">
+                  <strong data-i18n="deploy.tips.security.label">上线前安全：</strong><span
+                    data-i18n="deploy.tips.security.before">务必执行</span> <code>transweb admin hide</code><span
+                    class="deploy-tips__gap" aria-hidden="true"> </span><span
+                    data-i18n="deploy.tips.security.after">，避免后台入口（admin.html / initAdmin.html）暴露到公网；公网部署再设</span>
+                  <code>TRANSWEB_DISABLE_ADMIN=1</code> <span data-i18n="deploy.tips.security.fallback">兜底。</span>
+                </li>
+                <li class="deploy-tips__item">
+                  <strong data-i18n="deploy.tips.init.label">初始化页面：</strong><span
+                    data-i18n="deploy.tips.init.before">初始化完成前</span> <code>/initAdmin.html</code> <span
+                    data-i18n="deploy.tips.init.after">自动可访问，初始化完成后自动返回 404；再次进入后台执行</span>
+                  <code>transweb admin show</code><span data-i18n="deploy.tips.init.period">。</span>
+                </li>
+                <li class="deploy-tips__item">
+                  <strong data-i18n="deploy.tips.first.label">首次初始化：</strong><span
+                    data-i18n="deploy.tips.first.text">自动安装应用依赖（约 543 个包）并下载 MongoDB 6.0.x（约 58MB）。</span>
+                </li>
+                <li class="deploy-tips__item">
+                  <strong data-i18n="deploy.tips.data.label">数据目录：</strong><span
+                    data-i18n="deploy.tips.data.before">服务目录默认</span> <code>~/.transweb-service</code><span
+                    data-i18n="deploy.tips.data.after">，升级 npm 包不会丢失数据。</span>
+                </li>
+                <li class="deploy-tips__item">
+                  <strong data-i18n="deploy.tips.lan.label">局域网访问：</strong><span
+                    data-i18n="deploy.tips.lan.before">其他设备可直接访问</span> <code>transweb status</code><span
+                    data-i18n="deploy.tips.lan.after">里显示的地址。</span>
+                </li>
+              </ul>
+            </div>
+          </details>
+        </div>
       </section>
 
 
@@ -5691,22 +5872,23 @@ transweb wxpay check</code></pre>
 
           <div class="faq-item open">
 
-            <h3 class="faq-heading"><button class="faq-question" id="faq-q1" type="button" aria-expanded="true" aria-controls="faq-a1">
+            <h3 class="faq-heading"><button class="faq-question" id="faq-q1" type="button" aria-expanded="true"
+                aria-controls="faq-a1">
 
-              <span class="faq-index">
-                01
-              </span>
+                <span class="faq-index">
+                  01
+                </span>
 
-              <span class="faq-text" data-i18n="faq.q1">
-                生成一个数字员工需要多久？
-              </span>
+                <span class="faq-text" data-i18n="faq.q1">
+                  生成一个数字员工需要多久？
+                </span>
 
-              <span class="faq-toggle" aria-hidden="true">
-                <span></span>
-                <span></span>
-              </span>
+                <span class="faq-toggle" aria-hidden="true">
+                  <span></span>
+                  <span></span>
+                </span>
 
-            </button></h3>
+              </button></h3>
 
             <div class="faq-answer" id="faq-a1" role="region" aria-labelledby="faq-q1">
 
@@ -5725,22 +5907,23 @@ transweb wxpay check</code></pre>
 
           <div class="faq-item">
 
-            <h3 class="faq-heading"><button class="faq-question" id="faq-q2" type="button" aria-expanded="false" aria-controls="faq-a2">
+            <h3 class="faq-heading"><button class="faq-question" id="faq-q2" type="button" aria-expanded="false"
+                aria-controls="faq-a2">
 
-              <span class="faq-index">
-                02
-              </span>
+                <span class="faq-index">
+                  02
+                </span>
 
-              <span class="faq-text" data-i18n="faq.q2">
-                支持哪些资料格式？篇幅有上限吗？
-              </span>
+                <span class="faq-text" data-i18n="faq.q2">
+                  支持哪些资料格式？篇幅有上限吗？
+                </span>
 
-              <span class="faq-toggle" aria-hidden="true">
-                <span></span>
-                <span></span>
-              </span>
+                <span class="faq-toggle" aria-hidden="true">
+                  <span></span>
+                  <span></span>
+                </span>
 
-            </button></h3>
+              </button></h3>
 
             <div class="faq-answer" id="faq-a2" role="region" aria-labelledby="faq-q2">
 
@@ -5760,30 +5943,31 @@ transweb wxpay check</code></pre>
 
           <div class="faq-item">
 
-            <h3 class="faq-heading"><button class="faq-question" id="faq-q3" type="button" aria-expanded="false" aria-controls="faq-a3">
+            <h3 class="faq-heading"><button class="faq-question" id="faq-q3" type="button" aria-expanded="false"
+                aria-controls="faq-a3">
 
-              <span class="faq-index">
-                03
-              </span>
+                <span class="faq-index">
+                  03
+                </span>
 
-              <span class="faq-text" data-i18n="faq.q3">
-                我上传的资料会被用于训练模型吗？
-              </span>
+                <span class="faq-text" data-i18n="faq.q3">
+                  我上传的资料会被用于训练模型吗？
+                </span>
 
-              <span class="faq-toggle" aria-hidden="true">
-                <span></span>
-                <span></span>
-              </span>
+                <span class="faq-toggle" aria-hidden="true">
+                  <span></span>
+                  <span></span>
+                </span>
 
-            </button></h3>
+              </button></h3>
 
             <div class="faq-answer" id="faq-a3" role="region" aria-labelledby="faq-q3">
 
               <div class="faq-answer-inner">
 
                 <p>
-                  <span
-                    data-i18n="faq.a3.1">不会。资料仅用于构建你自己的数字员工；HTTPS 访问时传输加密，存储按账号隔离。平台不会将资料用于公共模型训练，也不会向其他用户开放检索。你可以随时删除资料，删除后对应的解析结果同步失效。详见</span>
+                  <span data-i18n="faq.a3.1">不会。资料仅用于构建你自己的数字员工；HTTPS
+                    访问时传输加密，存储按账号隔离。平台不会将资料用于公共模型训练，也不会向其他用户开放检索。你可以随时删除资料，删除后对应的解析结果同步失效。详见</span>
                   <a href="#privacy" data-doc="privacy"><span data-i18n="legal.privacy">隐私政策</span></a><span
                     data-i18n="faq.a3.2">。</span>
                 </p>
@@ -5797,22 +5981,23 @@ transweb wxpay check</code></pre>
 
           <div class="faq-item">
 
-            <h3 class="faq-heading"><button class="faq-question" id="faq-q4" type="button" aria-expanded="false" aria-controls="faq-a4">
+            <h3 class="faq-heading"><button class="faq-question" id="faq-q4" type="button" aria-expanded="false"
+                aria-controls="faq-a4">
 
-              <span class="faq-index">
-                04
-              </span>
+                <span class="faq-index">
+                  04
+                </span>
 
-              <span class="faq-text" data-i18n="faq.q4">
-                费用是怎么计算的？
-              </span>
+                <span class="faq-text" data-i18n="faq.q4">
+                  费用是怎么计算的？
+                </span>
 
-              <span class="faq-toggle" aria-hidden="true">
-                <span></span>
-                <span></span>
-              </span>
+                <span class="faq-toggle" aria-hidden="true">
+                  <span></span>
+                  <span></span>
+                </span>
 
-            </button></h3>
+              </button></h3>
 
             <div class="faq-answer" id="faq-a4" role="region" aria-labelledby="faq-q4">
 
@@ -5831,22 +6016,23 @@ transweb wxpay check</code></pre>
 
           <div class="faq-item">
 
-            <h3 class="faq-heading"><button class="faq-question" id="faq-q5" type="button" aria-expanded="false" aria-controls="faq-a5">
+            <h3 class="faq-heading"><button class="faq-question" id="faq-q5" type="button" aria-expanded="false"
+                aria-controls="faq-a5">
 
-              <span class="faq-index">
-                05
-              </span>
+                <span class="faq-index">
+                  05
+                </span>
 
-              <span class="faq-text" data-i18n="faq.q5">
-                如果回答不够准确，怎么办？
-              </span>
+                <span class="faq-text" data-i18n="faq.q5">
+                  如果回答不够准确，怎么办？
+                </span>
 
-              <span class="faq-toggle" aria-hidden="true">
-                <span></span>
-                <span></span>
-              </span>
+                <span class="faq-toggle" aria-hidden="true">
+                  <span></span>
+                  <span></span>
+                </span>
 
-            </button></h3>
+              </button></h3>
 
             <div class="faq-answer" id="faq-a5" role="region" aria-labelledby="faq-q5">
 
@@ -5868,22 +6054,23 @@ transweb wxpay check</code></pre>
 
           <div class="faq-item">
 
-            <h3 class="faq-heading"><button class="faq-question" id="faq-q6" type="button" aria-expanded="false" aria-controls="faq-a6">
+            <h3 class="faq-heading"><button class="faq-question" id="faq-q6" type="button" aria-expanded="false"
+                aria-controls="faq-a6">
 
-              <span class="faq-index">
-                06
-              </span>
+                <span class="faq-index">
+                  06
+                </span>
 
-              <span class="faq-text" data-i18n="faq.q6">
-                生成的数字员工，可以交给学生、同事或客户使用吗？
-              </span>
+                <span class="faq-text" data-i18n="faq.q6">
+                  生成的数字员工，可以交给学生、同事或客户使用吗？
+                </span>
 
-              <span class="faq-toggle" aria-hidden="true">
-                <span></span>
-                <span></span>
-              </span>
+                <span class="faq-toggle" aria-hidden="true">
+                  <span></span>
+                  <span></span>
+                </span>
 
-            </button></h3>
+              </button></h3>
 
             <div class="faq-answer" id="faq-a6" role="region" aria-labelledby="faq-q6">
 
@@ -5902,22 +6089,23 @@ transweb wxpay check</code></pre>
 
           <div class="faq-item">
 
-            <h3 class="faq-heading"><button class="faq-question" id="faq-q7" type="button" aria-expanded="false" aria-controls="faq-a7">
+            <h3 class="faq-heading"><button class="faq-question" id="faq-q7" type="button" aria-expanded="false"
+                aria-controls="faq-a7">
 
-              <span class="faq-index">
-                07
-              </span>
+                <span class="faq-index">
+                  07
+                </span>
 
-              <span class="faq-text" data-i18n="faq.q7">
-                如果不满意生成的数字员工，支持重新调整吗？
-              </span>
+                <span class="faq-text" data-i18n="faq.q7">
+                  如果不满意生成的数字员工，支持重新调整吗？
+                </span>
 
-              <span class="faq-toggle" aria-hidden="true">
-                <span></span>
-                <span></span>
-              </span>
+                <span class="faq-toggle" aria-hidden="true">
+                  <span></span>
+                  <span></span>
+                </span>
 
-            </button></h3>
+              </button></h3>
 
             <div class="faq-answer" id="faq-a7" role="region" aria-labelledby="faq-q7">
 
@@ -5936,29 +6124,32 @@ transweb wxpay check</code></pre>
 
           <div class="faq-item">
 
-            <h3 class="faq-heading"><button class="faq-question" id="faq-q8" type="button" aria-expanded="false" aria-controls="faq-a8">
+            <h3 class="faq-heading"><button class="faq-question" id="faq-q8" type="button" aria-expanded="false"
+                aria-controls="faq-a8">
 
-              <span class="faq-index">
-                08
-              </span>
+                <span class="faq-index">
+                  08
+                </span>
 
-              <span class="faq-text" data-i18n="faq.q8">
-                数字员工或 AI 技能，怎么在不同的 TransWeb 服务之间移植？
-              </span>
+                <span class="faq-text" data-i18n="faq.q8">
+                  数字员工或 AI 技能，怎么在不同的 TransWeb 服务之间移植？
+                </span>
 
-              <span class="faq-toggle" aria-hidden="true">
-                <span></span>
-                <span></span>
-              </span>
+                <span class="faq-toggle" aria-hidden="true">
+                  <span></span>
+                  <span></span>
+                </span>
 
-            </button></h3>
+              </button></h3>
 
             <div class="faq-answer" id="faq-a8" role="region" aria-labelledby="faq-q8">
 
               <div class="faq-answer-inner">
 
                 <p data-i18n="faq.a8">
-                  可以迁移「定义」，但不能直接搬账号数据。源服务登录后，在 Agent / 技能编辑页的操作菜单选「下载」，会得到含 appCode.vue、appPrompt.md、manifest.json 的压缩包。到目标服务登录，在 AI Skill 生成器页输入框右下角点「克隆」，选「克隆聊天 Agent」或「克隆 AI 技能」→「本地文件克隆」，选入 appCode.vue（appPrompt.md 可选）即可；源服务可公开访问时，也可用「在线 URL 克隆」填 manifest.json 地址。跨账号须由原账号导出后发送；目标服务需先配置可用的 API 与模型。
+                  可以迁移「定义」，但不能直接搬账号数据。源服务登录后，在 Agent / 技能编辑页的操作菜单选「下载」，会得到含 appCode.vue、appPrompt.md、manifest.json
+                  的压缩包。到目标服务登录，在 AI Skill 生成器页输入框右下角点「克隆」，选「克隆聊天 Agent」或「克隆 AI 技能」→「本地文件克隆」，选入 appCode.vue（appPrompt.md
+                  可选）即可；源服务可公开访问时，也可用「在线 URL 克隆」填 manifest.json 地址。跨账号须由原账号导出后发送；目标服务需先配置可用的 API 与模型。
                 </p>
 
               </div>
@@ -5970,29 +6161,31 @@ transweb wxpay check</code></pre>
 
           <div class="faq-item">
 
-            <h3 class="faq-heading"><button class="faq-question" id="faq-q9" type="button" aria-expanded="false" aria-controls="faq-a9">
+            <h3 class="faq-heading"><button class="faq-question" id="faq-q9" type="button" aria-expanded="false"
+                aria-controls="faq-a9">
 
-              <span class="faq-index">
-                09
-              </span>
+                <span class="faq-index">
+                  09
+                </span>
 
-              <span class="faq-text" data-i18n="faq.q9">
-                移植后，原来的资料、会话、积分和分享链接会一起过去吗？
-              </span>
+                <span class="faq-text" data-i18n="faq.q9">
+                  移植后，原来的资料、会话、积分和分享链接会一起过去吗？
+                </span>
 
-              <span class="faq-toggle" aria-hidden="true">
-                <span></span>
-                <span></span>
-              </span>
+                <span class="faq-toggle" aria-hidden="true">
+                  <span></span>
+                  <span></span>
+                </span>
 
-            </button></h3>
+              </button></h3>
 
             <div class="faq-answer" id="faq-a9" role="region" aria-labelledby="faq-q9">
 
               <div class="faq-answer-inner">
 
                 <p data-i18n="faq.a9">
-                  不会。随包迁移的只有 Agent / 技能的定义文件（界面代码、Prompt 与 manifest）；原始资料、知识库解析结果、会话记录、积分、账号和已发布链接都留在原服务。到目标服务后，需要重新上传资料、构建知识库，按目标服务的模型重新选择并发布，才能得到新的分享链接与二维码。同一服务内换账号也一样，双方的数据与积分各自独立。
+                  不会。随包迁移的只有 Agent / 技能的定义文件（界面代码、Prompt 与
+                  manifest）；原始资料、知识库解析结果、会话记录、积分、账号和已发布链接都留在原服务。到目标服务后，需要重新上传资料、构建知识库，按目标服务的模型重新选择并发布，才能得到新的分享链接与二维码。同一服务内换账号也一样，双方的数据与积分各自独立。
                 </p>
 
               </div>
@@ -6003,8 +6196,20 @@ transweb wxpay check</code></pre>
 
 
         </div>
-
       </section>
+      
+      <div class="govuk-width-container">
+        <div class="govuk-phase-banner">
+          <p class="govuk-phase-banner__content">
+            <strong class="govuk-tag govuk-phase-banner__content__tag" data-i18n="phase.tag">测试版</strong>
+            <span class="govuk-phase-banner__text">
+              <span data-i18n="phase.text">这是一个新服务，我们会持续改进。</span>
+              <a class="govuk-link" href="#contact" data-doc="contact" aria-haspopup="dialog"
+                data-i18n="phase.link">告诉我们哪里可以做得更好</a><span data-i18n="phase.period">。</span>
+            </span>
+          </p>
+        </div>
+      </div>
 
     </main>
 
@@ -6098,7 +6303,8 @@ transweb wxpay check</code></pre>
               <section class="doc-section">
                 <h3 data-i18n="privacy.s2.title">资料如何被使用</h3>
                 <p data-i18n="privacy.s2.text">
-                  你上传的资料只会用于构建并支撑属于你自己的数字员工。解析结果仅在你的账号范围内可见，用于回答你的提问；我们不将其用于公共模型训练，也不出售。为完成当次请求，必要内容会传递给模型 / 云服务商（见「第三方服务」）。
+                  你上传的资料只会用于构建并支撑属于你自己的数字员工。解析结果仅在你的账号范围内可见，用于回答你的提问；我们不将其用于公共模型训练，也不出售。为完成当次请求，必要内容会传递给模型 /
+                  云服务商（见「第三方服务」）。
                 </p>
               </section>
 
@@ -6388,7 +6594,8 @@ transweb wxpay check</code></pre>
               <section class="doc-section">
                 <h3 data-i18n="a11y.s3.title">已知限制</h3>
                 <p data-i18n="a11y.s3.text">
-                  窄屏下页面会缩放到 480/530px 画布，以保证内嵌编辑器完整显示，部分文字会相应变小。工作流画布中的节点拖拽目前需要鼠标或触屏操作；内置创建器与第三方模型生成的图表、公式，其字号、布局与替代文本由组件或生成内容决定，可能不完全遵循本站规范。我们会在后续版本中改进这些部分。
+                  窄屏下页面会缩放到 480/530px
+                  画布，以保证内嵌编辑器完整显示，部分文字会相应变小。工作流画布中的节点拖拽目前需要鼠标或触屏操作；内置创建器与第三方模型生成的图表、公式，其字号、布局与替代文本由组件或生成内容决定，可能不完全遵循本站规范。我们会在后续版本中改进这些部分。
                 </p>
               </section>
 
@@ -6473,6 +6680,7 @@ transweb wxpay check</code></pre>
       var skipCanvas = false;
       var applied = false;
       var lastWidth = -1;
+      var lastHeight = -1;
       var pending = false;
       var settleTimer = null;
 
@@ -6491,12 +6699,15 @@ transweb wxpay check</code></pre>
         body.style.height = "";
         body.style.transform = "";
         body.style.transformOrigin = "";
+        body.style.position = "";
+        body.style.left = "";
+        body.style.top = "";
         body.removeAttribute("scaleFlag");
         window.transformRadio = 1;
       }
 
       /* WebTool.adjustStyle 用 body.clientWidth 判断画布宽度。缩放后
-         body.clientWidth 会一直等于 480/530，所以每次重算前都要先清空
+         body.clientWidth 会一直等于 530，所以每次重算前都要先清空
          内联样式，否则旋转/折叠屏展开后仍会按旧宽度计算，整页发生偏移。
          最后再按实际布局视口宽度校正一次，保证缩放后的 body 正好铺满屏幕。 */
       function fitCanvasToViewport() {
@@ -6504,15 +6715,70 @@ transweb wxpay check</code></pre>
         var canvasWidth = parseFloat(body.style.width);
         if (!canvasWidth) return;
 
+        // 清掉上一次（尤其是强制 origin 时）的锚点补偿，再按当前视口重新计算
+        body.style.position = "";
+        body.style.left = "";
+        body.style.top = "";
+
         var viewportWidth = document.documentElement.clientWidth ||
           window.innerWidth || 0;
-        if (!viewportWidth) return;
+        var viewportHeight = document.documentElement.clientHeight ||
+          window.innerHeight || 0;
+        if (!viewportWidth || !viewportHeight) return;
 
         var scale = viewportWidth / canvasWidth;
 
-        body.style.transformOrigin = "0 0";
+        /* 用像素高度而不是百分比：不依赖 html/body 的百分比高度解析，
+           鸿蒙 WebView 上也能得到确定的画布高度。高度随视口变化时
+           由 resize 处理函数重新计算。 */
+        body.style.height = (viewportHeight / scale).toFixed(2) + "px";
+
+        var canvasHeight = body.offsetHeight || (viewportHeight / scale);
+
+        /* 不依赖 transform-origin: 0 0，而是显式使用默认的 50% 50% 锚点，
+           再用 translate 把缩放后的画布左上角移回视口左上角。
+           部分鸿蒙 WebView 会忽略 transform-origin，或按默认中心锚定，
+           旧写法会让整页向右/向下偏移、右侧和底部被裁切。
+           中心锚点 + 平移在“支持 origin”和“忽略 origin（退回中心）”两种
+           实现下结果一致。 */
+        var translateX = -(canvasWidth - viewportWidth) / 2;
+        var translateY = -(canvasHeight - viewportHeight) / 2;
+
+        body.style.transformOrigin = "50% 50%";
+        body.style.transform =
+          "translate(" + translateX.toFixed(3) + "px," +
+          translateY.toFixed(3) + "px) scale(" + scale.toFixed(6) + ")";
+
+        /* 兜底：如果浏览器仍对锚点/平移有偏差，按实际渲染位置再补一次。
+           正常浏览器 rect.left/top 为 0，不会触发。 */
+        var rect = body.getBoundingClientRect();
+
+        if (Math.abs(rect.left) > 0.5 || Math.abs(rect.top) > 0.5) {
+          body.style.position = "relative";
+          body.style.left = (-rect.left).toFixed(3) + "px";
+          body.style.top = (-rect.top).toFixed(3) + "px";
+        }
+
+        lastWidth = viewportWidth;
+        lastHeight = viewportHeight;
+        window.transformRadio = scale;
+      }
+
+      /* index.js 尚未加载/加载失败时的同款画布兜底：保持 530px 排版宽度，
+         保证页面不会退回未缩放的窄屏布局。 */
+      function applyFallbackCanvas() {
+        var body = document.body;
+        var width = body.clientWidth;
+
+        if (!width || width >= CANVAS_MAX) return;
+
+        var scale = width / CANVAS_MAX;
+
+        body.style.width = CANVAS_MAX + "px";
+        body.style.height = (100 * CANVAS_MAX / width).toFixed(4) + "%";
         body.style.transform = "scale(" + scale.toFixed(6) + ")";
-        body.style.height = (100 * canvasWidth / viewportWidth).toFixed(4) + "%";
+        body.style.transformOrigin = "0 0";
+        body.setAttribute("scaleFlag", "true");
         window.transformRadio = scale;
       }
 
@@ -6522,6 +6788,7 @@ transweb wxpay check</code></pre>
         if (skipCanvas) {
           resetCanvas();
           lastWidth = document.documentElement.clientWidth || 0;
+          lastHeight = document.documentElement.clientHeight || 0;
           applied = true;
           return;
         }
@@ -6530,13 +6797,35 @@ transweb wxpay check</code></pre>
 
         if (window.WebTool && typeof WebTool.adjustStyle === "function") {
           WebTool.adjustStyle(CANVAS_MIN, CANVAS_MAX);
+        } else {
+          applyFallbackCanvas();
         }
 
         fitCanvasToViewport();
 
         lastWidth = document.documentElement.clientWidth || 0;
+        lastHeight = document.documentElement.clientHeight || 0;
         applied = true;
       };
+
+      /* 宽度变化需要重新调用 adjustStyle；只有高度变化（地址栏/工具栏收起、
+         软键盘弹起）时，画布的缩放比例不变，但中心缩放的 translateY 需要
+         跟着视口高度更新，否则页面会整体上下偏移。 */
+      function updateCanvasForViewport() {
+        var width = document.documentElement.clientWidth || 0;
+        var height = document.documentElement.clientHeight || 0;
+        if (!width) return;
+
+        if (width !== lastWidth) {
+          window.__applyHomeCanvas();
+          return;
+        }
+
+        if (height !== lastHeight) {
+          fitCanvasToViewport();
+          lastHeight = height;
+        }
+      }
 
       function scheduleCanvas() {
         if (pending) return;
@@ -6544,26 +6833,18 @@ transweb wxpay check</code></pre>
 
         var run = function () {
           pending = false;
-
-          var width = document.documentElement.clientWidth || 0;
-          if (width && width === lastWidth) return;
-
-          window.__applyHomeCanvas();
+          updateCanvasForViewport();
         };
 
         if (window.requestAnimationFrame) window.requestAnimationFrame(run);
         else setTimeout(run, 16);
 
         // 横竖屏切换 / 折叠屏展开时，部分鸿蒙浏览器会在动画结束后
-        // 才稳定布局视口宽度；延迟再校正一次，避免停留在中间态。
+        // 才稳定布局视口尺寸；延迟再校正一次，避免停留在中间态。
         if (settleTimer) clearTimeout(settleTimer);
         settleTimer = setTimeout(function () {
           settleTimer = null;
-
-          var width = document.documentElement.clientWidth || 0;
-          if (width && width === lastWidth) return;
-
-          window.__applyHomeCanvas();
+          updateCanvasForViewport();
         }, 300);
       }
 
@@ -6579,15 +6860,19 @@ transweb wxpay check</code></pre>
       });
 
       // 资源加载完成 / 页面从缓存恢复时，视口可能才稳定；
-      // 只有画布实际宽度和视口不一致时才重算，避免无谓的整页重排。
+      // 只有画布实际尺寸和视口不一致时才重算，避免无谓的整页重排。
       function refitIfMismatch() {
         var width = document.documentElement.clientWidth || 0;
+        var height = document.documentElement.clientHeight || 0;
         if (!width) return;
 
-        var bodyWidth = document.body.getBoundingClientRect().width;
-        if (Math.abs(bodyWidth - width) > 0.5) {
+        var rect = document.body.getBoundingClientRect();
+
+        if (Math.abs(rect.width - width) > 0.5) {
           lastWidth = -1;
           window.__applyHomeCanvas();
+        } else if (Math.abs(rect.height - height) > 0.5) {
+          fitCanvasToViewport();
         }
       }
 
@@ -6719,6 +7004,7 @@ transweb wxpay check</code></pre>
           "deploy.m6.title": "积分系统（微信支付）",
           "deploy.m6.desc": "积分余额、消费与收入明细一目了然；微信支付 APIv2 下单参数可配置，回调验签与入账需按业务接入。按量计费、闲置零成本。",
           "deploy.activate.title": "激活功能模块",
+          "deploy.activate.meta": "5 项配置",
           "deploy.steps.title": "部署步骤",
           "deploy.steps.caption": "安装包自托管（transweb-service）",
           "deploy.reference.title": "后台管理指令（参考）",
@@ -6742,6 +7028,7 @@ transweb wxpay check</code></pre>
           "deploy.cmd.wxpaySet": "transweb wxpay set <参数> <值>\ntransweb wxpay check",
           "deploy.cmd.modelAdd": "transweb model add <model> \\\n  --api-name <apiName> \\\n  --input <rate> --output <rate> \\\n  --context <context> --from <国内|国外>\n\ntransweb default model --model <model>",
           "deploy.tips.title": "部署提示",
+          "deploy.tips.meta": "6 条提示",
           "deploy.tips.repo.label": "开源地址：",
           "deploy.tips.security.label": "上线前安全：",
           "deploy.tips.security.before": "务必执行",
@@ -6759,7 +7046,7 @@ transweb wxpay check</code></pre>
           "deploy.tips.lan.label": "局域网访问：",
           "deploy.tips.lan.before": "其他设备可直接访问",
           "deploy.tips.lan.after": " 里显示的地址。",
-          "deploy.activate.caption": "按优先级配置以下项目；点击标题展开配置概述与说明",
+          "deploy.activate.caption": "按优先级配置 root 凭据、算力、模型、支付与登录验证码；展开后可逐项查看说明",
           "deploy.activate.priority": "最高优先级",
           "deploy.activate.overview": "配置概述",
           "deploy.activate.root.label": "root 管理账号",
@@ -7009,8 +7296,8 @@ transweb wxpay check</code></pre>
       };
 
       var LS_KEY = "appLang";
-      var EN_URL = "./i18n/en.json?v=37";
-      var EN_CACHE_KEY = "i18n_en_v37";
+      var EN_URL = "./i18n/en.json?v=38";
+      var EN_CACHE_KEY = "i18n_en_v38";
 
       var lang = "zh";
       try {

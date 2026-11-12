@@ -13,6 +13,18 @@ const PRODUCTS = {
   "tokens_99": { price: 24000, tokens: 300000000 },
 };
 
+// 套餐目录：供前端下单前拉取，确保前端使用的 product_id 与后端价目表完全一致。
+// 只暴露展示与校验所需的字段，价格与积分始终以本文件的 PRODUCTS 为准。
+function getProducts() {
+  return Object.keys(PRODUCTS)
+    .map(function (id) {
+      return { id: id, price: PRODUCTS[id].price, tokens: PRODUCTS[id].tokens };
+    })
+    .sort(function (a, b) {
+      return a.price - b.price;
+    });
+}
+
 let _dbCfg = null;
 function getDbConfig() {
   if (_dbCfg) return _dbCfg;
@@ -123,6 +135,7 @@ async function getUncreditedOrders() {
 
 module.exports = {
   PRODUCTS,
+  getProducts,
   createOrder,
   getOrder,
   claimForCredit,

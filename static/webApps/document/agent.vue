@@ -361,28 +361,8 @@ export default {
             tokenRate: 1,
             serviceName: "TransWeb 智能服务",
             serviceDesc: "按 AI 算力消耗计费，每 1 token 扣除 1/10 积分。",
-            productList: [
-              {
-                title: "个人体验版",
-                description:
-                  "包含基础功能(通用 Agent 应用生成，Agent 应用内容版本管理功能等)。",
-                price: 500,
-                tokens: 5000,
-              },
-              {
-                title: "专业迭代版",
-                description: "包含更多高级功能（比如高阶 Agent 应用定制等）。",
-                price: 2000,
-                tokens: 21000,
-              },
-              {
-                title: "企业专享版",
-                description:
-                  "包含全部功能；以及 token 分成的权益（联系客户签订协议获得）。",
-                price: 30000,
-                tokens: 350000,
-              },
-            ],
+            // 套餐目录（product_id / price / tokens）由 recharge.vue 从 /wxProducts 拉取，
+            // 避免前端写死价目表与后端 PaymentOrder.PRODUCTS 不一致导致下单失败。
           },
         },
       },
@@ -1983,14 +1963,6 @@ export default {
       app.dsl.data = app.dsl.data || {};
       if (data) {
         webCpu.attachAttribute(data, app.dsl.data);
-        if (data.selected === undefined) {
-          app.dsl.data.productList = app.dsl.data.productList.map((item) => {
-            delete item.title;
-            delete item.description;
-            delete item.tips;
-            return item;
-          });
-        }
       }
       app.dsl.data.openid = openid;
       app.dsl.methods = {

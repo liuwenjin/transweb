@@ -162,22 +162,24 @@
             appTips
           }}
         </span>
-        <span class="entryNextAgent tw-align-middle tw-leading-none" style="margin-left: 10px; display: inline-block;">
-          <span @click="openCurrentPage()" v-if="inIframe" class="tw-pr-2 tw-align-middle tw-cursor-pointer">{{ content.title }}
-
+        <!-- 组合输入：左侧图标 · 中间输入 · 右侧打开，合并为一个 32px 细线控件 -->
+        <span class="entryNextAgent tw-align-middle">
+          <span v-if="inIframe" class="entryNextAgentTitle" @click="openCurrentPage()">{{ content.title }}</span>
+          <span class="entryNextAgentCombo" :style="{ width: flag ? '200px' : '320px' }">
+            <span class="entryNextAgentIcon" aria-hidden="true" @click="focusEntryNextAgentInput()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+              </svg>
+            </span>
+            <el-input ref="entryNextAgentInput" clearable v-model="currentIdInput" size="small" class="entryNextAgentField" :aria-label="flag ? 'Agent ID' : 'Skill ID'" :placeholder="flag ? '输入 Agent ID' : '输入 Skill ID'"></el-input>
+            <button type="button" class="entryNextAgentAction" title="打开" aria-label="打开" @click="entryNextAgent()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                <path d="M4.5 12h14" />
+                <path d="M12.5 6l6 6-6 6" />
+              </svg>
+            </button>
           </span>
-          <el-input clearable v-model="currentIdInput" size="small" :aria-label="flag ? 'Agent ID' : 'Skill ID'" :style="{ width: flag ? '200px': '320px'}" :placeholder="flag ? '输入 Agent ID' : '输入 Skill ID'">
-            <template #prepend>
-              <el-icon>
-                <arrow-right-bold />
-              </el-icon>
-            </template>
-            <template #append>
-              <el-button size="small" icon="Link" title="打开" aria-label="打开" @click="entryNextAgent()">
-
-              </el-button>
-            </template>
-          </el-input>
         </span>
       </div>
       <div v-if="!inIframe" class="buttonOptionArea tw-absolute tw-right-4 tw-top-2 tw-flex tw-gap-2 tw-pr-3">
@@ -389,6 +391,7 @@
       };
     },
     mounted() {
+      this.loadHaraTheme();
       // 组件挂载后初始化逻辑
       this.init();
       this.adapter = webCpu.initAdapter(this.interface);
@@ -483,6 +486,15 @@
       }
     },
     methods: {
+    // 加载原研哉「白与空」主题（仅视觉层，不改变任何交互逻辑）
+    loadHaraTheme() {
+      if (document.getElementById("hara-theme-css")) return;
+      const link = document.createElement("link");
+      link.id = "hara-theme-css";
+      link.rel = "stylesheet";
+      link.href = "/common/hara.css";
+      document.head.appendChild(link);
+    },
       sanitizeHtml(html) {
         return window.WebTool && typeof window.WebTool.sanitizeHtml === "function"
           ? window.WebTool.sanitizeHtml(html)
@@ -505,6 +517,13 @@
             type: 'IFRAME_URL_CHANGE',
             url: url
           }, '*');
+        }
+      },
+      // 点击左侧图标时聚焦输入框，让整块组合控件响应一致
+      focusEntryNextAgentInput() {
+        const field = this.$refs.entryNextAgentInput;
+        if (field && typeof field.focus === "function") {
+          field.focus();
         }
       },
       entryNextAgent(from) {
@@ -1621,21 +1640,7 @@
     font-family: var(--font-system);
     color: var(--muse-text);
     background-color: var(--muse-bg);
-    background-image: radial-gradient(
-        ellipse 70% 55% at 15% 0%,
-        rgba(26, 26, 30, 0.03) 0%,
-        transparent 55%
-      ),
-      radial-gradient(
-        ellipse 55% 45% at 100% 100%,
-        rgba(26, 26, 30, 0.02) 0%,
-        transparent 55%
-      ),
-      radial-gradient(
-        circle at 1px 1px,
-        rgba(148, 163, 184, 0.22) 1px,
-        transparent 0
-      );
+    
     background-size: auto, auto, 26px 26px;
   }
 
@@ -1875,10 +1880,6 @@
     width: 100%;
   }
 
-  .entryNextAgent .el-input-group__prepend {
-    padding: 0px 8px;
-  }
-
   /* hover:tw-shadow-lg */
   .hover\:tw-shadow-lg:hover {
     --tw-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1),
@@ -1936,9 +1937,7 @@
   .tw-border-blue-200 {
     border-color: #e7e7eb !important;
   }
-</style>
 
-<style>
 /* ==========================================================================
    appEditor 页面框架与对话框精修
    --------------------------------------------------------------------------
@@ -1992,22 +1991,149 @@
   outline-offset: 0;
 }
 
+/* --------------------------------------------------------------------------
+   顶部组合输入框：图标 · 输入 · 打开 合并为一个 32px 细线控件
+   1. 描边只由外层容器绘制，内部 el-input 完全透明、无阴影
+   2. 左右两侧各 32px 定宽，右侧以发丝线分隔动作区
+   3. hover 加深描边并提亮图标，focus-within 用 2px 墨线替代彩色光环
+   -------------------------------------------------------------------------- */
 .appContainerArea .entryNextAgent {
-  margin-left: 8px !important;
+  display: inline-flex;
+  align-items: center;
+  margin-left: 0 !important;
 }
 
-.appContainerArea .entryNextAgent .el-input {
-  width: 320px;
+.appContainerArea .entryNextAgentTitle {
+  margin-right: 10px;
+  color: var(--hara-ink, var(--muse-text));
+  font-size: 14px;
+  cursor: pointer;
+  transition: opacity var(--duration-fast) var(--ease-out);
 }
 
-.appContainerArea .entryNextAgent .el-input__wrapper {
-  min-height: 32px;
+.appContainerArea .entryNextAgentTitle:hover {
+  opacity: 0.72;
+}
+
+.appContainerArea .entryNextAgentCombo {
+  /* 输入类控件的描边比卡片描边略深一档，深色主题下自动降为半透明亮线 */
+  --combo-border: var(--hara-line-strong, #b1b4b6);
+  --combo-border-hover: var(--hara-ink, var(--muse-text));
+  display: inline-flex;
+  align-items: stretch;
+  box-sizing: border-box;
+  height: 32px;
+  overflow: hidden;
+  border: 1px solid var(--combo-border);
+  background: var(--hara-surface, var(--muse-surface));
+  transition: border-color var(--duration-base) var(--ease-out),
+    box-shadow var(--duration-base) var(--ease-out);
+}
+
+.appContainerArea[data-theme="dark"] .entryNextAgentCombo {
+  --combo-border: rgba(250, 250, 252, 0.22);
+  --combo-border-hover: rgba(250, 250, 252, 0.55);
+}
+
+.appContainerArea .entryNextAgentCombo:hover {
+  border-color: var(--combo-border-hover);
+}
+
+.appContainerArea .entryNextAgentCombo:focus-within {
+  border-color: var(--hara-ink, var(--muse-text));
+  box-shadow: 0 0 0 1px var(--hara-ink, var(--muse-text)) inset;
+}
+
+.appContainerArea .entryNextAgentIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 32px;
+  width: 32px;
+  color: var(--hara-secondary, var(--muse-text-secondary));
+  cursor: text;
+  transition: color var(--duration-base) var(--ease-out);
+}
+
+.appContainerArea .entryNextAgentCombo:hover .entryNextAgentIcon,
+.appContainerArea .entryNextAgentCombo:focus-within .entryNextAgentIcon {
+  color: var(--hara-ink, var(--muse-text));
+}
+
+.appContainerArea .entryNextAgentIcon svg {
+  display: block;
+  width: 14px;
+  height: 14px;
+}
+
+/* 输入区：交给外层画描边，这里只保留文字与光标 */
+.appContainerArea .entryNextAgentCombo .entryNextAgentField {
+  flex: 1 1 auto;
+  width: auto;
+  min-width: 0;
+}
+
+.appContainerArea .entryNextAgentCombo .entryNextAgentField .el-input__wrapper {
+  padding: 0 8px 0 0;
   border-radius: 0;
-  box-shadow: 0 0 0 1px #b1b4b6 inset;
+  background: transparent;
+  box-shadow: none;
+  transition: none;
 }
 
-.appContainerArea .entryNextAgent .el-input__wrapper.is-focus {
-  box-shadow: 0 0 0 2px #0b0c0c inset;
+.appContainerArea .entryNextAgentCombo .entryNextAgentField .el-input__wrapper:hover,
+.appContainerArea .entryNextAgentCombo .entryNextAgentField .el-input__wrapper.is-focus {
+  box-shadow: none;
+}
+
+.appContainerArea .entryNextAgentCombo .entryNextAgentField .el-input__inner {
+  color: var(--hara-ink, var(--muse-text));
+  font-size: 13px;
+  letter-spacing: 0.01em;
+}
+
+.appContainerArea .entryNextAgentCombo .entryNextAgentField .el-input__inner::placeholder {
+  color: var(--hara-tertiary, var(--muse-text-tertiary));
+}
+
+.appContainerArea .entryNextAgentAction {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 32px;
+  width: 32px;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  border-left: 1px solid var(--hara-line, var(--muse-border));
+  background: transparent;
+  color: var(--hara-secondary, var(--muse-text-secondary));
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  transition: background-color var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out);
+}
+
+.appContainerArea .entryNextAgentAction svg {
+  display: block;
+  width: 14px;
+  height: 14px;
+  transition: transform var(--duration-base) var(--ease-out);
+}
+
+.appContainerArea .entryNextAgentAction:hover {
+  background: var(--hara-hover, var(--muse-hover));
+  color: var(--hara-ink, var(--muse-text));
+}
+
+.appContainerArea .entryNextAgentCombo:hover .entryNextAgentAction svg {
+  transform: translateX(1px);
+}
+
+.appContainerArea .entryNextAgentAction:focus-visible {
+  outline: 2px solid var(--hara-ink, var(--muse-text));
+  outline-offset: -3px;
 }
 
 .appContainerArea .buttonOptionArea {

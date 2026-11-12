@@ -13,12 +13,12 @@
             <span class="navbar-title-text" data-edit-id="8">{{ title }}</span>
           </div>
         </div>
-        <div class="tw-flex tw-items-center" data-edit-id="103">
-          <button v-if="messages.length" type="button" class="navbar-text-btn" style="margin-right: 8px" title="清空当前对话" @click="newChat" data-edit-id="142">
+        <div class="navbar-actions" data-edit-id="103">
+          <button v-if="messages.length" type="button" class="navbar-text-btn" title="清空当前对话" @click="newChat" data-edit-id="142">
             <i class="bi bi-trash" data-edit-id="143"></i>
             <span data-edit-id="144">清空对话</span>
           </button>
-          <div v-if="isOwnerLogged" ref="configMenuWrap" class="config-menu-wrap" style="margin-right: 8px" data-edit-id="147">
+          <div v-if="isOwnerLogged" ref="configMenuWrap" class="config-menu-wrap" data-edit-id="147">
             <button type="button" class="skill-config-btn" :class="{ 'is-open': configMenuVisible }" title="配置菜单" aria-haspopup="menu" :aria-expanded="configMenuVisible ? 'true' : 'false'" @click.stop="toggleConfigMenu" data-edit-id="167">
               <i class="bi bi-sliders" data-edit-id="148"></i>
               <span data-edit-id="149">配置</span>
@@ -46,19 +46,17 @@
               </ul>
             </transition>
           </div>
-          <button type="button" class="icon-btn" style="margin-right: 8px" :title="
+          <button type="button" class="icon-btn" :title="
               resolvedTheme === 'dark' ? '切换到浅色模式' : '切换到深色模式'
             " @click="toggleTheme" data-edit-id="145">
             <i :class="
                 resolvedTheme === 'dark' ? 'bi bi-sun' : 'bi bi-moon-stars'
               " data-edit-id="146"></i>
           </button>
-          <div appName="loginRegItem" component="CardItem" class="tw-opacity-100 refined-user-card" :style="{
-              width: '135px',
-              marginLeft: '5px',
-              height: '30px',
-              borderLeft: 'solid 1px #ddd',
-            }" data-edit-id="104" :documentId="query ? query.documentId : ''"></div>
+          <span class="navbar-divider" aria-hidden="true"></span>
+          <div class="navbar-account">
+            <div appName="loginRegItem" component="CardItem" class="login-bar-card refined-user-card" data-edit-id="104" :documentId="query ? query.documentId : ''"></div>
+          </div>
         </div>
       </div>
     </header>
@@ -611,7 +609,40 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    gap: 16px;
+    border-bottom: 1px solid var(--muse-border);
+  }
+
+  /* 右侧操作区：按钮与账号区共用同一条垂直中心线 */
+  .navbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 0 0 auto;
+  }
+
+  .navbar-divider {
+    flex: 0 0 auto;
+    width: 1px;
+    height: 22px;
+    background: var(--muse-border-strong);
+    border-radius: 1px;
+  }
+
+  /* 登录 / 用户区：容纳 loginBar 44px 的切换按钮并垂直居中 */
+  .navbar-account {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex: 0 0 auto;
+    width: 135px;
+    height: 44px;
+  }
+
+  /* loginBar 由 CardItem 渲染，尺寸跟随账号区 */
+  .login-bar-card {
+    width: 100%;
+    height: 100%;
   }
 
   .navbar-left {
@@ -1766,6 +1797,15 @@
     color: var(--muse-primary);
   }
 
+  .navbar-text-btn:focus-visible,
+  .skill-config-btn:focus-visible,
+  .icon-btn:focus-visible {
+    outline: 2px solid var(--muse-primary-ring);
+    outline-offset: 2px;
+    background: var(--muse-primary-soft);
+    color: var(--muse-primary);
+  }
+
   .skill-config-btn {
     display: inline-flex;
     align-items: center;
@@ -2345,8 +2385,12 @@
     }
 
     /* 登录项间距收紧 */
-    .refined-user-card {
-      margin-left: 8px !important;
+    .navbar-actions {
+      gap: 6px;
+    }
+
+    .navbar-divider {
+      height: 18px;
     }
 
     .message-body {

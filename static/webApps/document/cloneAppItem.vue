@@ -667,12 +667,22 @@ export default {
       this.activeTab = "code";
     },
 
+    // 加载原研哉「白与空」主题（仅视觉层，不改变任何交互逻辑）
+    loadHaraTheme() {
+      if (document.getElementById("hara-theme-css")) return;
+      const link = document.createElement("link");
+      link.id = "hara-theme-css";
+      link.rel = "stylesheet";
+      link.href = "/common/hara.css";
+      document.head.appendChild(link);
+    },
     setStatus(msg, type = "info") {
       this.statusMessage = msg;
       this.statusType = type;
     },
   },
   async mounted() {
+    this.loadHaraTheme();
     if(this.manifestUrl) {
       await this.handleFetchManifest();
       await this.handleConfirm();

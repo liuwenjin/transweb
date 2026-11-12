@@ -1,0 +1,1344 @@
+/* ==========================================================================
+   原研哉「白与空」设计规范 · Hara Theme
+   --------------------------------------------------------------------------
+   纸白、墨色、发丝线、直角、克制阴影与大量留白。
+   仅作用于 app 生成链路：input.vue / cloneAppItem.vue / appEditor.vue
+   以及它们的对话框与浮层。
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. 设计令牌
+   -------------------------------------------------------------------------- */
+html body :is(.oneKeyContentArea, .cloneAppRoot, .appContainerArea) {
+  --hara-paper: #fafaf9;
+  --hara-surface: #ffffff;
+  --hara-ink: #1a1a1e;
+  --hara-ink-soft: #2b2b31;
+  --hara-secondary: #6f6f6a;
+  --hara-tertiary: #a3a39e;
+  --hara-line: #e6e6e2;
+  --hara-line-strong: #b9b9b4;
+  --hara-hover: #f4f4f1;
+  --hara-active: #ecece8;
+  --hara-ring: rgba(26, 26, 30, 0.1);
+  --hara-success: #3f5b47;
+  --hara-success-bg: #f3f6f3;
+  --hara-success-line: #dfe6df;
+  --hara-error: #8e3b33;
+  --hara-error-bg: #faf3f2;
+  --hara-error-line: #ecd9d6;
+
+  --gds-black: var(--hara-ink);
+  --gds-secondary: var(--hara-secondary);
+  --gds-border: var(--hara-line);
+  --gds-blue: var(--hara-ink);
+  --gds-green: var(--hara-ink);
+  --gds-green-hover: var(--hara-ink-soft);
+  --gds-green-shadow: #000000;
+  --gds-red: var(--hara-error);
+  --gds-yellow: #ffffff;
+  --gds-grey: var(--hara-hover);
+
+  --muse-primary: var(--hara-ink);
+  --muse-primary-hover: var(--hara-ink-soft);
+  --muse-primary-active: #000000;
+  --muse-primary-soft: var(--hara-hover);
+  --muse-primary-ring: var(--hara-ring);
+  --muse-bg: var(--hara-paper);
+  --muse-card: var(--hara-surface);
+  --muse-surface: var(--hara-surface);
+  --muse-text: var(--hara-ink);
+  --muse-text-secondary: var(--hara-secondary);
+  --muse-text-tertiary: var(--hara-tertiary);
+  --muse-border: var(--hara-line);
+  --muse-border-strong: var(--hara-line-strong);
+  --muse-hover: var(--hara-hover);
+  --radius-xs: 0;
+  --radius-sm: 0;
+  --radius-md: 0;
+  --radius-lg: 0;
+  --radius-xl: 0;
+  --radius-2xl: 0;
+  --radius-3xl: 0;
+  --radius-card: 0;
+  --radius-full: 0;
+  --glass-shadow: 0 1px 2px rgba(20, 20, 20, 0.03);
+  --glass-shadow-hover: 0 1px 2px rgba(20, 20, 20, 0.03);
+}
+
+/* --------------------------------------------------------------------------
+   2. 页面底色与文字
+   -------------------------------------------------------------------------- */
+html body .oneKeyContentArea,
+html body .cloneAppRoot,
+html body .appContainerArea {
+  background-color: var(--hara-paper) !important;
+  background-image: none !important;
+  color: var(--hara-ink) !important;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif !important;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 输入页 Hero：从白字/渐变改为墨色排版 */
+html body .oneKeyContentArea .sloganInfoArea .z-text,
+html body .oneKeyContentArea .sloganInfoArea > p {
+  color: var(--hara-ink) !important;
+  -webkit-text-fill-color: var(--hara-ink) !important;
+  background: none !important;
+  text-shadow: none !important;
+  letter-spacing: -0.01em;
+}
+
+html body .oneKeyContentArea .sloganInfoArea > p:first-child {
+  font-weight: 600 !important;
+  line-height: 1.15 !important;
+}
+
+html body .oneKeyContentArea .sloganInfoArea > p + p {
+  margin-top: 12px !important;
+  color: var(--hara-secondary) !important;
+  -webkit-text-fill-color: var(--hara-secondary) !important;
+  font-weight: 400 !important;
+  line-height: 1.6 !important;
+}
+
+/* --------------------------------------------------------------------------
+   3. 统一按钮：1px 发丝线、直角、44px、墨色主操作
+   -------------------------------------------------------------------------- */
+html body :is(.oneKeyContentArea, .cloneAppRoot) .el-button {
+  height: 44px !important;
+  min-height: 44px !important;
+  padding: 0 18px !important;
+  border: 1px solid var(--hara-line-strong) !important;
+  border-radius: 0 !important;
+  background: var(--hara-surface) !important;
+  color: var(--hara-ink) !important;
+  font-size: 0.9375rem !important;
+  font-weight: 400 !important;
+  line-height: 1.2 !important;
+  box-shadow: none !important;
+  transform: none !important;
+  transition: background-color 160ms ease, border-color 160ms ease,
+    color 160ms ease;
+}
+
+html body :is(.oneKeyContentArea, .cloneAppRoot)
+  .el-button:not(.is-disabled):hover {
+  background: var(--hara-hover) !important;
+  border-color: var(--hara-ink) !important;
+  color: var(--hara-ink) !important;
+  box-shadow: none !important;
+}
+
+html body :is(.oneKeyContentArea, .cloneAppRoot)
+  .el-button:not(.is-disabled):active {
+  background: var(--hara-active) !important;
+  transform: none !important;
+}
+
+html body :is(.oneKeyContentArea, .cloneAppRoot)
+  .el-button--primary,
+html body :is(.oneKeyContentArea, .cloneAppRoot)
+  .el-button--success {
+  background: var(--hara-ink) !important;
+  border-color: var(--hara-ink) !important;
+  color: #ffffff !important;
+}
+
+html body :is(.oneKeyContentArea, .cloneAppRoot)
+  .el-button--primary:not(.is-disabled):hover,
+html body :is(.oneKeyContentArea, .cloneAppRoot)
+  .el-button--success:not(.is-disabled):hover {
+  background: var(--hara-ink-soft) !important;
+  border-color: var(--hara-ink-soft) !important;
+  color: #ffffff !important;
+}
+
+html body :is(.oneKeyContentArea, .cloneAppRoot)
+  .el-button.is-disabled {
+  background: var(--hara-hover) !important;
+  border-color: var(--hara-line) !important;
+  color: var(--hara-tertiary) !important;
+  opacity: 1 !important;
+}
+
+html body :is(.oneKeyContentArea, .cloneAppRoot)
+  .el-button.is-text,
+html body :is(.oneKeyContentArea, .cloneAppRoot)
+  .el-button--text {
+  border-color: transparent !important;
+  background: transparent !important;
+  padding: 0 10px !important;
+}
+
+html body :is(.oneKeyContentArea, .cloneAppRoot)
+  .el-button.is-text:hover,
+html body :is(.oneKeyContentArea, .cloneAppRoot)
+  .el-button--text:hover {
+  background: var(--hara-hover) !important;
+  border-color: transparent !important;
+}
+
+/* --------------------------------------------------------------------------
+   4. 统一输入框 / 选择器 / 文本域
+   -------------------------------------------------------------------------- */
+html body :is(.oneKeyContentArea, .cloneAppRoot)
+  .el-input__wrapper,
+html body :is(.oneKeyContentArea, .cloneAppRoot)
+  .el-select__wrapper,
+html body :is(.oneKeyContentArea, .cloneAppRoot)
+  .el-textarea__inner {
+  border: 1px solid var(--hara-line-strong) !important;
+  border-radius: 0 !important;
+  background: var(--hara-surface) !important;
+  box-shadow: none !important;
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+html body :is(.oneKeyContentArea, .cloneAppRoot)
+  .el-input__wrapper,
+html body :is(.oneKeyContentArea, .cloneAppRoot)
+  .el-select__wrapper {
+  min-height: 44px !important;
+  padding: 0 14px !important;
+}
+
+html body :is(.oneKeyContentArea, .cloneAppRoot)
+  .el-input__wrapper:hover,
+html body :is(.oneKeyContentArea, .cloneAppRoot)
+  .el-select__wrapper:hover,
+html body :is(.oneKeyContentArea, .cloneAppRoot)
+  .el-textarea__inner:hover {
+  border-color: var(--hara-ink) !important;
+}
+
+html body :is(.oneKeyContentArea, .cloneAppRoot)
+  .el-input__wrapper.is-focus,
+html body :is(.oneKeyContentArea, .cloneAppRoot)
+  .el-select__wrapper.is-focused,
+html body :is(.oneKeyContentArea, .cloneAppRoot)
+  .el-textarea__inner:focus {
+  border-color: var(--hara-ink) !important;
+  box-shadow: 0 0 0 3px var(--hara-ring) !important;
+  outline: none !important;
+}
+
+html body :is(.oneKeyContentArea, .cloneAppRoot)
+  .el-input__inner,
+html body :is(.oneKeyContentArea, .cloneAppRoot)
+  .el-select__placeholder,
+html body :is(.oneKeyContentArea, .cloneAppRoot)
+  .el-select__selected-item,
+html body :is(.oneKeyContentArea, .cloneAppRoot)
+  .el-textarea__inner {
+  color: var(--hara-ink) !important;
+  font-size: 1rem !important;
+}
+
+html body :is(.oneKeyContentArea, .cloneAppRoot)
+  .el-input__inner::placeholder,
+html body :is(.oneKeyContentArea, .cloneAppRoot)
+  .el-textarea__inner::placeholder {
+  color: var(--hara-tertiary) !important;
+}
+
+/* 焦点：细墨线 + 柔和外环，替代黄色高亮 */
+html body :is(.oneKeyContentArea, .cloneAppRoot)
+  :focus-visible {
+  outline: 2px solid var(--hara-ink) !important;
+  outline-offset: 2px !important;
+  box-shadow: none !important;
+}
+
+html body .cloneAppRoot .cloneIdeHeader :focus-visible {
+  outline-color: #fafaf9 !important;
+}
+
+/* --------------------------------------------------------------------------
+   5. input.vue
+   -------------------------------------------------------------------------- */
+html body .oneKeyContentArea .inputContentArea {
+  max-width: 760px !important;
+  padding: 32px !important;
+  border: 1px solid var(--hara-line) !important;
+  background: var(--hara-surface) !important;
+  box-shadow: none !important;
+}
+
+html body .oneKeyContentArea .stepItemArea .el-textarea__inner {
+  padding: 18px !important;
+  border: 1px solid var(--hara-line-strong) !important;
+  font-size: 1.0625rem !important;
+  line-height: 1.7 !important;
+}
+
+html body .oneKeyContentArea .inputActionGroup .el-button,
+html body .oneKeyContentArea .stepItemArea .optionsArea .el-button {
+  height: 44px !important;
+  min-height: 44px !important;
+  border-width: 1px !important;
+}
+
+html body .oneKeyContentArea .inputActionGroup .config-model-btn {
+  border-color: var(--hara-line-strong) !important;
+  background: var(--hara-surface) !important;
+  color: var(--hara-ink) !important;
+}
+
+html body .oneKeyContentArea .inputActionGroup .shiny-button {
+  border: 1px solid var(--hara-ink) !important;
+  background: var(--hara-ink) !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+html body .oneKeyContentArea .inputActionGroup .shiny-button:hover {
+  background: var(--hara-ink-soft) !important;
+  border-color: var(--hara-ink-soft) !important;
+}
+
+html body .oneKeyContentArea .idea-section-container {
+  padding: 20px 0 0 !important;
+}
+
+html body .oneKeyContentArea .section-title {
+  color: var(--hara-ink) !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.01em;
+}
+
+html body .oneKeyContentArea .ideas-buttons-row {
+  gap: 12px !important;
+}
+
+html body .oneKeyContentArea .idea-button {
+  min-height: 44px !important;
+  border: 1px solid var(--hara-line) !important;
+  background: var(--hara-surface) !important;
+  color: var(--hara-ink) !important;
+  border-radius: 0 !important;
+  font-size: 0.9375rem !important;
+  transition: border-color 160ms ease, background-color 160ms ease;
+}
+
+html body .oneKeyContentArea .idea-button:hover {
+  border-color: var(--hara-ink) !important;
+  background: var(--hara-hover) !important;
+}
+
+/* 社区区：纸底墨字 */
+html body .oneKeyContentArea .communityArea {
+  color: var(--hara-ink) !important;
+}
+
+html body .oneKeyContentArea .communityArea h5,
+html body .oneKeyContentArea .communityArea > p {
+  color: var(--hara-ink) !important;
+  -webkit-text-fill-color: var(--hara-ink) !important;
+}
+
+html body .oneKeyContentArea .communityArea > p {
+  color: var(--hara-secondary) !important;
+  -webkit-text-fill-color: var(--hara-secondary) !important;
+}
+
+html body .oneKeyContentArea .community-search-input .el-input__wrapper,
+html body .oneKeyContentArea .community-owner-select .el-select__wrapper {
+  height: 44px !important;
+  min-height: 44px !important;
+  border: 1px solid var(--hara-line-strong) !important;
+  box-shadow: none !important;
+}
+
+html body .oneKeyContentArea .community-owner-select .el-select__wrapper {
+  border-left: 0 !important;
+  background: var(--hara-paper) !important;
+}
+
+html body .oneKeyContentArea .community-search-input .el-input__wrapper.is-focus,
+html body .oneKeyContentArea .community-owner-select .el-select__wrapper.is-focused {
+  border-color: var(--hara-ink) !important;
+  box-shadow: 0 0 0 3px var(--hara-ring) !important;
+}
+
+html body .oneKeyContentArea .communityArea footer a {
+  color: var(--hara-secondary) !important;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   6. cloneAppItem.vue
+   -------------------------------------------------------------------------- */
+html body .cloneAppRoot .cloneHeader {
+  border-bottom-color: var(--hara-line) !important;
+}
+
+html body .cloneAppRoot .cloneHeaderMeta {
+  color: var(--hara-tertiary) !important;
+}
+
+html body .cloneAppRoot .cloneModeTabs {
+  border: 1px solid var(--hara-line) !important;
+  background: var(--hara-paper) !important;
+  border-radius: 0 !important;
+  padding: 3px !important;
+}
+
+html body .cloneAppRoot .cloneModeBtn {
+  height: 38px !important;
+  min-height: 38px !important;
+  border: 1px solid transparent !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: var(--hara-secondary) !important;
+  font-size: 0.9375rem !important;
+  box-shadow: none !important;
+}
+
+html body .cloneAppRoot .cloneModeBtn:hover {
+  color: var(--hara-ink) !important;
+  background: var(--hara-hover) !important;
+}
+
+html body .cloneAppRoot .cloneModeBtn.is-active {
+  background: var(--hara-surface) !important;
+  border-color: var(--hara-line-strong) !important;
+  color: var(--hara-ink) !important;
+  font-weight: 600 !important;
+}
+
+html body .cloneAppRoot .localFileCard {
+  padding: 14px 16px !important;
+  border: 1px solid var(--hara-line) !important;
+  background: var(--hara-surface) !important;
+  box-shadow: none !important;
+}
+
+html body .cloneAppRoot .localFileCard:hover {
+  border-color: var(--hara-line-strong) !important;
+}
+
+html body .cloneAppRoot .localFileCard[class*="ring"] {
+  border-color: var(--hara-ink) !important;
+  box-shadow: 0 0 0 3px var(--hara-ring) !important;
+}
+
+html body .cloneAppRoot [role="status"],
+html body .cloneAppRoot [role="alert"] {
+  border-width: 1px !important;
+  border-radius: 0 !important;
+  font-size: 0.875rem !important;
+}
+
+html body .cloneAppRoot .previewUrlBar {
+  background: var(--hara-paper) !important;
+  border-bottom-color: var(--hara-line) !important;
+}
+
+html body .cloneAppRoot .clonePreviewAddress {
+  border: 1px solid var(--hara-line) !important;
+  background: var(--hara-surface) !important;
+  color: var(--hara-secondary) !important;
+}
+
+/* IDE：保留墨色，但边界更克制 */
+html body .cloneAppRoot .cloneIdeHeader {
+  background: var(--hara-ink) !important;
+  border-bottom-color: #303035 !important;
+}
+
+html body .cloneAppRoot [role="tab"] {
+  color: #a3a39e !important;
+  border-top: 2px solid transparent !important;
+  border-radius: 0 !important;
+  transition: color 160ms ease, background-color 160ms ease;
+}
+
+html body .cloneAppRoot [role="tab"]:hover {
+  color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.04) !important;
+}
+
+html body .cloneAppRoot [role="tab"][aria-selected="true"] {
+  color: #ffffff !important;
+  border-top-color: #ffffff !important;
+  font-weight: 600 !important;
+}
+
+html body .cloneAppRoot [role="tab"]:focus-visible {
+  outline-color: #fafaf9 !important;
+  background: #2b2b31 !important;
+  color: #ffffff !important;
+}
+
+html body .cloneAppRoot pre,
+html body .cloneAppRoot pre code {
+  color: #d8d8d4 !important;
+}
+
+html body .cloneAppRoot pre[class*="text-emerald"] code,
+html body .cloneAppRoot pre[class*="text-emerald"] {
+  color: #c7d3c7 !important;
+}
+
+/* --------------------------------------------------------------------------
+   7. appEditor.vue
+   -------------------------------------------------------------------------- */
+html body .appContainerArea > .el-card {
+  border: 1px solid var(--hara-line) !important;
+  background: var(--hara-surface) !important;
+  box-shadow: none !important;
+}
+
+html body .appContainerArea .componentInfoArea .el-button {
+  border: 1px solid transparent !important;
+  background: transparent !important;
+  color: var(--hara-secondary) !important;
+}
+
+html body .appContainerArea .componentInfoArea .el-button:hover {
+  border-color: var(--hara-line) !important;
+  background: var(--hara-hover) !important;
+  color: var(--hara-ink) !important;
+}
+
+html body .appContainerArea .buttonOptionArea .el-button {
+  border-color: transparent !important;
+  background: transparent !important;
+  color: var(--hara-ink) !important;
+}
+
+html body .appContainerArea .buttonOptionArea .el-button:hover {
+  border-color: var(--hara-line) !important;
+  background: var(--hara-hover) !important;
+}
+
+/* --------------------------------------------------------------------------
+   8. 对话框（input 配置 / appEditor 配置与知识库）
+   -------------------------------------------------------------------------- */
+html body .input-config-dialog.el-dialog,
+html body .app-editor-dialog.el-dialog {
+  border: 1px solid var(--hara-line-strong) !important;
+  border-radius: 0 !important;
+  background: var(--hara-surface) !important;
+  box-shadow: 0 18px 60px rgba(20, 20, 20, 0.12) !important;
+}
+
+html body .input-config-dialog .el-dialog__header,
+html body .app-editor-dialog .el-dialog__header {
+  border-bottom: 1px solid var(--hara-line) !important;
+}
+
+html body .input-config-dialog .el-dialog__title,
+html body .app-editor-dialog .el-dialog__title {
+  color: var(--hara-ink) !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.01em;
+}
+
+html body .input-config-dialog .el-dialog__headerbtn,
+html body .app-editor-dialog .el-dialog__headerbtn {
+  color: var(--hara-secondary) !important;
+}
+
+html body .input-config-dialog .el-dialog__headerbtn:hover,
+html body .app-editor-dialog .el-dialog__headerbtn:hover {
+  background: var(--hara-hover) !important;
+  color: var(--hara-ink) !important;
+}
+
+html body .input-config-dialog .el-dialog__footer,
+html body .app-editor-dialog .el-dialog__footer {
+  border-top: 1px solid var(--hara-line) !important;
+}
+
+html body .input-config-dialog .el-form-item__label,
+html body .app-editor-dialog .el-form-item__label {
+  color: var(--hara-secondary) !important;
+  font-size: 1rem !important;
+  font-weight: 400 !important;
+}
+
+html body .input-config-dialog .el-input__wrapper,
+html body .input-config-dialog .el-select__wrapper,
+html body .app-editor-dialog .el-input__wrapper,
+html body .app-editor-dialog .el-select__wrapper,
+html body .app-editor-dialog .el-textarea__inner {
+  border: 1px solid var(--hara-line-strong) !important;
+  border-radius: 0 !important;
+  background: var(--hara-surface) !important;
+  box-shadow: none !important;
+}
+
+html body .input-config-dialog .el-input__wrapper.is-focus,
+html body .input-config-dialog .el-select__wrapper.is-focused,
+html body .app-editor-dialog .el-input__wrapper.is-focus,
+html body .app-editor-dialog .el-select__wrapper.is-focused,
+html body .app-editor-dialog .el-textarea__inner:focus {
+  border-color: var(--hara-ink) !important;
+  box-shadow: 0 0 0 3px var(--hara-ring) !important;
+  outline: none !important;
+}
+
+html body .input-config-dialog .el-dialog__footer .el-button,
+html body .app-editor-dialog .el-dialog__footer .el-button {
+  height: 44px !important;
+  min-height: 44px !important;
+  border-width: 1px !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+html body .input-config-dialog .el-dialog__footer .el-button--primary,
+html body .app-editor-dialog .el-dialog__footer .el-button--primary {
+  background: var(--hara-ink) !important;
+  border-color: var(--hara-ink) !important;
+  color: #ffffff !important;
+}
+
+html body .input-config-dialog .el-dialog__footer .el-button--primary:hover,
+html body .app-editor-dialog .el-dialog__footer .el-button--primary:hover {
+  background: var(--hara-ink-soft) !important;
+  border-color: var(--hara-ink-soft) !important;
+}
+
+html body .app-editor-dialog .knowledge-item {
+  border: 1px solid var(--hara-line) !important;
+  background: var(--hara-paper) !important;
+  box-shadow: none !important;
+}
+
+html body .app-editor-dialog .add-knowledge-btn {
+  border: 1px solid var(--hara-ink) !important;
+  background: var(--hara-surface) !important;
+  color: var(--hara-ink) !important;
+}
+
+html body .app-editor-dialog .add-knowledge-btn:hover {
+  background: var(--hara-hover) !important;
+  border-color: var(--hara-ink) !important;
+}
+
+/* --------------------------------------------------------------------------
+   9. 滚动条与动效
+   -------------------------------------------------------------------------- */
+html body :is(.oneKeyContentArea, .cloneAppRoot) * {
+  scrollbar-width: thin;
+  scrollbar-color: var(--hara-line-strong) transparent;
+}
+
+html body .cloneAppRoot .custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+html body .cloneAppRoot .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #3a3a3f;
+  border-radius: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html body :is(.oneKeyContentArea, .cloneAppRoot) * {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   10. 移动端留白
+   -------------------------------------------------------------------------- */
+@media (max-width: 640px) {
+  html body .oneKeyContentArea .inputContentArea {
+    padding: 20px !important;
+  }
+
+  html body .oneKeyContentArea .communityArea,
+  html body .oneKeyContentArea .myAppsArea {
+    padding: 20px 16px !important;
+  }
+
+  html body .cloneAppRoot {
+    padding: 12px !important;
+  }
+
+  html body .cloneAppRoot .localFileCard {
+    padding: 12px !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   11. 字体、状态色与焦点补全
+   -------------------------------------------------------------------------- */
+html body :is(.oneKeyContentArea, .cloneAppRoot)
+  .el-button,
+html body :is(.oneKeyContentArea, .cloneAppRoot)
+  .el-input__inner,
+html body :is(.oneKeyContentArea, .cloneAppRoot)
+  .el-select__placeholder,
+html body :is(.oneKeyContentArea, .cloneAppRoot)
+  .el-select__selected-item,
+html body :is(.oneKeyContentArea, .cloneAppRoot)
+  .el-textarea__inner,
+html body :is(.oneKeyContentArea, .cloneAppRoot)
+  .el-form-item__label {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif !important;
+}
+
+html body .appContainerArea > .el-card,
+html body .appContainerArea > .el-card .el-card__body {
+  color: var(--hara-ink) !important;
+}
+
+/* 克隆页状态：低饱和自然色 */
+html body .cloneAppRoot [role="status"] {
+  background: var(--hara-success-bg) !important;
+  border-color: var(--hara-success-line) !important;
+  color: var(--hara-success) !important;
+}
+
+html body .cloneAppRoot [role="alert"] {
+  background: var(--hara-error-bg) !important;
+  border-color: var(--hara-error-line) !important;
+  color: var(--hara-error) !important;
+}
+
+html body .cloneAppRoot .tw-text-emerald-600,
+html body .cloneAppRoot .tw-text-emerald-700,
+html body .cloneAppRoot .tw-text-emerald-300 {
+  color: var(--hara-success) !important;
+}
+
+html body .cloneAppRoot .tw-text-rose-500,
+html body .cloneAppRoot .tw-text-rose-700 {
+  color: var(--hara-error) !important;
+}
+
+html body .cloneAppRoot [class*="tw-bg-emerald-50"] {
+  background: var(--hara-success-bg) !important;
+  border-color: var(--hara-success-line) !important;
+}
+
+html body .cloneAppRoot [class*="tw-bg-rose-50"] {
+  background: var(--hara-error-bg) !important;
+  border-color: var(--hara-error-line) !important;
+}
+
+/* 对话框内焦点：细墨线，替代黄色块 */
+html body :is(.input-config-dialog, .app-editor-dialog) :focus-visible {
+  outline: 2px solid var(--hara-ink) !important;
+  outline-offset: 2px !important;
+  box-shadow: none !important;
+  background-color: transparent !important;
+  color: var(--hara-ink) !important;
+}
+
+html body :is(.input-config-dialog, .app-editor-dialog)
+  .el-dialog__footer
+  .el-button:focus-visible {
+  background-color: var(--hara-surface) !important;
+}
+
+html body :is(.input-config-dialog, .app-editor-dialog)
+  .el-dialog__footer
+  .el-button--primary:focus-visible {
+  background-color: var(--hara-ink) !important;
+  color: #ffffff !important;
+}
+
+html body :is(.input-config-dialog, .app-editor-dialog) {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif !important;
+}
+
+/* 更明确的按钮焦点，压过旧 GDS 黄色 */
+html body :is(.oneKeyContentArea, .cloneAppRoot)
+  .el-button:focus-visible,
+html body :is(.oneKeyContentArea, .cloneAppRoot)
+  [role="tab"]:focus-visible,
+html body :is(.oneKeyContentArea, .cloneAppRoot)
+  button:focus-visible {
+  outline: 2px solid var(--hara-ink) !important;
+  outline-offset: 2px !important;
+  box-shadow: none !important;
+  background-color: transparent !important;
+}
+
+html body .cloneAppRoot .cloneIdeHeader [role="tab"]:focus-visible {
+  outline-color: #fafaf9 !important;
+  background-color: #2b2b31 !important;
+  color: #ffffff !important;
+}
+
+/* --------------------------------------------------------------------------
+   12. 交互焦点：压过旧的黄色高亮
+   -------------------------------------------------------------------------- */
+html body .oneKeyContentArea .el-button:focus-visible,
+html body .oneKeyContentArea .shiny-button.el-button:focus-visible,
+html body .oneKeyContentArea .idea-button:focus-visible,
+html body .oneKeyContentArea .config-model-btn:focus-visible,
+html body .oneKeyContentArea .optionsArea .el-button:focus-visible,
+html body .appContainerArea .componentInfoArea .el-button:focus-visible,
+html body .appContainerArea .buttonOptionArea .el-button:focus-visible {
+  outline: 2px solid var(--hara-ink) !important;
+  outline-offset: 2px !important;
+  border-color: var(--hara-ink) !important;
+  box-shadow: none !important;
+  background: var(--hara-surface) !important;
+  color: var(--hara-ink) !important;
+}
+
+html body .oneKeyContentArea .shiny-button.el-button:focus-visible {
+  background: var(--hara-ink) !important;
+  border-color: var(--hara-ink) !important;
+  color: #ffffff !important;
+}
+
+html body .oneKeyContentArea .el-input__wrapper:focus-within,
+html body .oneKeyContentArea .el-input__wrapper.is-focus,
+html body .oneKeyContentArea .el-select__wrapper.is-focused,
+html body .oneKeyContentArea .el-textarea__inner:focus {
+  outline: 2px solid var(--hara-ink) !important;
+  outline-offset: 2px !important;
+  border-color: var(--hara-ink) !important;
+  box-shadow: none !important;
+}
+
+html body .input-config-dialog .el-dialog__headerbtn:focus-visible,
+html body .input-config-dialog .el-dialog__footer .el-button:focus-visible,
+html body .input-config-dialog .el-button:focus-visible,
+html body .app-editor-dialog .el-dialog__headerbtn:focus-visible,
+html body .app-editor-dialog .el-dialog__footer .el-button:focus-visible,
+html body .app-editor-dialog .el-button:focus-visible {
+  outline: 2px solid var(--hara-ink) !important;
+  outline-offset: 2px !important;
+  box-shadow: none !important;
+  background-color: var(--hara-surface) !important;
+  color: var(--hara-ink) !important;
+}
+
+html body .input-config-dialog .el-dialog__footer .el-button--primary:focus-visible,
+html body .app-editor-dialog .el-dialog__footer .el-button--primary:focus-visible {
+  background-color: var(--hara-ink) !important;
+  border-color: var(--hara-ink) !important;
+  color: #ffffff !important;
+}
+
+html body .cloneAppRoot .cloneModeBtn:focus-visible,
+html body .cloneAppRoot .localFileCard .el-button:focus-visible,
+html body .cloneAppRoot .localCloneBar .el-button:focus-visible,
+html body .cloneAppRoot .previewUrlBar .el-button:focus-visible,
+html body .cloneAppRoot .previewUrlBar a:focus-visible {
+  outline: 2px solid var(--hara-ink) !important;
+  outline-offset: 2px !important;
+  box-shadow: none !important;
+}
+
+html body .cloneAppRoot .cloneIdeHeader [role="tab"]:focus-visible {
+  outline: 2px solid #fafaf9 !important;
+  outline-offset: -2px !important;
+  box-shadow: none !important;
+  background: #2b2b31 !important;
+  color: #ffffff !important;
+}
+
+/* --------------------------------------------------------------------------
+   13. 去掉旧的 focus-within 整块高亮，焦点只落在真实控件上
+   -------------------------------------------------------------------------- */
+html body .oneKeyContentArea .inputContentArea:focus-within,
+html body .oneKeyContentArea .stepItemArea:focus-within,
+html body .oneKeyContentArea .el-input:focus-within,
+html body .oneKeyContentArea .el-select:focus-within,
+html body .oneKeyContentArea .el-textarea:focus-within {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+html body .oneKeyContentArea .stepItemArea .el-textarea__inner:focus,
+html body .oneKeyContentArea .inputContentArea .el-textarea__inner:focus {
+  border-color: var(--hara-ink) !important;
+  outline: 2px solid var(--hara-ink) !important;
+  outline-offset: 2px !important;
+  box-shadow: none !important;
+}
+
+html body .oneKeyContentArea .el-input__wrapper.is-focus,
+html body .oneKeyContentArea .el-select__wrapper.is-focused,
+html body .oneKeyContentArea .community-search-input .el-input__wrapper.is-focus,
+html body .oneKeyContentArea .community-owner-select .el-select__wrapper.is-focused {
+  border-color: var(--hara-ink) !important;
+  outline: 2px solid var(--hara-ink) !important;
+  outline-offset: 2px !important;
+  box-shadow: none !important;
+}
+
+/* appEditor 顶部工具条保持 32px，避免 44px 通用按钮撑高 */
+html body .appContainerArea .componentInfoArea .el-button,
+html body .appContainerArea .buttonOptionArea .el-button {
+  width: 32px !important;
+  height: 32px !important;
+  min-height: 32px !important;
+  padding: 0 !important;
+  border-color: transparent !important;
+  background: transparent !important;
+}
+
+html body .appContainerArea .buttonOptionArea .el-button {
+  width: auto !important;
+  padding: 0 12px !important;
+}
+
+html body .cloneAppRoot .el-button--primary:focus-visible,
+html body .cloneAppRoot .el-button--success:focus-visible {
+  background: var(--hara-ink) !important;
+  border-color: var(--hara-ink) !important;
+  color: #ffffff !important;
+}
+
+html body .oneKeyContentArea .sloganInfoArea .z-text *,
+html body .oneKeyContentArea .sloganInfoArea > p * {
+  color: var(--hara-ink) !important;
+  -webkit-text-fill-color: var(--hara-ink) !important;
+  background: none !important;
+}
+
+/* 加载态：纸白遮罩 + 墨色旋转 */
+html body :is(.oneKeyContentArea, .cloneAppRoot) .el-loading-mask {
+  background: rgba(250, 250, 249, 0.82) !important;
+}
+
+html body :is(.oneKeyContentArea, .cloneAppRoot) .el-loading-spinner .path {
+  stroke: var(--hara-ink) !important;
+}
+
+/* --------------------------------------------------------------------------
+   14. 浮层（append-to-body / teleport 到 body 的对话框、下拉与轻提示）
+   --------------------------------------------------------------------------
+   input.vue 的算力配置对话框使用 append-to-body，其余浮层由 Element Plus
+   挂载到 body，组件作用域无法覆盖，故在此统一收口。
+   -------------------------------------------------------------------------- */
+html body .el-overlay {
+  --paper: #fafaf9;
+  --surface: #ffffff;
+  --ink: #1a1a1e;
+  --ink-soft: #2b2b31;
+  --secondary: #6f6f6a;
+  --tertiary: #a3a39e;
+  --line: #e6e6e2;
+  --line-strong: #b9b9b4;
+  --hover: #f4f4f1;
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+
+  --el-color-primary: #1a1a1e;
+  --el-color-primary-light-3: #2b2b31;
+  --el-color-primary-light-9: #f4f4f1;
+  --el-text-color-primary: #1a1a1e;
+  --el-text-color-regular: #1a1a1e;
+  --el-text-color-secondary: #6f6f6a;
+  --el-text-color-placeholder: #a3a39e;
+  --el-border-color: #e6e6e2;
+  --el-border-color-light: #e6e6e2;
+  --el-border-color-lighter: #e6e6e2;
+  --el-border-radius-base: 0;
+  --el-fill-color-light: #f4f4f1;
+  --el-fill-color-blank: #ffffff;
+  --el-bg-color: #ffffff;
+  --el-bg-color-overlay: #ffffff;
+
+  background-color: rgba(26, 26, 30, 0.28) !important;
+}
+
+html body .el-overlay-dialog {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+html body .el-overlay .input-config-dialog.el-dialog {
+  display: flex;
+  flex-direction: column;
+  width: min(560px, calc(100vw - 32px)) !important;
+  max-width: calc(100vw - 32px) !important;
+  max-height: calc(100vh - 48px);
+  height: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 1px solid var(--line-strong) !important;
+  border-radius: 0 !important;
+  background: var(--surface) !important;
+  box-shadow: 0 24px 80px rgba(20, 20, 20, 0.14) !important;
+  overflow: hidden;
+}
+
+html body .el-overlay .input-config-dialog .el-dialog__header {
+  flex: none;
+  margin: 0 !important;
+  padding: 22px 56px 18px 24px !important;
+  border-bottom: 1px solid var(--line) !important;
+}
+
+html body .el-overlay .input-config-dialog .el-dialog__title {
+  color: var(--ink) !important;
+  font-family: var(--font-sans) !important;
+  font-size: 1rem !important;
+  font-weight: 500 !important;
+  line-height: 1.4 !important;
+  letter-spacing: -0.01em !important;
+}
+
+html body .el-overlay .input-config-dialog .el-dialog__headerbtn {
+  top: 10px !important;
+  right: 10px !important;
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 0 !important;
+  color: var(--tertiary) !important;
+  transition: background-color var(--dur) ease, color var(--dur) ease;
+}
+
+html body .el-overlay .input-config-dialog .el-dialog__headerbtn:hover {
+  background: var(--hover) !important;
+  color: var(--ink) !important;
+}
+
+html body .el-overlay .input-config-dialog .el-dialog__headerbtn .el-dialog__close {
+  color: inherit !important;
+  font-size: 18px !important;
+}
+
+html body .el-overlay .input-config-dialog .el-dialog__headerbtn:focus-visible {
+  outline: 2px solid var(--ink) !important;
+  outline-offset: 2px !important;
+}
+
+html body .el-overlay .input-config-dialog .el-dialog__body {
+  flex: 1 1 auto;
+  padding: 22px 24px !important;
+  overflow-y: auto;
+  color: var(--ink);
+  font-size: 0.875rem;
+}
+
+html body .el-overlay .input-config-dialog .el-dialog__footer {
+  flex: none;
+  padding: 16px 24px !important;
+  border-top: 1px solid var(--line) !important;
+}
+
+html body .el-overlay .input-config-dialog .dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+html body .el-overlay .input-config-dialog .el-dialog__footer .el-button {
+  height: 42px !important;
+  min-width: 84px;
+  margin: 0 !important;
+  padding: 0 18px !important;
+  border-radius: 0 !important;
+  font-family: var(--font-sans) !important;
+  font-size: 0.875rem !important;
+  font-weight: 400 !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+html body .el-overlay .input-config-dialog
+  .el-dialog__footer
+  .el-button:not(.el-button--primary) {
+  border: 1px solid var(--line-strong) !important;
+  background: var(--surface) !important;
+  color: var(--ink) !important;
+}
+
+html body .el-overlay .input-config-dialog
+  .el-dialog__footer
+  .el-button:not(.el-button--primary):hover {
+  border-color: var(--ink) !important;
+  background: var(--hover) !important;
+  color: var(--ink) !important;
+}
+
+html body .el-overlay .input-config-dialog
+  .el-dialog__footer
+  .el-button--primary {
+  border: 1px solid var(--ink) !important;
+  background: var(--ink) !important;
+  color: #ffffff !important;
+}
+
+html body .el-overlay .input-config-dialog
+  .el-dialog__footer
+  .el-button--primary:hover {
+  border-color: var(--ink-soft) !important;
+  background: var(--ink-soft) !important;
+}
+
+html body .el-overlay .input-config-dialog .el-form-item {
+  margin-bottom: 16px;
+}
+
+html body .el-overlay .input-config-dialog .el-form-item:last-child {
+  margin-bottom: 0;
+}
+
+html body .el-overlay .input-config-dialog .el-form-item__label {
+  display: flex;
+  align-items: center;
+  width: 120px !important;
+  min-width: 120px !important;
+  padding-right: 12px !important;
+  color: var(--secondary) !important;
+  font-family: var(--font-sans) !important;
+  font-size: 0.8125rem !important;
+  font-weight: 400 !important;
+  line-height: 1.5 !important;
+  white-space: nowrap !important;
+  word-break: keep-all;
+  flex-shrink: 0;
+}
+
+html body .el-overlay .input-config-dialog .config-label-text {
+  color: var(--secondary);
+  font-size: 0.8125rem;
+  letter-spacing: 0.02em;
+}
+
+html body .el-overlay .input-config-dialog .el-form-item__content {
+  display: flex;
+  align-items: center;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-width: 0;
+  min-height: 42px;
+  margin-left: 0 !important;
+  color: var(--ink);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+html body .el-overlay .input-config-dialog .el-input,
+html body .el-overlay .input-config-dialog .el-select {
+  width: 100%;
+}
+
+html body .el-overlay .input-config-dialog .el-input__wrapper,
+html body .el-overlay .input-config-dialog .el-select__wrapper,
+html body .el-overlay .input-config-dialog .el-textarea__inner {
+  min-height: 42px !important;
+  height: 42px !important;
+  padding: 0 12px !important;
+  border: 1px solid var(--line-strong) !important;
+  border-radius: 0 !important;
+  background: var(--surface) !important;
+  box-shadow: none !important;
+  transition: border-color var(--dur) ease;
+}
+
+html body .el-overlay .input-config-dialog .el-textarea__inner {
+  height: auto !important;
+  padding: 10px 12px !important;
+}
+
+html body .el-overlay .input-config-dialog .el-input__wrapper:hover,
+html body .el-overlay .input-config-dialog .el-select__wrapper:hover {
+  border-color: var(--ink) !important;
+}
+
+html body .el-overlay .input-config-dialog .el-input__wrapper.is-focus,
+html body .el-overlay .input-config-dialog .el-select__wrapper.is-focused,
+html body .el-overlay .input-config-dialog .el-textarea__inner:focus {
+  border-color: var(--ink) !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+html body .el-overlay .input-config-dialog .el-input__inner,
+html body .el-overlay .input-config-dialog .el-select__placeholder,
+html body .el-overlay .input-config-dialog .el-select__selected-item {
+  color: var(--ink) !important;
+  font-family: var(--font-sans) !important;
+  font-size: 0.875rem !important;
+}
+
+html body .el-overlay .input-config-dialog .el-input__inner::placeholder {
+  color: var(--tertiary) !important;
+}
+
+html body .el-overlay .input-config-dialog .config-value {
+  display: inline-flex;
+  align-items: center;
+  min-height: 42px;
+  color: var(--ink);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+html body .el-overlay .input-config-dialog .config-price-unit {
+  color: var(--tertiary);
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+
+@media (max-width: 640px) {
+  html body .el-overlay .input-config-dialog.el-dialog {
+    width: calc(100vw - 24px) !important;
+    max-width: calc(100vw - 24px) !important;
+    max-height: calc(100vh - 24px);
+  }
+
+  html body .el-overlay-dialog {
+    padding: 12px;
+  }
+
+  html body .el-overlay .input-config-dialog .el-dialog__header {
+    padding: 18px 48px 14px 18px !important;
+  }
+
+  html body .el-overlay .input-config-dialog .el-dialog__title {
+    font-size: 0.9375rem !important;
+  }
+
+  html body .el-overlay .input-config-dialog .el-dialog__body {
+    padding: 18px !important;
+  }
+
+  html body .el-overlay .input-config-dialog .el-dialog__footer {
+    padding: 14px 18px !important;
+  }
+
+  html body .el-overlay .input-config-dialog .el-dialog__footer .el-button {
+    flex: 1 1 0;
+    min-width: 0;
+    height: 44px !important;
+    padding: 0 12px !important;
+  }
+
+  html body .el-overlay .input-config-dialog .el-form-item {
+    display: block;
+  }
+
+  html body .el-overlay .input-config-dialog .el-form-item__label {
+    display: block;
+    width: auto !important;
+    min-width: 0 !important;
+    padding: 0 0 6px !important;
+    line-height: 1.4 !important;
+  }
+}
+
+/* ==========================================================================
+   浮层：下拉菜单 / 选择器 / 轻提示（teleport 到 body，需全局样式）
+   --------------------------------------------------------------------------
+   仅作用于 input.vue 使用到的 Element Plus 浮层类，保持纸白、发丝线、直角。
+   ========================================================================== */
+.el-dropdown__popper.el-popper {
+  border: 1px solid #b9b9b4 !important;
+  border-radius: 0 !important;
+  background: #ffffff !important;
+  box-shadow: 0 16px 48px rgba(20, 20, 20, 0.1) !important;
+}
+
+.el-dropdown__popper .el-popper__arrow::before {
+  border-color: #b9b9b4 !important;
+  background: #ffffff !important;
+}
+
+.el-dropdown__popper .el-dropdown-menu {
+  padding: 6px;
+  background: #ffffff;
+}
+
+.el-dropdown__popper .el-dropdown-menu__item {
+  padding: 8px 14px;
+  border-radius: 0;
+  color: #1a1a1e;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+}
+
+.el-dropdown__popper
+  .el-dropdown-menu__item:not(.is-disabled):hover,
+.el-dropdown__popper
+  .el-dropdown-menu__item:not(.is-disabled):focus {
+  background: #f4f4f1;
+  color: #1a1a1e;
+}
+
+.el-select__popper.el-popper {
+  border: 1px solid #b9b9b4 !important;
+  border-radius: 0 !important;
+  background: #ffffff !important;
+  box-shadow: 0 16px 48px rgba(20, 20, 20, 0.1) !important;
+}
+
+.el-select__popper .el-popper__arrow::before {
+  border-color: #b9b9b4 !important;
+  background: #ffffff !important;
+}
+
+.el-select__popper .el-select-dropdown__wrap {
+  max-height: 260px;
+}
+
+.el-select__popper .el-select-dropdown__item {
+  height: 38px;
+  padding: 0 14px;
+  color: #1a1a1e;
+  font-size: 0.8125rem;
+  line-height: 38px;
+}
+
+.el-select__popper .el-select-dropdown__item.is-hovering {
+  background: #f4f4f1;
+}
+
+.el-select__popper .el-select-dropdown__item.is-selected {
+  background: #f4f4f1;
+  color: #1a1a1e;
+  font-weight: 500;
+}
+
+.el-message {
+  padding: 12px 16px;
+  border: 1px solid #b9b9b4;
+  border-radius: 0;
+  background: #ffffff;
+  box-shadow: 0 12px 40px rgba(20, 20, 20, 0.1);
+}
+
+.el-message .el-message__content {
+  color: #1a1a1e;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  font-size: 0.875rem;
+}
+
+.el-message--success .el-message__icon {
+  color: #3f5b47;
+}
+
+.el-message--warning .el-message__icon,
+.el-message--info .el-message__icon {
+  color: #6f6f6a;
+}
+
+.el-message--error .el-message__icon {
+  color: #8e3b33;
+}
+
+.el-message .el-message__closeBtn {
+  color: #a3a39e;
+}
+
+.el-message .el-message__closeBtn:hover {
+  color: #1a1a1e;
+}

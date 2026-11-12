@@ -38,9 +38,10 @@ let data = {
     origin: "*",
     credentials: false
   },
-  // 文档读取访问权限（getDocumentData 接口使用）
+  // 文档读取访问权限（getDocumentData 接口与 /bucket/personal/ 静态文件共用）
   // level 取值：
-  //   "public" — 免登陆获取：任何访问者均可读取（敏感字段对非发布者自动隐藏）
+  //   "public" — 免登陆获取：任何访问者均可读取（getDocumentData 会对非发布者隐藏敏感字段；
+  //              /bucket/personal/ 是静态文件，无法裁剪字段，请勿在其中存放密钥等敏感内容）
   //   "login"  — 所有人登录获取：仅登录用户可读取
   //   "owner"  — 发布者登录获取：仅文档发布者本人可读取
   // tables 可按集合名覆盖默认级别，例如：{ document: "owner", pptItem: "login" }

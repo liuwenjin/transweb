@@ -656,6 +656,26 @@
   }
 
   /* 响应式调整 */
+
+  /* 头部操作栏：统一垂直中线与间距 */
+  .header-bar {
+    align-items: center;
+    gap: 12px;
+  }
+
+  .query-bar,
+  .card-header,
+  .header-left,
+  .header-actions {
+    align-items: center;
+    gap: 8px;
+  }
+
+  .view-toggle {
+    display: inline-flex;
+    align-items: center;
+  }
+
   @media (max-width: 768px) {
     .simple-query {
       margin: 40px auto;

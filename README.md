@@ -464,7 +464,7 @@ npm run test           # （可选）gulp 压缩合并组件脚本
 
 > ⚠️ **上线前安全必做**：后台页面（`static/admin.html`、`static/initAdmin.html`）不能暴露到公网。
 > 安装包用户执行 `transweb admin hide`（`init` / 首次 `start` 会自动恢复，自动初始化完成后自动隐藏）；
-> 源码部署请手动删除或加访问控制。个人空间文件 `static/bucket/personal/` 已改为**登录后才能访问**（未登录 403）。
+> 源码部署请手动删除或加访问控制。个人空间文件 `static/bucket/personal/` 的读取权限跟随 `documentAccess`（`public` / `login` / `owner`），写操作始终要求本人登录；`public` 级别下未登录可按 URL 读取具体文件，但目录浏览仍需登录。
 
 ### 同步源码到已安装服务（开发调试）
 
@@ -525,7 +525,7 @@ transweb sync all --source /path/to/transweb
 | 字段 | 作用 |
 | --- | --- |
 | `crossOrigin` | 跨站请求许可（CORS）：`{ allow, origin, credentials }`。默认 `allow: true`（允许跨站）；改完需 `transweb restart` |
-| `documentAccess` | 文档读取权限：`public` / `login` / `owner`，可用 `tables` 按集合覆盖 |
+| `documentAccess` | 文档读取权限：`public` / `login` / `owner`，可用 `tables` 按集合覆盖；同一规则也约束 `static/bucket/personal/` 的读取（`document` 目录对应 document 表，`app`/`webApps`/`layout`/`other` 对应 pptItem 表） |
 
 跨站开关可用命令修改，例如：
 

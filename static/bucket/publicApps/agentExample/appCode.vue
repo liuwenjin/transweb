@@ -37,12 +37,12 @@
             }}</span>
           </div>
         </div>
-        <div class="tw-flex tw-items-center" data-edit-id="103">
+        <div class="navbar-actions" data-edit-id="103">
           <button
             v-if="messages.length"
             type="button"
             class="navbar-text-btn"
-            style="margin-right: 8px"
+           
             title="清空当前对话"
             @click="newChat"
             data-edit-id="142"
@@ -54,7 +54,7 @@
             v-if="isOwnerLogged"
             ref="configMenuWrap"
             class="config-menu-wrap"
-            style="margin-right: 8px"
+           
             data-edit-id="147"
           >
             <button
@@ -124,7 +124,7 @@
           <button
             type="button"
             class="icon-btn"
-            style="margin-right: 8px"
+           
             :title="
               resolvedTheme === 'dark' ? '切换到浅色模式' : '切换到深色模式'
             "
@@ -141,13 +141,7 @@
           <div
             appName="loginRegItem"
             component="CardItem"
-            class="tw-opacity-100 refined-user-card"
-            :style="{
-              width: '135px',
-              marginLeft: '5px',
-              height: '30px',
-              borderLeft: 'solid 1px #ddd',
-            }"
+            class="tw-opacity-100 refined-user-card navbar-user"
             :documentId="query ? query.documentId : ''"
             data-edit-id="104"
           ></div>
@@ -1281,6 +1275,87 @@
 .message-row:focus-within .message-actions {
   opacity: 1;
 }
+
+  /* ============================================
+     顶栏垂直居中润色 · 与平台客服组件共用同一套基准
+     ============================================ */
+  .chatbox-navbar {
+    --user-card-offset: 4px;
+    --navbar-control-height: 30px;
+  }
+
+  .navbar-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+    flex: 0 0 auto;
+  }
+
+  .navbar-actions > * {
+    flex: 0 0 auto;
+  }
+
+  .navbar-title {
+    justify-content: center;
+  }
+
+  .navbar-title-text,
+  .navbar-introduce {
+    display: block;
+    line-height: 1.3;
+  }
+
+  .navbar-text-btn i,
+  .skill-config-btn i {
+    display: inline-flex;
+    align-items: center;
+    line-height: 1;
+  }
+
+  .icon-btn:focus-visible,
+  .navbar-text-btn:focus-visible,
+  .skill-config-btn:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--muse-primary-ring);
+  }
+
+  /* 宿主 CardItem 的内容不受组件样式作用域约束，由挂载点整体回补下沉量 */
+  .navbar-user {
+    width: 135px;
+    height: var(--navbar-control-height);
+    margin-left: 7px;
+    box-sizing: border-box;
+    position: relative;
+    display: flex;
+    align-items: center;
+    transform: translateY(calc(-1 * var(--user-card-offset)));
+  }
+
+  /* 分隔线独立绘制并反向补偿，避免跟着卡片一起上移 */
+  .navbar-user::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 1px;
+    height: var(--navbar-control-height);
+    background: var(--muse-border);
+    transform: translateY(calc(-50% + var(--user-card-offset)));
+    pointer-events: none;
+  }
+
+  @media (max-width: 640px) {
+    .config-menu-wrap {
+      display: none;
+    }
+
+    .navbar-user {
+      width: 104px;
+      margin-left: 6px;
+    }
+  }
+
 
 @media (hover: none) {
   .message-actions {

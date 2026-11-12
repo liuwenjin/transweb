@@ -46,7 +46,7 @@
   <!-- Favicon & Icons -->
   <link rel="icon" type="image/png" sizes="32x32" href="https://transweb.cn/favicon.ico">
   <link rel="apple-touch-icon" sizes="180x180" href="https://transweb.cn/assets/share.jpg">
-  <meta name="theme-color" content="#4F5FFF">
+  <meta name="theme-color" content="#fafaf9">
 
   <script type="text/javascript">
     (function (c, l, a, r, i, t, y) {
@@ -397,6 +397,79 @@
     /* ========== Section spacing ========== */
     section {
       padding: 96px 24px;
+    }
+
+    /* ========== 原研哉「白与空」：页面外壳（agent.vue 顶栏与画布） ========== */
+    body,
+    html {
+      background: #fafaf9;
+      color: #1a1a1e;
+    }
+
+    html body .contentItemArea .treeEditorArea {
+      background: #fafaf9 !important;
+      background-image: none !important;
+    }
+
+    html body .contentItemArea .topOptionArea {
+      height: 50px;
+      line-height: 50px;
+      padding: 0 16px;
+      color: #1a1a1e !important;
+      background: #fafaf9 !important;
+      border-bottom: 1px solid #e6e6e2;
+      /* 不要在此下调层级：loginBar 浮窗为 teleported=false，会被限制在页头的层叠上下文内，
+         一旦低于首屏画布 .leftMenuArea(z-index: 99) 就会被整块遮挡 */
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+    }
+
+    html body .contentItemArea .topOptionArea .topInfoList {
+      height: 50px;
+      line-height: 50px;
+    }
+
+    html body .contentItemArea .topOptionArea .logoArea .logoImageItem img {
+      filter: none !important;
+    }
+
+    html body .contentItemArea .topOptionArea .subTextItem {
+      color: #1a1a1e !important;
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+    }
+
+    html body .contentItemArea .topOptionArea .descSpanItem {
+      color: #6f6f6a !important;
+      font-size: 12px;
+      letter-spacing: 0.02em;
+    }
+
+    /* 登录 / 注册：墨色直角，与输入页主操作一致 */
+    html body .contentItemArea .loginContentArea .login-main-btn.el-button {
+      height: 32px !important;
+      min-width: 0 !important;
+      padding: 0 14px !important;
+      border: 1px solid #1a1a1e !important;
+      border-radius: 0 !important;
+      background: #1a1a1e !important;
+      color: #ffffff !important;
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+        "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif !important;
+      font-size: 13px !important;
+      font-weight: 500 !important;
+      letter-spacing: 0.1em !important;
+      box-shadow: none !important;
+      transform: none !important;
+    }
+
+    html body .contentItemArea .loginContentArea .login-main-btn.el-button:hover,
+    html body .contentItemArea .loginContentArea .login-main-btn.el-button:focus-visible {
+      border-color: #2b2b31 !important;
+      background: #2b2b31 !important;
+      color: #ffffff !important;
+      box-shadow: none !important;
     }
 
     @media (min-width: 1024px) {

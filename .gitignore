@@ -2,6 +2,11 @@ node_modules
 .env
 *.log
 .DS_Store
+
+# ---- 以点开头的隐藏文件夹（及其中的所有文件）一律不纳入版本库 ----
+# 例：.dsh/、.vscode/、static/.chrome-*/
+# 说明：末尾的 / 表示只匹配目录，因此本文件 .gitignore 与 .env.example 等点文件不受影响
+.*/
 temp_uploads/
 temp/
 tmp/
@@ -32,3 +37,21 @@ interface/config/logined.js
 interface/config/guest.js
 # 备份文件
 interface/config/appConfig.bak.js
+# DSH skill 运行时配置 / 生成结果备份（含 API Key，勿提交）
+.dsh/transweb-ppt.json
+.dsh/transweb-ppt-last-deck.json
+.dsh/transweb-ai.json
+
+# ---- Growth Agent 运行时产物 ----
+growth/.cache/
+growth/dist/
+growth/data/drafts/
+growth/data/runs/
+growth/data/snapshots/
+growth/data/browser-profiles/
+growth/data/credentials.enc.json
+growth/data/credential-health.json
+growth/data/publish-jobs.json
+growth/data/link-checks.json
+growth/data/.credential-key
+growth/data/reports/
