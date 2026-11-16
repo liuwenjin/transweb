@@ -8,10 +8,10 @@
 
   let opts = {
     templateMap: {
-      text: "/transweb/appTemplate.vue",
-      image: "/transweb/imageTemplate.vue",
-      textImage: "/transweb/textImageTemplate.vue",
-      agent: "/transweb/agentTemplate.vue",
+      text: "/transweb/template/appTemplate.vue",
+      image: "/transweb/template/imageTemplate.vue",
+      textImage: "/transweb/template/textImageTemplate.vue",
+      agent: "/transweb/template/agentTemplate.vue",
     },
     priceMap: {},
     modelMap: {},
