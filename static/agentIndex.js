@@ -405,6 +405,7 @@ window.addEventListener('applangchange', function () {
 });
 
 document.addEventListener('DOMContentLoaded', function () {
+  aigcInterface.init();
   if (typeof webCpu !== 'undefined') {
     let adapter = webCpu.initAdapter({
       documentList: {
@@ -417,7 +418,7 @@ document.addEventListener('DOMContentLoaded', function () {
       pageSize: 500,
       pageNo: 1,
       type: { $ne: "未定义" },
-      appAgent: "4140329349",
+      appAgent: webCpu.appConfig.publishInfo.folderName,
       appName: "agentGenerator"
     }, (res) => {
       if (res && res.data) {

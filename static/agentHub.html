@@ -105,7 +105,8 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://transweb.cn/common/fuse.js"></script>
   <script src="https://transweb.cn/common/lucide.min.js"></script>
-  <script defer src="https://transweb.cn/transweb/webCpu.js"></script>
+  <script defer src="/index.js"></script>
+  <script defer src="/admin/getAppConfig?callback=webCpu.appConfigCallback"></script>
   <script>
     /* 页面级 i18n 配置：中文词条见 i18n/agentHub.zh.json，英文词条见 i18n/agentHub.en.json。
        zh 里只放 JS 动态生成的文案（页面里没有对应 DOM 节点）。 */
@@ -1711,7 +1712,7 @@
 
       <div class="hub-actions">
         <button class="lang-toggle" id="langToggle" type="button" aria-label="Switch to English">EN</button>
-        <a class="hub-btn" href="/?agent=4140329349&amp;appName=agentGenerator" data-i18n="sh.cta.create">创建 Agent</a>
+        <a class="hub-btn" href="/agent.html" data-i18n="sh.cta.create">创建 Agent</a>
 
         <button id="mobile-menu-toggle" aria-label="切换移动端导航菜单" data-i18n-aria="sh.menu.aria" aria-controls="mobile-menu" aria-expanded="false" class="hub-menu-btn">
           <span class="hub-menu-lines" aria-hidden="true">
