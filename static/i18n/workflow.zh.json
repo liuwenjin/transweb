@@ -8,6 +8,7 @@
   "wf.logo.sub": "Trans-Workflow · 单文件 AI 工作流",
   "wf.nav.aria": "主导航",
   "nav.home": "首页",
+  "nav.agentHub": "Agent 广场",
   "nav.skillHub": "Skill 广场",
   "nav.workflow": "工作流",
   "wf.cta.build": "编排工作流",
@@ -173,6 +174,7 @@
   "wf.cta.github": "去 GitHub 点个 Star",
   "wf.footer.quote": "把一次性的 AI 对话，编成可复用的工作流。",
   "footer.legal.heading": "法务与支持",
+  "footer.nav.heading": "站点导航",
   "legal.privacy": "隐私政策",
   "legal.terms": "服务条款",
   "legal.accessibility": "无障碍声明",
@@ -237,5 +239,7 @@
   "a11y.s3.title": "已知限制",
   "a11y.s3.text": "窄屏下页面会缩放到 480/530px 画布，以保证内嵌编辑器完整显示，部分文字会相应变小。工作流画布中的节点拖拽目前需要鼠标或触屏操作；由第三方模型生成的图表与公式，其替代文本取决于生成内容；部分内嵌画布与预览组件仍在改进键盘操作。我们会在后续版本中继续完善。",
   "a11y.s4.title": "告诉我们你的体验",
-  "a11y.s4.text": "如果你遇到无法使用的页面或功能，请发邮件到 neilking@163.com，说明你使用的设备、浏览器与辅助技术。我们会在 5 个工作日内回复，并在确认问题后给出修复时间。"
+  "a11y.s4.text": "如果你遇到无法使用的页面或功能，请发邮件到 neilking@163.com，说明你使用的设备、浏览器与辅助技术。我们会在 5 个工作日内回复，并在确认问题后给出修复时间。",
+  "keywords": "Trans-Workflow, AI 工作流基础服务, AI Workflow Infrastructure, 开源 AI 工作流, 单文件工作流引擎, 无代码 AI Agent, 节点级回溯, 本地私有 AI",
+  "wf.count.loading": "正在加载…"
 }

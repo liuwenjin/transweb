@@ -4331,7 +4331,7 @@ WebTool.backupWebApp = function (documentId, appItem, params, callback) {
       callback(documentId);
     }
   }
-  let htmlText = this.buildAgentPageHtml(`${location.origin}?id=${documentId}&solo=true`, appItem.name || appItem.title);
+  let htmlText = this.buildAgentPageHtml(`${location.origin}/agent.html?id=${documentId}&solo=true`, appItem.name || appItem.title);
   if (window.aigcInterface && typeof window.aigcInterface.getAgentPrompt === "function") {
     aigcInterface.getAgentPrompt(documentId).then((prompt) => {
       tCallback(htmlText, prompt, callback);
@@ -4560,6 +4560,7 @@ WebTool.exportWebApp = function (baseItem, content, params, meta, callback) {
       userName: meta.userName || localStorage.userName,
       spec: params.spec || "",
       type: params.type,
+      documentType: params.documentType || "skill",
       name: params.name,
       category: params.category,
       grades: params.grades,

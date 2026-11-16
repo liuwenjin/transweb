@@ -744,7 +744,7 @@ export default {
           agentName: document.title,
           userName: localStorage.userName || "匿名用户",
           createTime: new Date().toLocaleString(),
-          agentUrl: location.origin + "?solo=true&id=" + documentId,
+          agentUrl: location.origin + "/skill.html?solo=true&id=" + documentId,
           creator:
             webCpu.currentCard.task.vueItem.currentSettings.creator ||
             "匿名用户",

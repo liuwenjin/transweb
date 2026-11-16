@@ -272,7 +272,7 @@
         this.$message("该生成结果已复制到剪贴板");
       },
       "copyLink": function(item) {
-        let url = `https://transweb.cn?id=${item.documentId}&dataId=${item._id}&dataView=true&solo=true`;
+        let url = `https://transweb.cn/skill.html?id=${item.documentId}&dataId=${item._id}&dataView=true&solo=true`;
         WebTool.copyString(url);
         this.$message("文档链接已复制");
       },
@@ -351,7 +351,7 @@
       },
       "viewAgentResult": function(item) {
         try {
-          let url = `${webCpu.documentPrefix}?id=${item.documentId}&dataId=${item._id}`;
+          let url = `${webCpu.documentPrefix}/skill.html?id=${item.documentId}&dataId=${item._id}`;
           window.open(url, "_blank");
         } catch (e) {
           console.log(e);

@@ -21,7 +21,18 @@
     <priority>0.9</priority>
   </url>
 
-   <!-- AI Workflow 生成 -->
+  <!-- AI 数字劳动力广场（Agent 广场） -->
+  <url>
+    <loc>https://transweb.cn/agentHub.html</loc>
+    <lastmod>2026-11-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://transweb.cn/agentHub.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://transweb.cn/agentHub.html?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://transweb.cn/agentHub.html" />
+  </url>
+
+  <!-- AI Workflow 生成 -->
   <url>
     <loc>https://transweb.cn/workflow.html</loc>
     <changefreq>weekly</changefreq>

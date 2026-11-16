@@ -1787,6 +1787,7 @@
 
       <nav class="wf-nav" aria-label="主导航" data-i18n-aria="wf.nav.aria">
         <a href="/" data-i18n="nav.home">首页</a>
+        <a href="agentHub.html" data-i18n="nav.agentHub">Agent 广场</a>
         <a href="skillHub.html" data-i18n="nav.skillHub">Skill 广场</a>
         <a href="workflow.html" class="is-active" aria-current="page" data-i18n="nav.workflow">工作流</a>
       </nav>
@@ -1808,6 +1809,7 @@
 
     <div id="mobile-menu" class="wf-mobile hidden">
       <a href="/" data-i18n="nav.home">首页</a>
+      <a href="agentHub.html" data-i18n="nav.agentHub">Agent 广场</a>
       <a href="skillHub.html" data-i18n="nav.skillHub">Skill 广场</a>
       <a href="workflow.html" class="is-active" aria-current="page" data-i18n="nav.workflow">工作流</a>
       <div class="wf-mobile__actions">
@@ -1906,7 +1908,7 @@
           </div>
           <div
             class="flex items-center justify-between sm:justify-end gap-4 text-xs sm:text-sm font-medium text-slate-400 dark:text-slate-500 shrink-0">
-            <span id="result-count">共 17 个工作流</span>
+            <span id="result-count" data-i18n="wf.count.loading">正在加载…</span>
             <button id="clear-filter"
               data-i18n="wf.clear" class="hidden inline-flex items-center gap-1 hover:text-brand-600 dark:hover:text-brand-300 transition-colors">清除筛选
               <i data-lucide="x" class="w-3.5 h-3.5"></i>
@@ -3211,6 +3213,13 @@
           <p class="govuk-footer__heading">Trans-Workflow</p>
           <p class="govuk-footer__quote" data-i18n="wf.footer.quote">把一次性的 AI 对话，编成可复用的工作流。</p>
 
+          <h2 class="govuk-visually-hidden" data-i18n="footer.nav.heading">站点导航</h2>
+          <ul class="govuk-footer__inline-list">
+            <li class="govuk-footer__inline-list-item"><a class="govuk-footer__link" href="/" data-i18n="nav.home">首页</a></li>
+            <li class="govuk-footer__inline-list-item"><a class="govuk-footer__link" href="/agentHub.html" data-i18n="nav.agentHub">Agent 广场</a></li>
+            <li class="govuk-footer__inline-list-item"><a class="govuk-footer__link" href="/skillHub.html" data-i18n="nav.skillHub">Skill 广场</a></li>
+            <li class="govuk-footer__inline-list-item"><a class="govuk-footer__link" href="/workflow.html" data-i18n="nav.workflow">工作流</a></li>
+          </ul>
           <h2 class="govuk-visually-hidden" data-i18n="footer.legal.heading">法务与支持</h2>
           <ul class="govuk-footer__inline-list">
             <li class="govuk-footer__inline-list-item">

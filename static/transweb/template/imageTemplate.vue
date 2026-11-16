@@ -2063,7 +2063,7 @@ ${JSON.stringify(this.accountData)}
       let dataId = this.versionList[this.currentVersionIndex]._id;
       let url =
         location.origin +
-        "?solo=true&dataView=true&dataId=" +
+        "/skill.html?solo=true&dataView=true&dataId=" +
         dataId +
         "&id=" +
         documentId;
@@ -2214,7 +2214,10 @@ ${JSON.stringify(this.accountData)}
     },
     downloadMarkdown: function (params) {
       let md = WebTool.objectToMarkdown(params);
-      let name = params.name || params.title + ".md";
+      let name = params.name || params.title || "未命名内容";
+      if (!/\.md$/i.test(name)) {
+        name += ".md";
+      }
       WebTool.downloadString(md, name);
     },
     downloadHtmlItem: function (params) {
@@ -2231,16 +2234,61 @@ ${JSON.stringify(this.accountData)}
         let documentId =
           this.query.documentId ||
           webCpu.currentCard.task.vueItem.documentMeta.documentId;
-        let name = params.name || params.title;
-        params.agentName = document.title;
-        params.creator =
-          webCpu.currentCard.task.vueItem.currentSettings.creator || "匿名用户";
-        params.createTime = new Date().toLocaleString();
-        params.userName = localStorage.userName || "匿名用户";
-        params.agentUrl = location.origin + "?solo=true&id=" + documentId;
-        html = html.bindData(params);
+        let name = params.name || params.title || "未命名应用";
+
+        // example.html 会把数据直接拼进 <script> 里：
+        //   template: `{{template}}`  → JS 模板字符串
+        //   accountData: {{content}}  → JS 对象字面量
+        // 内容中只要出现 script 结束标签或 HTML 注释起始符，HTML 解析器就会提前结束脚本块；
+        // 出现反引号 / ${ 则会截断模板字符串。这里按上下文分别转义。
+        let escapeHtmlText = function (value) {
+          return String(value === undefined || value === null ? "" : value)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;");
+        };
+        let escapeHtmlAttr = function (value) {
+          return escapeHtmlText(value).replace(/"/g, "&quot;");
+        };
+
+        let content = params.content;
+        if (typeof content !== "string") {
+          content = JSON.stringify(content === undefined ? {} : content);
+        }
+        // JSON 里的 < 统一转成 \u003c：脚本块不会被提前闭合，运行时解析后仍是原来的 <
+        let safeContent = content
+          .replace(/</g, "\\u003c")
+          .replace(/\u2028/g, "\\u2028")
+          .replace(/\u2029/g, "\\u2029");
+
+        let template =
+          typeof params.template === "string" ? params.template : "";
+        // 先转义反斜杠，再处理反引号 / ${ / <，保证运行时拿到的模板与原始内容一致
+        let safeTemplate = template
+          .replace(/\\/g, "\\\\")
+          .replace(/`/g, "\\`")
+          .replace(/\$\{/g, "\\${")
+          .replace(/</g, "\\u003c");
+
+        let exportParams = Object.assign({}, params, {
+          name: escapeHtmlText(name),
+          content: safeContent,
+          template: safeTemplate,
+          agentName: escapeHtmlText(document.title),
+          creator: escapeHtmlText(
+            webCpu.currentCard.task.vueItem.currentSettings.creator ||
+              "匿名用户"
+          ),
+          createTime: escapeHtmlText(new Date().toLocaleString()),
+          userName: escapeHtmlText(localStorage.userName || "匿名用户"),
+          agentUrl: escapeHtmlAttr(
+            location.origin + "/skill.html?solo=true&id=" + documentId
+          ),
+        });
+
+        html = html.bindData(exportParams);
         name = name + ".html";
-        WebTool.downloadString(html, name);
+        WebTool.downloadString(html, name, "text/html");
       });
     },
     dismissLoadingStatus: function () {

@@ -169,5 +169,7 @@
   "wf.card.run": "Run free",
   "wf.card.meta": "Single file · local data",
   "wf.card.hot": "Hot",
-  "wf.card.recommend": "Recommended"
+  "wf.card.recommend": "Recommended",
+  "keywords": "Trans-Workflow, AI workflow infrastructure, open-source AI workflow, single-file workflow engine, no-code AI agent, node-level rollback, local and private AI",
+  "wf.count.loading": "Loading…"
 }

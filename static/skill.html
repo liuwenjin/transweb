@@ -516,10 +516,12 @@
   <!-- End Google Tag Manager (noscript) -->
   <!-- ================= 方案 5：HTML 语意化补强（针对纯文本爬虫） ================= -->
   <!-- 该区域包含完整的文本与 H1-H3 树状网络，保证即使 JS 执行失败或爬虫不加载 JS 时，页面仍有丰富且语义化的正文文本以供收录 -->
-  <div class="seo-only">
+  <div class="seo-only" id="seoZh" lang="zh-CN">
     <header>
       <nav>
         <a href="https://transweb.cn/">TransWeb 官网</a>
+        <a href="https://transweb.cn/agentHub.html">Agent 广场</a>
+        <a href="https://transweb.cn/skillHub.html">Skill 广场</a>
         <a href="https://transweb.cn/skill.html">AI Skill 生成器</a>
       </nav>
     </header>
@@ -574,6 +576,93 @@
     </main>
   </div>
 
+  <div class="seo-only" id="seoEn" lang="en" hidden>
+    <header>
+      <nav>
+        <a href="https://transweb.cn/?lang=en">TransWeb home</a>
+        <a href="https://transweb.cn/agentHub.html?lang=en">AgentHub</a>
+        <a href="https://transweb.cn/skillHub.html?lang=en">SkillHub</a>
+        <a href="https://transweb.cn/skill.html?lang=en">AI Skill Generator</a>
+      </nav>
+    </header>
+
+    <main>
+      <section>
+        <h1>TransWeb AI Skill Generator — build an AI skill from one sentence</h1>
+        <p>Describe what you need in one sentence and get a reusable AI skill: writing assistants, customer support, knowledge-base Q&amp;A and more. Version history and prompt tuning are built in, ready to bind into an agent.</p>
+      </section>
+
+      <section>
+        <h2>Why use the TransWeb AI Skill Generator?</h2>
+        <article>
+          <h3>One sentence, no code</h3>
+          <p>Skip prompt debugging and front-end work: describe the need in plain language and TransWeb turns it into a runnable AI skill.</p>
+        </article>
+        <article>
+          <h3>Prompt structure tuning</h3>
+          <p>A built-in prompt optimiser fills in the system role, input boundaries and context, which makes answers from large models more stable and accurate.</p>
+        </article>
+        <article>
+          <h3>Version history, ready for workflows</h3>
+          <p>Every skill keeps a version history with diffs, and can be shipped as a web app, an API or a step inside a team workflow.</p>
+        </article>
+      </section>
+
+      <section>
+        <h2>What you can build</h2>
+        <ul>
+          <li><strong>Writing skills:</strong> newsletters, social posts, marketing email and academic reports in one engine.</li>
+          <li><strong>Support and Q&amp;A skills:</strong> answer business questions from your knowledge base and documents, no code required.</li>
+          <li><strong>Document skills:</strong> summarise long documents, extract key data and produce structured tables.</li>
+          <li><strong>Workflow skills:</strong> chain multi-step tasks from requirement to final delivery.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Frequently asked questions</h2>
+        <dl>
+          <dt>What is an AI skill?</dt>
+          <dd>An AI skill packages a specific business task and its best prompt configuration into a reusable unit, so people can use AI like ordinary software.</dd>
+          <dt>Do I need to code?</dt>
+          <dd>No. TransWeb is no-code end to end: describe what you need in natural language and the app is assembled for you.</dd>
+          <dt>Can I deploy a skill into my own system?</dt>
+          <dd>Yes. Export it as an embeddable web component or integrate it through a standard API.</dd>
+        </dl>
+      </section>
+    </main>
+  </div>
+
+  <!-- 英文版元信息：这些页面由 WebCpu 按 ?lang= 决定界面语言（见 index.js），
+       这里同步 TDK 与语义化正文，避免英文页残留中文 -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      var lang = window.lang || (window.webCpu && window.webCpu.language) || "zh";
+      if (lang !== "en") return;
+      document.documentElement.lang = "en";
+      var zhBlock = document.getElementById("seoZh");
+      var enBlock = document.getElementById("seoEn");
+      if (zhBlock) zhBlock.hidden = true;
+      if (enBlock) enBlock.hidden = false;
+
+      document.title = "AI Skill Generator | Build an AI skill from one sentence - TransWeb";
+      var setMeta = function (attr, name, value) {
+        var el = document.querySelector("meta[" + attr + "=\"" + name + "\"]");
+        if (el) el.setAttribute("content", value);
+      };
+      setMeta("name", "title", "AI Skill Generator | Build an AI skill from one sentence - TransWeb");
+      setMeta("name", "description", "Describe what you need in one sentence and get a reusable AI skill: writing, customer support, knowledge-base Q&A. Version history and prompt tuning included, ready to bind into an agent.");
+      setMeta("name", "keywords", "AI skill, AI skill generator, no-code AI, one-sentence AI app, AI writing assistant, prompt tuning, TransWeb");
+      setMeta("property", "og:title", "AI Skill Generator | Build an AI skill from one sentence");
+      setMeta("property", "og:description", "One sentence builds a reusable AI skill: writing, support and knowledge-base Q&A, with version history and prompt tuning built in.");
+      setMeta("property", "og:site_name", "TransWeb AI Skill Generator");
+      setMeta("property", "og:locale", "en_US");
+      setMeta("name", "twitter:title", "AI Skill Generator | Build an AI skill from one sentence");
+      setMeta("name", "twitter:description", "One sentence builds a reusable AI skill: writing, support and knowledge-base Q&A, with version history and prompt tuning built in.");
+
+      var shareImg = document.querySelector('img[alt="' + "TransWeb AI Skill 生成器预览图" + '"]');
+      if (shareImg) shareImg.setAttribute("alt", "TransWeb AI Skill Generator preview");
+    });
+  </script>
   <!-- 隐藏分享图，提升加载性能 -->
   <img src="https://transweb.cn/assets/share.jpg" style="position:absolute;width:0;height:0;opacity:0;"
     alt="TransWeb AI Skill 生成器预览图" />

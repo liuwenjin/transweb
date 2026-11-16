@@ -310,7 +310,7 @@ export default {
         aigcInterface.checkLogined(
           () => {
             WebTool.cloneAppItem(this.codeContent, this.promptContent, (id) => {
-              this.currentAppUrl = `${location.origin}?id=${id}`;
+              this.currentAppUrl = `${location.origin}/agent.html?id=${id}`;
               this.currentAppId = id;
               this.confirming = false;
               this.isCloned = true;

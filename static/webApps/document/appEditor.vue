@@ -20,8 +20,8 @@
     </div>
 
     <slot v-if="!isSolo && !content.isSolo">
-      <div class="componentInfoArea tw-absolute tw-left-4 tw-top-4 tw-text-gray-500 tw-text-sm tw-font-medium tw-transition-opacity tw-duration-300">
-        <span v-if="editable && editable !== 'false'" class="settingPopoverItem publishStatusArea tw-align-middle tw-leading-none">
+      <div :class="{ hasHeaderCta: !inIframe }" class="componentInfoArea tw-absolute tw-left-4 tw-top-4 tw-text-gray-500 tw-text-sm tw-font-medium tw-transition-opacity tw-duration-300">
+        <span v-if="hasEditPermission && !inIframe" class="settingPopoverItem publishStatusArea tw-align-middle tw-leading-none">
           <el-dropdown v-if="!inIframe" class="opOptionItem tw-align-middle tw-leading-none" trigger="click" :persistent="true" :teleported="false" append-to="parent" style="margin-left: 5px; display: inline-block;">
             <span class="el-dropdown-link">
               <el-button text size="small" title="复制或下载应用" aria-label="复制或下载应用">
@@ -157,14 +157,12 @@
             </el-popover>
           </span>
         </span>
-        <span v-else-if="!inIframe && !flag" class="titleItemArea tw-pl-3 tw-pr-2 tw-align-middle tw-leading-none">
-          {{
-            appTips
-          }}
+        <!-- 无编辑权限 / 未登录 / iframe 内：以标题替代工具栏，与组合输入框同高对齐 -->
+        <span v-if="showAppTitle" class="appTitleArea" :class="{ 'is-clickable': inIframe }" :title="appTips" @click="handleAppTitleClick">
+          <span class="appTitleText">{{ content.title || '未命名应用' }}</span>
         </span>
         <!-- 组合输入：左侧图标 · 中间输入 · 右侧打开，合并为一个 32px 细线控件 -->
         <span class="entryNextAgent tw-align-middle">
-          <span v-if="inIframe" class="entryNextAgentTitle" @click="openCurrentPage()">{{ content.title }}</span>
           <span class="entryNextAgentCombo" :style="{ width: flag ? '200px' : '320px' }">
             <span class="entryNextAgentIcon" aria-hidden="true" @click="focusEntryNextAgentInput()">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
@@ -183,7 +181,11 @@
         </span>
       </div>
       <div v-if="!inIframe" class="buttonOptionArea tw-absolute tw-right-4 tw-top-2 tw-flex tw-gap-2 tw-pr-3">
-        <el-button slot="reference" size="small" @click="backHome()" text type="primary">
+        <!-- 当前容器是 Agent（currentApp.name 为 agentGenerator）时新建 Agent，否则新建 Skill -->
+        <el-button v-if="isAgentApp" slot="reference" size="small" @click="createNewApp('agent')" text type="primary">
+          新建 AI Agent <i class="bi bi-chevron-right"></i>
+        </el-button>
+        <el-button v-else slot="reference" size="small" @click="createNewApp('skill')" text type="primary">
           新建 AI Skill <i class="bi bi-chevron-right"></i>
         </el-button>
       </div>
@@ -414,6 +416,18 @@
       this.setupWorkflow();
     },
     computed: {
+      // 当前应用配置名：优先取容器下发的 currentApp，其次取全局 publishInfo
+      currentAppName() {
+        let app = this.currentApp || {};
+        if (app.name) return String(app.name);
+        let publishInfo =
+          (webCpu.appConfig && webCpu.appConfig.publishInfo) || {};
+        return String(publishInfo.appName || "");
+      },
+      // agentGenerator -> Agent 容器；appGenerator 等 -> Skill 容器
+      isAgentApp() {
+        return /agent/i.test(this.currentAppName);
+      },
       taxRate() {
         math.config({
           number: 'BigNumber',
@@ -461,15 +475,33 @@
         }
         return ret;
       },
+      isLoggedIn() {
+        // 账号目录标记：登录时写入，退出登录时被清空
+        return !!localStorage.folderName;
+      },
       editable() {
-        let ret = false;
-        ret = localStorage.editable && localStorage.editable !== 'false';
-        if (!ret && this.documentMeta) {
-          ret =
-            localStorage.folderName &&
-            this.documentMeta.folderName === localStorage.folderName;
+        // 未登录一律不可编辑。localStorage.editable 由页面渲染时写入，
+        // 退出登录不会清空，残留的 "true" 不能单独作为权限依据。
+        if (!this.isLoggedIn) {
+          return false;
         }
-        return ret;
+
+        // 已知文档归属时，以「当前账号是否为文档归属者」为准（与 container.vue 一致）
+        const metaFolder = this.documentMeta && this.documentMeta.folderName;
+        if (metaFolder) {
+          return metaFolder === localStorage.folderName;
+        }
+
+        // 文档元信息尚未就绪时，退回页面写入的可编辑标记
+        return !!(localStorage.editable && localStorage.editable !== 'false');
+      },
+      // 统一权限判断：未登录 / 非归属者都不展示操作入口
+      hasEditPermission() {
+        return this.editable === true;
+      },
+      // 有权限且非 iframe 时展示工具栏；其余情况（无权限 / 未登录 / iframe）展示标题
+      showAppTitle() {
+        return this.inIframe || !this.hasEditPermission;
       },
     },
     watch: {
@@ -517,6 +549,12 @@
             type: 'IFRAME_URL_CHANGE',
             url: url
           }, '*');
+        }
+      },
+      // iframe 内点击标题打开独立页面，普通页面下标题只做展示
+      handleAppTitleClick() {
+        if (this.inIframe) {
+          this.openCurrentPage();
         }
       },
       // 点击左侧图标时聚焦输入框，让整块组合控件响应一致
@@ -1249,6 +1287,28 @@
         console.log("copy command params: ", params)
         webCpu.mitt.emit(command, params);
       },
+      // 新建入口：Agent 打开 agent.html，Skill 打开 skill.html，
+      // 并带上当前容器（agent）与对应的应用配置名（appName）
+      createNewApp(type) {
+        const isAgent = type === "agent";
+        const params = {};
+        let folderName =
+          (this.currentApp &&
+            this.currentApp.publishInfo &&
+            this.currentApp.publishInfo.folderName) ||
+          (webCpu.appConfig &&
+            webCpu.appConfig.publishInfo &&
+            webCpu.appConfig.publishInfo.folderName);
+        if (folderName) params.agent = folderName;
+        // 当前配置与目标入口类型一致时沿用（自定义 Skill 也能继续用它新建），否则回落到该类型的默认配置
+        let appName = this.currentAppName;
+        if (!appName || isAgent !== /agent/i.test(appName)) {
+          appName = isAgent ? "agentGenerator" : "appGenerator";
+        }
+        params.appName = appName;
+        const target = isAgent ? "/agent.html" : "/skill.html";
+        location.href = WebTool.attachParams(location.origin + target, params);
+      },
       backHome() {
         let params = WebTool._urlQuery(location.href);
         delete params.id;
@@ -1503,7 +1563,7 @@
       },
       openKnowledgeIndex(kb) {
         const id = String((kb && kb.id) || "").trim();
-        let url = `${location.origin}?id=${webCpu.appConfig.knowledgeApp}`;
+        let url = `${location.origin}/agent.html?id=${webCpu.appConfig.knowledgeApp}`;
         if (id) {
           url += `&dataId=${id}`;
         }
@@ -1681,7 +1741,6 @@
     top: 10px;
   }
 
-  .titleItemArea,
   .publishStatusArea {
     display: inline-block;
     vertical-align: middle;
@@ -2003,15 +2062,32 @@
   margin-left: 0 !important;
 }
 
-.appContainerArea .entryNextAgentTitle {
-  margin-right: 10px;
+/* 标题：与 32px 组合控件同高、共用中心线；过长时省略，不挤压输入框 */
+.appContainerArea .appTitleArea {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  max-width: min(320px, 26vw);
+  height: 32px;
+  margin-right: 4px;
   color: var(--hara-ink, var(--muse-text));
   font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.appContainerArea .appTitleArea.is-clickable {
   cursor: pointer;
+}
+
+.appContainerArea .appTitleText {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   transition: opacity var(--duration-fast) var(--ease-out);
 }
 
-.appContainerArea .entryNextAgentTitle:hover {
+.appContainerArea .appTitleArea.is-clickable:hover .appTitleText {
   opacity: 0.72;
 }
 
@@ -2160,7 +2236,36 @@
 }
 
 @media (max-width: 760px) {
+  /* 移动端隐藏左上角标题，把整行留给组合输入框 */
+  .appContainerArea .appTitleArea {
+    display: none !important;
+  }
+
+  /* 默认占满左右（iframe 内没有 CTA，组合输入框可以直接铺满） */
+  .appContainerArea .componentInfoArea {
+    right: 16px;
+  }
+
+  /* 有右上角「新建 AI Skill」时让位：右侧 16 + 按钮约 103 + 间距 12 */
+  .appContainerArea .componentInfoArea.hasHeaderCta {
+    right: 132px;
+  }
+
+  /* 组合输入框占满剩余宽度（覆盖模板里的内联宽度） */
   .appContainerArea .entryNextAgent {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .appContainerArea .entryNextAgentCombo {
+    width: 100% !important;
+    max-width: none;
+  }
+}
+
+@media (max-width: 480px) {
+  /* 手机宽度不足：收起三个操作按钮，保证组合输入框的可读宽度 */
+  .appContainerArea .publishStatusArea {
     display: none !important;
   }
 }

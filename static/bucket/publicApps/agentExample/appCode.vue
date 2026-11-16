@@ -3028,7 +3028,7 @@ export default {
         url.searchParams.set("auto", "true");
         return url.href;
       } catch (e) {
-        return `${location.origin}?id=${encodeURIComponent(
+        return `${location.origin}/agent.html?id=${encodeURIComponent(
           id
         )}&solo=true&auto=true`;
       }

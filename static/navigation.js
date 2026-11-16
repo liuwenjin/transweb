@@ -445,7 +445,7 @@ document.addEventListener('DOMContentLoaded', function () {
           item.hot = item.usageCount > 300 || false;
           item.url = `https://transweb.cn/agent.html?id=${item.documentId}&solo=true`;
           item.icon = item.icon || "🤖";
-          item.desc = item.introduce || item.description || "暂无描述";
+          item.desc = item.introduce || item.description || t('card.noDesc', '暂无描述');
           return item;
         });
 
@@ -457,7 +457,7 @@ document.addEventListener('DOMContentLoaded', function () {
         renderCategories();
       }
       else {
-        if (typeof WebTool !== 'undefined') WebTool.showMask("获取 Agent 列表失败，请刷新重试", 5000);
+        if (typeof WebTool !== 'undefined') WebTool.showMask(t('status.error', '获取 Agent 列表失败，请刷新重试'), 5000);
         console.log("获取 Agent 列表失败", res);
       }
     });

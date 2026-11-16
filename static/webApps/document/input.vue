@@ -1573,7 +1573,7 @@ export default {
           this.textContent,
           (d) => {
             console.log(d);
-            location.href = `${webCpu.documentPrefix}?id=${d}`;
+            location.href = `${webCpu.documentPrefix}/skill.html?id=${d}`;
           },
           {
             elem: this.$refs.inputContentItem,
@@ -1584,7 +1584,7 @@ export default {
           this.textContent,
           (d) => {
             console.log(d);
-            location.href = `${webCpu.documentPrefix}?id=${d}`;
+            location.href = `${webCpu.documentPrefix}/skill.html?id=${d}`;
           },
           {
             elem: this.$refs.inputContentItem,
@@ -1723,7 +1723,7 @@ export default {
       localStorage.currentPromptContent = "";
     },
     openAppLink(card) {
-      let url = `${webCpu.documentPrefix}?id=${card.documentId}`;
+      let url = `${webCpu.documentPrefix}/skill.html?id=${card.documentId}`;
       if (window.parent !== window || this.api) {
         location.href = url;
       } else {
@@ -2344,45 +2344,68 @@ export default {
   font-size: 0.8125rem;
 }
 
-.inputTextareaWrap {
+/* 输入框外壳：边框落在包裹层上，底部 58px（移动端 56px）为按钮专用区，
+   文本域本身在同层上方结束，光标/滚动都不会进入按钮区 */
+.oneKeyContentArea .inputTextareaWrap {
   display: block !important;
+  position: relative;
   width: 100% !important;
   height: auto !important;
   float: none !important;
-}
-
-.stepItemArea .el-textarea {
-  height: auto;
-}
-
-.oneKeyContentArea .stepItemArea .el-textarea__inner {
-  display: block;
-  width: 100%;
-  padding: 18px 20px 76px !important;
+  box-sizing: border-box;
+  padding-bottom: 58px !important;
   border: 1px solid var(--line-strong) !important;
   border-radius: 0 !important;
   background: var(--surface) !important;
   box-shadow: none !important;
+  transition: border-color var(--dur) ease;
+}
+
+.oneKeyContentArea .inputTextareaWrap:hover,
+.oneKeyContentArea .inputTextareaWrap:focus-within,
+.oneKeyContentArea .stepItemArea:hover .inputTextareaWrap,
+.oneKeyContentArea .stepItemArea:focus-within .inputTextareaWrap {
+  border-color: var(--ink) !important;
+}
+
+.stepItemArea .el-textarea {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.oneKeyContentArea .inputContentArea .inputTextareaWrap .el-textarea__inner {
+  display: block;
+  width: 100% !important;
+  padding: 18px 20px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
   color: var(--ink) !important;
   font-family: var(--font-sans) !important;
   font-size: 1rem !important;
   line-height: 1.75 !important;
   letter-spacing: 0;
   resize: none;
-  transition: border-color var(--dur) ease;
+  transition: none;
 }
 
-.oneKeyContentArea .stepItemArea .el-textarea__inner::placeholder {
+.oneKeyContentArea
+  .inputContentArea
+  .inputTextareaWrap
+  .el-textarea__inner::placeholder {
   color: var(--tertiary) !important;
   opacity: 1;
 }
 
-.oneKeyContentArea .stepItemArea .el-textarea__inner:hover {
-  border-color: var(--ink) !important;
-}
-
-.oneKeyContentArea .inputContentArea .stepItemArea .el-textarea__inner:focus {
-  border-color: var(--ink) !important;
+.oneKeyContentArea .inputContentArea .inputTextareaWrap .el-textarea__inner:focus,
+.oneKeyContentArea
+  .inputContentArea
+  .inputTextareaWrap
+  .el-textarea__inner:focus-visible {
+  border: 0 !important;
   outline: none !important;
   outline-offset: 0 !important;
   box-shadow: none !important;
@@ -3269,8 +3292,15 @@ export default {
     padding: 18px;
   }
 
-  .oneKeyContentArea .stepItemArea .el-textarea__inner {
-    padding: 14px 16px 72px !important;
+  .oneKeyContentArea .inputTextareaWrap {
+    padding-bottom: 56px !important;
+  }
+
+  .oneKeyContentArea
+    .inputContentArea
+    .inputTextareaWrap
+    .el-textarea__inner {
+    padding: 14px 16px !important;
     font-size: 0.9375rem !important;
     line-height: 1.7 !important;
   }

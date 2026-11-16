@@ -138,7 +138,7 @@ export default {
       });
     },
     openLink() {
-      const url = "https://transweb.cn?id=" + this.appId;
+      const url = "https://transweb.cn/skill.html?id=" + this.appId;
       window.open(url, "_blank");
     },
     editContentCode(code, card) {

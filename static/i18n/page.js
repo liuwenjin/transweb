@@ -130,6 +130,7 @@
     if (title && document.head && document.head.querySelector("title")) document.title = title;
 
     setMeta("name", "description", t("description"));
+    setMeta("name", "keywords", t("keywords"));
     setMeta("property", "og:title", t("ogTitle"));
     setMeta("name", "twitter:title", t("ogTitle"));
     setMeta("property", "og:description", t("ogDescription"));

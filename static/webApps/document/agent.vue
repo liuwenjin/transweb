@@ -30,7 +30,7 @@
           ></el-image>
 
           <el-dropdown
-            v-if="appList.length > 1 && !isIframe"
+            v-if="appList.length > 1"
             :style="{ marginLeft: flag === 1 ? '-3px' : '' }"
           >
             <span
@@ -726,7 +726,7 @@ export default {
         } else {
           _self.saveDocumentItem(
             (tData) => {
-              location.href = `${location.origin}?id=${tData.documentId}`;
+              location.href = `${location.origin}/agent.html?id=${tData.documentId}`;
             },
             d,
             d.copy
@@ -3387,7 +3387,7 @@ export default {
     },
     openRespenderDocument(id) {
       if (id) {
-        let url = `/?id=${id}`;
+        let url = `/agent.html?id=${id}`;
         window.open(url, "_blank");
       }
     },
@@ -4075,7 +4075,6 @@ export default {
   width: 100%;
   padding: 0px 0px;
   float: left;
-  background: linear-gradient(to bottom right, #6951ff, #10edc5);
 }
 
 .topOptionArea {
@@ -4087,17 +4086,9 @@ export default {
   backdrop-filter: blur(10px); /* 增加背景模糊度 */
   -webkit-backdrop-filter: blur(10px); /* 针对 Safari 浏览器 */
   position: relative;
-  color: #fff;
   float: left;
 }
 
-.treeEditorArea[agent="4140329349"]
-  .topOptionArea
-  .logoArea
-  .logoImageItem
-  img {
-  filter: brightness(0) invert(1);
-}
 
 /* .treeEditorArea[status="1"] .topOptionArea {
   padding: 0px calc(50% - 360px);
@@ -4471,7 +4462,6 @@ a:hover {
   float: left;
   display: inline-block;
   max-width: 140px;
-  color: #fff;
 }
 
 .subTextItem i {

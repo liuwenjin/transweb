@@ -79,11 +79,15 @@
   "card.runTitle": "Run {name}",
   "card.soon": "Coming soon",
   "card.popular": "Popular pick",
-  "drawer.fallbackTitle": "Agent run preview",
-  "drawer.fallbackTitleShort": "Run agent",
+  "drawer.fallbackTitle": "Skill run preview",
+  "drawer.fallbackTitleShort": "Run skill",
   "sh.cat.other": "Other",
   "sh.cat.generate": "Content generation",
   "sh.cat.writing": "Creative writing",
   "sh.cat.tutoring": "Study coaching",
-  "sh.cat.mermaid": "Mermaid"
+  "sh.cat.mermaid": "Mermaid",
+  "keywords": "AI skill directory, AI tools directory, AI teaching skills, math visualization, GeoGebra tools, coding AI assistant, office AI tools, workflow generator, AI skill collection, no-code AI app",
+  "count.loading": "Loading…",
+  "card.noDesc": "No description yet",
+  "status.error": "Could not load the list. Please refresh and try again."
 }

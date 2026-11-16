@@ -16,31 +16,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- ================= 方案 2：精细微调的 TDK 元标签 ================= -->
-  <title>TransWeb · 一句话生成 AI 技能（Skill）应用</title>
-  <meta name="title" content="TransWeb · 一句话生成 AI 技能（Skill）应用">
+  <title>AI 数字劳动力｜打开链接就能派活 - TransWeb</title>
+  <meta name="title" content="AI 数字劳动力｜打开链接就能派活 - TransWeb">
   <meta name="description"
-    content="输入一句话，零代码生成专属 AI Skill 应用：AI 写作助手、智能客服、知识库问答等。支持版本管理与 Prompt 优化，可绑定到 Agent 使用。">
-  <meta name="keywords" content="AI Skill, Skill生成器, 零代码AI搭建, 一句话生成AI, AI应用开发, AI写作助手, Prompt优化, TransWeb">
+    content="打开链接即可使用一位 AI 数字劳动力：读取你上传的资料、调用 AI 技能、按工作流跑完多步任务，并以链接、二维码或 iframe 交付他人。资料按账号隔离、不用于模型训练；按量计费、闲置零成本。">
+  <meta name="keywords" content="AI 数字劳动力, 数字员工, AI Agent, AI 智能体, 知识库问答, AI 客服, AI 助教, 工作流编排, 浏览器 AI, TransWeb">
   <meta name="author" content="TransWeb">
   <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://transweb.cn/skill.html" />
+  <link rel="canonical" href="https://transweb.cn/agent.html" />
 
   <!-- Open Graph / Social Media -->
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://transweb.cn/skill.html">
-  <meta property="og:title" content="TransWeb AI Skill 生成器 | 一句话创建 AI Skill 应用">
+  <meta property="og:url" content="https://transweb.cn/agent.html">
+  <meta property="og:title" content="AI 数字劳动力｜打开链接就能派活">
   <meta property="og:description"
-    content="输入一句话即可智能生成专属 AI Skill 应用！零代码快速搭建 AI 写作助手、智能客服、知识库 Skill。支持版本管理与智能 Prompt 优化。">
+    content="不装客户端、不配服务器：打开网页把资料与流程交给它，它读取原文、调用技能、按工作流出结果，再以链接或二维码交付他人。">
   <meta property="og:image" content="https://transweb.cn/assets/share.jpg">
-  <meta property="og:site_name" content="TransWeb AI Skill 生成器">
+  <meta property="og:site_name" content="Trans-Agent">
   <meta property="og:locale" content="zh_CN">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:url" content="https://transweb.cn/skill.html">
-  <meta name="twitter:title" content="TransWeb AI Skill 生成器 | 一句话零代码快速搭建 AI Skill 应用">
+  <meta name="twitter:url" content="https://transweb.cn/agent.html">
+  <meta name="twitter:title" content="AI 数字劳动力｜打开链接就能派活">
   <meta name="twitter:description"
-    content="输入一句话即可智能生成专属 AI Skill 应用！零代码快速搭建 AI 写作助手、智能客服、知识库 AI Skill 应用。支持版本管理与智能 Prompt 优化。">
+    content="不装客户端、不配服务器：打开网页把资料与流程交给它，它读取原文、调用技能、按工作流出结果，再以链接或二维码交付他人。">
   <meta name="twitter:image" content="https://transweb.cn/assets/share.jpg">
 
   <!-- Favicon & Icons -->
@@ -70,59 +70,66 @@
     "@context": "https://schema.org",
     "@graph": [
       {
-        "@type": "SoftwareApplication",
-        "@id": "https://transweb.cn/skill.html#software",
-        "name": "TransWeb AI Skill 生成器",
+        "@type": "WebApplication",
+        "@id": "https://transweb.cn/agent.html#app",
+        "name": "Trans-Agent 数字劳动力",
+        "alternateName": "浏览器上运行的 AI 数字劳动力",
         "applicationCategory": "BusinessApplication",
         "operatingSystem": "Web",
-        "description": "输入一句话即可智能生成专属 AI Skill 应用！零代码快速搭建 AI 写作助手、智能客服、知识库 AI Skill 应用。",
-        "url": "https://transweb.cn/skill.html",
+        "browserRequirements": "需要 JavaScript，可在现代浏览器中直接运行。",
+        "description": "打开链接即可使用一位 AI 数字劳动力：读取你上传的资料、调用 AI 技能、按工作流跑完多步任务，并以链接、二维码或 iframe 交付他人。",
+        "url": "https://transweb.cn/agent.html",
         "image": "https://transweb.cn/assets/share.jpg",
         "offers": {
           "@type": "Offer",
           "price": "0",
           "priceCurrency": "CNY",
-          "availability": "https://schema.org/InStock"
+          "availability": "https://schema.org/InStock",
+          "description": "开源自托管免费；托管服务按实际用量计费，闲置零成本。"
         },
-        "aggregateRating": {
-          "@type": "AggregateRating",
-          "ratingValue": "4.9",
-          "ratingCount": "1280"
+        "featureList": [
+          "打开链接即可对话，无需安装客户端或准备服务器",
+          "按岗位读取你上传的资料，回答优先引用原文",
+          "可绑定 AI 技能与工作流，把多步任务跑完整",
+          "链接、二维码、独立网页或 iframe 均可交付他人"
+        ],
+        "isPartOf": {
+          "@id": "https://transweb.cn/#website"
         }
       },
       {
         "@type": "FAQPage",
-        "@id": "https://transweb.cn/skill.html#faq",
+        "@id": "https://transweb.cn/agent.html#faq",
         "mainEntity": [
           {
             "@type": "Question",
-            "name": "如何使用 TransWeb 生成 AI Skill？",
+            "name": "什么是 AI 数字劳动力？",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "您只需要在 TransWeb AI Skill 生成器中输入一句话描述您的需求（如：帮我做一个专业文案润色助手），系统即可智能解析并一键生成专属 AI Skill 应用。"
+              "text": "它是一位以网页为工作台的 AI 同事：有岗位、有资料依据、有技能，还能把技能编成工作流跑完整流程，最后以链接、网页或二维码交付给具体的人使用。不装客户端，也不用你准备服务器。"
             }
           },
           {
             "@type": "Question",
-            "name": "搭建 AI Skill 需要编程基础吗？",
+            "name": "它和聊天机器人有什么区别？",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "完全不需要。TransWeb 采用零代码搭建模式，内置智能 Prompt 优化与版本管理，让 AI 开发触手可及。"
+              "text": "聊天机器人只会对话；数字劳动力更接近一个岗位：它会读取你的资料、调用技能、按工作流出结果，交付后他人打开链接即可使用。"
             }
           },
           {
             "@type": "Question",
-            "name": "生成的 AI Skill 支持导出或集成吗？",
+            "name": "我的资料会被用于训练模型吗？",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "支持。生成的 AI Skill 可以一键发布为在线 API、嵌入网页组件，或集成至企业的专属工作流与知识库中。"
+              "text": "不会。资料只用于构建属于你的数字劳动力，存储按账号隔离；HTTPS 访问时传输加密，平台不会将资料用于公共模型训练。"
             }
           }
         ]
       },
       {
         "@type": "BreadcrumbList",
-        "@id": "https://transweb.cn/skill.html#breadcrumb",
+        "@id": "https://transweb.cn/agent.html#breadcrumb",
         "itemListElement": [
           {
             "@type": "ListItem",
@@ -133,8 +140,14 @@
           {
             "@type": "ListItem",
             "position": 2,
-            "name": "AI Skill 生成器",
-            "item": "https://transweb.cn/skill.html"
+            "name": "Agent 广场",
+            "item": "https://transweb.cn/agentHub.html"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "AI 数字劳动力",
+            "item": "https://transweb.cn/agent.html"
           }
         ]
       },
@@ -443,67 +456,154 @@
   <!-- End Google Tag Manager (noscript) -->
   <!-- ================= 方案 5：HTML 语意化补强（针对纯文本爬虫） ================= -->
   <!-- 该区域包含完整的文本与 H1-H3 树状网络，保证即使 JS 执行失败或爬虫不加载 JS 时，页面仍有丰富且语义化的正文文本以供收录 -->
-  <div class="seo-only">
+  <div class="seo-only" id="seoZh" lang="zh-CN">
     <header>
       <nav>
         <a href="https://transweb.cn/">TransWeb 官网</a>
-        <a href="https://transweb.cn/skill.html">AI Skill 生成器</a>
+        <a href="https://transweb.cn/agentHub.html">Agent 广场</a>
+        <a href="https://transweb.cn/skillHub.html">Skill 广场</a>
       </nav>
     </header>
 
     <main>
       <!-- Hero 区域 -->
       <section>
-        <h1>TransWeb AI Skill 生成器 - 一句话搭建 AI Skill 应用</h1>
-        <p>输入一句话即可智能生成专属 AI Skill 应用！零代码快速搭建 AI 写作助手、智能客服、知识库 AI Skill 应用。支持版本管理与智能 Prompt 优化，让 AI 应用开发触手可及。</p>
+        <h1>AI 数字劳动力 - 在浏览器里直接对话与派活</h1>
+        <p>打开链接即可使用一位以网页为工作台的 AI 同事：它读取你上传的资料、调用 AI 技能、按工作流跑完多步任务，并以链接、二维码、独立网页或 iframe 交付给任何人使用。不装客户端、不配服务器，资料按账号隔离、不用于模型训练。</p>
       </section>
 
       <!-- 产品核心优势与痛点 -->
       <section>
-        <h2>为什么选择 TransWeb AI Skill 生成器？</h2>
+        <h2>为什么把工作交给浏览器里的数字劳动力？</h2>
         <article>
-          <h3>一句话零代码极速搭建</h3>
-          <p>告别繁琐的 Prompt 调试与代码开发，只需用自然语言描述需求，TransWeb 即可快速解析并生成可直接运行的 AI Skill。」</p>
+          <h3>打开即用，不装不配</h3>
+          <p>浏览器就是工作台：创建、预览、发布都在网页里完成，不需要安装客户端，也不需要准备服务器；成员与客户打开链接就能用。</p>
         </article>
         <article>
-          <h3>智能 Prompt 结构优化</h3>
-          <p>内置自动化 Prompt 提示词优化引擎，能够自动补全系统设定、输入边界与上下文指令，大幅提升大模型回答的稳定性与准确率。</p>
+          <h3>回答有据，优先引用资料</h3>
+          <p>上传 PDF、Word、Markdown 等资料后，它按岗位理解内容，回答优先引用原文；资料按账号隔离，不用于公共模型训练。</p>
         </article>
         <article>
-          <h3>可视化版本管理，支持集成工作流</h3>
-          <p>提供完整的 Skill 版本控制、修改记录与实时对比，轻松将生成的 AI 技能部署为 Web 应用、API 接口或嵌入至企业团队工作流。</p>
+          <h3>按岗位干活，不止回一句话</h3>
+          <p>技能是它的能力，工作流是它的工序：查资料、算数据、出结论、写文档，多步任务可以编成一条流程反复执行，也可以随时接回人工判断。</p>
         </article>
       </section>
 
       <!-- 核心应用场景 -->
       <section>
-        <h2>丰富的多场景 AI Skill 生成支撑</h2>
+        <h2>四类人正在用它干什么</h2>
         <ul>
-          <li><strong>AI 写作助手 Skill：</strong> 一键搭建支持公众号文案、小红书种草文、营销邮件与学术报告的智能写作引擎。</li>
-          <li><strong>智能客服与问答 Skill：</strong> 结合企业知识库与文档，零代码构建精准响应业务咨询的智能客服系统。</li>
-          <li><strong>知识库与文档处理 Skill：</strong> 快速生成能自动总结长文档、提取关键数据与生成结构化表格的效率工具。</li>
-          <li><strong>自动化 AI 工作流 Skill：</strong> 编排多步骤 AI 任务流，实现从需求解析到最终内容交付的全流程自动化。</li>
+          <li><strong>教师与教研组：</strong> 把教材、讲义、课件交给它，学生随时问、老师随时出题批改。</li>
+          <li><strong>HR 与新员工：</strong> 员工手册、SOP、培训资料交给它，新人问制度秒回，老员工不必再当人形说明书。</li>
+          <li><strong>研究员与顾问：</strong> 笔记、研报、摘录交给它，忘了结论时连出处一起翻出来。</li>
+          <li><strong>服务机构与客户经理：</strong> 规范、制度、案例交给它，客户问到哪条就引哪条。</li>
         </ul>
       </section>
 
       <!-- FAQ 常见问题解答 -->
       <section>
-        <h2>关于 TransWeb AI Skill 生成器的常见问题</h2>
+        <h2>关于 AI 数字劳动力的常见问题</h2>
         <dl>
-          <dt>什么是 TransWeb AI Skill？</dt>
-          <dd>AI Skill 是基于特定业务逻辑和最佳 Prompt 配置封装的标准化 AI 技能单元，用户无需了解复杂算法即可像使用普通软件一样使用 AI。”</dd>
-          <dt>搭建 AI Skill 需要编程或写代码吗？</dt>
-          <dd>完全不需要。 TransWeb 采用全流程零代码架构，只需输入自然语言指令即可自动完成应用搭建。</dd>
-          <dt>生成的 AI Skill 能否部署到我自己的系统中？</dt>
-          <dd>支持。您可以将生成的 AI Skill 导出一键嵌入网站组件，或通过标准 API 方式无缝集成进已有的业务系统。</dd>
+          <dt>什么是 AI 数字劳动力？</dt>
+          <dd>它是一位以网页为工作台的 AI 同事：有岗位、有资料依据、有技能，还能把技能编成工作流跑完整流程，最后以链接、网页或二维码交付给具体的人使用。</dd>
+          <dt>它和聊天机器人、AI Agent 有什么区别？</dt>
+          <dd>聊天机器人只会对话，Agent 会调用工具；数字劳动力更接近一个岗位——它会读取你的资料、调用技能、按工作流出结果，交付后他人打开链接即可使用。</dd>
+          <dt>我的资料会被用于训练模型吗？</dt>
+          <dd>不会。资料只用于构建属于你的数字劳动力，存储按账号隔离；HTTPS 访问时传输加密，平台不会将资料用于公共模型训练，也不会向其他用户开放检索。</dd>
         </dl>
       </section>
     </main>
   </div>
 
+  <div class="seo-only" id="seoEn" lang="en" hidden>
+    <header>
+      <nav>
+        <a href="https://transweb.cn/?lang=en">TransWeb home</a>
+        <a href="https://transweb.cn/agentHub.html?lang=en">AgentHub</a>
+        <a href="https://transweb.cn/skillHub.html?lang=en">SkillHub</a>
+      </nav>
+    </header>
+
+    <main>
+      <section>
+        <h1>AI digital labor — talk to it and hand it work in the browser</h1>
+        <p>Open the link and you get an AI colleague that works from a web page: it reads the documents you upload, calls AI skills, runs multi-step workflows, and hands results back through a link, QR code, standalone page or iframe. Nothing to install, no server to prepare; documents stay account-isolated and are never used for public model training.</p>
+      </section>
+
+      <section>
+        <h2>Why hand work to digital labor that runs in the browser?</h2>
+        <article>
+          <h3>Open it and go — nothing to install</h3>
+          <p>The browser is the workbench: create, preview and publish on the web page itself. Teammates and clients just open the link.</p>
+        </article>
+        <article>
+          <h3>Grounded answers, quoting your documents</h3>
+          <p>Upload PDFs, Word files or Markdown and it reads them in role; answers quote the source first. Documents stay isolated per account and are not used for public model training.</p>
+        </article>
+        <article>
+          <h3>It does the job, not just one reply</h3>
+          <p>Skills are its capabilities, workflows are its procedure: look things up, calculate, draw conclusions, write documents. Multi-step tasks can be chained into one routine you run again and again, with a human check wherever you need one.</p>
+        </article>
+      </section>
+
+      <section>
+        <h2>Four kinds of people already put it to work</h2>
+        <ul>
+          <li><strong>Teachers and teaching groups:</strong> hand over textbooks, lecture notes and slides — students ask anytime, teachers get quizzes and marking.</li>
+          <li><strong>HR and new hires:</strong> hand over the handbook, SOPs and training material — new hires get answers from policy in seconds, and senior staff stop being walking manuals.</li>
+          <li><strong>Researchers and consultants:</strong> hand over notes, reports and excerpts — when a conclusion slips your mind, it finds the answer with its source.</li>
+          <li><strong>Service firms and account managers:</strong> hand over standards, policies and case files — whatever the client asks, it quotes the clause.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Frequently asked questions about AI digital labor</h2>
+        <dl>
+          <dt>What is AI digital labor?</dt>
+          <dd>It is an AI colleague that works from a web page: it has a role, a document basis and skills, and it can chain skills into a workflow to finish a whole process, then be handed to a specific person by link, page or QR code.</dd>
+          <dt>How is it different from a chatbot or an AI agent?</dt>
+          <dd>A chatbot only talks; an agent calls tools. Digital labor is closer to a role — it reads your documents, calls skills and produces results through a workflow, and anyone can open the link to use it.</dd>
+          <dt>Are my documents used to train models?</dt>
+          <dd>No. Documents are used only to build your own digital worker and are stored isolated per account. Traffic is encrypted over HTTPS, and documents are not used for public model training or shared with other users.</dd>
+        </dl>
+      </section>
+    </main>
+  </div>
+
+  <!-- 英文版元信息：这些页面由 WebCpu 按 ?lang= 决定界面语言（见 index.js），
+       这里同步 TDK 与语义化正文，避免英文页残留中文 -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      var lang = window.lang || (window.webCpu && window.webCpu.language) || "zh";
+      if (lang !== "en") return;
+      document.documentElement.lang = "en";
+      var zhBlock = document.getElementById("seoZh");
+      var enBlock = document.getElementById("seoEn");
+      if (zhBlock) zhBlock.hidden = true;
+      if (enBlock) enBlock.hidden = false;
+
+      document.title = "AI digital labor — open a link and put it to work - TransWeb";
+      var setMeta = function (attr, name, value) {
+        var el = document.querySelector("meta[" + attr + "=\"" + name + "\"]");
+        if (el) el.setAttribute("content", value);
+      };
+      setMeta("name", "title", "AI digital labor — open a link and put it to work - TransWeb");
+      setMeta("name", "description", "Open a link to use an AI digital worker: it reads your documents, calls AI skills, runs multi-step workflows and hands results back by link, QR code or iframe. Documents stay account-isolated and are never used for public model training.");
+      setMeta("name", "keywords", "AI digital labor, digital employee, AI agent, knowledge base Q&A, AI customer service, AI teaching assistant, workflow, browser AI, TransWeb");
+      setMeta("property", "og:title", "AI digital labor — open a link and put it to work");
+      setMeta("property", "og:description", "No client, no server: hand your documents and processes to it in the browser and it returns results by link or QR code.");
+      setMeta("property", "og:site_name", "Trans-Agent");
+      setMeta("property", "og:locale", "en_US");
+      setMeta("name", "twitter:title", "AI digital labor — open a link and put it to work");
+      setMeta("name", "twitter:description", "No client, no server: hand your documents and processes to it in the browser and it returns results by link or QR code.");
+
+      var shareImg = document.querySelector('img[alt="' + "AI 数字劳动力预览图" + '"]');
+      if (shareImg) shareImg.setAttribute("alt", "AI digital labor preview");
+    });
+  </script>
   <!-- 隐藏分享图，提升加载性能 -->
   <img src="https://transweb.cn/assets/share.jpg" style="position:absolute;width:0;height:0;opacity:0;"
-    alt="TransWeb AI Skill 生成器预览图" />
+    alt="AI 数字劳动力预览图" />
 
   <div class="contentItemArea"
     style="position: fixed; inset: 0; z-index: 100;  align-items: center; justify-content: center; flex-direction: column;">

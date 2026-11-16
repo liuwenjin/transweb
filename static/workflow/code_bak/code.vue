@@ -638,7 +638,7 @@ export default {
     },
     openAppItem(item) {
       let appId = item.value;
-      window.open(`https://transweb.cn?id=${appId}`, "_blank");
+      window.open(`https://transweb.cn/skill.html?id=${appId}`, "_blank");
     },
     updateInputData(stepIndex, dataId) {
       let arr = this.accountData.allLines;

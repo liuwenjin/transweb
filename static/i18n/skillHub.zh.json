@@ -8,6 +8,7 @@
   "sh.logo.sub": "SkillHub · 全学科 AI 技能导航",
   "sh.nav.aria": "主导航",
   "nav.home": "首页",
+  "nav.agentHub": "Agent 广场",
   "nav.skillHub": "Skill 广场",
   "nav.workflow": "工作流",
   "sh.cta.create": "创建 Skill",
@@ -72,6 +73,7 @@
   "sh.empty.desc": "您可以缩短搜索词，或切换分类与应用场景再试",
   "sh.footer.quote": "把 AI 能力，整理成一张可检索的桌面。",
   "footer.legal.heading": "法务与支持",
+  "footer.nav.heading": "站点导航",
   "legal.privacy": "隐私政策",
   "legal.terms": "服务条款",
   "legal.accessibility": "无障碍声明",
@@ -141,5 +143,9 @@
   "sh.drawer.openNew": "新标签页打开",
   "sh.drawer.close": "关闭 (Esc)",
   "sh.drawer.loading": "正在加载页面...",
-  "sh.drawer.iframeTitle": "Skill 运行预览"
+  "sh.drawer.iframeTitle": "Skill 运行预览",
+  "keywords": "AI Skill 导航, AI 工具导航, AI 教学 Skill, 数学可视化, GeoGebra 工具, 编程 AI 助手, 办公 AI 工具, 工作流生成器, AI Skill 大全, 无代码 AI 应用",
+  "count.loading": "正在加载…",
+  "card.noDesc": "暂无描述",
+  "status.error": "获取列表失败，请刷新重试"
 }

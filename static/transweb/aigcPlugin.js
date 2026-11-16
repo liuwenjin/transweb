@@ -640,7 +640,7 @@
             message: "文档 ID 已复制到剪贴板",
           });
         } else {
-          let url = `${location.origin}?id=${d.documentId}`;
+          let url = `${location.origin}/agent.html?id=${d.documentId}`;
           if (from) {
             url += "&fromAccount=" + from;
           }
@@ -925,6 +925,7 @@
       });
     },
     createAgentItem: function (inputText, callback, errCallback) {
+      webCpu.appConfig.publishInfo.appName = "agentGenerator";
       this.adapter.getAppTemplate(
         {},
         (code) => {
@@ -966,6 +967,10 @@
                       op: "js.data.update",
                       path: "introduce",
                       value: cData.roleProfile.mission,
+                    },{
+                      op: "js.data.update",
+                      path: "documentType",
+                      value: "agent",
                     }, {
                       op: "js.data.update",
                       path: "exampleList",
@@ -998,8 +1003,8 @@
                           },
                             (tData) => {
                               let params = {
-                                knowledge: `${location.origin}?id=${webCpu.appConfig.knowledgeApp}&dataId=${knowledge._id}&solo=true`,
-                                agent: `${location.origin}?id=${id}&solo=true`,
+                                knowledge: `${location.origin}/agent.html?id=${webCpu.appConfig.knowledgeApp}&dataId=${knowledge._id}&solo=true`,
+                                agent: `${location.origin}/agent.html?id=${id}&solo=true`,
                                 documentId: id,
                                 roleProfile: cData.roleProfile,
                                 rawData: [kUsage, cUsage]
@@ -1013,7 +1018,7 @@
                         else {
                           if (typeof callback === "function") {
                             let params = {
-                              agent: `${location.origin}?id=${id}&solo=true`,
+                              agent: `${location.origin}/agent.html?id=${id}&solo=true`,
                               documentId: id,
                               roleProfile: cData.roleProfile,
                               rawData: [kUsage, cUsage]
@@ -1048,6 +1053,7 @@
         let elem = stepLoading.elem || document.body;
         this.startStepLoading(elem, stepLoading.data);
       }
+      webCpu.appConfig.publishInfo.appName = "appGenerator";
       this.lineRequest(
         inputText,
         webCpu.appConfig.aigcWorkflow,
@@ -2656,6 +2662,7 @@ ${typeof json0.example === "object"
         creator: localStorage.userName,
         avatar: "",
         type: data.type || t.documentMeta.type || content.type || "",
+        documentType: t.documentMeta.documentType || content.documentType || "",
         category:
           data.category || t.documentMeta.category || content.category || "",
         grades: data.grades || t.documentMeta.grades || content.grades || "",

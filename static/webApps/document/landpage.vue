@@ -240,7 +240,7 @@
               <a
                 target="blank"
                 class="text-success"
-                href="https://transweb.cn/?id=96beed164dcd459a601454469335a552"
+                href="https://transweb.cn/skill.html?id=96beed164dcd459a601454469335a552"
                 >点击预览</a
               >
             </li>
