@@ -5475,7 +5475,7 @@
 
             <div class="term">
               <div class="term-line"><span class="term-line__num"></span><code
-                  class="term-line__code">npm install -g transweb-service@1.5.13</code></div>
+                  class="term-line__code">npm install -g transweb-service</code></div>
               <div class="term-line"><span class="term-line__num"></span><code class="term-line__code t-c"
                   data-i18n="deploy.cmd.install"># 全局安装部署包</code></div>
               <div class="term-line"><span class="term-line__num"></span><code
@@ -7402,6 +7402,20 @@ transweb wxpay check</code></pre>
           "loginBar.apiKeyDelete": "删除",
           "loginBar.apiKeyNamePlaceholder": "输入 Key 名称",
           "loginBar.apiKeyEmpty": "暂无 API Key",
+          "loginBar.apiKeyCopyHint": "一键复制 API Key",
+          "loginBar.apiKeyCopy": "复制",
+          "loginBar.apiKeyCopied": "已复制",
+          "loginBar.apiKeyCopyFailed": "复制失败，请手动选中后复制",
+          "loginBar.apiKeyRegenerateTips": "出于安全考虑，API Key 明文仅在创建时显示一次，之后无法再次查看。是否重新生成一个新的 Key 并立即复制？重新生成后，当前 Key 会立即失效。",
+          "loginBar.apiKeyRegenerateConfirm": "重新生成并复制",
+          "loginBar.apiKeyRegenerateFailed": "重新生成失败，请稍后重试",
+          "loginBar.apiKeyNameRequired": "请输入 API Key 名称",
+          "loginBar.apiKeyCreateFailed": "创建失败，请稍后重试",
+          "loginBar.apiKeyDeleteConfirm": "删除后该 Key 将立即失效，确定删除？",
+          "loginBar.apiKeyDeleteFailed": "删除失败，请稍后重试",
+          "loginBar.apiKeyDeleted": "已删除",
+          "loginBar.apiKeyCreated": "API Key 创建成功",
+          "loginBar.apiKeyOnlyOnce": "本 Key 仅显示一次，请立即保存。",
           "toolbar.label": "快捷工具栏",
           "toolbar.wechat": "微信",
           "toolbar.wechatAria": "显示微信二维码",
@@ -7418,8 +7432,8 @@ transweb wxpay check</code></pre>
       };
 
       var LS_KEY = "appLang";
-      var EN_URL = "./i18n/en.json?v=40";
-      var EN_CACHE_KEY = "i18n_en_v40";
+      var EN_URL = "./i18n/en.json?v=41";
+      var EN_CACHE_KEY = "i18n_en_v41";
 
       var lang = "zh";
       try {

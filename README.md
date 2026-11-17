@@ -285,7 +285,7 @@ JS 动态生成的文案（分类名、卡片上的「N 步 / 免费运行」等
 **方式一：安装包（推荐，自托管部署）**
 
 ```bash
-npm install -g transweb-service@1.5.6   # 或使用 GitHub Release 的 .tgz
+npm install -g transweb-service   # 或使用 GitHub Release 的 .tgz
 
 transweb init        # 初始化数据库（会清空数据，需确认）
 transweb start       # 启动 MongoDB 与 Web 服务；首次会打开初始化页面
@@ -296,7 +296,7 @@ transweb status      # 查看地址、局域网访问、初始化状态
 - 服务目录默认 `~/.transweb-service`（配置、数据库、日志、证书都在这里），升级 npm 包不丢数据；
 - 局域网其他设备可直接访问 `transweb status` 里显示的地址；
 - 重装或切换 Node 版本后若提示 `transweb: No such file or directory`，先执行 `hash -r`；
-  仍失败见安装包内 `README-INSTALL.md` 的「故障排查」；
+  仍失败见安装包 README 的「故障排查」；
 - HTTPS 证书不随包分发：把证书放到 `<npm 全局目录>/transweb-service/app/ca/cn/{key.pem,cert.pem}`，缺失时自动跳过 8443。
 
 常用命令：

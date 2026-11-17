@@ -210,13 +210,26 @@
                     <div class="apiKeyMask">{{ k.maskedKey }}</div>
                     <div class="apiKeyTime">{{ timeToString(k.createdAt) }}</div>
                   </div>
-                  <el-button
-                    size="small"
-                    text
-                    class="apiKeyDeleteBtn"
-                    @click="removeApiKey(k)"
-                    >{{ apiKeyLabel("loginBar.apiKeyDelete", "删除") }}</el-button
-                  >
+                  <div class="apiKeyActions">
+                    <el-button
+                      size="small"
+                      text
+                      class="apiKeyCopyBtn"
+                      :disabled="apiKeyCopying"
+                      :title="
+                        apiKeyLabel('loginBar.apiKeyCopyHint', '一键复制 API Key')
+                      "
+                      @click="copyApiKey(k)"
+                      >{{ apiKeyLabel("loginBar.apiKeyCopy", "复制") }}</el-button
+                    >
+                    <el-button
+                      size="small"
+                      text
+                      class="apiKeyDeleteBtn"
+                      @click="removeApiKey(k)"
+                      >{{ apiKeyLabel("loginBar.apiKeyDelete", "删除") }}</el-button
+                    >
+                  </div>
                 </div>
               </div>
             </div>
@@ -429,6 +442,10 @@ export default {
       apiKeyCreating: false,
       apiKeyName: "",
       apiKeyList: [],
+      // 明文 Key 只在创建/重新生成时由服务端返回一次，这里仅在内存中缓存本次会话可见的明文，
+      // 让刚拿到的 Key 可以一键复制；不落 localStorage，避免明文常驻浏览器。
+      apiKeyPlainMap: {},
+      apiKeyCopying: false,
     };
   },
   beforeMount() {},
@@ -477,6 +494,8 @@ export default {
     window.removeEventListener("applangchange", this.onLangChange);
     window.removeEventListener("resize", this.updatePopoverWidth);
     window.removeEventListener("resize", this.updatePopoverTop);
+    // 明文 Key 只在内存中短暂保留，组件卸载时立即清空
+    this.apiKeyPlainMap = {};
   },
   methods: {
     // 文案翻译：优先读取父页面 creator.html 注入的全局词表（单一数据源）
@@ -948,6 +967,8 @@ export default {
     },
     exitLogin() {
       this.logined = false;
+      this.apiKeyList = [];
+      this.apiKeyPlainMap = {};
       this.userData = {
         name: "",
         id: "",
@@ -1002,6 +1023,12 @@ export default {
       const v = this.t(key);
       return v === key ? zh : v;
     },
+    // 复用平台词表（提示/确认/取消/复制成功等通用文案），缺失时回退中文
+    platformTip(key, zh) {
+      const messages =
+        window.webCpu && webCpu.messages ? webCpu.messages[this.lang] : null;
+      return (messages && messages[key]) || zh;
+    },
     // HTML 转义：防注入（虽然 API Key 是服务端生成的 hex，仍做防御）
     escapeHtml(s) {
       return String(s).replace(/[&<>"']/g, (c) => {
@@ -1014,6 +1041,138 @@ export default {
         };
         return map[c];
       });
+    },
+    // 只在内存中记住本次会话拿到的明文 Key，供列表页一键复制
+    cacheApiKey(apiKey, keyId) {
+      if (!apiKey || !keyId) return;
+      this.apiKeyPlainMap = Object.assign({}, this.apiKeyPlainMap, {
+        [keyId]: apiKey,
+      });
+    },
+    notifyCopied() {
+      this.$message({
+        type: "success",
+        message: this.apiKeyLabel("loginBar.apiKeyCopied", "已复制"),
+      });
+    },
+    // 复制到剪贴板：优先异步剪贴板 API（HTTPS/localhost），失败回退 execCommand。
+    // 返回 Promise<boolean>，让调用方能在复制失败时给出兜底方案。
+    copyText(text) {
+      const legacyCopy = () => {
+        const input = document.createElement("textarea");
+        input.value = text;
+        input.readOnly = true;
+        input.style.position = "fixed";
+        input.style.left = "-999px";
+        input.style.top = "10px";
+        document.body.appendChild(input);
+        input.select();
+        input.setSelectionRange(0, input.value.length);
+        let ok = false;
+        try {
+          ok = document.execCommand("copy");
+        } catch (e) {
+          ok = false;
+        }
+        document.body.removeChild(input);
+        return ok;
+      };
+      if (
+        navigator.clipboard &&
+        typeof navigator.clipboard.writeText === "function" &&
+        window.isSecureContext
+      ) {
+        return navigator.clipboard
+          .writeText(text)
+          .then(() => true)
+          .catch(() => legacyCopy());
+      }
+      return Promise.resolve(legacyCopy());
+    },
+    // 一键复制：本会话已知明文的 Key 直接复制；
+    // 服务端只存哈希、明文仅在创建时返回一次，其余情况说明原因并走「重新生成并复制」。
+    copyApiKey(key) {
+      if (!key) return;
+      const cached = this.apiKeyPlainMap[key.keyId];
+      if (cached) {
+        this.copyText(cached).then((ok) => {
+          if (ok) {
+            this.notifyCopied();
+          } else {
+            this.$message({
+              type: "warning",
+              message: this.apiKeyLabel(
+                "loginBar.apiKeyCopyFailed",
+                "复制失败，请手动选中后复制"
+              ),
+            });
+            this.showNewApiKey(cached, key.keyId);
+          }
+        });
+        return;
+      }
+      this.$confirm(
+        this.apiKeyLabel(
+          "loginBar.apiKeyRegenerateTips",
+          "出于安全考虑，API Key 明文仅在创建时显示一次，之后无法再次查看。是否重新生成一个新的 Key 并立即复制？重新生成后，当前 Key 会立即失效。"
+        ),
+        this.platformTip("confirmDialogTitle", "提示"),
+        {
+          confirmButtonText: this.apiKeyLabel(
+            "loginBar.apiKeyRegenerateConfirm",
+            "重新生成并复制"
+          ),
+          cancelButtonText: this.platformTip("confirmNo", "取消"),
+          type: "warning",
+          closeOnClickModal: false,
+        }
+      )
+        .then(() => this.rotateAndCopyApiKey(key))
+        .catch(() => {});
+    },
+    // 重新生成（轮换）Key 并立即复制；轮换后旧 Key 立即失效，需用户确认后才会走到这里
+    rotateAndCopyApiKey(key) {
+      if (!key || this.apiKeyCopying) return;
+      this.apiKeyCopying = true;
+      const failedTips = this.apiKeyLabel(
+        "loginBar.apiKeyRegenerateFailed",
+        "重新生成失败，请稍后重试"
+      );
+      fetch(webCpu.documentPrefix + "/apiKey/rotateApiKey", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: this.apiKeyHeaders(),
+        body: JSON.stringify({ keyId: key.keyId }),
+      })
+        .then((r) => {
+          if (!r.ok) throw new Error("HTTP " + r.status);
+          return r.json();
+        })
+        .then((d) => {
+          if (!(d && d.ret === 0 && d.data && d.data.apiKey)) {
+            throw new Error((d && d.message) || failedTips);
+          }
+          const apiKey = d.data.apiKey;
+          this.cacheApiKey(apiKey, key.keyId);
+          return this.copyText(apiKey).then((ok) => {
+            if (ok) {
+              this.notifyCopied();
+            } else {
+              // 复制失败：展示明文让用户手动保存
+              this.showNewApiKey(apiKey, key.keyId);
+            }
+          });
+        })
+        .catch((e) => {
+          this.$message({
+            type: "error",
+            message: (e && e.message) || failedTips,
+          });
+        })
+        .finally(() => {
+          this.apiKeyCopying = false;
+          this.loadApiKeys();
+        });
     },
     loadApiKeys() {
       this.apiKeyLoading = true;
@@ -1041,7 +1200,13 @@ export default {
       if (this.apiKeyCreating) return;
       const name = (this.apiKeyName || "").trim();
       if (!name) {
-        return this.$message({ type: "warning", message: "请输入 API Key 名称" });
+        return this.$message({
+          type: "warning",
+          message: this.apiKeyLabel(
+            "loginBar.apiKeyNameRequired",
+            "请输入 API Key 名称"
+          ),
+        });
       }
       this.apiKeyCreating = true;
       fetch(webCpu.documentPrefix + "/apiKey/createApiKey", {
@@ -1057,45 +1222,85 @@ export default {
         .then((d) => {
           if (d && d.ret === 0 && d.data && d.data.apiKey) {
             this.apiKeyName = "";
-            this.showNewApiKey(d.data.apiKey);
+            this.showNewApiKey(d.data.apiKey, d.data.keyId);
             this.loadApiKeys();
           } else {
-            this.$message({ type: "error", message: (d && d.message) || "创建失败" });
+            this.$message({
+              type: "error",
+              message:
+                (d && d.message) ||
+                this.apiKeyLabel("loginBar.apiKeyCreateFailed", "创建失败，请稍后重试"),
+            });
           }
         })
         .catch(() => {
-          this.$message({ type: "error", message: "创建失败" });
+          this.$message({
+            type: "error",
+            message: this.apiKeyLabel("loginBar.apiKeyCreateFailed", "创建失败，请稍后重试"),
+          });
         })
         .finally(() => {
           this.apiKeyCreating = false;
         });
     },
-    // 展示新建的 Key：换行不越界 + 一键复制
-    showNewApiKey(apiKey) {
+    // 展示新建 / 重新生成的 Key：换行不越界 + 一键复制
+    showNewApiKey(apiKey, keyId) {
+      if (keyId) {
+        this.cacheApiKey(apiKey, keyId);
+      }
       const safeKey = this.escapeHtml(apiKey);
       const message =
         '<div style="word-break:break-all;font-family:Menlo,Consolas,monospace;font-size:12px;line-height:1.6;background:#f8f8fa;padding:10px 12px;border:1px solid #e7e7eb;user-select:all;">' +
         safeKey +
         "</div>" +
-        '<div style="margin-top:8px;font-size:12px;color:#999;">本 Key 仅显示一次，请立即保存。</div>';
-      this.$confirm(message, "API Key 创建成功", {
-        dangerouslyUseHTMLString: true,
-        confirmButtonText: "复制",
-        cancelButtonText: "关闭",
-        type: "success",
-      })
+        '<div style="margin-top:8px;font-size:12px;color:#999;">' +
+        this.escapeHtml(
+          this.apiKeyLabel("loginBar.apiKeyOnlyOnce", "本 Key 仅显示一次，请立即保存。")
+        ) +
+        "</div>";
+      this.$confirm(
+        message,
+        this.apiKeyLabel("loginBar.apiKeyCreated", "API Key 创建成功"),
+        {
+          dangerouslyUseHTMLString: true,
+          confirmButtonText: this.apiKeyLabel("loginBar.apiKeyCopy", "复制"),
+          cancelButtonText: this.platformTip("confirmNo", "关闭"),
+          type: "success",
+          closeOnClickModal: false,
+        }
+      )
         .then(() => {
-          WebTool.copyString(apiKey);
-          this.$message({ type: "success", message: "已复制" });
+          return this.copyText(apiKey).then((ok) => {
+            if (ok) {
+              this.notifyCopied();
+            } else {
+              // 复制失败时重新弹出明文，让用户手动选中复制，避免明文直接丢失
+              this.$message({
+                type: "warning",
+                message: this.apiKeyLabel(
+                  "loginBar.apiKeyCopyFailed",
+                  "复制失败，请手动选中后复制"
+                ),
+              });
+              this.showNewApiKey(apiKey, keyId);
+            }
+          });
         })
         .catch(() => {});
     },
     removeApiKey(key) {
-      this.$confirm("删除后该 Key 将立即失效，确定删除？", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-      })
+      this.$confirm(
+        this.apiKeyLabel(
+          "loginBar.apiKeyDeleteConfirm",
+          "删除后该 Key 将立即失效，确定删除？"
+        ),
+        this.platformTip("confirmDialogTitle", "提示"),
+        {
+          confirmButtonText: this.platformTip("confirmYes", "确定"),
+          cancelButtonText: this.platformTip("confirmNo", "取消"),
+          type: "warning",
+        }
+      )
         .then(() => {
           return fetch(webCpu.documentPrefix + "/apiKey/revokeApiKey", {
             method: "POST",
@@ -1109,10 +1314,21 @@ export default {
         })
         .then((d) => {
           if (d && d.ret === 0) {
-            this.$message({ type: "success", message: "已删除" });
+            const rest = Object.assign({}, this.apiKeyPlainMap);
+            delete rest[key.keyId];
+            this.apiKeyPlainMap = rest;
+            this.$message({
+              type: "success",
+              message: this.apiKeyLabel("loginBar.apiKeyDeleted", "已删除"),
+            });
             this.loadApiKeys();
           } else {
-            this.$message({ type: "error", message: (d && d.message) || "删除失败" });
+            this.$message({
+              type: "error",
+              message:
+                (d && d.message) ||
+                this.apiKeyLabel("loginBar.apiKeyDeleteFailed", "删除失败，请稍后重试"),
+            });
           }
         })
         .catch(() => {});
@@ -1631,6 +1847,34 @@ export default {
   transform: translateY(1px) !important;
 }
 
+/* 行内操作区：复制 + 删除，靠右且不挤压 Key 信息 */
+.apiKeyActions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex: 0 0 auto;
+}
+
+/* 复制按钮：与删除按钮同级的轻量文字按钮，hover 时提亮到墨色 */
+.apiKeyCopyBtn.el-button {
+  padding: 0 2px !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.04em;
+  color: var(--ash) !important;
+  background: transparent !important;
+  transition: all 0.2s ease !important;
+}
+
+.apiKeyCopyBtn.el-button:hover {
+  color: var(--ink) !important;
+  background: transparent !important;
+}
+
+.apiKeyCopyBtn.el-button:active {
+  transform: translateY(1px) !important;
+}
+
 /* 删除按钮：淡墨红，非高饱和 */
 .apiKeyDeleteBtn.el-button {
   padding: 0 2px !important;
@@ -1750,6 +1994,7 @@ export default {
   .subtleBtn.el-button,
   .primaryGradientBtn.el-button,
   .apiKeyAddBtn.el-button,
+  .apiKeyCopyBtn.el-button,
   .apiKeyDeleteBtn.el-button,
   .apiKeyField input,
   .apiKeyField .fieldIcon {
@@ -2051,6 +2296,24 @@ export default {
 .loginContentArea .apiKeyMask {
   font-size: 1rem;
   color: var(--gds-secondary);
+}
+
+/* 一键复制：与删除同尺寸的紧凑操作，使用 GDS 蓝链接色标识可点 */
+.loginContentArea .apiKeyCopyBtn.el-button {
+  padding: 0 4px !important;
+  border: 0 !important;
+  background: transparent !important;
+  color: var(--gds-blue) !important;
+  font-family: var(--gds-font);
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.04em;
+  text-decoration: underline;
+}
+
+.loginContentArea .apiKeyCopyBtn.el-button:hover {
+  color: var(--gds-black) !important;
+  background: transparent !important;
 }
 
 .loginContentArea .apiKeyTime {
