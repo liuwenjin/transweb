@@ -671,4 +671,56 @@ export default {
     animation-duration: 0.01ms !important;
   }
 }
+
+
+/* ON STAFF · 登录弹窗 */
+.loginRegItemArea {
+  --el-color-primary: #c33a1e;
+  --el-border-radius-base: 0;
+  background: #fcfaf3;
+  color: #191817;
+}
+.loginRegItemArea .loginTitle {
+  font-family: "Source Han Serif SC", "Noto Serif SC", "Songti SC", "STSong", serif;
+  font-weight: 700; font-size: 28px; letter-spacing: .02em; color: #191817;
+}
+.loginRegItemArea .loginModeTabs .nav-link {
+  border-radius: 0; font-family: var(--mono, "SF Mono", monospace);
+  font-size: 11px; letter-spacing: .14em; color: #6e6a60;
+}
+.loginRegItemArea .loginModeTabs .nav-link.active { color: #c33a1e; border-color: #c33a1e; }
+.loginRegItemArea .fieldControl {
+  border: 1px solid #ded7c7; border-radius: 0; background: #f7f4ec; box-shadow: none;
+}
+.loginRegItemArea .fieldControl:focus-within { border-color: #191817; box-shadow: none; }
+.loginRegItemArea .mobileInput,
+.loginRegItemArea .numberInput { background: transparent; font-size: 15px; color: #191817; }
+.loginRegItemArea .getCodeBtn.el-button {
+  border-radius: 0; color: #c33a1e; border-color: #c33a1e; background: transparent;
+}
+.loginRegItemArea .text-danger { color: #c33a1e; }
+
+
+
+/* ON STAFF · 弹窗精修 */
+.loginRegItemArea .loginHeader {
+  padding-bottom: 14px;
+  border-bottom: 1px solid #ded7c7;
+}
+.loginRegItemArea .loginTitle { font-size: 28px; }
+.loginRegItemArea .loginRegInput { margin-top: 14px; }
+.loginRegItemArea .fieldControl { min-height: 48px; }
+.loginRegItemArea .el-button--primary {
+  background: #c33a1e;
+  border-color: #c33a1e;
+  border-radius: 0;
+  height: 46px;
+  letter-spacing: .06em;
+}
+.loginRegItemArea .el-button--primary:hover {
+  background: #a62f17;
+  border-color: #a62f17;
+}
+.loginRegItemArea .agreementLink { color: #6e6a60; }
+
 </style>

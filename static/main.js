@@ -1,8 +1,8 @@
 
 var I18N = {
   zh: {
-    "title": "Trans-Agent · 丢入一份文档，3 分钟生成你的专属 AI 助教",
-    "logo": "Trans-Agent",
+    "title": "Trans-Web · 丢入一份文档，3 分钟生成你的专属 AI 助教",
+    "logo": "Trans-Web",
     "nav.how": "功能阐释",
     "nav.pricing": "透明计费",
     "nav.faq": "常见疑问",

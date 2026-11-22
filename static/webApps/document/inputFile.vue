@@ -259,7 +259,7 @@
               <el-col
                 v-for="card in meta.communityInfo.appCards"
                 :key="card.id"
-                :xs="24"
+                :xs="12"
                 :sm="8"
                 :lg="6"
                 :xl="6"
@@ -273,7 +273,7 @@
                 >
                   <div
                     class="tw-relative tw-w-full tw-relative tw-w-full"
-                    :style="{ height: flag ? 'auto' : '120px' }"
+                    style="height: auto; aspect-ratio: 16 / 9"
                   >
                     <el-image
                       style="border-radius: 0px; background: #f8f8fa"
@@ -2303,7 +2303,7 @@ export default {
 .stepItemArea .optionsArea {
   position: absolute !important;
   left: 14px !important;
-  bottom: 14px !important;
+  bottom: 7px !important;
   z-index: 2 !important;
   display: inline-flex;
   align-items: center;
@@ -2339,7 +2339,7 @@ export default {
 .inputActionGroup {
   position: absolute !important;
   right: 14px !important;
-  bottom: 14px !important;
+  bottom: 7px !important;
   z-index: 2 !important;
   display: flex !important;
   align-items: center;
@@ -2918,17 +2918,30 @@ export default {
 }
 
 .communityArea .el-card .tw-relative {
+  overflow: hidden;
   background: var(--hover) !important;
 }
 
+/* 封面：图片绝对铺满 16:9 区域，等比缩放后留白，不裁切 */
 .communityArea .el-card .el-image {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
   border-radius: 0 !important;
   background: var(--hover) !important;
 }
 
 .communityArea .el-card .el-image__inner,
 .communityArea .el-card .el-image__error {
+  width: 100% !important;
+  height: 100% !important;
   border-radius: 0 !important;
+}
+
+.communityArea .el-card .el-image__inner {
+  object-fit: contain !important;
+  object-position: center center;
 }
 
 .communityArea .tw-image-slot {
@@ -3345,4 +3358,202 @@ export default {
     scroll-behavior: auto !important;
   }
 }
+
+
+/* ON STAFF · 活字皮肤（输入页） */
+.oneKeyContentArea {
+  --paper: #f7f4ec;
+  --surface: #fcfaf3;
+  --ink: #191817;
+  --ink-soft: #35322c;
+  --secondary: #6e6a60;
+  --tertiary: #a6a196;
+  --line: #ded7c7;
+  --line-strong: #c9c2b1;
+  --hover: #efeadd;
+  --active: #e9e3d4;
+  --ring: rgba(25, 24, 23, .12);
+  --el-color-primary: #c33a1e;
+  --el-color-primary-light-3: #a62f17;
+  --el-color-primary-light-5: #b8563f;
+  --el-color-primary-light-7: #d9a294;
+  --el-color-primary-light-8: #e8c4ba;
+  --el-color-primary-light-9: #f7e9e4;
+  --el-color-primary-dark-2: #8c2f23;
+}
+
+.oneKeyContentArea .sloganInfoArea .z-text,
+.oneKeyContentArea .sloganInfoArea > p:nth-child(1) {
+  font-family: "Source Han Serif SC", "Noto Serif SC", "Songti SC", "STSong", serif !important;
+  font-weight: 800 !important;
+  font-size: clamp(2rem, 4vw, 3.25rem) !important;
+  line-height: 1.15 !important;
+  letter-spacing: -.005em !important;
+}
+
+.oneKeyContentArea .sloganInfoArea > p:nth-child(2) {
+  font-size: 16px !important;
+  line-height: 1.9 !important;
+}
+
+.oneKeyContentArea .section-title {
+  font-family: var(--mono, "SF Mono", ui-monospace, monospace) !important;
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  letter-spacing: .14em !important;
+  color: var(--secondary) !important;
+}
+
+.oneKeyContentArea .inputContentArea {
+  padding: 32px !important;
+  border-color: var(--line) !important;
+  background: var(--surface) !important;
+}
+
+.oneKeyContentArea .inputTextareaWrap {
+  border-color: var(--line) !important;
+  background: var(--surface) !important;
+}
+
+.oneKeyContentArea .inputActionGroup .shiny-button.el-button {
+  height: 44px !important;
+  background: #c33a1e !important;
+  border-color: #c33a1e !important;
+  color: #faf7ef !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  letter-spacing: .06em !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.oneKeyContentArea .inputActionGroup .shiny-button.el-button:hover {
+  background: #a62f17 !important;
+  border-color: #a62f17 !important;
+}
+
+.oneKeyContentArea .inputActionGroup .config-model-btn.el-button {
+  border-color: var(--line) !important;
+  font-size: 13px !important;
+}
+
+.oneKeyContentArea .idea-button {
+  border-color: var(--line) !important;
+  background: var(--surface) !important;
+  font-size: 13px !important;
+}
+
+.oneKeyContentArea .idea-button:hover {
+  border-color: var(--ink) !important;
+  background: var(--hover) !important;
+}
+
+
+
+/* ON STAFF · 活字润色（输入页 v2） */
+.oneKeyContentArea {
+  background-color: #f7f4ec !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.07'/%3E%3C/svg%3E") !important;
+  background-size: 160px 160px !important;
+}
+
+/* 首屏：朱砂短线 + 宋体宣言 */
+.oneKeyContentArea .sloganInfoArea { padding: 104px 24px 48px !important; }
+.oneKeyContentArea .sloganInfoArea::before {
+  content: "";
+  display: block;
+  width: 28px;
+  height: 1px;
+  margin: 0 auto 22px;
+  background: #c33a1e;
+}
+.oneKeyContentArea[flag="true"] .sloganInfoArea { padding: 44px 20px 24px !important; }
+
+/* 输入卡：只留一层边框，内层去掉描边 */
+.oneKeyContentArea .inputContentArea {
+  max-width: 760px !important;
+  padding: 0 !important;
+  border: 1px solid var(--line-strong) !important;
+  background: var(--surface) !important;
+  box-shadow: none !important;
+}
+.oneKeyContentArea .inputContentArea:focus-within {
+  border-color: var(--ink) !important;
+  outline: none !important;
+}
+.oneKeyContentArea .inputTextareaWrap {
+  border: 0 !important;
+  background: transparent !important;
+  padding: 10px 10px 66px !important;
+}
+.oneKeyContentArea .stepItemArea::after {
+  content: "";
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 58px;
+  height: 1px;
+  background: var(--line);
+  pointer-events: none;
+}
+
+/* 输入区下方：示例与操作 */
+.oneKeyContentArea .idea-section-container {
+  margin-top: 0 !important;
+  padding: 24px !important;
+  border-top: 1px solid var(--line) !important;
+}
+.oneKeyContentArea .section-title::before {
+  content: "";
+  display: inline-block;
+  width: 16px;
+  height: 1px;
+  margin-right: 10px;
+  vertical-align: middle;
+  background: #c33a1e;
+}
+.oneKeyContentArea .idea-button { min-height: 44px !important; }
+.oneKeyContentArea .idea-button:hover {
+  border-color: var(--ink) !important;
+  background: var(--hover) !important;
+}
+
+/* 我的 Apps：标签前朱砂短线，标题回宋体 */
+.oneKeyContentArea .myAppsArea > h5::before {
+  content: "";
+  display: inline-block;
+  width: 16px;
+  height: 1px;
+  margin-right: 10px;
+  vertical-align: middle;
+  background: #c33a1e;
+}
+.oneKeyContentArea .contentCardItem h3 {
+  font-family: "Source Han Serif SC", "Noto Serif SC", "Songti SC", serif !important;
+  font-weight: 700 !important;
+  font-size: 16px !important;
+  letter-spacing: .01em !important;
+}
+
+/* 社区区：标题左对齐、宋体；搜索框方角 */
+.oneKeyContentArea .communityArea > h5 {
+  text-align: left !important;
+  font-family: "Source Han Serif SC", "Noto Serif SC", "Songti SC", serif !important;
+  font-weight: 700 !important;
+  font-size: 24px !important;
+  letter-spacing: .01em !important;
+  color: var(--ink) !important;
+}
+.oneKeyContentArea .communityArea > p {
+  padding: 6px 0px 18px !important;
+  text-align: left !important;
+  font-size: 15px !important;
+  color: var(--secondary) !important;
+}
+.oneKeyContentArea .community-search-input {
+  border-radius: 0 !important;
+  background: var(--surface) !important;
+  box-shadow: none !important;
+}
+
 </style>

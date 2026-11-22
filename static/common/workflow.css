@@ -1,0 +1,1218 @@
+/* ==========================================================================
+   TransWeb · 工作流页样式（workflow.css）
+   --------------------------------------------------------------------------
+   只保留工作流页专属组件：首屏网格、流程卡、FAQ、社区区、结语。
+   页眉、页脚、按钮、令牌由 site.css 提供。
+   ========================================================================== */
+
+
+    /* SVG 图标统一行内显示：优先级高于 preflight 的 display:block，但低于 .hidden/.block 等工具类 */
+    body svg {
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    /* 案例步骤里的工作流链接：与正文同色，靠下划线区分，英文再补一个词距 */
+    .wf-step-link {
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: .18em;
+    }
+
+    html[lang="en"] .wf-step-link {
+      margin-left: .3em;
+    }
+
+    /* 人物画像引文里的关键词：原本的 text-brand-600 与正文同色，起不到强调作用，
+       这里换成 GOV.UK 风格的荧光底色，也是整页「纸白 + 墨色」里唯一的一处亮色 */
+    .wf-mark {
+      color: inherit;
+      background-image: linear-gradient(transparent 58%, rgba(255, 221, 0, .6) 58%);
+      background-repeat: no-repeat;
+      background-size: 100% 100%;
+    }
+
+    .hero-grid-bg {
+      background-size: 40px 40px;
+      background-image:
+        linear-gradient(to right, rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+    }
+
+    details summary::-webkit-details-marker {
+      display: none;
+    }
+
+    /* ==========================================================================
+       Trans-Workflow × Trans-Web 「白与空」视觉统一层
+       ========================================================================== */
+
+    /* ---------- Header ---------- */
+
+    .wf-btn--lg {
+      min-height: 50px;
+      padding: 0 24px;
+      font-size: 13px;
+    }
+
+    .wf-mobile { display: none; }
+
+    .wf-mobile:not(.hidden) { display: block; }
+
+    .wf-mobile {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+
+      padding: 8px 16px calc(20px + env(safe-area-inset-bottom));
+
+      background: var(--paper);
+      border-bottom: 1px solid var(--line);
+      box-shadow: 0 18px 32px rgba(27, 27, 25, .07);
+
+      max-height: calc(100dvh - 56px);
+      overflow-y: auto;
+    }
+
+    .wf-mobile > a {
+      display: block;
+      padding: 15px 0;
+
+      border-bottom: 1px solid var(--line);
+
+      color: var(--gray);
+      font-size: 14px;
+      letter-spacing: .04em;
+      text-align: center;
+    }
+
+    .wf-mobile > a.is-active {
+      color: var(--ink);
+    }
+
+    .wf-mobile__actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding-top: 16px;
+    }
+
+    .wf-mobile__actions .wf-btn { width: 100%; }
+
+    .wf-mobile__github {
+      padding: 10px 0;
+      color: var(--gray);
+      font-size: 12px;
+      text-align: center;
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+
+    /* ---------- Workflow secondary nav ---------- */
+    .wf-subnav {
+      position: sticky;
+      z-index: 90;
+      top: 0;
+      background: rgba(250, 249, 246, .94);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+
+    .wf-subnav__inner {
+      width: min(1120px, calc(100% - 48px));
+      height: 40px;
+      margin: auto;
+
+      display: flex;
+      align-items: center;
+      gap: 26px;
+
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .wf-subnav__inner::-webkit-scrollbar { display: none; }
+
+    .wf-subnav a {
+      flex: none;
+      color: var(--gray);
+      font-size: 11.5px;
+      letter-spacing: .04em;
+      white-space: nowrap;
+      transition: color .3s ease;
+    }
+
+    .wf-subnav a:hover { color: var(--ink); }
+
+    /* ---------- Hero ---------- */
+    .wf-hero {
+      padding: 84px 0 72px;
+      background: var(--paper);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .wf-hero__inner {
+      width: min(1120px, calc(100% - 48px));
+      margin: auto;
+
+      display: grid;
+      grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr);
+      gap: 56px;
+      align-items: center;
+    }
+
+    .wf-eyebrow {
+      color: var(--light);
+      font-size: 10px;
+      letter-spacing: .2em;
+    }
+
+    .wf-hero__title {
+      margin: 18px 0 0;
+
+      font-family: var(--serif) !important;
+      font-size: clamp(34px, 4vw, 48px) !important;
+      font-weight: 400 !important;
+      line-height: 1.32 !important;
+      letter-spacing: .02em !important;
+
+      color: var(--ink) !important;
+    }
+
+    .wf-hero__desc {
+      margin: 22px 0 0;
+      max-width: 540px;
+
+      color: var(--gray) !important;
+      font-size: 14.5px !important;
+      line-height: 1.95 !important;
+      letter-spacing: .01em;
+    }
+
+    .wf-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      margin-top: 32px;
+    }
+
+    .wf-hero__meta {
+      margin-top: 18px;
+      color: var(--light);
+      font-size: 10.5px;
+      letter-spacing: .06em;
+    }
+
+    .wf-hero__visual { min-width: 0; }
+
+    .wf-window {
+      background: var(--white);
+      border: 1px solid var(--line);
+      box-shadow: 0 24px 54px rgba(27, 27, 25, .06);
+    }
+
+    .wf-window__bar {
+      height: 38px;
+      padding: 0 14px;
+
+      display: flex;
+      align-items: center;
+      gap: 6px;
+
+      border-bottom: 1px solid var(--line);
+    }
+
+    .wf-window__bar > span {
+      width: 5px;
+      height: 5px;
+      border: 1px solid var(--light);
+      border-radius: 50%;
+    }
+
+    .wf-window__bar > em {
+      margin-left: 10px;
+      color: var(--light);
+      font-size: 10px;
+      font-style: normal;
+      letter-spacing: .03em;
+    }
+
+    .wf-window img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    /* ---------- Main / sections ---------- */
+    .wf-main {
+      width: min(1120px, calc(100% - 48px)) !important;
+      max-width: 1120px !important;
+      margin: auto !important;
+      padding: 72px 0 84px !important;
+
+      display: flex;
+      flex: 1 0 auto;
+      flex-direction: column;
+      gap: 84px !important;
+    }
+
+    .wf-main > section {
+      scroll-margin-top: 112px;
+    }
+
+    /* section header */
+    .wf-main .text-center.max-w-3xl {
+      max-width: 720px !important;
+      margin: 0 0 40px 0 !important;
+      text-align: left !important;
+    }
+
+    .wf-main .text-center.max-w-3xl h2 {
+      margin: 0 !important;
+
+      font-family: var(--serif) !important;
+      font-size: clamp(28px, 3.4vw, 38px) !important;
+      font-weight: 400 !important;
+      line-height: 1.42 !important;
+      letter-spacing: .02em !important;
+
+      color: var(--ink) !important;
+    }
+
+    .wf-main .text-center.max-w-3xl p {
+      margin-top: 16px !important;
+
+      color: var(--gray) !important;
+      font-size: 14px !important;
+      line-height: 1.9 !important;
+    }
+
+    .wf-main h3 {
+      font-family: var(--serif) !important;
+      font-size: 20px !important;
+      font-weight: 400 !important;
+      line-height: 1.5 !important;
+      letter-spacing: .02em !important;
+      color: var(--ink) !important;
+    }
+
+    .wf-main p {
+      color: var(--text-body);
+    }
+
+    /* generic paper cards */
+    .wf-main [class*="bg-[#f8f8fa]"], .wf-main [class*="bg-[#F6F9F7]"], .wf-main [class*="bg-brand-50"], .wf-main [class*="bg-slate-50"] {
+      background: var(--white) !important;
+      border-color: var(--line) !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+    }
+
+    .wf-main [class*="bg-[#f8f8fa]"]:hover, .wf-main [class*="border-gray-100"]:hover {
+      border-color: rgba(27, 27, 25, .16) !important;
+      box-shadow: 0 14px 30px rgba(27, 27, 25, .04) !important;
+    }
+
+    .wf-main [class*="border-gray-100"], .wf-main [class*="border-slate-200"], .wf-main [class*="border-slate-100"] {
+      border-color: var(--line) !important;
+    }
+
+    .wf-main .shadow-sm, .wf-main .shadow-md, .wf-main .shadow-lg, .wf-main .shadow-xl {
+      box-shadow: none !important;
+    }
+
+    /* 图标底色统一为纸灰 */
+    .wf-main [class*="bg-brand-100"], .wf-main [class*="bg-emerald-50"], .wf-main [class*="bg-indigo-50"], .wf-main [class*="bg-cyan-50"], .wf-main [class*="bg-rose-50"], .wf-main [class*="bg-violet-50"] {
+      background: var(--paper) !important;
+      border: 1px solid var(--line);
+      color: var(--gray) !important;
+    }
+
+    .wf-main [class*="text-emerald-600"], .wf-main [class*="text-rose-500"], .wf-main [class*="text-indigo-600"], .wf-main [class*="text-cyan-600"], .wf-main [class*="text-violet-600"] {
+      color: var(--gray) !important;
+    }
+
+    /* 标签 / 胶囊统一为细线标签 */
+    .wf-main span.rounded-full, .wf-main .rounded-full.border {
+      border-radius: 0 !important;
+      background: transparent !important;
+      color: var(--gray) !important;
+      border: 1px solid var(--line);
+    }
+
+    .wf-main button.rounded-full, .wf-main a.rounded-full {
+      border-radius: 0 !important;
+    }
+
+    .wf-main a[class*="bg-brand-600"], .wf-main button[class*="bg-brand-600"], .wf-main a[class*="bg-white"][class*="text-brand"] {
+      background: var(--ink) !important;
+      border-color: var(--ink) !important;
+      color: var(--paper) !important;
+      box-shadow: none !important;
+    }
+
+    .wf-main a[class*="bg-brand-600"]:hover, .wf-main button[class*="bg-brand-600"]:hover {
+      background: #2b2b31 !important;
+      border-color: #2b2b31 !important;
+    }
+
+    /* Search */
+    #search-input {
+      height: 54px;
+      padding: 0 128px 0 46px !important;
+
+      border: 1px solid var(--line) !important;
+      border-radius: 0 !important;
+      background: var(--white) !important;
+
+      color: var(--ink) !important;
+      font-size: 13px !important;
+      box-shadow: none !important;
+      outline: none;
+    }
+
+    #search-input::placeholder { color: var(--light); }
+
+    #search-input:focus {
+      border-color: var(--ink) !important;
+      box-shadow: 0 0 0 1px var(--ink) !important;
+    }
+
+    #market .relative.max-w-2xl > div:first-child {
+      padding-left: 15px !important;
+      color: var(--gray) !important;
+    }
+
+    #search-kbd {
+      right: 14px !important;
+      padding: 4px 7px !important;
+      border: 1px solid var(--line) !important;
+      border-radius: 0 !important;
+      background: var(--paper) !important;
+      color: var(--light) !important;
+      font-size: 10px !important;
+      box-shadow: none !important;
+    }
+
+    #category-tags {
+      gap: 18px !important;
+    }
+
+    .wf-cat {
+      flex: none;
+      padding: 0 0 8px;
+
+      border: 0;
+      border-bottom: 1px solid transparent;
+      background: transparent;
+
+      color: var(--gray);
+      font-size: 12.5px;
+      letter-spacing: .03em;
+      white-space: nowrap;
+    }
+
+    .wf-cat.is-active {
+      color: var(--ink);
+      border-bottom-color: var(--ink);
+    }
+
+    #result-count, #clear-filter {
+      color: var(--light) !important;
+      font-size: 11px !important;
+      letter-spacing: .04em;
+    }
+
+    /* Dynamic workflow cards */
+    #workflow-grid {
+      display: grid !important;
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+      gap: 24px !important;
+      margin-top: 30px !important;
+      counter-reset: workflow;
+    }
+
+    .wf-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      min-height: 286px;
+      padding: 26px;
+
+      background: var(--white);
+      border: 1px solid var(--line);
+
+      cursor: pointer;
+
+      transition:
+        transform .35s var(--ease),
+        border-color .35s ease,
+        box-shadow .35s ease;
+    }
+
+    .wf-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(27, 27, 25, .18);
+      box-shadow: 0 16px 36px rgba(27, 27, 25, .05);
+    }
+
+    .wf-card::before {
+      counter-increment: workflow;
+      content: counter(workflow, decimal-leading-zero);
+
+      margin-bottom: 18px;
+
+      color: var(--light);
+      font-size: 10.5px;
+      letter-spacing: .18em;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .wf-card__category {
+      color: var(--gray);
+      font-size: 10.5px;
+      letter-spacing: .12em;
+    }
+
+    .wf-card__hot {
+      margin-left: 10px;
+      color: var(--ink);
+      font-size: 10px;
+      letter-spacing: .08em;
+    }
+
+    .wf-card__title {
+      margin: 10px 0 0;
+
+      font-family: var(--serif);
+      font-size: 21px;
+      font-weight: 400;
+      line-height: 1.5;
+      letter-spacing: .02em;
+    }
+
+    .wf-card__desc {
+      margin: 14px 0 0;
+
+      color: var(--text-body);
+      font-size: 13px;
+      line-height: 1.9;
+
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .wf-card__flow {
+      margin-top: 18px;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+    }
+
+    .wf-card__flow-label {
+      color: var(--light);
+      font-size: 10.5px;
+      letter-spacing: .05em;
+    }
+
+    .wf-card__nodes {
+      margin-top: 9px;
+
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 5px;
+
+      color: var(--gray);
+      font-size: 11px;
+      line-height: 1.7;
+    }
+
+    .wf-card__nodes i {
+      color: var(--light);
+      font-style: normal;
+    }
+
+    .wf-card__footer {
+      margin-top: auto;
+      padding-top: 18px;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+
+      color: var(--light);
+      font-size: 11px;
+    }
+
+    .wf-card__run {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+
+      color: var(--ink);
+      font-size: 11.5px;
+      letter-spacing: .04em;
+    }
+
+    .wf-card__run i {
+      font-style: normal;
+      transition: transform .3s ease;
+    }
+
+    .wf-card:hover .wf-card__run i { transform: translateX(3px); }
+
+    #empty-state {
+      padding: 70px 20px !important;
+      color: var(--gray);
+    }
+
+    /* Quickstart step cards */
+    .wf-main .grid > div > div[class*="h-40"] {
+      background: var(--paper) !important;
+      border-bottom: 1px solid var(--line);
+    }
+
+    /* Architecture / tabs */
+    .wf-main [class*="bg-slate-200"], .wf-main [class*="bg-slate-300"] {
+      background: var(--paper) !important;
+      border-color: var(--line) !important;
+    }
+
+    .wf-main button[class*="bg-white"] {
+      background: var(--white) !important;
+      color: var(--ink) !important;
+      box-shadow: none !important;
+    }
+
+    /* Quickstart step titles */
+    #quickstart .grid h2 {
+      font-family: var(--serif) !important;
+      font-size: 19px !important;
+      font-weight: 400 !important;
+      line-height: 1.5 !important;
+    }
+
+    /* Community */
+    #community > div:first-child, #community .bg-brand-900 {
+      background: var(--white) !important;
+      color: var(--ink) !important;
+      border: 1px solid var(--line);
+      box-shadow: none !important;
+    }
+
+    #community .bg-white\/10, #community .border-white\/20, #community .bg-white\/20 {
+      background: var(--paper) !important;
+      border-color: var(--line) !important;
+      color: var(--gray) !important;
+    }
+
+    #community h2 {
+      font-family: var(--serif) !important;
+      font-size: clamp(26px, 3vw, 32px) !important;
+      font-weight: 400 !important;
+      line-height: 1.45 !important;
+    }
+
+    #community h2, #community .text-white, #community .text-slate-300, #community .text-brand-200 {
+      color: var(--ink) !important;
+    }
+
+    #community a[class*="bg-brand-600"] {
+      background: var(--ink) !important;
+      border-color: var(--ink) !important;
+      color: var(--paper) !important;
+    }
+
+    #community a[class*="border-white"] {
+      background: transparent !important;
+      color: var(--ink) !important;
+      border-color: var(--line) !important;
+    }
+
+    /* FAQ */
+    .wf-main details {
+      background: var(--white) !important;
+      border-color: var(--line) !important;
+      box-shadow: none !important;
+    }
+
+    .wf-main details summary {
+      font-family: var(--serif);
+      font-size: 15px;
+      font-weight: 400;
+    }
+
+    .wf-main details table thead {
+      background: var(--paper) !important;
+    }
+
+    .wf-main details th, .wf-main details td {
+      border-color: var(--line) !important;
+    }
+
+    /* Final CTA */
+    .wf-final {
+      width: min(1120px, calc(100% - 48px));
+      margin: 0 auto;
+      padding: 0 0 72px;
+    }
+
+    .wf-final__inner {
+      padding: 56px 48px;
+
+      background: var(--white);
+      border: 1px solid var(--line);
+      text-align: center;
+    }
+
+    .wf-final__title {
+      margin: 0;
+
+      font-family: var(--serif);
+      font-size: clamp(26px, 3vw, 34px);
+      font-weight: 400;
+      line-height: 1.45;
+    }
+
+    .wf-final__desc {
+      margin: 14px 0 0;
+      color: var(--gray);
+      font-size: 13px;
+    }
+
+    .wf-final__actions {
+      margin-top: 28px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    /* Footer */
+
+    /* 备案号即入口：去掉独立「备案」链接，直接点击 ICP 号跳转工信部 */
+
+    /* ---------- Responsive ---------- */
+
+    @media (max-width: 900px) {
+
+      /* 移动端页眉略高，品牌与右侧操作区保持垂直居中 */
+      html:root body.hara .wf-header {
+        height: 64px !important;
+        min-height: 64px !important;
+      }
+
+      html:root body.hara .wf-header__inner {
+        height: 64px !important;
+        min-height: 64px !important;
+        align-items: center !important;
+      }
+
+      .wf-mobile {
+        max-height: calc(100dvh - 64px);
+      }
+
+      .wf-subnav {
+        top: 0;
+      }
+
+      .wf-subnav__inner {
+        width: calc(100% - 32px);
+        height: 40px;
+        gap: 18px;
+      }
+
+      .wf-subnav a {
+        font-size: 11px;
+      }
+
+      .wf-hero { padding: 42px 0 42px; }
+
+      .wf-hero__inner {
+        width: 100%;
+        padding: 0 16px;
+
+        grid-template-columns: 1fr;
+        gap: 34px;
+      }
+
+      .wf-hero__title {
+        font-size: 30px !important;
+        line-height: 1.4 !important;
+      }
+
+      .wf-hero__desc {
+        font-size: 13px !important;
+        line-height: 1.9 !important;
+      }
+
+      .wf-actions { flex-direction: column; align-items: stretch; }
+      .wf-actions .wf-btn { width: 100%; }
+
+      .wf-hero__meta { font-size: 10px; }
+
+      .wf-window__bar { height: 34px; }
+
+      .wf-main {
+        width: 100% !important;
+        padding: 40px 16px 64px !important;
+        gap: 56px !important;
+      }
+
+      .wf-main > section {
+        scroll-margin-top: 104px;
+      }
+
+      .wf-main .text-center.max-w-3xl {
+        margin-bottom: 28px !important;
+      }
+
+      .wf-main .text-center.max-w-3xl h2 {
+        font-size: 27px !important;
+        line-height: 1.45 !important;
+      }
+
+      .wf-main .text-center.max-w-3xl p {
+        font-size: 13px !important;
+      }
+
+      #search-input {
+        height: 50px;
+        padding-right: 44px !important;
+        font-size: 12.5px !important;
+      }
+
+      #search-kbd { display: none !important; }
+
+      #category-tags { gap: 16px !important; }
+
+      #workflow-grid {
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
+      }
+
+      .wf-card {
+        min-height: 0;
+        padding: 22px;
+      }
+
+      .wf-card__title { font-size: 20px; }
+
+      .wf-final {
+        width: calc(100% - 32px);
+        padding-bottom: 48px;
+      }
+
+      .wf-final__inner { padding: 40px 24px; }
+
+      .wf-final__actions { flex-direction: column; }
+      .wf-final__actions .wf-btn { width: 100%; }
+    }
+
+    /* 移动端整体缩放后的滚动容器：保证固定头部与二级导航不随页面滚走 */
+
+    /* 与 Agent / Skill 广场一致：窄屏锁定根滚动，交给 .page-scroll 内部滚动。
+       否则 adjustStyle 缩放 body 后，文档滚动高度仍按未缩放内容计算，
+       滚到底会出现一整屏空白。 */
+    @media (max-width: 900px) {
+      html,
+      body {
+        height: 100%;
+        overflow: hidden;
+      }
+    }
+
+    .page-scroll {
+      width: 100%;
+      height: 100%;
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-x: hidden;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      scroll-behavior: smooth;
+    }
+
+    @media (min-width: 901px) {
+      .wf-mobile { display: none !important; }
+    }
+
+    @media (max-width: 380px) {
+      .wf-hero__title { font-size: 27px !important; }
+    }
+
+    /* =========================
+       条款浮层适配：滚动锁（移植自 index.html）
+    ========================= */
+
+    .page-scroll.is-legal-open {
+      overflow: hidden;
+    }
+
+    .panel-close:focus-visible {
+      outline: 1px solid var(--ink);
+      outline-offset: 3px;
+    }
+
+    .copy-btn:focus-visible {
+      outline: 1px solid var(--ink);
+      outline-offset: 2px;
+    }
+
+    /* =========================
+   条款浮层（隐私政策 / 服务条款 / 联系我们）
+========================= */
+
+    .overlay {
+      position: fixed;
+      z-index: 200;
+      inset: 0;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      padding: 40px 24px;
+
+      /* 浮层挂到 <html> 下，不再继承 body 的字体与缩放 */
+      font-family: var(--sans);
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+
+      opacity: 0;
+      pointer-events: none;
+
+      transition: opacity .4s ease;
+    }
+
+    .overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .overlay-backdrop {
+      position: absolute;
+      inset: 0;
+
+      background: rgba(27, 27, 25, .22);
+
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+
+      touch-action: none;
+    }
+
+    /* 如一张平铺的纸，自下方微微浮起 */
+    .panel {
+      position: relative;
+
+      width: min(720px, 100%);
+      max-height: min(82vh, 780px);
+
+      display: flex;
+      flex-direction: column;
+
+      background: var(--white);
+      border: 1px solid var(--line);
+      box-shadow: 0 40px 90px rgba(27, 27, 25, .14);
+
+      transform: translateY(14px);
+
+      transition: transform .5s cubic-bezier(.2, .7, .2, 1);
+    }
+
+    .overlay.open .panel {
+      transform: translateY(0);
+    }
+
+    .panel-close {
+      position: absolute;
+      z-index: 1;
+      top: 18px;
+      right: 18px;
+
+      width: 40px;
+      height: 40px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border: 0;
+      background: transparent;
+
+      transition: transform .4s cubic-bezier(.2, .7, .2, 1);
+    }
+
+    .panel-close span {
+      position: absolute;
+
+      width: 14px;
+      height: 1px;
+
+      background: var(--gray);
+
+      transition: background .3s ease;
+    }
+
+    .panel-close span:first-child {
+      transform: rotate(45deg);
+    }
+
+    .panel-close span:last-child {
+      transform: rotate(-45deg);
+    }
+
+    .panel-close:hover {
+      transform: rotate(90deg);
+    }
+
+    .panel-close:hover span {
+      background: var(--ink);
+    }
+
+    .panel-body {
+      flex: 1 1 auto;
+      min-height: 0;
+
+      overflow-y: auto;
+      overscroll-behavior: contain;
+
+      padding: 56px 60px 52px;
+    }
+
+    .doc-row-value {
+      overflow-wrap: anywhere;
+    }
+
+    .panel-body::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .panel-body::-webkit-scrollbar-thumb {
+      background: var(--line);
+      border-radius: 3px;
+    }
+
+    .panel-body::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .doc-eyebrow {
+      color: var(--light);
+
+      font-size: 10px;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+    }
+
+    .doc-title {
+      margin: 16px 0 0;
+
+      font-family: var(--serif);
+      font-weight: 400;
+      font-size: 27px;
+
+      letter-spacing: .04em;
+    }
+
+    .doc-date {
+      margin-top: 12px;
+
+      color: var(--light);
+
+      font-size: 11px;
+      letter-spacing: .04em;
+    }
+
+    .doc-body {
+      margin-top: 34px;
+
+      border-top: 1px solid var(--line);
+    }
+
+    .doc-section {
+      padding: 24px 0;
+
+      border-bottom: 1px solid var(--line);
+    }
+
+    .doc-section:last-child {
+      padding-bottom: 0;
+
+      border-bottom: 0;
+    }
+
+    .doc-section h3 {
+      margin: 0;
+
+      font-family: var(--serif);
+      font-weight: 400;
+      font-size: 15px;
+
+      letter-spacing: .04em;
+    }
+
+    .doc-section p {
+      margin: 12px 0 0;
+
+      color: var(--gray);
+
+      font-size: 12.5px;
+      line-height: 1.95;
+    }
+
+    .doc-row {
+      padding: 22px 0;
+
+      display: flex;
+      align-items: baseline;
+      gap: 20px;
+
+      border-bottom: 1px solid var(--line);
+    }
+
+    .doc-row:last-child {
+      padding-bottom: 0;
+
+      border-bottom: 0;
+    }
+
+    .doc-row-icon {
+      flex: 0 0 auto;
+
+      align-self: flex-start;
+
+      width: 16px;
+      height: 16px;
+      /* 4px 补偿：让 16px 图标中心对齐 label 首行文字(11px)中心 */
+      margin: 4px -8px 0 0;
+
+      color: var(--gray);
+    }
+
+    .doc-row-icon svg {
+      display: block;
+
+      width: 16px;
+      height: 16px;
+    }
+
+    .doc-row-label {
+      flex: 0 0 96px;
+
+      color: var(--gray);
+
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: .04em;
+    }
+
+    .doc-row-value {
+      flex: 1;
+      min-width: 0;
+
+      font-size: 12.5px;
+      line-height: 1.9;
+    }
+
+    .doc-row-value em {
+      display: block;
+
+      margin-top: 8px;
+
+      color: var(--gray);
+
+      font-size: 11px;
+      font-style: normal;
+    }
+
+    .copy-btn {
+      padding: 0 0 2px;
+
+      display: inline-flex;
+      align-items: baseline;
+      gap: 8px;
+
+      border: 0;
+      border-bottom: 1px solid var(--line);
+      background: transparent;
+
+      color: var(--ink);
+
+      font-size: 12.5px;
+      letter-spacing: .02em;
+
+      transition: border-color .3s ease;
+    }
+
+    .copy-btn:hover {
+      border-bottom-color: var(--ink);
+    }
+
+    .copy-hint {
+      color: var(--gray);
+
+      font-size: 10px;
+      letter-spacing: .1em;
+
+      transition: color .3s ease;
+    }
+
+    .copy-btn.copied .copy-hint {
+      color: var(--ink);
+    }
+
+    @media (max-width: 900px) {
+      /* 移动端：浮层改为自底部升起的纸片 */
+      .overlay {
+        padding: 0;
+        padding-left: env(safe-area-inset-left);
+        padding-right: env(safe-area-inset-right);
+        align-items: flex-end;
+      }
+
+      .panel {
+        width: 100%;
+        max-height: 88vh;
+        max-height: 88dvh;
+
+        border-width: 1px 0 0;
+      }
+
+      .panel-body {
+        padding: 34px 22px calc(40px + env(safe-area-inset-bottom));
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .panel-close {
+        top: 8px;
+        right: 8px;
+      }
+
+      .doc-title {
+        font-size: 22px;
+      }
+
+      .doc-body {
+        margin-top: 26px;
+      }
+
+      .doc-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+
+      .doc-row-label {
+        flex: none;
+      }
+    }
+
+  

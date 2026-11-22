@@ -13,6 +13,9 @@ let t = path.resolve(__dirname, ".");
 let cPath = t + "/config/" + "common.js";
 let commonData = new ConfigObject(cPath).data;
 let loginedPath = t + "/config/" + "logined.js";
+let aPath = t + "/config/" + "appConfig.js";
+const configObject = new ConfigObject(aPath);
+const appConfigData = configObject.data;
 let Adapter = require("../custom/Adapter.js");
 let ModelRate = require("../custom/ModelRate.js");
 let tPath = t + "/config/" + "interface.js";
@@ -1975,8 +1978,8 @@ let data = {
         // -------- 构建查询条件 --------
         const condition = { publishStatus: "true" };
         if (folderName) condition.folderName = folderName;
-        if (appName) condition.appName = appName;
-        if (appAgent) condition.appAgent = appAgent;
+        condition.appName = appName || appConfigData.publishInfo.appName;
+        condition.appAgent = appAgent|| appConfigData.publishInfo.folderName;
         if (name) condition.name = new RegExp(escapeRegExp(name), "i");
 
         if (type !== undefined) {

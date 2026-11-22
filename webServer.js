@@ -384,7 +384,34 @@ app.use(function (req, res, next) {
   res.status(404).end();
 });
 
-app.use(express.static("static", {}));
+// 静态资源缓存策略：
+// - HTML 每次协商（no-cache，304 极快），保证发布后立即生效
+// - 字体一年 immutable；图片 7 天；JS/CSS/JSON 1 小时 + stale-while-revalidate
+// - 待构建版本化（?v=hash）落地后，可把 JS/CSS 升级为一年 immutable
+app.use(express.static("static", {
+  etag: true,
+  lastModified: true,
+  setHeaders: function (res, filePath) {
+    // 个人空间是私有资源，禁止任何共享缓存
+    var reqPath = (res.req && res.req.path) || "";
+    if (reqPath.indexOf("/bucket/personal/") === 0) {
+      res.setHeader("Cache-Control", "private, no-store");
+      return;
+    }
+    var ext = path.extname(filePath).toLowerCase();
+    if (ext === ".html") {
+      res.setHeader("Cache-Control", "no-cache");
+    } else if (ext === ".woff2" || ext === ".woff" || ext === ".ttf" || ext === ".otf") {
+      res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
+    } else if (ext === ".png" || ext === ".jpg" || ext === ".jpeg" || ext === ".webp" || ext === ".avif" || ext === ".svg" || ext === ".ico") {
+      res.setHeader("Cache-Control", "public, max-age=604800");
+    } else if (ext === ".js" || ext === ".css" || ext === ".vue" || ext === ".json") {
+      res.setHeader("Cache-Control", "public, max-age=3600, stale-while-revalidate=86400");
+    } else {
+      res.setHeader("Cache-Control", "public, max-age=300");
+    }
+  },
+}));
 
 
 // 2. 配置 Multer 存储引擎

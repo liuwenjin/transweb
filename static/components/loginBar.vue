@@ -1355,217 +1355,221 @@ export default {
 
 <style scoped>
 /* ==========================================================================
-   原研哉「白与空」设计系统（仅重写样式，未改动模板与交互逻辑）
-   - 纸白 #fafafc / 墨色 #1a1a1e / 淡墨 #6e6e73 / 细线 #e7e7eb
-   - 直角卡片，主按钮墨色水滴微光，点击 1px 下沉
+   ON STAFF · 登录条与用户浮窗
+   参考 index.html 的 #onStaffSkin：纸白 / 松烟墨 / 朱砂 / 细线
+   - 浮窗是一张纸片：直角、1px 细线、2px 朱砂顶线、轻投影
+   - 标签用等宽小字，数值用宋体，正文用无衬线，形成档案感
+   - 交互只做颜色与 1px 边线变化，键盘焦点保持 2px 墨线
    ========================================================================== */
 .loginContentArea {
-  --paper: #fafafc;
-  --card: #ffffff;
-  --field: #f8f8fa;
-  --field-hover: #f4f4f6;
-  --ink: #1a1a1e;
-  --ash: #6e6e73;
-  --ash-2: #a5a5aa;
-  --line: #e7e7eb;
-  --border: #ebebef;
-  --border-strong: #9999a0;
-  --red: #a0554a;
-  --serif: "Source Han Serif SC", "Noto Serif SC", "Songti SC", "STSong", serif;
-  --sans: Inter, -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial,
+  --os-ink: #191817;
+  --os-ink-soft: #2b2b31;
+  --os-paper: #f7f4ec;
+  --os-paper-2: #efeadd;
+  --os-card: #fcfaf3;
+  --os-line: #ded7c7;
+  --os-gray: #6e6a60;
+  --os-light: #a6a196;
+  --os-red: #c33a1e;
+  --os-red-dark: #a62f17;
+  --os-hover: #f3f0e7;
+  --os-serif: "Source Han Serif SC", "Noto Serif SC", "Songti SC", "STSong",
+    Georgia, serif;
+  --os-sans: Inter, -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial,
     "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
-  --shadow-card: 0 20px 70px rgba(20, 20, 30, 0.055),
-    0 2px 8px rgba(20, 20, 30, 0.025);
-  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
-}
+  --os-mono: "SF Mono", "JetBrains Mono", ui-monospace, Menlo, Consolas,
+    monospace;
+  --os-ease: cubic-bezier(0.2, 0.7, 0.2, 1);
 
-/* ==========================================================================
-   Base Layout Container
-   ========================================================================== */
-.loginContentArea {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
   text-align: right;
   line-height: 1;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  width: 100%;
-  height: 30px;
-  font-family: var(--sans);
+  font-family: var(--os-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  --el-color-primary: #c33a1e;
+  --el-border-radius-base: 0;
 }
 
 /* ==========================================================================
-   未登录「登录 / 注册」按钮：墨色
+   页眉触发按钮
    ========================================================================== */
 .login-main-btn.el-button {
-  height: 32px !important;
-  padding: 0 12px !important;
-  border-radius: 0px !important;
-  font-size: 13px !important;
-  font-weight: 500 !important;
-  letter-spacing: 0.1em;
-  background: var(--ink) !important;
-  border: 1px solid var(--ink) !important;
-  color: #ffffff !important;
-  box-shadow: none !important;
-  transition: all 0.3s var(--ease-out) !important;
+  min-width: 40px;
+  height: 40px;
+  padding: 0 16px;
+  border: 1px solid var(--os-red);
+  border-radius: 0;
+  background: var(--os-red);
+  color: #ffffff;
+  font-family: var(--os-sans);
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  box-shadow: none;
+  transition: background-color 0.25s var(--os-ease),
+    border-color 0.25s var(--os-ease);
 }
 
 .login-main-btn.el-button:hover {
-  background: #2b2b31 !important;
-  border-color: #2b2b31 !important;
-  color: #ffffff !important;
-  box-shadow: 0 6px 18px rgba(20, 20, 30, 0.18) !important;
+  background: var(--os-red-dark);
+  border-color: var(--os-red-dark);
+  color: #ffffff;
 }
 
 .login-main-btn.el-button:active {
-  transform: translateY(1px) !important;
+  background: var(--os-red-dark);
+  border-color: var(--os-red-dark);
 }
 
-/* ==========================================================================
-   Popover 卡片：纸白纸片，直角
-   ========================================================================== */
-.saas-premium-popover.el-popper {
-  padding: 0 !important;
-  background: var(--card) !important;
-  border: 1px solid var(--border) !important;
-  border-radius: 0px !important;
-  right: 0px !important;
-  box-shadow: var(--shadow-card) !important;
-  overflow: auto;
-  transition: all 0.35s var(--ease-out);
-}
-
-/* ==========================================================================
-   登录后触发按钮
-   ========================================================================== */
-.user-trigger-btn {
-  height: 30px !important;
-  line-height: 30px !important;
-  padding: 0 10px !important;
-  font-size: 14px !important;
-  font-weight: 500 !important;
-  border-radius: 0px !important;
+.user-trigger-btn.el-button {
   width: calc(100% - 10px);
-  background: var(--card) !important;
-  border: 1px solid var(--line) !important;
-  color: var(--ink) !important;
-  box-shadow: none !important;
-  transition: all 0.3s var(--ease-out) !important;
+  min-width: 40px;
+  height: 40px;
+  padding: 0 10px;
+  border: 1px solid var(--os-line);
+  border-radius: 0;
+  background: transparent;
+  color: var(--os-ink);
+  font-family: var(--os-sans);
+  font-size: 13px;
+  font-weight: 500;
+  box-shadow: none;
+  transition: background-color 0.25s var(--os-ease),
+    border-color 0.25s var(--os-ease), color 0.25s var(--os-ease);
 }
 
-.user-trigger-btn:hover {
-  background: var(--field-hover) !important;
-  border-color: var(--border-strong) !important;
-  transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(20, 20, 30, 0.08) !important;
+.user-trigger-btn.el-button:hover {
+  background: var(--os-card);
+  border-color: var(--os-ink);
+  color: var(--os-ink);
 }
 
 .loginContentArea[popovershow="true"] > .user-trigger-btn {
-  background: var(--ink) !important;
-  color: #ffffff !important;
-  border-color: var(--ink) !important;
-  box-shadow: 0 4px 12px rgba(20, 20, 30, 0.18) !important;
+  background: var(--os-ink);
+  border-color: var(--os-ink);
+  color: var(--os-paper);
 }
 
-/* ==========================================================================
-   触发按钮内的积分徽章
-   ========================================================================== */
+/* 触发按钮内所有元素共用一条垂直中线：
+   头像、积分图标、数字与单位都按中心对齐，避免小头像被基线抬高 */
+.avatarItem {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 20px;
+  min-width: 0;
+  line-height: 1;
+}
+
+.user-trigger-btn .el-avatar {
+  display: block;
+  flex: 0 0 auto;
+  margin-top: 0 !important;
+  border-radius: 0 !important;
+  background: var(--os-paper-2) !important;
+}
+
+.user-trigger-btn .el-avatar img {
+  display: block;
+  border-radius: 0;
+}
+
+/* 触发按钮内的积分徽章 */
 .pointsValueTips {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--ash);
-  margin-left: 8px;
   display: inline-flex;
   align-items: center;
   gap: 4px;
-}
-
-.pointsValueTips .icon {
-  display: inline-block;
-  vertical-align: middle;
-}
-
-/* 积分图标统一收拢为墨色 */
-.pointsValueTips .icon path {
-  fill: var(--ink) !important;
-}
-
-.pointsValueTips .unit {
+  height: 20px;
+  margin-left: 0;
+  color: var(--os-gray);
+  font-family: var(--os-mono);
   font-size: 11px;
-  font-weight: 500;
-  color: var(--ash-2);
-  margin-left: 1px;
-}
-
-/* ==========================================================================
-   Popover 用户信息卡
-   ========================================================================== */
-.mySpaceInfo {
-  padding: 24px;
-  background: var(--card);
-  border-radius: 0px;
-}
-
-.loginContentArea .el-popper {
-  max-height: 460px !important;
-}
-
-.personalInfoItem {
-  padding: 16px 0;
-  font-size: 14px;
-  color: var(--ash);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-bottom: 1px solid var(--line);
-  transition: background-color 0.2s ease;
-}
-
-.itemLabel {
-  font-size: 14px;
-  font-weight: 500;
-  text-align: left;
+  font-weight: 400;
+  line-height: 1;
   letter-spacing: 0.04em;
-  color: var(--ash-2);
-  min-width: 80px;
-  white-space: nowrap;
-}
-
-.itemContent {
-  flex: 1;
-  font-weight: 600;
-  margin-left: 15px;
-  color: var(--ink);
-  padding: 0 12px;
-}
-
-.pointsValue {
-  flex: 1;
-  font-size: 15px;
-  font-weight: 600;
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI",
-    Roboto, sans-serif;
-  color: var(--ink);
-  padding: 0 12px;
   font-variant-numeric: tabular-nums;
 }
 
-.pointsValue.primaryValue {
-  color: var(--ink);
-  font-size: 16px;
-  font-weight: 700;
+.pointsValueTips .icon {
+  display: block;
+  flex: 0 0 auto;
+  vertical-align: middle;
+}
+
+/* 图标本体是蓝色填充，统一收拢为当前文字色 */
+.pointsValueTips .icon path {
+  fill: currentColor !important;
+}
+
+.pointsValueTips .unit {
+  margin-left: 1px;
+  color: var(--os-light);
+  font-size: 9.5px;
+}
+
+.loginContentArea[popovershow="true"] > .user-trigger-btn .pointsValueTips {
+  color: var(--os-paper-2);
+}
+
+.loginContentArea[popovershow="true"] > .user-trigger-btn .pointsValueTips .unit {
+  color: var(--os-light);
 }
 
 /* ==========================================================================
-   头像编辑区
+   浮窗内容：纸片卡
+   外壳（背景、描边、投影、定位）在文件末尾的非 scoped 规则中维护，
+   这里只负责卡片内部的排版与控件。
    ========================================================================== */
+.mySpaceInfo,
+.mySpaceInfo *,
+.mySpaceInfo *::before,
+.mySpaceInfo *::after {
+  box-sizing: border-box;
+}
+
+.mySpaceInfo {
+  --os-ink: #191817;
+  --os-ink-soft: #2b2b31;
+  --os-paper: #f7f4ec;
+  --os-paper-2: #efeadd;
+  --os-card: #fcfaf3;
+  --os-line: #ded7c7;
+  --os-gray: #6e6a60;
+  --os-light: #a6a196;
+  --os-red: #c33a1e;
+  --os-red-dark: #a62f17;
+  --os-hover: #f3f0e7;
+  --os-serif: "Source Han Serif SC", "Noto Serif SC", "Songti SC", "STSong",
+    Georgia, serif;
+  --os-sans: Inter, -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial,
+    "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --os-mono: "SF Mono", "JetBrains Mono", ui-monospace, Menlo, Consolas,
+    monospace;
+
+  position: relative;
+  padding: 20px 22px 14px;
+  background: var(--os-card);
+  color: var(--os-ink);
+  font-family: var(--os-sans);
+  font-size: 13px;
+  line-height: 1.5;
+  text-align: left;
+}
+
+/* 头像 + 菜单网格 */
 .avaterEdit {
-  padding-bottom: 20px;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
+  gap: 16px;
+  padding: 0 0 18px;
+  border-bottom: 1px solid var(--os-line);
 }
 
 .avatarContainer {
@@ -1574,842 +1578,612 @@ export default {
   flex: 0 0 auto;
 }
 
-.user-large-avatar {
-  cursor: pointer;
-  border: 1px solid var(--line) !important;
-  box-shadow: none;
-  transition: all 0.3s ease !important;
-  background-color: var(--field) !important;
+.user-large-avatar.el-avatar {
+  overflow: hidden;
+  padding: 0;
+  border: 1px solid var(--os-line);
+  border-radius: 0 !important;
+  background: var(--os-paper-2) !important;
+  transition: border-color 0.2s ease;
 }
 
-.user-large-avatar:hover {
-  transform: scale(1.03);
-  box-shadow: 0 8px 20px rgba(20, 20, 30, 0.1);
+.user-large-avatar.el-avatar img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+  object-fit: cover;
 }
 
-/* ==========================================================================
-   网格菜单按钮
-   ========================================================================== */
+.user-large-avatar.el-avatar:hover {
+  border-color: var(--os-ink);
+}
+
+.user-large-avatar i {
+  font-size: 18px;
+}
+
 .menuItemList {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 8px;
   flex: 1 1 auto;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
   min-width: 0;
-  margin-left: 16px;
+  margin: 0 0 0 16px;
   float: none;
 }
 
 .menuItemList > span {
-  margin-bottom: 0;
   display: block;
-}
-
-.menuItemList > span:nth-child(2n) {
-  margin-left: 0;
+  margin: 0;
 }
 
 .actionGridBtn.el-button {
-  width: 100% !important;
-  height: 38px !important;
-  border-radius: 0px !important;
-  background: var(--field) !important;
-  border: 1px solid var(--line) !important;
-  color: var(--ash) !important;
-  font-weight: 500 !important;
-  font-size: 13px !important;
-  box-shadow: none !important;
-  padding: 0 10px !important;
+  width: 100%;
+  height: 36px;
+  margin: 0;
+  padding: 0 10px;
   overflow: hidden;
-  transition: all 0.25s var(--ease-out) !important;
+  border: 1px solid var(--os-line);
+  border-radius: 0;
+  background: transparent;
+  color: var(--os-ink);
+  font-family: var(--os-sans);
+  font-size: 12.5px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  box-shadow: none;
+  transition: background-color 0.2s ease, border-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .actionGridBtn.el-button:hover {
-  background: var(--card) !important;
-  color: var(--ink) !important;
-  border-color: var(--border-strong) !important;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(20, 20, 30, 0.08) !important;
+  background: var(--os-hover);
+  border-color: var(--os-ink);
+  color: var(--os-ink);
 }
 
 .actionGridBtn.el-button:active {
-  transform: translateY(1px) !important;
+  background: var(--os-paper-2);
 }
 
-/* 长英文文案（如 "AIGC History"）超长时优雅省略，避免溢出。
-   用显式的 label 节点而不是深度选择器，遵守项目样式规则。 */
+/* 长英文文案（如 "AIGC History"）在按钮内优雅省略 */
 .actionGridBtn.el-button .login-menu-label {
   display: block;
-
   width: 100%;
   min-width: 0;
   overflow: hidden;
-
   text-align: center;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
 
 /* ==========================================================================
-   次级 / 主操作按钮
+   信息行：等宽标签 + 宋体数值
+   ========================================================================== */
+.personalInfoItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--os-line);
+  color: var(--os-gray);
+  font-size: 13px;
+}
+
+.itemLabel {
+  flex: 0 0 88px;
+  min-width: 0;
+  color: var(--os-gray);
+  font-family: var(--os-mono);
+  font-size: 10.5px;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  line-height: 1.4;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.itemContent {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  color: var(--os-ink);
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.pointsValue {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0;
+  color: var(--os-ink);
+  font-family: var(--os-serif);
+  font-size: 19px;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.01em;
+  line-height: 1.2;
+}
+
+.pointsValue.primaryValue {
+  font-size: 22px;
+}
+
+/* 昵称编辑态：像在档案卡上直接划线修改 */
+.nickNameEdit > span[contenteditable="true"] {
+  padding: 2px 6px;
+  border-bottom: 1px solid var(--os-ink);
+  border-radius: 0;
+  outline: none;
+  background: var(--os-paper-2);
+}
+
+/* ==========================================================================
+   行内操作：细线小按钮 / 朱砂主操作
    ========================================================================== */
 .subtleBtn.el-button {
-  background: var(--field) !important;
-  border: 1px solid transparent !important;
-  color: var(--ash) !important;
-  font-weight: 500 !important;
-  letter-spacing: 0.04em;
-  padding: 0 14px !important;
-  transition: all 0.2s ease !important;
+  flex: 0 0 auto;
+  height: 28px;
+  margin: 0;
+  padding: 0 11px;
+  border: 1px solid var(--os-line);
+  border-radius: 0;
+  background: transparent;
+  color: var(--os-ink);
+  font-family: var(--os-sans);
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  box-shadow: none;
+  transition: background-color 0.2s ease, border-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .subtleBtn.el-button:hover {
-  background: var(--field-hover) !important;
-  color: var(--ink) !important;
+  background: var(--os-ink);
+  border-color: var(--os-ink);
+  color: var(--os-paper);
+}
+
+.subtleBtn.el-button:active {
+  background: var(--os-ink-soft);
+  border-color: var(--os-ink-soft);
+  color: var(--os-paper);
 }
 
 .primaryGradientBtn.el-button {
-  background: var(--ink) !important;
-  border: 1px solid var(--ink) !important;
-  color: #ffffff !important;
-  font-weight: 500 !important;
-  letter-spacing: 0.04em;
-  padding: 0 16px !important;
-  box-shadow: none !important;
-  transition: all 0.25s ease !important;
+  flex: 0 0 auto;
+  height: 28px;
+  margin: 0;
+  padding: 0 13px;
+  border: 1px solid var(--os-red);
+  border-radius: 0;
+  background: var(--os-red);
+  color: #ffffff;
+  font-family: var(--os-sans);
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  box-shadow: none;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .primaryGradientBtn.el-button:hover {
-  background: #2b2b31 !important;
-  border-color: #2b2b31 !important;
-  color: #ffffff !important;
-  transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(20, 20, 30, 0.16) !important;
+  background: var(--os-red-dark);
+  border-color: var(--os-red-dark);
+  color: #ffffff;
 }
 
 .primaryGradientBtn.el-button:active {
-  transform: translateY(1px) !important;
+  background: var(--os-red-dark);
+  border-color: var(--os-red-dark);
 }
 
 /* ==========================================================================
-   退出登录 / 底部操作
+   退出登录
    ========================================================================== */
 .exitLogined {
-  margin-top: 12px;
-  padding-top: 16px;
-  padding-bottom: 0;
-  display: block;
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 0;
+  padding: 12px 0 0;
+  border-top: 1px solid var(--os-line);
+  border-bottom: 0;
 }
 
 .exitLogined .el-button.exitButton {
+  height: auto;
+  min-height: 0;
+  margin: 0;
   padding: 0;
-  font-size: 13px;
+  border: 0;
+  background: transparent;
+  color: var(--os-red);
+  font-family: var(--os-sans);
+  font-size: 12px;
   font-weight: 500;
-  letter-spacing: 0.02em;
-  color: var(--red);
-  transition: all 0.2s ease;
+  letter-spacing: 0.06em;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: rgba(195, 58, 30, 0.35);
+  text-underline-offset: 3px;
+  transition: color 0.2s ease, text-decoration-color 0.2s ease;
 }
 
 .exitLogined .el-button.exitButton:hover {
-  color: #8a453c;
-  opacity: 0.9;
-}
-
-.el-avatar {
-  background-color: transparent;
-}
-
-.avatarContainer .el-avatar {
-  padding: 0px;
-}
-
-.exitLogined .el-button.modifyButton {
-  padding: 0;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--ash-2);
-  transition: all 0.2s ease;
-}
-
-.exitLogined .el-button.modifyButton:hover {
-  color: var(--ink);
-}
-
-/* ==========================================================================
-   昵称编辑态
-   ========================================================================== */
-.nickNameEdit > span[contenteditable="true"] {
-  border-bottom: 1px solid var(--ink);
-  outline: none;
-  background: var(--field-hover);
-  padding: 2px 8px;
-  border-radius: 0px;
-}
-
-/* ==========================================================================
-   无障碍：键盘焦点可见
-   ========================================================================== */
-.loginContentArea .el-button:focus-visible,
-.loginContentArea .el-avatar:focus-visible,
-.loginContentArea [contenteditable="true"]:focus {
-  outline: 1px solid var(--ink);
-  outline-offset: 3px;
+  background: transparent;
+  color: var(--os-red-dark);
+  text-decoration-color: currentColor;
 }
 
 /* ==========================================================================
    API Key 管理
    ========================================================================== */
+.apiKeySection {
+  padding-bottom: 12px;
+}
+
 .apiKeyPanel {
-  padding: 14px 0 6px 0;
-  border-bottom: 1px solid var(--line);
+  margin: 0 0 10px;
+  padding: 12px;
+  border: 1px solid var(--os-line);
+  background: var(--os-paper);
 }
 
 .apiKeyAddRow {
   display: flex;
-  gap: 8px;
   align-items: center;
-  margin-bottom: 16px;
+  gap: 8px;
+  margin-bottom: 10px;
 }
 
-/* 输入框：内嵌图标 + 墨色聚焦，对齐 loginDialog 设计标准 */
 .apiKeyField {
   position: relative;
-  flex: 1;
+  flex: 1 1 auto;
   min-width: 0;
 }
 
 .apiKeyField .fieldIcon {
   position: absolute;
-  left: 12px;
   top: 50%;
-  transform: translateY(-50%);
-  width: 16px;
-  height: 16px;
-  color: var(--ash-2);
-  pointer-events: none;
+  left: 10px;
   z-index: 1;
-  transition: color 0.3s ease;
+  width: 14px;
+  height: 14px;
+  color: var(--os-gray);
+  pointer-events: none;
+  transform: translateY(-50%);
+  transition: color 0.2s ease;
 }
 
 .apiKeyField input {
   width: 100%;
   height: 32px;
-  padding: 0 12px 0 38px;
-  background-color: var(--field) !important;
-  color: var(--ink) !important;
-  font-size: 13px !important;
-  letter-spacing: 0.02em;
-  border: 1px solid var(--line);
-  border-radius: 0px !important;
-  box-shadow: inset 0 1px 3px rgba(20, 20, 30, 0.03);
+  padding: 0 10px 0 32px;
+  border: 1px solid var(--os-line);
+  border-radius: 0;
   outline: none;
-  transition: all 0.3s ease;
+  background: var(--os-card);
+  color: var(--os-ink);
+  font-family: var(--os-sans);
+  font-size: 12px;
+  letter-spacing: 0.01em;
+  box-shadow: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .apiKeyField input::placeholder {
-  color: var(--ash-2);
-  font-size: 13px;
+  color: var(--os-gray);
+  font-size: 12px;
 }
 
 .apiKeyField input:focus {
-  border-color: var(--ink);
-  background-color: var(--card) !important;
-  box-shadow: 0 0 0 1px var(--ink);
+  border-color: var(--os-ink);
+  box-shadow: 0 0 0 1px var(--os-ink);
 }
 
 .apiKeyField:focus-within .fieldIcon {
-  color: var(--ink);
+  color: var(--os-ink);
 }
 
-/* 添加按钮：松烟墨色，与主操作一致 */
 .apiKeyAddBtn.el-button {
-  height: 32px !important;
-  padding: 0 14px !important;
-  border-radius: 0px !important;
-  background: var(--ink) !important;
-  border: 1px solid var(--ink) !important;
-  color: #ffffff !important;
-  font-weight: 500 !important;
-  font-size: 13px !important;
-  letter-spacing: 0.04em;
-  box-shadow: none !important;
-  transition: all 0.25s var(--ease-out) !important;
+  flex: 0 0 auto;
+  height: 32px;
+  margin: 0;
+  padding: 0 12px;
+  border: 1px solid var(--os-ink);
+  border-radius: 0;
+  background: var(--os-ink);
+  color: var(--os-paper);
+  font-family: var(--os-sans);
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  box-shadow: none;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .apiKeyAddBtn.el-button:hover {
-  background: #2b2b31 !important;
-  border-color: #2b2b31 !important;
-  transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(20, 20, 30, 0.16) !important;
-}
-
-.apiKeyAddBtn.el-button:active {
-  transform: translateY(1px) !important;
-}
-
-/* 行内操作区：复制 + 删除，靠右且不挤压 Key 信息 */
-.apiKeyActions {
-  display: flex;
-  align-items: center;
-  gap: 2px;
-  flex: 0 0 auto;
-}
-
-/* 复制按钮：与删除按钮同级的轻量文字按钮，hover 时提亮到墨色 */
-.apiKeyCopyBtn.el-button {
-  padding: 0 2px !important;
-  font-size: 12px !important;
-  font-weight: 500 !important;
-  letter-spacing: 0.04em;
-  color: var(--ash) !important;
-  background: transparent !important;
-  transition: all 0.2s ease !important;
-}
-
-.apiKeyCopyBtn.el-button:hover {
-  color: var(--ink) !important;
-  background: transparent !important;
-}
-
-.apiKeyCopyBtn.el-button:active {
-  transform: translateY(1px) !important;
-}
-
-/* 删除按钮：淡墨红，非高饱和 */
-.apiKeyDeleteBtn.el-button {
-  padding: 0 2px !important;
-  font-size: 12px !important;
-  font-weight: 500 !important;
-  letter-spacing: 0.04em;
-  color: var(--ash-2) !important;
-  background: transparent !important;
-  transition: all 0.2s ease !important;
-}
-
-.apiKeyDeleteBtn.el-button:hover {
-  color: var(--red) !important;
-  background: transparent !important;
-}
-
-.apiKeyDeleteBtn.el-button:active {
-  transform: translateY(1px) !important;
+  background: var(--os-ink-soft);
+  border-color: var(--os-ink-soft);
+  color: var(--os-paper);
 }
 
 .apiKeyList {
-  max-height: 180px;
+  max-height: 224px;
   overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--os-line) transparent;
 }
 
 .apiKeyItem {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
-  padding: 11px 2px;
-  border-top: 1px solid var(--line);
-  transition: background-color 0.2s ease;
-}
-
-.apiKeyItem:first-child {
-  border-top: none;
-}
-
-.apiKeyItem:hover {
-  background: var(--field);
+  gap: 8px;
+  padding: 9px 0;
+  border-top: 1px solid var(--os-line);
 }
 
 .apiKeyItem .el-button {
   flex: 0 0 auto;
-  flex-shrink: 0;
 }
 
 .apiKeyInfo {
-  flex: 1;
+  flex: 1 1 auto;
   min-width: 0;
   text-align: left;
 }
 
 .apiKeyName {
-  font-weight: 600;
-  color: var(--ink);
-  font-size: 13px;
-  letter-spacing: 0.04em;
   overflow: hidden;
+  color: var(--os-ink);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
 
 .apiKeyMask {
-  font-size: 12px;
-  color: var(--ash-2);
-  margin-top: 4px;
-  line-height: 1.5;
-  letter-spacing: 0.02em;
-  white-space: nowrap;
+  margin-top: 3px;
   overflow: hidden;
+  color: var(--os-gray);
+  font-family: var(--os-mono);
+  font-size: 11px;
+  letter-spacing: 0;
+  line-height: 1.4;
+  white-space: nowrap;
   text-overflow: ellipsis;
   user-select: all;
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI",
-    Roboto, monospace;
 }
 
 .apiKeyTime {
-  font-size: 11px;
-  color: var(--ash-2);
-  margin-top: 3px;
-  letter-spacing: 0.02em;
+  margin-top: 2px;
+  color: var(--os-gray);
+  font-family: var(--os-mono);
+  font-size: 10px;
+  letter-spacing: 0.04em;
 }
 
 .apiKeyEmpty {
-  font-size: 12px;
-  color: var(--ash-2);
-  padding: 16px 0;
-  text-align: center;
+  padding: 14px 0;
+  color: var(--os-gray);
+  font-size: 11.5px;
   letter-spacing: 0.04em;
+  text-align: center;
+}
+
+.apiKeyActions {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 6px;
+}
+
+.apiKeyCopyBtn.el-button,
+.apiKeyDeleteBtn.el-button {
+  height: auto;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-family: var(--os-sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: rgba(25, 24, 23, 0.28);
+  text-underline-offset: 3px;
+}
+
+.apiKeyCopyBtn.el-button {
+  color: var(--os-ink);
+}
+
+.apiKeyCopyBtn.el-button:hover {
+  background: transparent;
+  color: var(--os-red);
+  text-decoration-color: currentColor;
+}
+
+.apiKeyDeleteBtn.el-button {
+  color: var(--os-gray);
+  text-decoration-color: rgba(110, 106, 96, 0.3);
+}
+
+.apiKeyDeleteBtn.el-button:hover {
+  background: transparent;
+  color: var(--os-red);
+  text-decoration-color: currentColor;
 }
 
 /* ==========================================================================
-   移动端适配：浮窗宽度与内容布局
+   滚动条：细线，不抢视觉
    ========================================================================== */
-@media (max-width: 767px) {
+.apiKeyList::-webkit-scrollbar {
+  width: 4px;
+}
+
+.apiKeyList::-webkit-scrollbar-thumb {
+  background: var(--os-line);
+}
+
+.apiKeyList::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* ==========================================================================
+   键盘焦点
+   ========================================================================== */
+.loginContentArea .el-button:focus-visible,
+.loginContentArea .el-avatar:focus-visible,
+.loginContentArea [contenteditable="true"]:focus-visible {
+  outline: 2px solid var(--os-ink);
+  outline-offset: 3px;
+}
+
+/* ==========================================================================
+   移动端：内容更紧凑，仍保持一行两个入口
+   ========================================================================== */
+@media (max-width: 640px) {
   .mySpaceInfo {
-    padding: 20px 16px;
+    padding: 16px 16px 12px;
   }
 
-  /* 移动端按钮更紧凑，保证 "AIGC History" 等英文完整显示 */
+  .avaterEdit {
+    gap: 14px;
+    padding-bottom: 14px;
+  }
+
+  .menuItemList {
+    gap: 6px;
+    margin-left: 12px;
+  }
+
   .actionGridBtn.el-button {
-    padding: 0 8px !important;
-    font-size: 12px !important;
+    height: 34px;
+    padding: 0 6px;
+    font-size: 12px;
+  }
+
+  .personalInfoItem {
+    padding: 10px 0;
+  }
+
+  .itemLabel {
+    flex-basis: 72px;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+  }
+
+  .itemContent {
+    font-size: 13px;
+  }
+
+  .pointsValue {
+    font-size: 18px;
+  }
+
+  .pointsValue.primaryValue {
+    font-size: 20px;
+  }
+
+  .subtleBtn.el-button,
+  .primaryGradientBtn.el-button {
+    padding: 0 9px;
+  }
+
+  .apiKeyPanel {
+    padding: 10px;
+  }
+
+  .apiKeyField input,
+  .apiKeyAddBtn.el-button {
+    height: 30px;
   }
 }
 
 /* ==========================================================================
-   无障碍：动效敏感用户降级
+   动效敏感用户降级
    ========================================================================== */
 @media (prefers-reduced-motion: reduce) {
-  .saas-premium-popover.el-popper,
-  .user-trigger-btn,
-  .user-large-avatar,
-  .actionGridBtn.el-button,
-  .subtleBtn.el-button,
-  .primaryGradientBtn.el-button,
-  .apiKeyAddBtn.el-button,
-  .apiKeyCopyBtn.el-button,
-  .apiKeyDeleteBtn.el-button,
-  .apiKeyField input,
-  .apiKeyField .fieldIcon {
+  .loginContentArea *,
+  .loginContentArea *::before,
+  .loginContentArea *::after {
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transform: none !important;
-  }
-}
-
-
-/* ==========================================================================
-   GOV.UK 服务设计规范适配层
-   - 页眉按钮 44px、GDS 绿色主按钮；弹层直角、1px 描边
-   - 文字 19px / 16px，GDS 蓝链接与黄色键盘焦点
-   ========================================================================== */
-.loginContentArea {
-  --gds-black: #0b0c0c;
-  --gds-blue: #1d70b8;
-  --gds-green: #00703c;
-  --gds-green-hover: #005a30;
-  --gds-green-shadow: #002d18;
-  --gds-red: #d4351c;
-  --gds-yellow: #ffdd00;
-  --gds-grey: #f3f2f1;
-  --gds-border: #b1b4b6;
-  --gds-secondary: #505a5f;
-  --gds-font: "GDS Transport", Arial, "Noto Sans SC", "Source Han Sans SC",
-    "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
-
-  --paper: #ffffff;
-  --card: #ffffff;
-  --field: var(--gds-grey);
-  --field-hover: #dbdad9;
-  --ink: var(--gds-black);
-  --ash: var(--gds-secondary);
-  --ash-2: #6f777b;
-  --line: var(--gds-border);
-  --border: var(--gds-border);
-  --border-strong: var(--gds-black);
-  --red: var(--gds-red);
-  --serif: var(--gds-font);
-  --sans: var(--gds-font);
-
-  height: 44px;
-  min-height: 44px;
-  font-family: var(--gds-font);
-  font-size: 1.1875rem;
-  line-height: 1.5;
-
-  --el-color-primary: var(--gds-green);
-  --el-color-primary-light-3: var(--gds-green-hover);
-  --el-border-radius-base: 0;
-  --el-border-color: var(--gds-border);
-  --el-text-color-primary: var(--gds-black);
-  --el-font-size-base: 1.1875rem;
-  --el-component-size: 44px;
-}
-
-.loginContentArea .login-main-btn.el-button {
-  min-width: 44px;
-  height: 44px !important;
-  padding: 0 16px !important;
-  border: 2px solid transparent !important;
-  border-radius: 0 !important;
-  background: var(--gds-green) !important;
-  color: #ffffff !important;
-  font-family: var(--gds-font);
-  font-size: 1rem !important;
-  font-weight: 400 !important;
-  letter-spacing: 0 !important;
-  box-shadow: 0 2px 0 var(--gds-green-shadow) !important;
-}
-
-.loginContentArea .login-main-btn.el-button:hover {
-  background: var(--gds-green-hover) !important;
-  border-color: var(--gds-green-hover) !important;
-  color: #ffffff !important;
-  box-shadow: 0 2px 0 var(--gds-green-shadow) !important;
-  transform: none !important;
-}
-
-.loginContentArea .login-main-btn.el-button:focus-visible {
-  background: var(--gds-yellow) !important;
-  border-color: var(--gds-yellow) !important;
-  color: var(--gds-black) !important;
-  outline: 3px solid transparent;
-  outline-offset: 0;
-  box-shadow: 0 2px 0 var(--gds-black) !important;
-}
-
-.loginContentArea .user-trigger-btn {
-  width: auto;
-  min-width: 44px;
-  height: 44px !important;
-  padding: 0 12px !important;
-  border: 2px solid #ffffff !important;
-  border-radius: 0 !important;
-  background: #ffffff !important;
-  color: var(--gds-black) !important;
-  font-family: var(--gds-font);
-  font-size: 1rem !important;
-  font-weight: 400 !important;
-  box-shadow: none !important;
-}
-
-.loginContentArea .user-trigger-btn:hover {
-  background: var(--gds-grey) !important;
-  border-color: #ffffff !important;
-  color: var(--gds-black) !important;
-  transform: none;
-  box-shadow: none !important;
-}
-
-.loginContentArea .user-trigger-btn:focus-visible {
-  background: var(--gds-yellow) !important;
-  border-color: var(--gds-yellow) !important;
-  color: var(--gds-black) !important;
-  outline: 3px solid transparent;
-  outline-offset: 0;
-  box-shadow: 0 2px 0 var(--gds-black) !important;
-}
-
-.loginContentArea[popovershow="true"] > .user-trigger-btn {
-  background: var(--gds-grey) !important;
-  color: var(--gds-black) !important;
-  border-color: var(--gds-yellow) !important;
-  box-shadow: none !important;
-}
-
-.loginContentArea .pointsValueTips {
-  font-size: 1rem;
-  font-weight: 400;
-  color: var(--gds-secondary);
-}
-
-.loginContentArea .pointsValueTips .unit {
-  font-size: 0.875rem;
-  color: var(--gds-secondary);
-}
-
-.loginContentArea .saas-premium-popover.el-popper {
-  width: min(440px, calc(100vw - 30px)) !important;
-  max-width: calc(100vw - 30px) !important;
-  padding: 0 !important;
-  border: 1px solid var(--gds-border) !important;
-  border-radius: 0 !important;
-  background: #ffffff !important;
-  box-shadow: 0 4px 0 rgba(11, 12, 12, 0.18) !important;
-}
-
-.loginContentArea .mySpaceInfo {
-  padding: 25px;
-  background: #ffffff;
-  font-family: var(--gds-font);
-  font-size: 1.1875rem;
-}
-
-.loginContentArea .personalInfoItem {
-  padding: 14px 0;
-  font-size: 1rem;
-  line-height: 1.5;
-  color: var(--gds-secondary);
-  border-bottom: 1px solid var(--gds-border);
-}
-
-.loginContentArea .itemLabel {
-  min-width: 88px;
-  font-size: 1rem;
-  font-weight: 400;
-  letter-spacing: 0;
-  color: var(--gds-secondary);
-}
-
-.loginContentArea .itemContent,
-.loginContentArea .pointsValue {
-  font-size: 1.1875rem;
-  font-weight: 700;
-  color: var(--gds-black);
-}
-
-.loginContentArea .pointsValue.primaryValue {
-  font-size: 1.5rem;
-}
-
-.loginContentArea .actionGridBtn.el-button {
-  height: 44px !important;
-  padding: 0 12px !important;
-  border: 1px solid var(--gds-border) !important;
-  border-radius: 0 !important;
-  background: #ffffff !important;
-  color: var(--gds-black) !important;
-  font-family: var(--gds-font);
-  font-size: 1rem !important;
-  font-weight: 400 !important;
-  box-shadow: none !important;
-}
-
-.loginContentArea .actionGridBtn.el-button:hover {
-  background: var(--gds-grey) !important;
-  border-color: var(--gds-black) !important;
-  color: var(--gds-black) !important;
-  transform: none;
-  box-shadow: none !important;
-}
-
-.loginContentArea .actionGridBtn.el-button:focus-visible {
-  background: var(--gds-yellow) !important;
-  border-color: var(--gds-black) !important;
-  color: var(--gds-black) !important;
-  outline: 3px solid transparent;
-  outline-offset: 0;
-  box-shadow: 0 2px 0 var(--gds-black) !important;
-}
-
-.loginContentArea .subtleBtn.el-button {
-  min-height: 44px;
-  padding: 0 14px !important;
-  border: 1px solid var(--gds-border) !important;
-  border-radius: 0 !important;
-  background: #ffffff !important;
-  color: var(--gds-black) !important;
-  font-family: var(--gds-font);
-  font-size: 1rem !important;
-  font-weight: 400 !important;
-  letter-spacing: 0 !important;
-}
-
-.loginContentArea .subtleBtn.el-button:hover {
-  background: var(--gds-grey) !important;
-  border-color: var(--gds-black) !important;
-  color: var(--gds-black) !important;
-}
-
-.loginContentArea .primaryGradientBtn.el-button {
-  min-height: 44px;
-  padding: 0 16px !important;
-  border: 2px solid transparent !important;
-  border-radius: 0 !important;
-  background: var(--gds-green) !important;
-  color: #ffffff !important;
-  font-family: var(--gds-font);
-  font-size: 1rem !important;
-  font-weight: 400 !important;
-  letter-spacing: 0 !important;
-  box-shadow: 0 2px 0 var(--gds-green-shadow) !important;
-}
-
-.loginContentArea .primaryGradientBtn.el-button:hover {
-  background: var(--gds-green-hover) !important;
-  border-color: var(--gds-green-hover) !important;
-  color: #ffffff !important;
-  transform: none;
-  box-shadow: 0 2px 0 var(--gds-green-shadow) !important;
-}
-
-.loginContentArea .primaryGradientBtn.el-button:focus-visible,
-.loginContentArea .subtleBtn.el-button:focus-visible {
-  background: var(--gds-yellow) !important;
-  border-color: var(--gds-yellow) !important;
-  color: var(--gds-black) !important;
-  outline: 3px solid transparent;
-  outline-offset: 0;
-  box-shadow: 0 2px 0 var(--gds-black) !important;
-}
-
-.loginContentArea .apiKeyField input {
-  height: 44px;
-  padding: 0 12px 0 40px;
-  border: 2px solid var(--gds-black);
-  border-radius: 0;
-  background: #ffffff !important;
-  color: var(--gds-black) !important;
-  font-family: var(--gds-font);
-  font-size: 1rem !important;
-  letter-spacing: 0;
-  box-shadow: none;
-}
-
-.loginContentArea .apiKeyField input::placeholder {
-  color: var(--gds-secondary);
-  font-size: 1rem;
-  opacity: 1;
-}
-
-.loginContentArea .apiKeyField input:focus {
-  border-color: var(--gds-black);
-  outline: 3px solid var(--gds-yellow);
-  outline-offset: 0;
-  box-shadow: inset 0 0 0 2px var(--gds-black);
-}
-
-.loginContentArea .apiKeyName {
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--gds-black);
-}
-
-.loginContentArea .apiKeyMask {
-  font-size: 1rem;
-  color: var(--gds-secondary);
-}
-
-/* 一键复制：与删除同尺寸的紧凑操作，使用 GDS 蓝链接色标识可点 */
-.loginContentArea .apiKeyCopyBtn.el-button {
-  padding: 0 4px !important;
-  border: 0 !important;
-  background: transparent !important;
-  color: var(--gds-blue) !important;
-  font-family: var(--gds-font);
-  font-size: 12px !important;
-  font-weight: 400 !important;
-  letter-spacing: 0.04em;
-  text-decoration: underline;
-}
-
-.loginContentArea .apiKeyCopyBtn.el-button:hover {
-  color: var(--gds-black) !important;
-  background: transparent !important;
-}
-
-.loginContentArea .apiKeyTime {
-  font-size: 1rem;
-  color: var(--gds-secondary);
-}
-
-.loginContentArea .apiKeyEmpty {
-  font-size: 1rem;
-  color: var(--gds-secondary);
-}
-
-.loginContentArea .exitLogined .el-button.exitButton {
-  min-height: 44px;
-  padding: 0 14px;
-  color: var(--gds-red);
-  font-family: var(--gds-font);
-  font-size: 1rem;
-  font-weight: 400;
-  text-decoration: underline;
-}
-
-.loginContentArea .exitLogined .el-button.exitButton:hover {
-  color: var(--gds-red);
-  text-decoration-thickness: 3px;
-}
-
-.loginContentArea .el-button:focus-visible,
-.loginContentArea .apiKeyField input:focus-visible {
-  outline: 3px solid transparent;
-  outline-offset: 0;
-  background: var(--gds-yellow);
-  color: var(--gds-black);
-  box-shadow: 0 2px 0 var(--gds-black);
-}
-
-@media (max-width: 640px) {
-  .loginContentArea .login-main-btn.el-button {
-    padding: 0 10px !important;
-    font-size: 1rem !important;
-  }
-
-  .loginContentArea .saas-premium-popover.el-popper {
-    position: fixed !important;
-    left: 15px !important;
-    right: 15px !important;
-    top: var(--login-panel-top, 80px) !important;
-    /* 与页眉右侧「EN / 中文」按钮共用同一条右边线；
-       宽度固定为内容区宽度，左右各留 15px，保持水平居中 */
-    width: calc(100% - 30px) !important;
-    max-width: calc(100% - 30px) !important;
-    min-width: 0 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    transform: none !important;
-    border: 1px solid #b1b4b6 !important;
-    border-radius: 0 !important;
-    background: #ffffff !important;
-    box-shadow: 0 4px 0 rgba(11, 12, 12, 0.18) !important;
-    box-sizing: border-box;
-    max-height: calc(100vh - 100px) !important;
-    overflow-y: auto;
-  }
-
-  .loginContentArea .mySpaceInfo {
-    padding: 20px 15px;
-  }
-
-  .loginContentArea .menuItemList {
-    /* 移动端也保持一行两个入口，长文案通过省略号收束 */
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 10px;
   }
 }
 </style>
+
 <style>
-/* Mobile only: 浮窗可能被渲染到 body 下，使用非 scoped 规则保证定位生效 */
+/* ==========================================================================
+   ON STAFF · 浮窗外壳
+   Element 可能把 popper 渲染到 body 下，外壳与移动端定位用非 scoped 规则，
+   保证不依赖组件的 data-v 作用域；类名只属于登录组件。
+   ========================================================================== */
+.saas-premium-popover.el-popper {
+  box-sizing: border-box !important;
+  width: min(440px, calc(100vw - 30px)) !important;
+  max-width: calc(100vw - 30px) !important;
+  max-height: min(720px, calc(100vh - var(--login-panel-top, 72px) - 24px)) !important;
+  padding: 0 !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  border: 1px solid #ded7c7 !important;
+  border-top: 2px solid #c33a1e !important;
+  border-radius: 0 !important;
+  background: #fcfaf3 !important;
+  color: #191817 !important;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial,
+    "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif !important;
+  font-size: 13px !important;
+  line-height: 1.5 !important;
+  box-shadow: 0 18px 40px rgba(27, 27, 25, 0.09) !important;
+  scrollbar-width: thin;
+  scrollbar-color: #ded7c7 transparent;
+}
+
+.saas-premium-popover.el-popper::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.saas-premium-popover.el-popper::-webkit-scrollbar-thumb {
+  background: #ded7c7;
+}
+
+.saas-premium-popover.el-popper::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* 移动端：紧贴触发按钮下沿，左右各留 12px，高度用完剩余视口 */
 @media (max-width: 640px) {
   .saas-premium-popover.el-popper {
     position: fixed !important;
-    top: var(--login-panel-top, 80px) !important;
-    left: 15px !important;
-    right: 15px !important;
-    width: calc(100% - 30px) !important;
-    max-width: calc(100% - 30px) !important;
+    top: var(--login-panel-top, 56px) !important;
+    right: 12px !important;
+    left: 12px !important;
+    width: auto !important;
+    max-width: none !important;
     min-width: 0 !important;
+    max-height: calc(100vh - var(--login-panel-top, 56px) - 12px) !important;
+    max-height: calc(100dvh - var(--login-panel-top, 56px) - 12px) !important;
     margin: 0 !important;
     padding: 0 !important;
-    transform: none !important;
-    border: 1px solid #b1b4b6 !important;
+    border: 1px solid #ded7c7 !important;
+    border-top: 2px solid #c33a1e !important;
     border-radius: 0 !important;
-    background: #ffffff !important;
-    box-shadow: 0 4px 0 rgba(11, 12, 12, 0.18) !important;
-    box-sizing: border-box;
-    max-height: calc(100vh - 100px) !important;
-    overflow-y: auto;
+    transform: none !important;
   }
 }
 </style>

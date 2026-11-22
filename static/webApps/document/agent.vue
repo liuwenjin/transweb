@@ -16,19 +16,20 @@
           ><el-icon><arrow-left-bold /></el-icon
         ></el-button>
         <span class="logoArea">
-          <el-image
-            :style="{
-              width: '40px',
-              height: '40px',
-              marginTop: '-3px',
-              borderRadius: '100%',
-              'vertical-align': 'middle',
-            }"
-            fit="contain"
-            :src="logoSrc"
-            class="logoImageItem"
-          ></el-image>
-
+          <a :href="homePageUrl" target="_blank" class="logoLink">
+            <el-image
+              :style="{
+                width: '40px',
+                height: '40px',
+                marginTop: '-3px',
+                borderRadius: '100%',
+                'vertical-align': 'middle',
+              }"
+              fit="contain"
+              :src="logoSrc"
+              class="logoImageItem"
+            ></el-image>
+          </a>
           <el-dropdown
             v-if="appList.length > 1"
             :style="{ marginLeft: flag === 1 ? '-3px' : '' }"
@@ -158,6 +159,7 @@ export default {
       dbStore: null,
       indexString: "",
       indexTitle: "",
+      homePageUrl: location.origin,
       mode: "edit",
       // editMode: WebTool.urlQuery(location.href, "editMode"),
       logoPath: "/webApps/document/logo.png",
@@ -4088,7 +4090,6 @@ export default {
   position: relative;
   float: left;
 }
-
 
 /* .treeEditorArea[status="1"] .topOptionArea {
   padding: 0px calc(50% - 360px);

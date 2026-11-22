@@ -1101,6 +1101,8 @@ export default {
 /* ============ 卡片（内层容器：不再重复描边） ============ */
 .appleCard {
   width: 100%;
+  padding-top: 60px !important;
+  padding-bottom: 60px !important;
 }
 
 .appleCard--result {
@@ -2067,6 +2069,8 @@ export default {
 
 .agentCreatorRoot .appleField {
   margin-bottom: 20px;
+  padding-top: 25px;
+  paddiing-bottom: 25px;
 }
 
 .agentCreatorRoot .appleSubtitle {
@@ -2335,6 +2339,71 @@ export default {
   .agentCreatorRoot .appleTitle {
     font-size: 2rem;
   }
+}
+
+
+
+/* ON STAFF · 创建器 */
+.appleShell { background: #f7f4ec; color: #191817; }
+.appleCard,
+.appleCard--result { background: #fcfaf3; border: 1px solid #ded7c7; border-radius: 0; box-shadow: none; }
+.appleBtn, .appleBtn--primary, .appleBtn--secondary { border-radius: 0 !important; box-shadow: none !important; }
+.appleBtn--primary {
+  background: #c33a1e !important; border: 1px solid #c33a1e !important; color: #faf7ef !important;
+}
+.appleBtn--secondary {
+  background: transparent !important; border: 1px solid #191817 !important; color: #191817 !important;
+}
+.appleDropzone {
+  border: 1px dashed #ded7c7 !important; border-radius: 0 !important; background: transparent !important;
+}
+.appleDropzone:hover,
+.appleDropzone--active,
+.appleDropzone--dragging { border-color: #191817 !important; }
+.appleLabel {
+  font-family: var(--mono, "SF Mono", monospace); font-size: 12px;
+  letter-spacing: .14em; color: #6e6a60;
+}
+.appleStage { background: transparent; }
+
+
+
+/* ON STAFF · 活字皮肤（创建器） */
+.appleShell {
+  --apple-bg: #f7f4ec;
+  --apple-card: #fcfaf3;
+  --apple-text: #191817;
+  --apple-border: #ded7c7;
+  --apple-card-border: #ded7c7;
+  --apple-separator: #e7e1d4;
+  --apple-field: #f7f4ec;
+  --apple-field-hover: #efeadd;
+  --apple-blue: #c33a1e;
+  --apple-blue-hover: #a62f17;
+  --apple-blue-active: #8c2f23;
+  --apple-blue-soft: rgba(195, 58, 30, .06);
+  --apple-blue-ring: rgba(195, 58, 30, .2);
+  --apple-green: #191817;
+  --apple-red: #c33a1e;
+  --apple-red-soft: #f7e9e4;
+  --apple-border-strong: #191817;
+  --apple-line-soft: #c9c2b1;
+  --apple-shadow-card: none;
+  --apple-shadow-hover: none;
+  background: #fcfaf3;
+}
+
+.appleShell h2,
+.appleShell h3,
+.appleShell .appleCard__title {
+  font-family: "Source Han Serif SC", "Noto Serif SC", "Songti SC", serif !important;
+  font-weight: 700 !important;
+  letter-spacing: .01em !important;
+}
+
+.appleShell .appleBtn--primary.el-button--primary {
+  height: 48px;
+  letter-spacing: .08em;
 }
 
 </style>

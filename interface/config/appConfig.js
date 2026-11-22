@@ -3,6 +3,7 @@ var data = {
   aigcHistory: "cd9749a782b310cab9a073c8c4a19f3a",
   vueCodeEditor: "d746c3aecbba72c91543199610295aaa",
   promptEditor: "a7581907d4df2d663d29124e22db6f02",
+  aigcPosterApp: "c19fca2dd60e295a12948cd241fb5b23",
   adminPoints: "4b4039289a2a5f72309635c98d8fb7f0",
   agentExample: "7572ab23b32a33aaf57bdd1efdc0f287",
   pptDocument: "76f7de9504bad022a8978e9fe084df0f",

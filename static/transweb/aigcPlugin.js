@@ -2179,7 +2179,7 @@ ${typeof json0.example === "object"
               },
               closeType: "back",
               dialogName: "agentEditorDialog",
-              menu: [
+              menu: params.noMenu ? [] : [
                 {
                   label: "确认",
                   action: () => {

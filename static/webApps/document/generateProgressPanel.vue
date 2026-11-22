@@ -833,4 +833,35 @@ export default {
     padding: 4px 8px;
   }
 }
+
+
+/* ON STAFF · 生成进度 */
+.progress-panel {
+  background: #fcfaf3 !important;
+  border-color: #ded7c7 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+.progressTitleItem {
+  font-family: "Source Han Serif SC", "Noto Serif SC", "Songti SC", serif;
+  font-weight: 700; color: #191817;
+}
+.step-icon {
+  border-radius: 0 !important;
+  border: 1px solid #ded7c7 !important;
+  background: #f7f4ec !important;
+}
+
+
+
+/* ON STAFF · 进度面板精修 */
+.progress-panel {
+  --el-color-primary: #c33a1e;
+  --el-border-radius-base: 0;
+  --el-border-color-light: #ded7c7;
+  --el-text-color-primary: #191817;
+}
+.progress-panel .progressTitleItem { font-size: 15px; letter-spacing: .02em; }
+.progress-panel .step-icon { width: 22px; height: 22px; }
+
 </style>
