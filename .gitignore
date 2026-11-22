@@ -16,6 +16,9 @@ tmp/
 dist/*.tgz
 # transweb-skills 是独立仓库的本地克隆，不作为子模块提交（无 .gitmodules，GitHub 上只会显示坏指针）
 dist/transweb-skills/
+# transweb-skills 的打包产物与校验文件，随其独立仓库/Releases 分发，主仓库不再收录
+dist/transweb-skills-*.zip
+dist/transweb-skills-*.zip.sha256
 
 # ---- 不随仓库/安装包发布的内部资料 ----
 # 内部文档与 PRD（含预算、需求等商业资料）
