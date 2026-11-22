@@ -14,6 +14,8 @@ tmp/
 # ---- 构建产物（勿提交）----
 # 安装包体积过大（单文件约 130MB，超过 GitHub 100MB 限制），请通过 Releases 分发
 dist/*.tgz
+# transweb-skills 是独立仓库的本地克隆，不作为子模块提交（无 .gitmodules，GitHub 上只会显示坏指针）
+dist/transweb-skills/
 
 # ---- 不随仓库/安装包发布的内部资料 ----
 # 内部文档与 PRD（含预算、需求等商业资料）
