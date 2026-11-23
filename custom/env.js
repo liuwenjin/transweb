@@ -1,8 +1,8 @@
 // custom/env.js —— 集中读取环境变量，避免敏感信息散落在源码中。
 const fs = require("fs");
-const path = require("path");
+const { envFile } = require("./configFile.js");
 
-const ENV_PATH = path.resolve(__dirname, "../.env");
+const ENV_PATH = envFile();
 
 // 极简 .env 加载器（避免引入额外依赖）：仅当同名变量尚未在 process.env 中时才写入，
 // 保证系统环境变量优先级高于 .env 文件。
@@ -31,7 +31,8 @@ function get(key) {
   const v = process.env[key];
   if (v === undefined || v === "") {
     throw new Error(
-      `缺少必需的环境变量: ${key}，请在 transweb/.env 中配置（参考 .env.example）。`
+      `缺少必需的环境变量: ${key}，请在 ${ENV_PATH} 中配置（参考 .env.example），` +
+        '或执行 transweb env set。'
     );
   }
   return v;

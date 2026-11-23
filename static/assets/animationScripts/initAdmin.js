@@ -3,6 +3,25 @@ let isLogined = false;
 let agentScriptUrl = "/webApps/document/agentList/TransWeb.agentScript.js";
 let nextStepUrl = "/clone.html?aScript=assets/animationScripts/initTools.js";
 
+// 控制面板保存的管理员账号/万能验证码；本机同步读取，失败时回退默认值。
+let adminLogin = { account: "transweb", checkNumber: "transweb$harness" };
+try {
+  const xhr = new XMLHttpRequest();
+  xhr.open("GET", "/controlPanel/bootstrap", false);
+  xhr.send();
+  if (xhr.status === 200) {
+    const ret = JSON.parse(xhr.responseText || "{}");
+    if (ret && ret.ret === 0 && ret.data) {
+      adminLogin = {
+        account: ret.data.account || adminLogin.account,
+        checkNumber: ret.data.powerAdmin || adminLogin.checkNumber
+      };
+    }
+  }
+} catch (e) {
+  // 控制面板不可用时继续使用默认值
+}
+
 transweb_events({
   timeEvents: [
     {
@@ -10,8 +29,8 @@ transweb_events({
       callback: function (elem) {
         if (webCpu.cards.loginRegCard && webCpu.cards.loginRegCard.task) {
           webCpu.cards.loginRegCard.task.confirmCallback({
-            account: "transweb",
-            checkNumber: "transweb$harness",
+            account: adminLogin.account,
+            checkNumber: adminLogin.checkNumber,
           });
         }
         else {

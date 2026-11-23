@@ -1,5 +1,12 @@
 let path = require('path');
-let docPath = path.resolve(__dirname, `/static/bucket/document`);
+let fs = require('fs');
+// 注意：第二个参数不能以 / 开头，否则 path.resolve 会丢弃 __dirname
+let docPath = path.resolve(__dirname, '../static/bucket/document');
+try {
+  fs.mkdirSync(docPath, { recursive: true });
+} catch (e) {
+  // 目录不可写时由上传请求返回具体错误
+}
 let multer = require('multer');
 
 let storage = multer.diskStorage({

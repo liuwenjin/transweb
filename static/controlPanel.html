@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>TransWeb 控制面板</title>
+  <style>
+    :root {
+      --ink: #1f2329;
+      --muted: #6b7280;
+      --line: #e5e7eb;
+      --bg: #f5f5f3;
+      --card: #ffffff;
+      --accent: #b33a1f;
+      --accent-2: #8f2c16;
+      --accent-soft: #fbede8;
+      --ok: #1f7a4d;
+      --warn: #9a6700;
+      --bad: #b42318;
+      --sidebar: #1d2321;
+      --radius: 12px;
+      --shadow: 0 1px 2px rgba(16, 24, 40, .04), 0 8px 24px rgba(16, 24, 40, .04);
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0; background: var(--bg); color: var(--ink);
+      font: 14px/1.65 "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    .app { display: flex; min-height: 100%; }
+    .side {
+      width: 232px; flex: 0 0 232px; background: var(--sidebar); color: #e8ece9;
+      padding: 22px 14px 18px; position: sticky; top: 0; height: 100vh;
+      display: flex; flex-direction: column; gap: 18px;
+    }
+    .brand { padding: 0 8px; }
+    .brand .mark {
+      width: 32px; height: 32px; border-radius: 9px; background: var(--accent);
+      display: inline-flex; align-items: center; justify-content: center;
+      font-weight: 700; color: #fff; font-size: 16px; margin-bottom: 10px;
+    }
+    .brand h1 { font-size: 16px; margin: 0; letter-spacing: .04em; color: #fff; }
+    .brand p { margin: 4px 0 0; font-size: 11px; color: #9aa39d; }
+    .nav { display: flex; flex-direction: column; gap: 2px; }
+    .nav button {
+      all: unset; cursor: pointer; padding: 9px 12px; border-radius: 8px;
+      color: #bcc5bf; font-size: 13px; display: flex; align-items: center; gap: 9px;
+    }
+    .nav button:hover { background: rgba(255,255,255,.06); color: #fff; }
+    .nav button.active { background: rgba(179,58,31,.22); color: #fff; box-shadow: inset 2px 0 0 var(--accent); }
+    .nav .ico { width: 16px; text-align: center; opacity: .8; }
+    .side-foot { margin-top: auto; padding: 10px 8px 0; border-top: 1px solid rgba(255,255,255,.08); font-size: 11px; color: #8f9a93; }
+    .main { flex: 1; min-width: 0; padding: 28px 32px 64px; max-width: 1280px; }
+    .page-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 14px; margin-bottom: 20px; }
+    .page-head h2 { margin: 0; font-size: 22px; letter-spacing: .01em; }
+    .page-head p { margin: 5px 0 0; color: var(--muted); font-size: 13px; }
+    .head-meta { display: flex; gap: 8px; flex-wrap: wrap; }
+    .pill { display: inline-flex; align-items: center; gap: 6px; background: #fff; border: 1px solid var(--line); border-radius: 999px; padding: 5px 10px; font-size: 12px; color: var(--muted); }
+    .dot { width: 7px; height: 7px; border-radius: 50%; background: #9ca3af; }
+    .dot.ok { background: var(--ok); } .dot.bad { background: var(--bad); } .dot.warn { background: var(--warn); }
+    .tab { display: none; }
+    .tab.active { display: block; animation: fade .15s ease; }
+    @keyframes fade { from { opacity: .4; transform: translateY(2px); } to { opacity: 1; transform: none; } }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .grid.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding: 18px; }
+    .card + .card { margin-top: 16px; }
+    .card h3 { margin: 0 0 4px; font-size: 15px; }
+    .card .hint { margin: 0 0 14px; color: var(--muted); font-size: 12px; }
+    .card.full { grid-column: 1 / -1; }
+    .stat { padding: 16px 18px; }
+    .stat .label { color: var(--muted); font-size: 12px; }
+    .stat .value { font-size: 18px; font-weight: 650; margin-top: 3px; word-break: break-all; }
+    .stat .sub { color: var(--muted); font-size: 12px; margin-top: 3px; }
+    .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; }
+    .field { display: flex; flex-direction: column; gap: 5px; flex: 1 1 180px; min-width: 0; }
+    .field.small { flex: 0 1 120px; }
+    .field.tiny { flex: 0 1 92px; }
+    label { color: var(--muted); font-size: 12px; }
+    input, select, textarea {
+      width: 100%; border: 1px solid var(--line); border-radius: 8px; background: #fff;
+      color: var(--ink); font: inherit; padding: 9px 10px; outline: none;
+    }
+    input:focus, select:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+    textarea { min-height: 220px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; line-height: 1.55; resize: vertical; }
+    button, .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      padding: 9px 14px; border-radius: 8px; border: 1px solid var(--line);
+      background: #fff; color: var(--ink); font: inherit; cursor: pointer; text-decoration: none;
+      white-space: nowrap;
+    }
+    button:hover, .btn:hover { border-color: #c9ccd2; }
+    button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+    button.primary:hover { background: var(--accent-2); }
+    button.danger { color: var(--bad); border-color: #f0c9c4; background: #fff8f7; }
+    button.danger.solid { background: var(--bad); border-color: var(--bad); color: #fff; }
+    button.ghost { background: transparent; }
+    button:disabled { opacity: .5; cursor: not-allowed; }
+    .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { text-align: left; padding: 9px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { color: var(--muted); font-size: 12px; font-weight: 500; }
+    td .name { font-weight: 600; }
+    td .sub { color: var(--muted); font-size: 12px; word-break: break-all; }
+    .tag { display: inline-block; padding: 2px 7px; border-radius: 999px; font-size: 11px; background: #f3f4f6; color: var(--muted); }
+    .tag.ok { background: #e9f5ef; color: var(--ok); } .tag.warn { background: #fdf4e3; color: var(--warn); } .tag.bad { background: #fdf0ee; color: var(--bad); }
+    .empty { color: var(--muted); padding: 12px 0; font-size: 13px; }
+    pre.out {
+      margin: 12px 0 0; padding: 12px 14px; background: #101615; color: #d7e0da;
+      border-radius: 9px; font: 12px/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      max-height: 360px; overflow: auto; white-space: pre-wrap; word-break: break-word;
+    }
+    pre.out:empty { display: none; }
+    .notice { color: var(--muted); font-size: 12px; margin-top: 8px; }
+    .alert { display: none; margin: 0 0 16px; padding: 12px 14px; border-radius: 9px; background: #fff8f7; border: 1px solid #f0c9c4; color: var(--bad); font-size: 13px; }
+    .alert.show { display: block; }
+    .toast {
+      position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%) translateY(16px);
+      background: #111827; color: #fff; padding: 10px 16px; border-radius: 9px;
+      opacity: 0; pointer-events: none; transition: all .2s ease; max-width: 90vw; font-size: 13px; z-index: 99;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toast.error { background: #7a1d12; }
+    .cmd-list { display: flex; flex-direction: column; gap: 6px; max-height: 560px; overflow: auto; padding-right: 4px; }
+    .cmd-group { margin-top: 10px; }
+    .cmd-group h4 { margin: 0 0 6px; font-size: 12px; color: var(--muted); font-weight: 600; letter-spacing: .04em; }
+    .cmd-item { display: flex; align-items: center; gap: 8px; justify-content: space-between; border: 1px solid var(--line); border-radius: 7px; padding: 7px 9px; background: #fff; }
+    .cmd-item code { font: 12px ui-monospace, SFMono-Regular, Menlo, monospace; color: #374151; word-break: break-all; }
+    .cmd-item button { padding: 4px 8px; font-size: 11px; }
+    .split { display: grid; grid-template-columns: 1.1fr .9fr; gap: 16px; }
+    .kvs { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    .badge-line { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    .mobile { display: none; }
+    @media (max-width: 960px) {
+      .app { display: block; }
+      .side { width: 100%; height: auto; position: static; flex-direction: row; align-items: center; gap: 12px; padding: 12px 14px; overflow-x: auto; }
+      .brand .mark { margin: 0; } .brand h1 { font-size: 14px; } .brand p { display: none; }
+      .nav { flex-direction: row; gap: 4px; } .nav button { padding: 7px 9px; white-space: nowrap; }
+      .nav .ico { display: none; } .side-foot { display: none; }
+      .main { padding: 18px 14px 44px; }
+      .grid, .grid.three, .split { grid-template-columns: 1fr; }
+      .page-head { margin-bottom: 14px; }
+    }
+
+    /* ===== visual polish ===== */
+    :root {
+      --bg: #f4f3ef;
+      --line: #e6e3dc;
+      --accent: #b54022;
+      --accent-2: #98331a;
+      --accent-soft: #fbeee8;
+      --sidebar: #18201d;
+      --radius: 14px;
+      --shadow: 0 1px 0 rgba(255,255,255,.65), 0 14px 34px -24px rgba(31, 35, 41, .35);
+    }
+    body {
+      background:
+        radial-gradient(1100px 520px at 88% -8%, rgba(255,255,255,.95), transparent 62%),
+        linear-gradient(180deg, #f7f6f2 0%, var(--bg) 55%);
+    }
+    .svg-sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+    .ic, .ico, .logo, .h-ic {
+      width: 17px; height: 17px; flex: none; display: inline-block; vertical-align: -3px;
+      fill: none; stroke: currentColor; stroke-width: 1.8;
+      stroke-linecap: round; stroke-linejoin: round;
+    }
+    .side {
+      background: linear-gradient(180deg, #1b2420 0%, #151b18 68%, #121714 100%);
+      border-right: 1px solid rgba(255,255,255,.06);
+      box-shadow: 12px 0 40px -32px rgba(0,0,0,.7);
+    }
+    .brand .mark {
+      width: 38px; height: 38px; border-radius: 12px;
+      background: linear-gradient(145deg, #cf5431 0%, #a23319 65%, #872a13 100%);
+      box-shadow: 0 10px 22px -10px rgba(179,58,31,.9), inset 0 1px 0 rgba(255,255,255,.28);
+      border: 1px solid rgba(255,255,255,.14);
+    }
+    .brand .mark .logo { width: 21px; height: 21px; stroke: #fff; stroke-width: 2; }
+    .brand h1 { font-size: 15.5px; font-weight: 650; letter-spacing: .02em; }
+    .brand p { color: #93a098; }
+    .nav { gap: 3px; }
+    .nav button {
+      position: relative; padding: 9px 12px; border-radius: 9px; gap: 10px;
+      transition: background .16s ease, color .16s ease, transform .16s ease;
+    }
+    .nav button:hover { background: rgba(255,255,255,.055); transform: translateX(1px); }
+    .nav button.active {
+      background: linear-gradient(90deg, rgba(181,64,34,.30), rgba(181,64,34,.08));
+      box-shadow: inset 3px 0 0 #de6a45;
+      color: #fff;
+    }
+    .nav button.active .ico { color: #f1aa93; opacity: 1; }
+    .nav .ico { width: 17px; height: 17px; opacity: .78; }
+    .side-foot { color: #7f8c84; line-height: 1.8; }
+    .main { padding: 30px 36px 70px; }
+    .page-head h2 { font-size: 24px; font-weight: 650; letter-spacing: -.01em; }
+    .page-head p { color: #787f7a; }
+    .pill {
+      background: rgba(255,255,255,.72); border-color: rgba(31,35,41,.09);
+      box-shadow: 0 1px 0 rgba(255,255,255,.8); backdrop-filter: blur(8px);
+    }
+    .card {
+      border-color: #e7e3da; box-shadow: var(--shadow);
+      transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease;
+    }
+    .card:hover { border-color: #ddd7cb; box-shadow: 0 1px 0 rgba(255,255,255,.7), 0 20px 40px -30px rgba(31,35,41,.45); }
+    .card h3 { display: flex; align-items: center; gap: 8px; font-weight: 620; letter-spacing: .01em; }
+    .h-ic {
+      width: 18px; height: 18px; padding: 3px; box-sizing: content-box; border-radius: 7px;
+      background: var(--accent-soft); color: var(--accent); stroke-width: 1.9;
+    }
+    .stat { position: relative; overflow: hidden; }
+    .stat::after {
+      content: ''; position: absolute; right: -34px; bottom: -58px; width: 150px; height: 150px;
+      border-radius: 50%; background: radial-gradient(circle, rgba(181,64,34,.10), transparent 68%);
+      pointer-events: none;
+    }
+    .stat .label { font-size: 11.5px; letter-spacing: .04em; text-transform: uppercase; }
+    .stat .value { font-size: 21px; font-variant-numeric: tabular-nums; letter-spacing: -.01em; }
+    button, .btn { transition: background .15s ease, border-color .15s ease, color .15s ease, box-shadow .15s ease, transform .12s ease; }
+    button:hover, .btn:hover { box-shadow: 0 4px 12px -10px rgba(31,35,41,.45); }
+    button:active, .btn:active { transform: translateY(1px); }
+    button.primary {
+      background: linear-gradient(180deg, #c04727 0%, #a6381d 100%);
+      border-color: #a6381d; box-shadow: 0 8px 18px -14px rgba(166,56,29,.9), inset 0 1px 0 rgba(255,255,255,.18);
+    }
+    button.primary:hover { background: linear-gradient(180deg, #c94d2b 0%, #ad3b1f 100%); }
+    button:focus-visible, .btn:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+      outline: 2px solid #e7a38e; outline-offset: 2px;
+    }
+    .ic { width: 16px; height: 16px; }
+    table { margin-top: 12px; }
+    th { text-transform: uppercase; letter-spacing: .06em; font-size: 10.5px; color: #8b918b; }
+    tbody tr { transition: background .15s ease; }
+    tbody tr:hover { background: #faf8f3; }
+    td { border-bottom-color: #efebe3; }
+    .tag { border: 1px solid transparent; }
+    .tag.ok { border-color: #cfe8db; }
+    .tag.warn { border-color: #f0dfb9; }
+    .tag.bad { border-color: #f2cfc9; }
+    .cmd-list { padding: 2px 6px 2px 2px; }
+    .cmd-item { transition: border-color .15s ease, background .15s ease, transform .15s ease; }
+    .cmd-item:hover { border-color: #d9d2c5; background: #fcfbf7; transform: translateX(2px); }
+    .cmd-item code { color: #3d4741; }
+    pre.out {
+      background: linear-gradient(180deg, #121a17 0%, #0d1311 100%);
+      border: 1px solid #27322c; box-shadow: inset 0 1px 0 rgba(255,255,255,.035), 0 10px 24px -22px rgba(0,0,0,.8);
+      color: #d8e2db;
+    }
+    .alert { box-shadow: 0 10px 24px -22px rgba(180,35,24,.7); }
+    .toast { background: #17201c; box-shadow: 0 16px 40px -20px rgba(0,0,0,.7); }
+    ::selection { background: rgba(181,64,34,.22); }
+    * { scrollbar-width: thin; scrollbar-color: #c9c4b8 transparent; }
+    *::-webkit-scrollbar { width: 8px; height: 8px; }
+    *::-webkit-scrollbar-thumb { background: #c9c4b8; border-radius: 99px; border: 2px solid transparent; background-clip: content-box; }
+    *::-webkit-scrollbar-track { background: transparent; }
+    .info-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+    .info-item { min-width: 0; padding: 10px 12px; border: 1px solid #efebe3; border-radius: 9px; background: #fcfbf7; }
+    .info-item .k { font-size: 11px; color: #8b918b; letter-spacing: .04em; text-transform: uppercase; }
+    .info-item .v { margin-top: 4px; font: 12px/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color: #3d4741; word-break: break-all; }
+    @media (max-width: 960px) { .info-grid { grid-template-columns: 1fr; } }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .001ms !important; transition-duration: .001ms !important; }
+    }
+    input[type="checkbox"] {
+      width: 16px !important; height: 16px !important; padding: 0 !important;
+      border: 1px solid #d8d2c5; border-radius: 4px; accent-color: var(--accent);
+      vertical-align: -3px; cursor: pointer;
+    }
+    @media (max-width: 960px) {
+      .side { background: linear-gradient(180deg, #1b2420, #151b18); border-right: 0; border-bottom: 1px solid rgba(255,255,255,.08); gap: 10px; }
+      .brand { padding: 0; }
+      .brand h1, .brand p { display: none; }
+      .brand .mark { width: 36px; height: 36px; margin: 0; }
+      .nav { flex: 1; overflow-x: auto; padding-bottom: 2px; }
+      .nav button { padding: 8px 10px; }
+      .nav button.active { box-shadow: inset 0 -2px 0 #de6a45; }
+      .main { padding: 18px 14px 48px; }
+      .page-head { align-items: flex-start; gap: 10px; }
+      .page-head > div:first-child { flex: 1 1 100%; }
+      .page-head h2 { font-size: 22px; }
+      .head-meta { width: 100%; gap: 7px; }
+      .head-meta .pill, .head-meta button { flex: 0 0 auto; }
+      .card { padding: 16px; }
+      .stat .value { font-size: 19px; }
+    }
+  </style>
+</head>
+<body>
+
+<svg class="svg-sprite" aria-hidden="true" focusable="false">
+  <symbol id="i-logo" viewBox="0 0 24 24"><path d="M4 6h16M12 6v13M7.5 19h9"/></symbol>
+  <symbol id="i-overview" viewBox="0 0 24 24"><rect x="3" y="3" width="7.5" height="7.5" rx="1.6"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.6"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.6"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.6"/></symbol>
+  <symbol id="i-api" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 16 9 5 9-5"/></symbol>
+  <symbol id="i-config" viewBox="0 0 24 24"><path d="M4 6h5M15 6h5M4 12h9M19 12h1M4 18h2M12 18h8"/><circle cx="12" cy="6" r="2.2"/><circle cx="16" cy="12" r="2.2"/><circle cx="9" cy="18" r="2.2"/></symbol>
+  <symbol id="i-access" viewBox="0 0 24 24"><path d="M12 3 20 6v5c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6l8-3Z"/><path d="m8.8 11.8 2.2 2.2 4.4-4.4"/></symbol>
+  <symbol id="i-pay" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2.2"/><path d="M3 10h18"/><circle cx="16.6" cy="14.6" r="1.1"/></symbol>
+  <symbol id="i-service" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="6.5" rx="2"/><rect x="3" y="13.5" width="18" height="6.5" rx="2"/><path d="M7 7.2h.01M7 16.8h.01"/></symbol>
+  <symbol id="i-console" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2.2"/><path d="m7 9 3 3-3 3M12.5 15H17"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.4-5.7"/><path d="M20 4v5h-5"/></symbol>
+  <symbol id="i-activity" viewBox="0 0 24 24"><path d="M3 12h4l2.2-6 4 12 2.2-6H21"/></symbol>
+  <symbol id="i-external" viewBox="0 0 24 24"><path d="M14 4h6v6"/><path d="M20 4 11 13"/><path d="M19 14v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h4"/></symbol>
+  <symbol id="i-power" viewBox="0 0 24 24"><path d="M12 3v9"/><path d="M7 6.5a8 8 0 1 0 10 0"/></symbol>
+  <symbol id="i-stop" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5L8 5.5Z"/></symbol>
+  <symbol id="i-init" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="m19 6-1 14H6L5 6"/><path d="M10 11v5M14 11v5"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-eye-off" viewBox="0 0 24 24"><path d="m3 3 18 18"/><path d="M10.6 6.2A9.8 9.8 0 0 1 12 6c6 0 9.5 6 9.5 6a17 17 0 0 1-3 3.7"/><path d="M6.6 7.4A17 17 0 0 0 2.5 12s3.5 6 9.5 6a9.7 9.7 0 0 0 4-.8"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></symbol>
+  <symbol id="i-edit" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4 11.5-11.5Z"/></symbol>
+  <symbol id="i-save" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/><path d="M17 21v-8H7v8M7 3v5h8"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m4 12.5 5 5L20 6.5"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13"/><path d="M3.2 6h.01M3.2 12h.01M3.2 18h.01"/></symbol>
+  <symbol id="i-key" viewBox="0 0 24 24"><circle cx="7.5" cy="15.5" r="3.5"/><path d="m10 13 8.5-8.5M15.5 5l3 3M17.5 3l3 3"/></symbol>
+  <symbol id="i-database" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v6c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 11v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></symbol>
+  <symbol id="i-sync" viewBox="0 0 24 24"><path d="M21 12a9 9 0 0 1-15.5 6.2"/><path d="M3 12a9 9 0 0 1 15.5-6.2"/><path d="M3 4v5h5M21 20v-5h-5"/></symbol>
+  <symbol id="i-logs" viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9l-6-6Z"/><path d="M14 3v6h6M8 13h8M8 17h6"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 21a7.5 7.5 0 0 1 15 0"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="11" rx="2.2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></symbol>
+  <symbol id="i-model" viewBox="0 0 24 24"><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Z"/><path d="m4 7.5 8 4.5 8-4.5M12 12v9"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.5 3.8 5.6 3.8 9S14.5 18.5 12 21c-2.5-2.5-3.8-5.6-3.8-9S9.5 5.5 12 3Z"/></symbol>
+  <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+</svg>
+<div class="app">
+  <aside class="side">
+    <div class="brand">
+      <div class="mark"><svg class="logo"><use href="#i-logo"></use></svg></div>
+      <h1>TransWeb 控制面板</h1>
+      <p>服务管理 · 配置 · 初始化</p>
+    </div>
+    <nav class="nav" id="nav">
+      <button data-tab="overview" class="active"><svg class="ico"><use href="#i-overview"></use></svg><span>概览</span></button>
+      <button data-tab="models"><svg class="ico"><use href="#i-api"></use></svg><span>API 与模型</span></button>
+      <button data-tab="config"><svg class="ico"><use href="#i-config"></use></svg><span>配置与环境</span></button>
+      <button data-tab="access"><svg class="ico"><use href="#i-access"></use></svg><span>访问与 CORS</span></button>
+      <button data-tab="pay"><svg class="ico"><use href="#i-pay"></use></svg><span>支付与账号</span></button>
+      <button data-tab="service"><svg class="ico"><use href="#i-service"></use></svg><span>服务与日志</span></button>
+      <button data-tab="console"><svg class="ico"><use href="#i-console"></use></svg><span>命令台</span></button>
+    </nav>
+    <div class="side-foot">版本 <span id="sideVersion">—</span><br />仅本机可操作</div>
+  </aside>
+
+  <main class="main">
+    <div id="alertBox" class="alert"></div>
+
+    <section class="tab active" id="tab-overview">
+      <div class="page-head">
+        <div><h2>概览</h2><p>服务状态、控制面板入口与常用动作。</p></div>
+        <div class="head-meta">
+          <span class="pill"><span id="initDot" class="dot"></span><span id="initText">读取中…</span></span>
+          <span class="pill" id="portText">端口 —</span>
+          <button id="refreshBtn" class="primary">刷新状态</button>
+        </div>
+      </div>
+      <div class="grid three">
+        <div class="card stat"><div class="label">版本</div><div class="value" id="versionText">—</div><div class="sub">transweb-service</div></div>
+        <div class="card stat"><div class="label">服务端口</div><div class="value" id="httpText">—</div><div class="sub" id="mongoPortText">MongoDB —</div></div>
+        <div class="card stat"><div class="label">站点初始化</div><div class="value" id="siteText">—</div><div class="sub" id="folderText">—</div></div>
+      </div>
+      <div class="grid" style="margin-top:16px">
+        <div class="card">
+          <h3><svg class="h-ic"><use href="#i-activity"></use></svg>快速动作</h3>
+          <p class="hint">会停止/重启 Web 的操作执行后页面会短暂断开。</p>
+          <div class="actions">
+            <button class="primary" onclick="serviceAction('restart')">重启 Web</button>
+            <button onclick="serviceAction('status')">查看状态</button>
+            <a class="btn" id="siteInitLink" href="/initAdmin.html" target="_blank" rel="noopener">站点初始化</a>
+            <a class="btn" href="/" target="_blank" rel="noopener">打开站点</a>
+            <button class="danger" onclick="serviceAction('stop')">停止服务</button>
+          </div>
+          <pre id="overviewOut" class="out"></pre>
+        </div>
+        <div class="card">
+          <h3><svg class="h-ic"><use href="#i-lock"></use></svg>后台页面</h3>
+          <p class="hint">初始化完成后建议隐藏 admin.html / initAdmin.html。</p>
+          <div class="badge-line" id="adminPagesBadge"></div>
+          <div class="actions" style="margin-top:12px">
+            <button class="danger" onclick="adminPages('hide')">隐藏后台页面</button>
+            <button onclick="adminPages('show')">恢复后台页面</button>
+          </div>
+          <p class="notice">控制面板编辑接口仅允许本机访问；远程请用 SSH 隧道。</p>
+        </div>
+      </div>
+      <div class="card" style="margin-top:16px">
+        <h3><svg class="h-ic"><use href="#i-service"></use></svg>服务信息</h3>
+        <p class="hint">当前独立安装使用的目录；修改配置前建议先备份。</p>
+        <div class="info-grid">
+          <div class="info-item"><div class="k">服务目录</div><div class="v" id="homePath">—</div></div>
+          <div class="info-item"><div class="k">配置文件</div><div class="v" id="configPathText">—</div></div>
+          <div class="info-item"><div class="k">日志目录</div><div class="v" id="logsPath">—</div></div>
+        </div>
+        <p class="notice">本地安装：<span id="installModeText">—</span> · 控制面板编辑接口仅允许本机访问。</p>
+      </div>
+    </section>
+
+    <section class="tab" id="tab-models">
+      <div class="page-head"><div><h2>API 与模型</h2><p>API 凭据、模型费率和默认模型。保存后重启 Web 生效。</p></div></div>
+      <div class="grid">
+        <div class="card">
+          <h3><svg class="h-ic"><use href="#i-api"></use></svg>API 配置</h3>
+          <p class="hint">Key 不回显；编辑时留空表示保持原 Key。</p>
+          <div class="row">
+            <div class="field"><label for="apiName">名称</label><input id="apiName" placeholder="例如 深度求索" /></div>
+            <div class="field"><label for="apiUrl">URL</label><input id="apiUrl" placeholder="https://…/v1/chat/completions" /></div>
+          </div>
+          <div class="row" style="margin-top:8px">
+            <div class="field"><label for="apiKey">API Key</label><input id="apiKey" type="password" placeholder="新增必填" /></div>
+            <div class="field small"><label for="apiEnvKey">env 变量</label><input id="apiEnvKey" placeholder="可选" /></div>
+          </div>
+          <div class="actions" style="margin-top:10px">
+            <button class="primary" id="saveApiBtn">保存 API</button>
+            <button id="resetApiBtn">清空</button>
+          </div>
+          <div id="apiList"></div>
+        </div>
+        <div class="card">
+          <h3><svg class="h-ic"><use href="#i-model"></use></svg>模型费率</h3>
+          <p class="hint">写入 common.js 的 tokenRateMap。</p>
+          <div class="row">
+            <div class="field"><label for="modelName">模型名称</label><input id="modelName" placeholder="deepseek-v4-flash" /></div>
+            <div class="field"><label for="modelApi">所属 API</label><input id="modelApi" placeholder="深度求索" /></div>
+          </div>
+          <div class="row" style="margin-top:8px">
+            <div class="field tiny"><label for="modelInput">input</label><input id="modelInput" type="number" step="0.0001" min="0" value="0.05" /></div>
+            <div class="field tiny"><label for="modelOutput">output</label><input id="modelOutput" type="number" step="0.0001" min="0" value="0.25" /></div>
+            <div class="field tiny"><label for="modelContext">context</label><input id="modelContext" type="number" step="1" min="1" value="200000" /></div>
+            <div class="field small"><label for="modelFrom">from</label><input id="modelFrom" placeholder="国外" /></div>
+          </div>
+          <div class="actions" style="margin-top:10px">
+            <button class="primary" id="saveModelBtn">保存模型</button>
+            <button id="resetModelBtn">清空</button>
+          </div>
+          <div id="modelList"></div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:16px">
+        <h3><svg class="h-ic"><use href="#i-check"></use></svg>默认模型</h3>
+        <p class="hint">只填模型名称；留空表示不设置。</p>
+        <div class="row">
+          <div class="field"><label for="defaultModel">文本模型</label><input id="defaultModel" list="modelOptions" /></div>
+          <div class="field"><label for="defaultImageInput">图片输入模型</label><input id="defaultImageInput" list="modelOptions" /></div>
+          <div class="field"><label for="defaultImage">图片生成模型</label><input id="defaultImage" list="modelOptions" /></div>
+          <button class="primary" id="saveDefaultsBtn">保存默认模型</button>
+          <button onclick="runCmd('default list', 'defaultsOut')">default list</button>
+        </div>
+        <pre id="defaultsOut" class="out"></pre>
+        <datalist id="modelOptions"></datalist>
+      </div>
+    </section>
+
+    <section class="tab" id="tab-config">
+      <div class="page-head"><div><h2>配置与环境变量</h2><p>等价于 transweb config / env 命令；保存后需重启 Web。</p></div></div>
+      <div class="split">
+        <div class="card">
+          <h3><svg class="h-ic"><use href="#i-config"></use></svg>配置项（common.js / appConfig.js）</h3>
+          <div class="row">
+            <div class="field small"><label>文件</label><select id="configType"><option value="common">common.js</option><option value="app">appConfig.js</option></select></div>
+            <div class="field"><label>点路径</label><input id="configPath" placeholder="exchangeRate / publishInfo.folderName" /></div>
+            <div class="field"><label>值</label><input id="configValue" placeholder="set 时使用" /></div>
+            <label style="padding-bottom:9px"><input id="configString" type="checkbox" style="width:auto" /> 作为字符串</label>
+          </div>
+          <div class="actions" style="margin-top:10px">
+            <button onclick="configCommand('get')">get</button>
+            <button class="primary" onclick="configCommand('set')">set</button>
+            <button class="danger" onclick="configCommand('unset')">unset</button>
+            <button onclick="runCmd('config list ' + configType() + ' --json', 'configListOut')">list</button>
+          </div>
+          <pre id="configOpOut" class="out"></pre>
+          <pre id="configListOut" class="out"></pre>
+          <p class="notice">高级编辑：加载文件文本，保存前会做语法校验。</p>
+          <div class="actions">
+            <button onclick="loadFile('config', configType())">加载文本</button>
+            <button class="primary" onclick="saveFile('config')">保存文本</button>
+          </div>
+          <textarea id="configEditor" placeholder="加载后编辑 common.js / appConfig.js"></textarea>
+        </div>
+        <div class="card">
+          <h3><svg class="h-ic"><use href="#i-key"></use></svg>环境变量（.env）</h3>
+          <div class="row">
+            <div class="field"><label>KEY</label><input id="envKey" placeholder="ADMIN_KEY" /></div>
+            <div class="field"><label>VALUE</label><input id="envValue" placeholder="set 时使用" /></div>
+          </div>
+          <div class="actions" style="margin-top:10px">
+            <button onclick="envCommand('get')">get</button>
+            <button class="primary" onclick="envCommand('set')">set</button>
+            <button class="danger" onclick="envCommand('unset')">unset</button>
+            <button onclick="runCmd('env list', 'envOut')">list</button>
+            <button onclick="runCmd('env list --json', 'envOut')">list --json</button>
+            <button onclick="runCmd('env list --show', 'envOut')">list --show</button>
+          </div>
+          <pre id="envOpOut" class="out"></pre>
+          <pre id="envOut" class="out"></pre>
+          <p class="notice">高级编辑：加载 `.env` 文本，保存后重启 Web 生效。</p>
+          <div class="actions">
+            <button onclick="loadFile('env', 'env')">加载文本</button>
+            <button class="primary" onclick="saveFile('env')">保存文本</button>
+          </div>
+          <textarea id="envEditor" placeholder="加载后编辑 .env"></textarea>
+        </div>
+      </div>
+    </section>
+
+    <section class="tab" id="tab-access">
+      <div class="page-head"><div><h2>访问与 CORS</h2><p>等价于 transweb access / cors 命令。</p></div></div>
+      <div class="grid">
+        <div class="card">
+          <h3><svg class="h-ic"><use href="#i-access"></use></svg>文档读取权限</h3>
+          <p class="hint">默认级别与按集合覆盖。</p>
+          <div class="row">
+            <div class="field"><label>默认级别</label><select id="accessLevel"><option value="public">public</option><option value="login">login</option><option value="owner">owner</option></select></div>
+            <button class="primary" onclick="accessCommand('set-default')">应用默认</button>
+          </div>
+          <div class="row" style="margin-top:8px">
+            <div class="field"><label>技能/Agent</label><select id="accessSkill"><option value="">不修改</option><option value="public">public</option><option value="login">login</option><option value="owner">owner</option></select></div>
+            <div class="field"><label>文档</label><select id="accessDocument"><option value="">不修改</option><option value="public">public</option><option value="login">login</option><option value="owner">owner</option></select></div>
+            <button onclick="accessCommand('special')">应用</button>
+          </div>
+          <div class="row" style="margin-top:8px">
+            <div class="field"><label>集合</label><input id="accessTable" placeholder="document / pptItem" /></div>
+            <div class="field small"><label>级别</label><select id="accessTableLevel"><option value="public">public</option><option value="login">login</option><option value="owner">owner</option></select></div>
+            <button onclick="accessCommand('table-set')">set-table</button>
+            <button onclick="accessCommand('table-unset')">unset-table</button>
+            <button onclick="accessCommand('get')">get</button>
+          </div>
+          <div class="actions" style="margin-top:10px">
+            <button onclick="runCmd('access list', 'accessOut')">access list</button>
+          </div>
+          <pre id="accessOut" class="out"></pre>
+        </div>
+        <div class="card">
+          <h3><svg class="h-ic"><use href="#i-globe"></use></svg>跨站请求许可（CORS）</h3>
+          <p class="hint">对应 common.js 的 crossOrigin。</p>
+          <div class="actions">
+            <button onclick="runCmd('cors', 'corsOut')">查看状态</button>
+            <button class="primary" onclick="corsCommand('on')">开启</button>
+            <button class="danger" onclick="corsCommand('off')">关闭</button>
+          </div>
+          <div class="row" style="margin-top:10px">
+            <div class="field"><label>允许来源（可选）</label><input id="corsOrigin" placeholder="* 或 https://a.com" /></div>
+            <label class="badge-line" style="padding-bottom:9px"><input id="corsCredentials" type="checkbox" style="width:auto" /> 允许携带 Cookie</label>
+          </div>
+          <pre id="corsOut" class="out"></pre>
+        </div>
+      </div>
+    </section>
+
+    <section class="tab" id="tab-pay">
+      <div class="page-head"><div><h2>支付与账号</h2><p>微信支付、root 账号、管理员账号与后台页面。</p></div></div>
+      <div class="grid">
+        <div class="card">
+          <h3><svg class="h-ic"><use href="#i-pay"></use></svg>微信支付</h3>
+          <div class="actions">
+            <button onclick="runCmd('wxpay list', 'wxpayOut')">list（脱敏）</button>
+            <button onclick="runCmd('wxpay list --show', 'wxpayOut')">list --show</button>
+            <button onclick="runCmd('wxpay check', 'wxpayOut')">check</button>
+          </div>
+          <div class="row" style="margin-top:10px">
+            <div class="field"><label>参数</label><input id="wxpayParam" placeholder="WX_PAY_APP_ID" /></div>
+            <div class="field"><label>值</label><input id="wxpayValue" placeholder="set 时使用" /></div>
+          </div>
+          <div class="actions" style="margin-top:8px">
+            <button onclick="wxpayCommand('get')">get</button>
+            <button class="primary" onclick="wxpayCommand('set')">set</button>
+            <button class="danger" onclick="wxpayCommand('unset')">unset</button>
+          </div>
+          <pre id="wxpayOut" class="out"></pre>
+        </div>
+        <div class="card">
+          <h3><svg class="h-ic"><use href="#i-user"></use></svg>管理员与 root</h3>
+          <div class="row">
+            <div class="field"><label>管理员账号</label><input id="adminAccount" /></div>
+            <div class="field"><label>万能验证码（留空保持）</label><input id="adminPower" type="password" /></div>
+          </div>
+          <div class="actions" style="margin-top:8px">
+            <button class="primary" onclick="saveAdmin()">保存账号</button>
+            <button onclick="runCmd('root accessKey --json', 'rootOut')">root accessKey</button>
+          </div>
+          <pre id="rootOut" class="out"></pre>
+          <p class="notice" id="adminNote"></p>
+          <div class="actions" style="margin-top:10px">
+            <a class="btn" id="siteInitLink2" href="/initAdmin.html" target="_blank" rel="noopener">站点初始化</a>
+            <button class="danger" onclick="adminPages('hide')">隐藏后台</button>
+            <button onclick="adminPages('show')">恢复后台</button>
+          </div>
+          <p class="notice" id="siteStatus"></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="tab" id="tab-service">
+      <div class="page-head"><div><h2>服务与日志</h2><p>生命周期、MongoDB、源码同步与日志。</p></div></div>
+      <div class="grid">
+        <div class="card">
+          <h3><svg class="h-ic"><use href="#i-power"></use></svg>服务生命周期</h3>
+          <p class="hint">init 会清空本服务目录数据库；stop/restart/uninstall 会断开控制面板。</p>
+          <div class="actions">
+            <button onclick="serviceAction('status')">status</button>
+            <button onclick="serviceAction('start')">start</button>
+            <button class="primary" onclick="serviceAction('restart')">restart</button>
+            <button class="danger" onclick="serviceAction('stop')">stop</button>
+            <button class="danger solid" onclick="serviceAction('init')">init（重置）</button>
+            <button class="danger solid" id="uninstallBtn" onclick="serviceAction('uninstall')">uninstall</button>
+          </div>
+          <div class="row" style="margin-top:10px">
+            <div class="field tiny"><label>init HTTP 端口</label><input id="initPort" placeholder="8080" /></div>
+            <div class="field tiny"><label>HTTPS 端口</label><input id="initSslPort" placeholder="8443" /></div>
+            <div class="field tiny"><label>Mongo 端口</label><input id="initMongoPort" placeholder="27017" /></div>
+            <div class="field"><label>preinit 脚本（可选）</label><input id="initPreinit" placeholder="/path/preinit.sh" /></div>
+          </div>
+          <p class="notice" id="localInstallNote">init 会清空本服务目录数据库；端口/脚本仅在本次 init 生效。</p>
+          <pre id="serviceOut" class="out"></pre>
+        </div>
+        <div class="card">
+          <h3><svg class="h-ic"><use href="#i-database"></use></svg>MongoDB 与同步</h3>
+          <div class="actions">
+            <button onclick="runCmd('mongodb status', 'mongoOut')">mongodb status</button>
+            <button class="primary" onclick="serviceAction('mongodb-install')">mongodb install</button>
+          </div>
+          <div class="row" style="margin-top:10px">
+            <div class="field small"><label>同步模式</label><select id="syncMode"><option value="static">static</option><option value="bucket">bucket</option><option value="code">code</option><option value="all">all</option></select></div>
+            <div class="field"><label>源码目录（可选）</label><input id="syncSource" placeholder="/path/to/transweb" /></div>
+          </div>
+          <div class="badge-line" style="margin-top:8px">
+            <label><input id="syncIncludeAdmin" type="checkbox" style="width:auto" /> include-admin</label>
+            <label><input id="syncDryRun" type="checkbox" style="width:auto" /> dry-run</label>
+            <button onclick="serviceAction('sync')">开始同步</button>
+          </div>
+          <pre id="mongoOut" class="out"></pre>
+          <pre id="syncOut" class="out"></pre>
+        </div>
+      </div>
+      <div class="card">
+        <h3><svg class="h-ic"><use href="#i-logs"></use></svg>日志</h3>
+        <div class="row">
+          <div class="field small"><label>类型</label><select id="logType"><option value="web">web</option><option value="mongo">mongo</option></select></div>
+          <div class="field small"><label>行数</label><input id="logLines" type="number" min="1" value="100" /></div>
+          <button onclick="loadLogs()">读取日志</button>
+        </div>
+        <pre id="logOut" class="out"></pre>
+      </div>
+    </section>
+
+    <section class="tab" id="tab-console">
+      <div class="page-head"><div><h2>命令台</h2><p>等价于 transweb CLI 的高级入口；服务生命周期请用“服务与日志”页。</p></div></div>
+      <div class="split">
+        <div class="card">
+          <h3><svg class="h-ic"><use href="#i-console"></use></svg>执行命令</h3>
+          <p class="hint">不会经过 shell；支持引号参数。配置类命令自动加 --no-restart。</p>
+          <div class="row">
+            <div class="field"><label>命令</label><input id="consoleCmd" placeholder="config get common exchangeRate" /></div>
+            <button class="primary" onclick="runConsole()">执行</button>
+          </div>
+          <pre id="consoleOut" class="out"></pre>
+        </div>
+        <div class="card">
+          <h3><svg class="h-ic"><use href="#i-list"></use></svg>命令清单</h3>
+          <p class="hint">点击“填入”后修改参数再执行。</p>
+          <div class="cmd-list" id="cmdCatalog"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+<div id="toast" class="toast"></div>
+
+<script>
+(function () {
+  'use strict';
+  var state = null;
+  var toastTimer = null;
+  var currentConfigFile = 'common';
+  var currentEnvLoaded = false;
+
+  function $(id) { return document.getElementById(id); }
+  function configType() { return $('configType').value; }
+  function q(value) {
+    var s = String(value === undefined || value === null ? '' : value);
+    return /[\s"']/.test(s) ? '"' + s.replace(/"/g, '\\"') + '"' : s;
+  }
+  function toast(msg, error) {
+    var el = $('toast'); el.textContent = msg;
+    el.className = 'toast show' + (error ? ' error' : '');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { el.className = 'toast'; }, 4200);
+  }
+  function alertBox(msg) {
+    var el = $('alertBox'); el.textContent = msg || '';
+    el.className = msg ? 'alert show' : 'alert';
+  }
+  function output(id, text) {
+    var el = $(id); if (!el) return;
+    el.textContent = text || '';
+  }
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text !== undefined && text !== null) n.textContent = String(text);
+    return n;
+  }
+  function tag(text, kind) { return el('span', 'tag' + (kind ? ' ' + kind : ''), text); }
+
+  var ICON_TEXT = {
+    '刷新状态': 'refresh', '重启 Web': 'refresh', '查看状态': 'activity',
+    '打开站点': 'external', '站点初始化': 'external', '停止服务': 'stop',
+    '隐藏后台页面': 'eye-off', '恢复后台页面': 'eye', '隐藏后台': 'eye-off', '恢复后台': 'eye',
+    '保存 API': 'save', '清空': 'refresh', '保存模型': 'save', '保存默认模型': 'save',
+    'default list': 'list', 'get': 'arrow-right', 'set': 'check', 'unset': 'trash',
+    'list': 'list', 'list --json': 'list', 'list --show': 'eye',
+    '加载文本': 'edit', '保存文本': 'save', '应用': 'check', '应用默认': 'check',
+    'set-table': 'list', 'unset-table': 'trash', '开启': 'check', '关闭': 'stop',
+    'list（脱敏）': 'list', 'check': 'check', 'root accessKey': 'key', '保存账号': 'save',
+    'status': 'activity', 'start': 'play', 'restart': 'refresh', 'stop': 'stop',
+    'init（重置）': 'init', 'uninstall': 'trash', 'mongodb status': 'database',
+    'mongodb install': 'database', '开始同步': 'sync', '读取日志': 'logs',
+    '执行': 'arrow-right', '填入': 'plus', '编辑': 'edit', '删除': 'trash'
+  };
+
+  function iconEl(name) {
+    var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('class', 'ic');
+    var use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+    use.setAttribute('href', '#i-' + name);
+    svg.appendChild(use);
+    return svg;
+  }
+
+  function decorateButtons(root) {
+    (root || document).querySelectorAll('button, a.btn').forEach(function (btn) {
+      if (btn.querySelector('svg.ic')) return;
+      var text = btn.textContent.replace(/\s+/g, ' ').trim();
+      var name = ICON_TEXT[text] || ICON_TEXT[text.toLowerCase()];
+      if (!name) return;
+      btn.prepend(iconEl(name));
+    });
+  }
+
+  async function request(url, options) {
+    var opts = Object.assign({ credentials: 'same-origin' }, options || {});
+    if (opts.body && typeof opts.body !== 'string') {
+      opts.headers = Object.assign({ 'Content-Type': 'application/json' }, opts.headers || {});
+      opts.body = JSON.stringify(opts.body);
+    }
+    var res = await fetch(url, opts);
+    var json;
+    try { json = await res.json(); }
+    catch (e) { throw new Error('服务响应异常（HTTP ' + res.status + '）'); }
+    if (!json || json.ret !== 0) throw new Error((json && json.message) || '请求失败');
+    return json;
+  }
+
+  function switchTab(name) {
+    document.querySelectorAll('#nav button').forEach(function (b) {
+      b.classList.toggle('active', b.dataset.tab === name);
+    });
+    document.querySelectorAll('.tab').forEach(function (t) {
+      t.classList.toggle('active', t.id === 'tab-' + name);
+    });
+    if (history.replaceState) history.replaceState(null, '', '#' + name);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function renderApiList() {
+    var box = $('apiList'); box.innerHTML = '';
+    var list = (state && state.apis) || [];
+    if (!list.length) { box.appendChild(el('div', 'empty', '暂无 API 配置。')); return; }
+    var table = el('table'), tbody = el('tbody');
+    var hr = el('tr'); ['名称', 'URL / Key', '操作'].forEach(function (h) { hr.appendChild(el('th', '', h)); });
+    var thead = el('thead'); thead.appendChild(hr); table.appendChild(thead);
+    list.forEach(function (item) {
+      var tr = el('tr');
+      var n = el('td'); n.appendChild(el('div', 'name', item.name));
+      if (item.envKey) n.appendChild(el('div', 'sub', item.envKey));
+      tr.appendChild(n);
+      var u = el('td'); u.appendChild(el('div', 'sub', item.url || '（无 URL）'));
+      u.appendChild(tag(item.keySet ? 'Key 已设置' : 'Key 未设置', item.keySet ? 'ok' : 'warn'));
+      tr.appendChild(u);
+      var a = el('td'), acts = el('div', 'actions');
+      var e = el('button', '', '编辑'); e.onclick = function () { editApi(item.name); };
+      var d = el('button', 'danger', '删除'); d.onclick = function () { removeApi(item.name); };
+      acts.appendChild(e); acts.appendChild(d); a.appendChild(acts); tr.appendChild(a);
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody); box.appendChild(table);
+  }
+
+  function renderModelList() {
+    var box = $('modelList'); box.innerHTML = '';
+    var list = (state && state.models) || [];
+    var opts = $('modelOptions'); opts.innerHTML = '';
+    list.forEach(function (m) { var o = document.createElement('option'); o.value = m.name; opts.appendChild(o); });
+    if (!list.length) { box.appendChild(el('div', 'empty', '暂无模型配置。')); return; }
+    var table = el('table'), tbody = el('tbody');
+    var hr = el('tr'); ['模型', 'API', '费率', '操作'].forEach(function (h) { hr.appendChild(el('th', '', h)); });
+    var thead = el('thead'); thead.appendChild(hr); table.appendChild(thead);
+    list.forEach(function (item) {
+      var tr = el('tr');
+      var n = el('td'); n.appendChild(el('div', 'name', item.name));
+      if (item.from) n.appendChild(el('div', 'sub', 'from: ' + item.from));
+      tr.appendChild(n); tr.appendChild(el('td', '', item.apiName || '—'));
+      tr.appendChild(el('td', '', String(item.input) + ' / ' + String(item.output) + ' · ctx ' + String(item.context)));
+      var a = el('td'), acts = el('div', 'actions');
+      var e = el('button', '', '编辑'); e.onclick = function () { editModel(item.name); };
+      var d = el('button', 'danger', '删除'); d.onclick = function () { removeModel(item.name); };
+      acts.appendChild(e); acts.appendChild(d); a.appendChild(acts); tr.appendChild(a);
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody); box.appendChild(table);
+  }
+
+  function renderState() {
+    if (!state) return;
+    $('sideVersion').textContent = state.version || '—';
+    $('versionText').textContent = state.version || '—';
+    $('initDot').className = 'dot ' + (state.initialized ? 'ok' : 'bad');
+    $('initText').textContent = state.initialized ? '站点已初始化' : '站点未初始化';
+    $('portText').textContent = 'HTTP ' + state.ports.http + ' · HTTPS ' + (state.ports.https || '关闭');
+    $('httpText').textContent = 'HTTP ' + state.ports.http;
+    $('mongoPortText').textContent = 'MongoDB ' + state.ports.mongo;
+    $('siteText').textContent = state.initialized ? '已完成' : '未完成';
+    $('folderText').textContent = state.folderName ? '发布目录 ' + state.folderName : '—';
+    if (state.paths) {
+      $('homePath').textContent = state.paths.home || '—';
+      $('configPathText').textContent = state.paths.config || '—';
+      $('logsPath').textContent = state.paths.logs || '—';
+    }
+    $('installModeText').textContent = state.localInstall ? '本地依赖（node_modules）' : 'npm 全局安装';
+    $('adminAccount').value = state.account || '';
+    $('adminNote').textContent = '万能验证码：' + (state.powerAdminSet ? '已设置（留空保持）' : '未设置');
+    var initHidden = (state.adminPages.hidden || []).indexOf('initAdmin.html') !== -1;
+    ['siteInitLink', 'siteInitLink2'].forEach(function (id) {
+      var link = $(id); if (link) link.style.display = state.initialized || initHidden ? 'none' : '';
+    });
+    $('accessLevel').value = (state.access && state.access.level) || 'public';
+    $('corsOrigin').value = state.cors && state.cors.origin && state.cors.origin !== '*' ? state.cors.origin : '';
+    $('corsCredentials').checked = Boolean(state.cors && state.cors.credentials);
+    $('siteStatus').textContent = state.initialized
+      ? '站点初始化已完成；如需重新初始化请使用“服务”页的 init。'
+      : '站点尚未初始化；可点击“站点初始化”完成发布目录与工具创建。';
+    if (state.localInstall) {
+      $('uninstallBtn').disabled = true;
+      $('uninstallBtn').title = '本地依赖安装请在项目目录执行 npm uninstall transweb-service';
+      $('localInstallNote').textContent = '这是本地依赖安装；卸载请在该目录执行 npm uninstall transweb-service（保留数据目录需手动删除）。';
+    } else {
+      $('uninstallBtn').disabled = false;
+      $('localInstallNote').textContent = 'init 会清空本服务目录数据库；端口/脚本仅在本次 init 生效。';
+    }
+    var badge = $('adminPagesBadge'); badge.innerHTML = '';
+    var vis = state.adminPages.visible || [];
+    badge.appendChild(tag(vis.length ? '后台页面可见' : '后台页面已隐藏', vis.length ? 'warn' : 'ok'));
+    if (vis.length) badge.appendChild(tag(vis.join('、')));
+    renderApiList(); renderModelList(); decorateButtons();
+    var d = state.defaults || {};
+    $('defaultModel').value = d.model && d.model.model ? d.model.model : '';
+    $('defaultImage').value = d.image && d.image.model ? d.image.model : '';
+    $('defaultImageInput').value = d.imageInput && d.imageInput.model ? d.imageInput.model : '';
+  }
+
+  async function loadState() {
+    try {
+      var json = await request('/controlPanel/state');
+      state = json.data; alertBox(''); renderState();
+    } catch (e) {
+      state = null; alertBox(e.message || '无法读取控制面板状态');
+    }
+  }
+
+  function resetApi() { ['apiName','apiUrl','apiKey','apiEnvKey'].forEach(function (id) { $(id).value = ''; }); }
+  function editApi(name) {
+    var it = (state.apis || []).filter(function (x) { return x.name === name; })[0]; if (!it) return;
+    $('apiName').value = it.name; $('apiUrl').value = it.url || ''; $('apiKey').value = ''; $('apiEnvKey').value = it.envKey || '';
+    $('apiKey').placeholder = it.keySet ? '留空保持现有 Key' : '请输入 API Key';
+    switchTab('models');
+  }
+  async function removeApi(name) {
+    if (!confirm('删除 API：' + name + '？')) return;
+    try { await request('/controlPanel/action', { method: 'POST', body: { action: 'api-remove', name: name } }); toast('已删除'); await loadState(); }
+    catch (e) { toast(e.message, true); }
+  }
+  async function saveApi() {
+    var p = { action: 'api-save', name: $('apiName').value.trim(), url: $('apiUrl').value.trim(), key: $('apiKey').value, envKey: $('apiEnvKey').value.trim() };
+    if (!p.name || !p.url) return toast('请填写 API 名称和 URL', true);
+    try { await request('/controlPanel/action', { method: 'POST', body: p }); resetApi(); toast('API 已保存'); await loadState(); }
+    catch (e) { toast(e.message, true); }
+  }
+
+  function resetModel() { $('modelName').value=''; $('modelApi').value=''; $('modelInput').value='0.05'; $('modelOutput').value='0.25'; $('modelContext').value='200000'; $('modelFrom').value=''; }
+  function editModel(name) {
+    var it = (state.models || []).filter(function (x) { return x.name === name; })[0]; if (!it) return;
+    $('modelName').value = it.name; $('modelApi').value = it.apiName || '';
+    $('modelInput').value = it.input; $('modelOutput').value = it.output; $('modelContext').value = it.context; $('modelFrom').value = it.from || '';
+    switchTab('models');
+  }
+  async function removeModel(name) {
+    if (!confirm('删除模型：' + name + '？')) return;
+    try { await request('/controlPanel/action', { method: 'POST', body: { action: 'model-remove', name: name } }); toast('已删除'); await loadState(); }
+    catch (e) { toast(e.message, true); }
+  }
+  async function saveModel() {
+    var p = { action: 'model-save', name: $('modelName').value.trim(), apiName: $('modelApi').value.trim(), input: $('modelInput').value, output: $('modelOutput').value, context: $('modelContext').value, from: $('modelFrom').value.trim() || '国外' };
+    if (!p.name || !p.apiName) return toast('请填写模型名称和所属 API', true);
+    try { await request('/controlPanel/action', { method: 'POST', body: p }); resetModel(); toast('模型已保存'); await loadState(); }
+    catch (e) { toast(e.message, true); }
+  }
+  async function saveDefaults() {
+    try {
+      await request('/controlPanel/action', { method: 'POST', body: { action: 'defaults-save', model: $('defaultModel').value.trim(), image: $('defaultImage').value.trim(), imageInput: $('defaultImageInput').value.trim() } });
+      toast('默认模型已保存'); await loadState();
+    } catch (e) { toast(e.message, true); }
+  }
+  async function saveAdmin() {
+    var account = $('adminAccount').value.trim(); var power = $('adminPower').value;
+    if (!account) return toast('管理员账号不能为空', true);
+    try {
+      var json = await request('/controlPanel/action', { method: 'POST', body: { action: 'admin-save', account: account, powerAdmin: power } });
+      $('adminPower').value=''; toast(json.message || '已保存');
+      if (json.restartRequired && confirm('需要重启 Web 后生效，现在重启？')) serviceAction('restart');
+    } catch (e) { toast(e.message, true); }
+  }
+  async function adminPages(op) {
+    if (op === 'hide' && !confirm('隐藏 admin.html / initAdmin.html？')) return;
+    try {
+      var json = await request('/controlPanel/action', { method: 'POST', body: { action: op + '-admin' } });
+      toast(json.message || '已执行'); await loadState();
+    } catch (e) { toast(e.message, true); }
+  }
+
+  async function runCmd(command, outId) {
+    if (!command.trim()) return;
+    var target = outId || 'consoleOut';
+    output(target, '执行中…');
+    try {
+      var json = await request('/controlPanel/run', { method: 'POST', body: { command: command } });
+      var d = json.data || {};
+      var text = (d.stdout || '') + (d.stderr ? '\n[stderr]\n' + d.stderr : '') + '\n[exit ' + d.code + ']';
+      output(target, text.trim());
+      if (d.restartRequired) toast('已保存，重启 Web 后生效');
+      return d;
+    } catch (e) {
+      output(target, e.message); toast(e.message, true);
+      return null;
+    }
+  }
+  function runConsole() { runCmd($('consoleCmd').value, 'consoleOut'); }
+
+  function configCommand(op) {
+    var type = configType(), path = $('configPath').value.trim(), value = $('configValue').value;
+    if (!path) return toast('请填写点路径', true);
+    var cmd = 'config ' + op + ' ' + type + ' ' + q(path);
+    if (op === 'set') {
+      cmd += ' ' + q(value);
+      if ($('configString').checked) cmd += ' --string';
+    }
+    runCmd(cmd, 'configOpOut');
+  }
+  function envCommand(op) {
+    var key = $('envKey').value.trim(), value = $('envValue').value;
+    if (!key) return toast('请填写 KEY', true);
+    var cmd = 'env ' + op + ' ' + q(key);
+    if (op === 'set') cmd += ' ' + q(value);
+    runCmd(cmd, 'envOpOut');
+  }
+  async function loadFile(kind, name) {
+    try {
+      var json = await request('/controlPanel/file?name=' + encodeURIComponent(name));
+      var content = json.data.content || '';
+      if (kind === 'config') { currentConfigFile = name; $('configEditor').value = content; }
+      else { currentEnvLoaded = true; $('envEditor').value = content; }
+      toast('已加载');
+    } catch (e) { toast(e.message, true); }
+  }
+  async function saveFile(kind) {
+    var name = kind === 'config' ? currentConfigFile : 'env';
+    var content = kind === 'config' ? $('configEditor').value : $('envEditor').value;
+    try {
+      await request('/controlPanel/fileSave', { method: 'POST', body: { name: name, content: content } });
+      toast('文件已保存，重启 Web 后生效');
+    } catch (e) { toast(e.message, true); }
+  }
+
+  async function accessCommand(op) {
+    var table = $('accessTable').value.trim();
+    var level = $('accessTableLevel').value;
+    if (op === 'set-default') { await runCmd('access set ' + $('accessLevel').value, 'accessOut'); return; }
+    if (op === 'special') {
+      var s = $('accessSkill').value, d = $('accessDocument').value;
+      if (s) await runCmd('access skill ' + s, 'accessOut');
+      if (d) await runCmd('access document ' + d, 'accessOut');
+      return;
+    }
+    if (!table) { toast('请填写集合名', true); return; }
+    if (op === 'table-set') { await runCmd('access set-table ' + q(table) + ' ' + level, 'accessOut'); return; }
+    if (op === 'table-unset') { await runCmd('access unset-table ' + q(table), 'accessOut'); return; }
+    if (op === 'get') { await runCmd('access get ' + q(table), 'accessOut'); return; }
+  }
+  function corsCommand(op) {
+    var origin = $('corsOrigin').value.trim();
+    var cmd = 'cors ' + op;
+    if (op === 'on' && origin) cmd += ' --origin ' + q(origin);
+    if (op === 'on' && $('corsCredentials').checked) cmd += ' --credentials';
+    runCmd(cmd, 'corsOut');
+  }
+  function wxpayCommand(op) {
+    var param = $('wxpayParam').value.trim(), value = $('wxpayValue').value;
+    if (!param) return toast('请填写参数名', true);
+    var cmd = 'wxpay ' + op + ' ' + q(param);
+    if (op === 'set') cmd += ' ' + q(value);
+    runCmd(cmd, 'wxpayOut');
+  }
+
+  async function loadLogs() {
+    var type = $('logType').value, lines = $('logLines').value || 100;
+    await runCmd('logs ' + type + ' --lines ' + lines, 'logOut');
+  }
+
+  async function serviceAction(op) {
+    var payload = { op: op };
+    if (op === 'init') {
+      var c = prompt('初始化会清空本服务目录数据库。输入 INIT 确认：');
+      if (c !== 'INIT') return toast('已取消', true);
+      payload.confirm = 'INIT';
+      payload.port = $('initPort').value.trim();
+      payload.sslPort = $('initSslPort').value.trim();
+      payload.mongoPort = $('initMongoPort').value.trim();
+      payload.preinit = $('initPreinit').value.trim();
+    } else if (op === 'uninstall') {
+      var u = prompt('卸载会停止服务并移除 npm 包。输入 UNINSTALL 确认：');
+      if (u !== 'UNINSTALL') return toast('已取消', true);
+      payload.confirm = 'UNINSTALL';
+      payload.purge = confirm('同时删除服务目录（配置/数据库/日志）？取消则保留数据。');
+    } else if (op === 'stop' || op === 'restart') {
+      if (!confirm((op === 'stop' ? '停止' : '重启') + ' Web 服务？页面会短暂断开。')) return;
+    } else if (op === 'sync') {
+      if (!confirm('同步源码会覆盖已安装服务的文件，继续？')) return;
+      payload.mode = $('syncMode').value;
+      payload.source = $('syncSource').value.trim();
+      payload.includeAdmin = $('syncIncludeAdmin').checked;
+      payload.dryRun = $('syncDryRun').checked;
+    } else if (op === 'mongodb-install') {
+      if (!confirm('下载 MongoDB 6.0（macOS/Linux 约 58MB，Windows 约 515MB）？')) return;
+    }
+    try {
+      var json = await request('/controlPanel/service', { method: 'POST', body: payload });
+      var msg = json.message || '已执行';
+      toast(msg);
+      var target = (op === 'sync' || op === 'mongodb-install') ? 'syncOut' : 'serviceOut';
+      var detail = msg;
+      if (json.data && (json.data.stdout || json.data.stderr)) {
+        detail = (json.data.stdout || '') + (json.data.stderr ? '\n[stderr]\n' + json.data.stderr : '') + '\n[exit ' + json.data.code + ']';
+      } else if (json.data && json.data.log) {
+        detail += '\n日志：' + json.data.log;
+      }
+      output(target, detail);
+      if (op === 'restart') setTimeout(function () { location.reload(); }, 9000);
+      if (op === 'init' || op === 'stop' || op === 'uninstall') {
+        output(target, msg + '\n页面连接将断开；如已重启，请重新打开控制面板。');
+      }
+    } catch (e) { toast(e.message, true); output('serviceOut', e.message); }
+  }
+
+  function catalog() {
+    var groups = [
+      ['服务状态', ['status', 'version', 'help', 'logs web --lines 100', 'logs mongo --lines 100', 'mongodb status']],
+      ['API', ['api list', 'api add <名称> --url <URL> --key <KEY> --no-restart', 'api update <名称> --url <URL> --no-restart', 'api remove <名称> --remove-env --no-restart']],
+      ['模型', ['model list', 'model add <模型> --api-name <API> --input 0.05 --output 0.25 --context 200000 --no-restart', 'model update <模型> --input 0.05 --output 0.25 --no-restart', 'model remove <模型> --no-restart']],
+      ['默认模型', ['default list', 'default model --model <模型> --no-restart', 'default image --model <模型> --no-restart', 'default image-input --model <模型> --no-restart']],
+      ['配置', ['config list common --json', 'config list app --json', 'config get common exchangeRate', 'config set common exchangeRate 1.2 --no-restart', 'config unset common exchangeRate --no-restart']],
+      ['环境变量', ['env list', 'env list --json', 'env get ADMIN_KEY', 'env set ADMIN_KEY <VALUE> --no-restart', 'env unset ADMIN_KEY --no-restart']],
+      ['访问', ['access list', 'access set public --no-restart', 'access skill login --no-restart', 'access agent login --no-restart', 'access document owner --no-restart', 'access get document', 'access set-table document owner --no-restart', 'access unset-table document --no-restart']],
+      ['CORS', ['cors', 'cors on --origin * --no-restart', 'cors off --no-restart']],
+      ['支付与账号', ['wxpay list', 'wxpay check', 'wxpay get WX_PAY_APP_ID', 'wxpay set WX_PAY_APP_ID <VALUE> --no-restart', 'root accessKey --json', 'admin status', 'admin hide', 'admin show --no-restart']],
+      ['服务/同步（请用服务页）', ['init', 'start', 'stop', 'restart', 'uninstall', 'sync static --yes --no-restart', 'mongodb install']]
+    ];
+    return groups;
+  }
+  function renderCatalog() {
+    var box = $('cmdCatalog'); box.innerHTML = '';
+    catalog().forEach(function (g) {
+      var group = el('div', 'cmd-group');
+      group.appendChild(el('h4', '', g[0]));
+      g[1].forEach(function (cmd) {
+        var row = el('div', 'cmd-item');
+        row.appendChild(el('code', '', cmd));
+        var b = el('button', '', '填入');
+        b.onclick = function () { $('consoleCmd').value = cmd; $('consoleCmd').focus(); };
+        row.appendChild(b); group.appendChild(row);
+      });
+      box.appendChild(group);
+    });
+    decorateButtons();
+  }
+
+  document.querySelectorAll('#nav button').forEach(function (b) {
+    b.addEventListener('click', function () { switchTab(b.dataset.tab); });
+  });
+  $('refreshBtn').addEventListener('click', function () { loadState(); runCmd('status', 'overviewOut'); });
+  $('saveApiBtn').addEventListener('click', saveApi);
+  $('resetApiBtn').addEventListener('click', resetApi);
+  $('saveModelBtn').addEventListener('click', saveModel);
+  $('resetModelBtn').addEventListener('click', resetModel);
+  $('saveDefaultsBtn').addEventListener('click', saveDefaults);
+  // 页面使用内联 onclick，需要把操作函数暴露到 window
+  window.configType = configType;
+  window.runCmd = runCmd;
+  window.runConsole = runConsole;
+  window.serviceAction = serviceAction;
+  window.adminPages = adminPages;
+  window.saveAdmin = saveAdmin;
+  window.configCommand = configCommand;
+  window.envCommand = envCommand;
+  window.accessCommand = accessCommand;
+  window.corsCommand = corsCommand;
+  window.wxpayCommand = wxpayCommand;
+  window.loadFile = loadFile;
+  window.saveFile = saveFile;
+  window.loadLogs = loadLogs;
+
+  renderCatalog();
+  decorateButtons();
+  var initialTab = (location.hash || '').replace('#', '');
+  if (initialTab && document.getElementById('tab-' + initialTab)) switchTab(initialTab);
+  loadState();
+})();
+</script>
+</body>
+</html>

@@ -542,6 +542,104 @@
 
 <style scoped>
 /* ============================================
+   Tailwind 工具类声明（tw- 前缀）
+   模板用到的类在此显式声明，不依赖 Tailwind CDN 的 JIT 产物
+   ============================================ */
+/* ---- 布局 ---- */
+.tw-hidden { display: none; }
+.tw-flex { display: flex; }
+.tw-flex-1 { flex: 1 1 0%; }
+.tw-flex-col { flex-direction: column; }
+.tw-flex-row { flex-direction: row; }
+.tw-items-center { align-items: center; }
+.tw-items-stretch { align-items: stretch; }
+.tw-justify-between { justify-content: space-between; }
+.tw-justify-center { justify-content: center; }
+.tw-self-stretch { align-self: stretch; }
+.tw-shrink-0 { flex-shrink: 0; }
+.tw-relative { position: relative; }
+.tw-overflow-hidden { overflow: hidden; }
+
+/* ---- 尺寸 ---- */
+.tw-w-full { width: 100%; }
+.tw-h-full { height: 100%; }
+.tw-y-full { height: 100%; }
+.tw-w-32 { width: 8rem; }
+.tw-h-32 { height: 8rem; }
+.tw-h-10 { height: 2.5rem; }
+.tw-w-px { width: 1px; }
+.tw-h-px { height: 1px; }
+.tw-max-w-7xl { max-width: 80rem; }
+
+/* ---- 间距 ---- */
+.tw-m-0 { margin: 0px; }
+.tw-mx-auto { margin-left: auto; margin-right: auto; }
+.tw-my-1 { margin-top: 0.25rem; margin-bottom: 0.25rem; }
+.tw-mb-4 { margin-bottom: 1rem; }
+.tw-mr-1 { margin-right: 0.25rem; }
+.tw-mr-1\.5 { margin-right: 0.375rem; }
+.tw-mt-2 { margin-top: 0.5rem; }
+.tw-mt-6 { margin-top: 1.5rem; }
+.tw-mt-8 { margin-top: 2rem; }
+.tw-p-5 { padding: 1.25rem; }
+.tw-px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
+.tw-pt-3 { padding-top: 0.75rem; }
+.tw-py-20 { padding-top: 5rem; padding-bottom: 5rem; }
+.tw-gap-2 { gap: 0.5rem; }
+.tw-gap-3 { gap: 0.75rem; }
+.tw-gap-5 { gap: 1.25rem; }
+
+/* ---- 排版 ---- */
+.tw-text-2xl { font-size: 1.5rem; line-height: 2rem; }
+.tw-text-xs { font-size: 0.75rem; line-height: 1rem; }
+.tw-text-center { text-align: center; }
+.tw-font-medium { font-weight: 500; }
+.tw-tracking-tight { letter-spacing: -0.025em; }
+.tw-text-gray-400 { color: #9ca3af; }
+.tw-text-gray-900 { color: #111827; }
+.tw-text-slate-500 { color: #64748b; }
+
+/* ---- 边框与圆角 ---- */
+.tw-border { border-width: 1px; }
+.tw-border-2 { border-width: 2px; }
+.tw-border-dashed { border-style: dashed; }
+.tw-border-gray-100 { border-color: #f3f4f6; }
+.tw-border-gray-200 { border-color: #e5e7eb; }
+.tw-border-slate-100 { border-color: #f1f5f9; }
+.tw-rounded-xl { border-radius: 0.75rem; }
+.tw-rounded-2xl { border-radius: 1rem; }
+
+/* ---- 背景 ---- */
+.tw-bg-white { background-color: #ffffff; }
+.tw-bg-slate-100 { background-color: #f1f5f9; }
+
+/* ---- 阴影 / 过渡 / 缩放 ---- */
+.tw-shadow-sm { box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); }
+.tw-shadow-inner { box-shadow: inset 0 2px 4px 0 rgb(0 0 0 / 0.05); }
+.tw-transition-all { transition-property: all; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
+.tw-transition-colors { transition-property: color, background-color, border-color, text-decoration-color, fill, stroke; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
+
+/* tw-group 无自身声明，仅作为 group-hover 的标记类 */
+
+/* ---- 状态变体 ---- */
+.hover\:\!tw-bg-slate-50:hover { background-color: #f8fafc !important; }
+.hover\:tw-bg-blue-50\/30:hover { background-color: rgb(239 246 255 / 0.3); }
+.hover\:tw-border-primary:hover { border-color: var(--academic-primary); }
+.hover\:tw-shadow-md:hover { box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); }
+.tw-group:hover .group-hover\:tw-text-primary { color: var(--academic-primary); }
+
+/* ---- 响应式变体（md: >= 768px） ---- */
+@media (min-width: 768px) {
+  .md\:tw-block { display: block; }
+  .md\:tw-flex-col { flex-direction: column; }
+  .md\:tw-flex-none { flex: none; }
+  .md\:tw-flex-row { flex-direction: row; }
+  .md\:tw-hidden { display: none; }
+  .md\:tw-justify-end { justify-content: flex-end; }
+  .md\:tw-w-32 { width: 8rem; }
+}
+
+/* ============================================
    RESET
    ============================================ */
 .el-card {

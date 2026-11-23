@@ -1,11 +1,11 @@
 // 模型费率（tokenRateMap）合并读取：
 //   common.js 提供默认条目；
 //   appConfig.js 中由 `transweb model` 维护的条目作为覆盖层，值为 null 表示删除默认条目。
-const path = require("path");
 const ConfigObject = require("./ConfigObject.js");
+const { configFile } = require("./configFile.js");
 
-const commonPath = path.resolve(__dirname, "../interface/config/common.js");
-const appConfigPath = path.resolve(__dirname, "../interface/config/appConfig.js");
+const commonPath = configFile("common.js");
+const appConfigPath = configFile("appConfig.js");
 
 function readAppTokenRateMap() {
   try {

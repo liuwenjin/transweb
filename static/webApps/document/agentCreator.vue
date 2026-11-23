@@ -198,11 +198,21 @@
               data-edit-id="42"
             >
               <div class="appleBadge appleBadge--success" data-edit-id="43">
-                <i
-                  class="bi bi-check-lg"
-                  data-edit-id="44"
+                <svg
+                  class="appleBadge__check"
+                  viewBox="0 0 24 24"
                   aria-hidden="true"
-                ></i>
+                  focusable="false"
+                  data-edit-id="44"
+                >
+                  <path
+                    d="M5 12.4 10.2 17.6 19 7.2"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.4"
+                    stroke-linecap="square"
+                  />
+                </svg>
               </div>
               <h2 class="appleTitle appleTitle--sm" data-edit-id="45">
                 {{ agentName || t("result.created") }}
@@ -237,8 +247,9 @@
                     class="appleBtn appleBtn--link"
                     data-edit-id="54"
                   >
-                    <i class="el-icon-top-right" data-edit-id="55"></i>
-                    {{ t("result.open") }}
+                    <span class="appleBtn__label" data-edit-id="55">{{
+                      t("result.open")
+                    }}</span>
                   </a>
                 </div>
               </div>
@@ -2404,6 +2415,291 @@ export default {
 .appleShell .appleBtn--primary.el-button--primary {
   height: 48px;
   letter-spacing: .08em;
+}
+
+/* ==========================================================================
+   ON STAFF · 结果窗口（创建完成）
+   - 左右留白：桌面 64px、平板 40px、手机 20px，与创建 / 等待窗口同一呼吸感
+   - 版式语言：宋体标题 + 等宽小标签 + 细线分隔 + 朱砂主操作，
+     与首页纸片卡、登录浮窗保持一致；不再使用 GDS 蓝链接 / 绿徽章
+   ========================================================================== */
+
+/* 纸片内边距：覆盖 .appleCard 的上下 60px 与 0 左右留白 */
+.appleCard--result {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 44px 64px 36px !important;
+}
+
+/* 成功徽章：墨色印章 + 白色对勾（成功态收敛为墨色，朱砂只留给主操作） */
+.agentCreatorRoot .appleCard--result .appleBadge {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 18px;
+  background: #191817;
+  color: #faf7ef;
+}
+
+/* 对勾用内联 SVG 绘制：不依赖图标字体，跨页面渲染更稳定 */
+.appleCard--result .appleBadge__check {
+  display: block;
+  width: 24px;
+  height: 24px;
+}
+
+/* 标题与一句话描述 */
+.agentCreatorRoot .appleCard--result .appleCard__intro {
+  margin-bottom: 28px;
+}
+
+.agentCreatorRoot .appleCard--result .appleTitle {
+  margin: 0 0 10px;
+  font-size: 26px;
+  line-height: 1.35;
+  letter-spacing: .02em;
+}
+
+.agentCreatorRoot .appleCard--result .appleSubtitle {
+  max-width: 460px;
+  margin: 0 auto;
+  font-size: 15px;
+  line-height: 1.8;
+  letter-spacing: .02em;
+  color: #6e6a60;
+}
+
+/* URL + 二维码：上下留白收紧，左右与卡片内边距对齐 */
+.agentCreatorRoot .appleCard--result .appleResult {
+  margin: 0;
+  padding-top: 28px;
+  gap: 32px;
+}
+
+/* 小标签：等宽、疏字距，作为分区的「栏目名」 */
+.agentCreatorRoot .appleCard--result .appleLabel {
+  margin-bottom: 10px;
+  font-family: "SF Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas,
+    monospace;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: .14em;
+  color: #6e6a60;
+}
+
+/* 访问地址：纸面浅凹，等宽字展示 */
+.agentCreatorRoot .appleCard--result .appleUrl {
+  margin-bottom: 18px;
+  padding: 12px 14px;
+  border: 1px solid #e7e1d4;
+  background: #f7f4ec;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #191817;
+}
+
+/* 二维码：纸白底、细线框，不再继承 GDS 的字号 */
+.agentCreatorRoot .appleCard--result .appleQr {
+  width: 128px;
+  height: 128px;
+  padding: 8px;
+  border: 1px solid #e7e1d4;
+  background: #ffffff;
+}
+
+.agentCreatorRoot .appleCard--result .appleQr__hint {
+  margin-top: 10px;
+  font-size: 12px;
+  letter-spacing: .04em;
+  color: #6e6a60;
+}
+
+/* 按钮：结果页统一为 44px / 15px，与创建窗口保持同一触感 */
+.agentCreatorRoot .appleCard--result .appleBtn.el-button {
+  height: 44px;
+  padding: 0 18px;
+  font-size: 15px;
+  letter-spacing: .04em;
+}
+
+.agentCreatorRoot .appleCard--result .appleBtn--primary.el-button--primary {
+  height: 44px;
+  letter-spacing: .08em;
+}
+
+.agentCreatorRoot .appleCard--result .appleBtn--primary.el-button--primary:hover {
+  background: #a62f17 !important;
+  border-color: #a62f17 !important;
+}
+
+.agentCreatorRoot .appleCard--result .appleBtn--secondary.el-button {
+  background: transparent;
+  border-color: #191817;
+  color: #191817;
+}
+
+.agentCreatorRoot .appleCard--result .appleBtn--secondary.el-button:hover {
+  background: #efeadd;
+  border-color: #191817;
+  color: #191817;
+}
+
+/* 链接态按钮：墨色文字，下划线只由内层 span 的伪元素绘制一条；
+   不用 border-bottom / text-decoration，避免叠加出第二条线 */
+.agentCreatorRoot .appleCard--result .appleBtn--link {
+  height: 44px;
+  padding: 0 2px;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: .04em;
+  color: #191817;
+  border-bottom: 0;
+  text-decoration: none;
+}
+
+.agentCreatorRoot .appleCard--result .appleBtn--link:hover {
+  color: #191817;
+}
+
+/* 打开预览 / 查看本次消耗：共用一条下划线，hover 加粗并加深为墨色 */
+.agentCreatorRoot .appleCard--result .appleBtn__label,
+.agentCreatorRoot .appleCard--result .appleUsageTrigger span {
+  position: relative;
+  text-decoration: none;
+}
+
+.agentCreatorRoot .appleCard--result .appleBtn__label::after,
+.agentCreatorRoot .appleCard--result .appleUsageTrigger span::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 4px);
+  height: 1px;
+  background: rgba(25, 24, 23, .28);
+  transition: height .18s var(--ease-out),
+    background-color .18s var(--ease-out);
+  pointer-events: none;
+}
+
+.agentCreatorRoot .appleCard--result .appleBtn--link:hover .appleBtn__label::after,
+.agentCreatorRoot .appleCard--result .appleUsageTrigger:hover span::after {
+  height: 2px;
+  background: #191817;
+}
+
+/* 消耗明细入口：与标签同一档小字，弱化为辅助信息 */
+.agentCreatorRoot .appleCard--result .appleUsageWrap {
+  margin: 0;
+  padding: 18px 0 20px;
+}
+
+.agentCreatorRoot .appleCard--result .appleUsageTrigger {
+  min-height: 36px;
+  border: 0;
+  text-decoration: none;
+  font-size: 13px;
+  letter-spacing: .04em;
+  color: #6e6a60;
+  transition: color .18s var(--ease-out);
+}
+
+.agentCreatorRoot .appleCard--result .appleUsageTrigger:hover {
+  color: #191817;
+}
+
+/* 底部操作：右对齐、细线上分隔，与上方信息区留出呼吸 */
+.agentCreatorRoot .appleCard--result .appleBtnRow--footer {
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 22px;
+}
+
+/* 平板：卡片开始收窄，留白同步收小，避免 URL 列被挤成多行。
+   与下方的手机断点写成互斥区间：webCpu 的样式处理会把同条件的
+   @media 合并到首次出现的位置，若两段重叠，780px 的规则可能压过 640px。 */
+@media (min-width: 641px) and (max-width: 780px) {
+  .appleCard--result {
+    padding: 40px 40px 32px !important;
+  }
+
+  .agentCreatorRoot .appleCard--result .appleResult {
+    gap: 26px;
+  }
+}
+
+/* 手机：二维码换行到下方，左右留白 20px，按钮纵向铺满。
+   webCpu 会把同条件的 @media 合并到首次出现的位置，因此这里把
+   结果窗口需要的关键布局完整写一遍，不依赖文档中更早的旧块。 */
+@media (max-width: 640px) {
+  .appleCard--result {
+    padding: 30px 20px 26px !important;
+  }
+
+  .agentCreatorRoot .appleCard--result .appleCard__intro {
+    margin-bottom: 22px;
+  }
+
+  .agentCreatorRoot .appleCard--result .appleTitle {
+    font-size: 22px;
+  }
+
+  .agentCreatorRoot .appleCard--result .appleSubtitle {
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  .agentCreatorRoot .appleCard--result .appleResult {
+    flex-direction: column;
+    gap: 22px;
+    margin: 0;
+    padding-top: 22px;
+  }
+
+  .agentCreatorRoot .appleCard--result .appleResult__main {
+    width: 100%;
+  }
+
+  .agentCreatorRoot .appleCard--result .appleResult__side {
+    width: 100%;
+    padding-top: 20px;
+    border-top: 1px solid var(--apple-separator);
+  }
+
+  .agentCreatorRoot .appleCard--result .appleResult__main .appleBtnRow .appleBtn {
+    flex: 1 1 auto;
+    justify-content: center;
+  }
+
+  .agentCreatorRoot .appleCard--result .appleUrl {
+    font-size: 13px;
+  }
+
+  .agentCreatorRoot .appleCard--result .appleQr {
+    width: 120px;
+    height: 120px;
+  }
+
+  .agentCreatorRoot .appleCard--result .appleUsageWrap {
+    padding: 16px 0 18px;
+  }
+
+  .agentCreatorRoot .appleCard--result .appleBtnRow--footer {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    padding-top: 18px;
+  }
+
+  .agentCreatorRoot .appleCard--result .appleBtnRow--footer .appleBtn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .agentCreatorRoot .appleCard--result .appleBtn.el-button {
+    height: 44px;
+    font-size: 15px;
+  }
 }
 
 </style>

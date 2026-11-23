@@ -8272,144 +8272,630 @@ WebTool.extractTextFromFile = (function () {
   };
 })();
 
+/* ============================================================================
+ * WebTool 屏幕录制 + WebM → MP4（Mediabunny Conversion API）
+ * ========================================================================== */
+
 /**
- * 启动屏幕录制
- * @param {Object} options - 录制配置
- *   options.duration: 自动停止录制的时长（ms，可选）
- *   options.mimeType: 视频类型，默认 'video/webm; codecs=vp9'
- *   options.bitsPerSecond: 码率，默认 2Mbps
- * @param {Function} onReady - 用户允许录制后执行的回调，参数 (recorder, stream)
- * @param {Function} onComplete - 录制完成后执行的回调，参数 (videoBlob)
+ * 按需加载 Mediabunny，只请求一次；与结果预览组件共用加载 Promise。
+ * 优先 unpkg 的 CJS bundle，失败后回退 jsDelivr 的 ESM。
  */
-WebTool.startScreenRecording = async function (
-  options = {},
-  onCountdownEnd,
-  onComplete
-) {
-  const countdown = options.countdown || 3;
-  let recorder,
-    chunks = [];
-  let countdownTimerId, stopCheckInterval;
-  let recordingStartTime = null;
+WebTool.loadMediabunny = function () {
+  if (WebTool._mediabunnyPromise) return WebTool._mediabunnyPromise;
+  if (window.Mediabunny && window.Mediabunny.Conversion) {
+    WebTool._mediabunnyPromise = Promise.resolve(window.Mediabunny);
+    return WebTool._mediabunnyPromise;
+  }
+
+  if (!window.__LEAFER_MEDIABUNNY_PROMISE__) {
+    window.__LEAFER_MEDIABUNNY_PROMISE__ = new Promise((resolve, reject) => {
+      const script = document.createElement("script");
+      script.src = "https://unpkg.com/mediabunny@1.66.2/dist/bundles/mediabunny.cjs";
+      script.async = true;
+      script.crossOrigin = "anonymous";
+
+      const timer = setTimeout(() => reject(new Error("Mediabunny 加载超时")), 20000);
+      script.onload = () => {
+        clearTimeout(timer);
+        if (window.Mediabunny && window.Mediabunny.Conversion) resolve(window.Mediabunny);
+        else reject(new Error("Mediabunny 已加载，但未找到 Conversion API"));
+      };
+      script.onerror = () => {
+        clearTimeout(timer);
+        reject(new Error("Mediabunny 脚本加载失败，请检查网络或 CDN"));
+      };
+      document.head.appendChild(script);
+    }).catch(async (scriptError) => {
+      /* 备用 ESM 通道：先 jsDelivr，再 esm.sh，尽量提高第三方 CDN 被拦截时的成功率。 */
+      const esmUrls = [
+        "https://cdn.jsdelivr.net/npm/mediabunny@1.66.2/+esm",
+        "https://esm.sh/mediabunny@1.66.2",
+      ];
+      for (let i = 0; i < esmUrls.length; i += 1) {
+        try {
+          const dynamicImport = new Function("url", "return import(url)");
+          const mod = await dynamicImport(esmUrls[i]);
+          if (mod && mod.Conversion) return mod;
+        } catch (error) {
+          /* 继续尝试下一个 ESM CDN */
+        }
+      }
+      throw scriptError;
+    });
+  }
+
+  WebTool._mediabunnyPromise = window.__LEAFER_MEDIABUNNY_PROMISE__.catch((error) => {
+    window.__LEAFER_MEDIABUNNY_PROMISE__ = null;
+    WebTool._mediabunnyPromise = null;
+    throw error;
+  });
+  return WebTool._mediabunnyPromise;
+};
+
+/**
+ * WebM → MP4。
+ * 浏览器能编码 H.264 时转码为 H.264 + AAC；不能编码时让 Mediabunny
+ * 把原编码（VP8/VP9 + Opus）重封装进 MP4；失败则抛错，由调用方回退 WebM。
+ *
+ * @param {Blob} blob
+ * @param {(progress:number, percent:number)=>void} [onProgress]
+ * @param {{copyOnly?:boolean}} [conversionOptions] 内部使用：强制重封装，不再尝试 H.264/AAC 转码
+ * @returns {Promise<{blob:Blob,remuxed:boolean,audioDropped:boolean}>}
+ */
+WebTool.convertWebmToMp4 = async function (blob, onProgress, conversionOptions = {}) {
+  if (!(blob instanceof Blob) || blob.size === 0) {
+    throw new Error("录制数据为空，无法转换为 MP4");
+  }
+
+  const {
+    Input, Output, Mp4OutputFormat, BufferTarget, Conversion,
+    BlobSource, ALL_FORMATS, Quality, canEncodeVideo, canEncodeAudio,
+  } = await WebTool.loadMediabunny();
+
+  const input = new Input({ source: new BlobSource(blob), formats: ALL_FORMATS });
+  let conversion = null;
 
   try {
-    const stream = await navigator.mediaDevices.getDisplayMedia({
+    if (!(await input.canRead())) throw new Error("无法解析录制文件");
+    const video = await input.getPrimaryVideoTrack();
+    if (!video) throw new Error("录制文件中没有视频轨道");
+    const audio = await input.getPrimaryAudioTrack();
+
+    const width = await video.getDisplayWidth();
+    const height = await video.getDisplayHeight();
+    const quality = new Quality({
+      bitrate: Math.min(16000000, Math.max(2500000, width * height * 30 * 0.15)),
+    });
+
+    /* 优先 H.264；不能编码时保持原编码，走重封装。 */
+    let videoOptions = {};
+    let audioOptions = {};
+
+    if (!conversionOptions.copyOnly) {
+      try {
+        if (await canEncodeVideo("avc", { width, height, frameRate: 30, quality })) {
+          videoOptions = { codec: "avc", quality };
+        }
+      } catch (error) {
+        /* 退回重封装 */
+      }
+
+      /* 优先 AAC；不能编码时保持原音频编码（MediaRecorder 通常为 Opus）。 */
+      if (audio && videoOptions.codec) {
+        try {
+          const audioConfig = {
+            numberOfChannels: await audio.getNumberOfChannels(),
+            sampleRate: await audio.getSampleRate(),
+          };
+          if (await canEncodeAudio("aac", audioConfig)) audioOptions = { codec: "aac" };
+          else if (await canEncodeAudio("opus", audioConfig)) audioOptions = { codec: "opus" };
+        } catch (error) {
+          /* 让 Mediabunny 自行选择 */
+        }
+      }
+    }
+
+    const output = new Output({
+      format: new Mp4OutputFormat(),
+      target: new BufferTarget(),
+    });
+
+    try {
+      conversion = await Conversion.init({
+        input, output, video: videoOptions, audio: audioOptions,
+      });
+
+      if (!conversion.isValid) throw new Error("当前浏览器无法生成 MP4");
+      const discardedVideo = (conversion.discardedTracks || []).some(
+        (item) => item.track && item.track.type === "video"
+      );
+      if (discardedVideo) throw new Error("MP4 缺少视频轨道");
+
+      if (typeof onProgress === "function") {
+        let lastPercent = -1;
+        conversion.onProgress = (progress) => {
+          const percent = Math.max(0, Math.min(100, Math.round(progress * 100)));
+          if (percent !== lastPercent) {
+            lastPercent = percent;
+            onProgress(progress, percent);
+          }
+        };
+      }
+
+      await conversion.execute();
+    } catch (error) {
+      /* H.264/AAC 转码可能“声明支持但实际编码失败”（例如硬件编码器异常）。
+       * 此时不要直接回退 WebM：先尝试把原编码重封装进 MP4，最大化 MP4 成功率。 */
+      if (videoOptions.codec && !conversionOptions.copyOnly) {
+        try { if (conversion) await conversion.cancel(); } catch (cancelError) { /* 忽略 */ }
+        return WebTool.convertWebmToMp4(blob, onProgress, { copyOnly: true });
+      }
+      throw error;
+    }
+
+    const buffer = output.target.buffer;
+    if (!buffer) throw new Error("MP4 文件生成失败");
+
+    const audioDropped = !!(audio && (conversion.discardedTracks || []).some(
+      (item) => item.track && item.track.type === "audio"
+    ));
+
+    return {
+      blob: new Blob([buffer], { type: "video/mp4" }),
+      remuxed: !videoOptions.codec,
+      audioDropped,
+    };
+  } finally {
+    try { input.dispose(); } catch (error) { /* 忽略 */ }
+  }
+};
+
+/**
+ * 屏幕录制，停止后自动把 WebM 转为 MP4 并下载。
+ *
+ * 下载策略：同一个录制最多只触发一次库内自动下载。
+ *   - 默认由库自动下载最终文件：转换成功下载 MP4，转换失败才下载 WebM；
+ *   - 如果 onComplete 中自行保存，请传 autoDownload: false，由回调独占保存；
+ *   - 库内部有单次下载锁，不会由库发起两次下载。
+ *
+ * @param {Object} [options]
+ * @param {number} [options.countdown=3]        倒计时秒数，0 为立即开始
+ * @param {string} [options.mimeType]           首选录制格式
+ * @param {number} [options.bitsPerSecond=2e6]  视频码率
+ * @param {number} [options.timeslice=1000]     分片间隔（毫秒）
+ * @param {number} [options.duration=0]         自动停止时间（毫秒），0 为不限
+ * @param {string} [options.fileName]           文件名，扩展名会自动修正
+ * @param {boolean} [options.autoDownload=true] 是否由库自动下载；onComplete 也保存时请设为 false
+ * @param {boolean} [options.convertToMp4=true] 是否转换为 MP4
+ * @param {boolean} [options.showStatus=true]   是否显示转换状态浮窗
+ * @param {string} [options.stopFlagKey='stopRecord'] sessionStorage 停止标志
+ * @param {Function} [options.onStatus]         ({ phase, ...detail }) => void
+ * @param {Function} [options.onProgress]       (progress, percent) => void
+ * @param {Function} [options.onError]          (error, { phase }) => void
+ * @param {Function} [options.onCancel]         ({ reason, recorder, stream }) => void
+ * @param {Function} [onCountdownEnd]           (recorder, stream) => void
+ * @param {Function} [onComplete]               (finalBlob, info) => void；如需自行保存请传 autoDownload: false
+ * @returns {Promise<{stop:Function,cancel:Function,getRecorder:Function,getStream:Function,isRecording:Function}>}
+ */
+WebTool.startScreenRecording = async function (options = {}, onCountdownEnd, onComplete) {
+  const cfg = Object.assign({
+    countdown: 3,
+    mimeType: "",
+    bitsPerSecond: 2000000,
+    timeslice: 1000,
+    duration: 0,
+    fileName: "",
+    /* 默认由库自动下载最终文件（优先 MP4，转换失败才 WebM）。
+     * 如果 onComplete 中也会保存文件，请显式传 autoDownload: false，
+     * 由回调独占保存，避免“库 + 回调”产生两个文件。 */
+    autoDownload: true,
+    convertToMp4: true,
+    showStatus: true,
+    stopFlagKey: "stopRecord",
+    onStatus: null,
+    onProgress: null,
+    onError: null,
+    onCancel: null,
+  }, options);
+
+  const emit = (phase, detail) => {
+    if (typeof cfg.onStatus !== "function") return;
+    try { cfg.onStatus(Object.assign({ phase }, detail || {})); } catch (error) { /* 忽略 */ }
+  };
+  const fail = (error, phase) => {
+    console.error("[ScreenRecorder] " + phase + ":", error);
+    if (typeof cfg.onError !== "function") return;
+    try { cfg.onError(error, { phase }); } catch (handlerError) { /* 忽略 */ }
+  };
+
+  if (!navigator.mediaDevices || typeof navigator.mediaDevices.getDisplayMedia !== "function") {
+    const error = new Error("当前浏览器不支持屏幕录制（getDisplayMedia 不可用）");
+    fail(error, "init");
+    throw error;
+  }
+  if (typeof MediaRecorder === "undefined") {
+    const error = new Error("当前浏览器不支持 MediaRecorder");
+    fail(error, "init");
+    throw error;
+  }
+
+  let stream = null;
+  let recorder = null;
+  let pickedMimeType = "";
+  let chunks = [];
+  let countdownTimer = 0;
+  let pollTimer = 0;
+  let autoStopTimer = 0;
+  let startedAt = 0;
+  let finished = false;
+  let cancelled = false;
+  let downloadIssued = false;
+  let countdownOverlay = null;
+  let statusOverlay = null;
+  let removeKeyListener = null;
+
+  const stopTracks = () => {
+    if (!stream) return;
+    stream.getTracks().forEach((track) => { try { track.stop(); } catch (error) { /* 忽略 */ } });
+  };
+
+  const clearTimers = () => {
+    if (countdownTimer) { clearInterval(countdownTimer); countdownTimer = 0; }
+    if (pollTimer) { clearInterval(pollTimer); pollTimer = 0; }
+    if (autoStopTimer) { clearTimeout(autoStopTimer); autoStopTimer = 0; }
+  };
+
+  const removeNode = (node) => {
+    if (node && node.parentNode) node.parentNode.removeChild(node);
+  };
+
+  const removeOverlays = () => {
+    removeNode(countdownOverlay); countdownOverlay = null;
+    removeNode(statusOverlay); statusOverlay = null;
+    if (removeKeyListener) { removeKeyListener(); removeKeyListener = null; }
+  };
+
+  const showStatus = (text) => {
+    if (cfg.showStatus === false) return null;
+    if (!statusOverlay) {
+      statusOverlay = document.createElement("div");
+      statusOverlay.setAttribute("role", "status");
+      statusOverlay.setAttribute("aria-live", "polite");
+      statusOverlay.style.cssText =
+        "position:fixed;left:50%;bottom:28px;transform:translateX(-50%);z-index:100000;" +
+        "padding:10px 18px;border-radius:999px;background:rgba(15,23,42,.9);color:#fff;" +
+        "font:13px/1.5 -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;" +
+        "pointer-events:none;white-space:nowrap;box-shadow:0 12px 30px -12px rgba(0,0,0,.5)";
+      document.body.appendChild(statusOverlay);
+    }
+    statusOverlay.textContent = text;
+    return statusOverlay;
+  };
+
+  const cancel = (reason) => {
+    if (finished || cancelled) return;
+    cancelled = true;
+    clearTimers();
+    removeOverlays();
+    stopTracks();
+    if (recorder && recorder.state !== "inactive") {
+      try { recorder.stop(); } catch (error) { /* 忽略 */ }
+    }
+    emit("cancelled", { reason: reason || "user" });
+    if (typeof cfg.onCancel === "function") {
+      try { cfg.onCancel({ reason: reason || "user", recorder, stream }); } catch (error) { /* 忽略 */ }
+    }
+  };
+
+  const buildFileName = (mimeType) => {
+    const extension = /mp4/i.test(mimeType) ? "mp4" : "webm";
+    const name = String(cfg.fileName || "").trim();
+    if (name) {
+      return /\.[a-z0-9]{2,5}$/i.test(name)
+        ? name.replace(/\.[a-z0-9]{2,5}$/i, "." + extension)
+        : name + "." + extension;
+    }
+    const now = new Date();
+    const pad = (value) => String(value).padStart(2, "0");
+    const stamp = String(now.getFullYear()) + pad(now.getMonth() + 1) + pad(now.getDate())
+      + "-" + pad(now.getHours()) + pad(now.getMinutes()) + pad(now.getSeconds());
+    return "screen-recording-" + stamp + "." + extension;
+  };
+
+  const download = (blob, fileName) => {
+    /* 单次下载锁：一次录制最多产生一个文件，防止重复 finalize 或未来新增路径重复下载。 */
+    if (downloadIssued) return false;
+    downloadIssued = true;
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = fileName;
+    link.rel = "noopener";
+    link.style.display = "none";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(() => { try { URL.revokeObjectURL(url); } catch (error) { /* 忽略 */ } }, 30000);
+    return true;
+  };
+
+  const pickMimeType = () => {
+    const candidates = [
+      cfg.mimeType,
+      "video/webm;codecs=vp9",
+      "video/webm;codecs=vp8",
+      "video/webm",
+      "video/mp4;codecs=avc1.42E01E",
+      "video/mp4",
+    ].filter(Boolean);
+    for (let i = 0; i < candidates.length; i += 1) {
+      try {
+        if (typeof MediaRecorder.isTypeSupported !== "function"
+          || MediaRecorder.isTypeSupported(candidates[i])) {
+          return candidates[i];
+        }
+      } catch (error) {
+        /* 继续尝试 */
+      }
+    }
+    return "";
+  };
+
+  const finalize = async () => {
+    if (finished || cancelled) return;
+    finished = true;
+    clearTimers();
+    removeOverlays();
+
+    const duration = startedAt ? (Date.now() - startedAt) / 1000 : 0;
+    const sourceMimeType = (recorder && recorder.mimeType) || pickedMimeType || "video/webm";
+    const sourceBlob = new Blob(chunks, { type: sourceMimeType });
+    chunks = [];
+    stopTracks();
+
+    if (!sourceBlob.size) {
+      fail(new Error("录制数据为空"), "stop");
+      return;
+    }
+
+    let blob = sourceBlob;
+    let mimeType = sourceMimeType;
+    let converted = false;
+    let remuxed = false;
+    let audioDropped = false;
+    let conversionError = null;
+
+    if (cfg.convertToMp4 && !/mp4/i.test(sourceMimeType)) {
+      const tip = showStatus("正在转换为 MP4…");
+      let lastStatusPercent = -1;
+      try {
+        const result = await WebTool.convertWebmToMp4(sourceBlob, (progress, percent) => {
+          if (tip) tip.textContent = "正在转换为 MP4… " + percent + "%";
+          /* onProgress 逐百分比回调；onStatus 每 5% 节流一次，避免刷屏。 */
+          if (percent >= 100 || percent - lastStatusPercent >= 5) {
+            lastStatusPercent = percent;
+            emit("converting", { progress, percent });
+          }
+          if (typeof cfg.onProgress === "function") {
+            try { cfg.onProgress(progress, percent); } catch (error) { /* 忽略 */ }
+          }
+        });
+        blob = result.blob;
+        mimeType = "video/mp4";
+        converted = true;
+        remuxed = result.remuxed;
+        audioDropped = result.audioDropped;
+      } catch (error) {
+        conversionError = error;
+        /* 非致命：保留原始 WebM，保证录制内容不丢失。 */
+        fail(error, "convert");
+      } finally {
+        removeNode(statusOverlay);
+        statusOverlay = null;
+      }
+    }
+
+    const fileName = buildFileName(mimeType);
+    /* 自动下载规则（仅在 cfg.autoDownload 为 true 时执行）：
+     *   - 转换成功：下载 MP4；
+     *   - MP4 转换失败：回退下载原始 WebM；
+     *   - 主动跳过转换（convertToMp4: false）：不自动下载，可从 info.sourceBlob 取原片。
+     * 即只有“MP4 转换失败”这一种情况才会自动下载 .webm。 */
+    const isMp4 = /mp4/i.test(mimeType);
+    const shouldDownload = isMp4 || (cfg.convertToMp4 && !!conversionError);
+    let autoDownloaded = false;
+    if (cfg.autoDownload && shouldDownload) {
+      try { autoDownloaded = download(blob, fileName); } catch (error) { fail(error, "download"); }
+    }
+
+    const info = {
+      blob,
+      mimeType,
+      fileName,
+      size: blob.size,
+      duration,
+      sourceBlob,
+      sourceMimeType,
+      sourceSize: sourceBlob.size,
+      converted,
+      remuxed,
+      audioDropped,
+      conversionError,
+      /* 库是否已经自动下载；调用方可在 onComplete 中据此避免重复保存。 */
+      autoDownloaded,
+    };
+
+    emit("done", info);
+    if (typeof onComplete === "function") {
+      try {
+        const result = onComplete(blob, info);
+        if (result && typeof result.catch === "function") result.catch(() => {});
+      } catch (error) {
+        console.error("[ScreenRecorder] onComplete handler error:", error);
+      }
+    }
+  };
+
+  const start = () => {
+    if (cancelled || finished) return;
+
+    pickedMimeType = pickMimeType();
+    const recorderOptions = {};
+    if (pickedMimeType) recorderOptions.mimeType = pickedMimeType;
+    if (cfg.bitsPerSecond > 0) recorderOptions.bitsPerSecond = cfg.bitsPerSecond;
+
+    try {
+      recorder = new MediaRecorder(stream, recorderOptions);
+      pickedMimeType = recorder.mimeType || pickedMimeType;
+    } catch (error) {
+      try {
+        recorder = new MediaRecorder(stream);
+        pickedMimeType = recorder.mimeType || "";
+      } catch (fallbackError) {
+        fail(fallbackError, "start");
+        clearTimers();
+        removeOverlays();
+        stopTracks();
+        return;
+      }
+    }
+
+    recorder.ondataavailable = (event) => {
+      if (event.data && event.data.size > 0) chunks.push(event.data);
+    };
+    recorder.onstop = () => { void finalize(); };
+    recorder.onerror = (event) => {
+      fail((event && event.error) || new Error("MediaRecorder 运行异常"), "recorder");
+      if (recorder.state !== "inactive") {
+        try { recorder.stop(); } catch (error) { /* 忽略 */ }
+      } else {
+        void finalize();
+      }
+    };
+
+    if (typeof onCountdownEnd === "function") {
+      try { onCountdownEnd(recorder, stream); } catch (error) { /* 忽略 */ }
+    }
+
+    try {
+      if (cfg.timeslice > 0) recorder.start(cfg.timeslice);
+      else recorder.start();
+    } catch (error) {
+      fail(error, "start");
+      clearTimers();
+      removeOverlays();
+      stopTracks();
+      return;
+    }
+    startedAt = Date.now();
+    emit("recording", { recorder, stream });
+
+    if (cfg.duration > 0) {
+      autoStopTimer = setTimeout(() => {
+        if (recorder && recorder.state !== "inactive") {
+          try { recorder.stop(); } catch (error) { /* 忽略 */ }
+        }
+      }, cfg.duration);
+    }
+  };
+
+  try {
+    stream = await navigator.mediaDevices.getDisplayMedia({
       video: { cursor: "always" },
       audio: true,
     });
-
-    // 创建浮窗
-    const overlay = document.createElement("div");
-    overlay.style.cssText = `
-      position: fixed;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      background: rgba(0,0,0,0.8); color: white;
-      padding: 30px 40px; border-radius: 12px;
-      text-align: center; font-family: sans-serif;
-      z-index: 9999; display: flex; flex-direction: column;
-      align-items: center; gap: 20px;
-    `;
-
-    const countEl = document.createElement("div");
-    countEl.style.cssText = "font-size:48px; font-weight:bold;";
-
-    const cancelBtn = document.createElement("button");
-    cancelBtn.textContent = "取消";
-    cancelBtn.style.cssText = `
-      background: red; color: white; border: none;
-      border-radius: 6px; padding: 8px 16px; cursor: pointer;
-      font-size: 16px;
-    `;
-
-    overlay.appendChild(countEl);
-    overlay.appendChild(cancelBtn);
-    document.body.appendChild(overlay);
-
-    let remaining = countdown;
-    countEl.textContent = remaining;
-
-    // 取消按钮只取消倒计时
-    let countdownCancelled = false;
-    cancelBtn.onclick = () => {
-      countdownCancelled = true;
-      clearInterval(countdownTimerId);
-      overlay.remove(); // 倒计时浮窗消失
-    };
-
-    // 倒计时逻辑
-    countdownTimerId = setInterval(() => {
-      if (countdownCancelled) return;
-
-      if (remaining > 0) {
-        countEl.textContent = remaining;
-        remaining--;
-      } else {
-        clearInterval(countdownTimerId);
-        overlay.remove();
-        startRecording();
-      }
-    }, 1000);
-
-    // stopRecord 检测，独立于倒计时
-    stopCheckInterval = setInterval(() => {
-      if (
-        recorder &&
-        recorder.state !== "inactive" &&
-        sessionStorage.getItem("stopRecord") === "true"
-      ) {
-        sessionStorage.removeItem("stopRecord");
-        recorder.stop();
-      }
-
-      // 如果在录制中，显示录制时长（可选）
-      if (recordingStartTime) {
-        // 可以在 console 或其他控件显示时长
-        const elapsed = Math.floor((Date.now() - recordingStartTime) / 1000);
-        console.log(`录制时长: ${elapsed}s`);
-      }
-    }, 500);
-
-    function startRecording() {
-      recorder = new MediaRecorder(stream, {
-        mimeType: options.mimeType || "video/webm; codecs=vp9",
-        bitsPerSecond: options.bitsPerSecond || 2_000_000,
-      });
-
-      recorder.ondataavailable = (e) => {
-        if (e.data.size > 0) chunks.push(e.data);
-      };
-
-      recorder.onstop = () => {
-        const blob = new Blob(chunks, { type: recorder.mimeType });
-        if (typeof onComplete === "function") onComplete(blob);
-
-        // 自动生成下载
-        const blobUrl = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = blobUrl;
-        a.download = "recording.webm";
-        document.body.appendChild(a);
-        a.click();
-        setTimeout(function () {
-          window.URL.revokeObjectURL(blobUrl);
-          a.remove();
-        }, 2000);
-
-        if (stopCheckInterval) clearInterval(stopCheckInterval);
-      };
-
-      if (typeof onCountdownEnd === "function")
-        onCountdownEnd(recorder, stream);
-
-      recorder.start();
-      recordingStartTime = Date.now();
-
-      if (options.duration) setTimeout(() => recorder.stop(), options.duration);
-    }
-  } catch (err) {
-    console.error("屏幕录制权限被拒绝或出错：", err);
+  } catch (error) {
+    fail(error, "permission");
+    throw error;
   }
+
+  /* 用户点击浏览器“停止共享”时，录制中则保存已录内容，倒计时中则取消。 */
+  const videoTrack = stream.getVideoTracks()[0];
+  if (videoTrack) {
+    videoTrack.addEventListener("ended", () => {
+      if (cancelled) return;
+      if (recorder && recorder.state !== "inactive") {
+        try { recorder.stop(); } catch (error) { /* 忽略 */ }
+      } else if (!finished) {
+        cancel("screen-share-ended");
+      }
+    }, { once: true });
+  }
+
+  /* 保留原有的 sessionStorage 停止协议 */
+  pollTimer = setInterval(() => {
+    if (cancelled || finished) return;
+    try {
+      if (sessionStorage.getItem(cfg.stopFlagKey) === "true") {
+        sessionStorage.removeItem(cfg.stopFlagKey);
+        if (recorder && recorder.state !== "inactive") recorder.stop();
+        else if (!recorder) cancel("stop-flag");
+      }
+    } catch (error) {
+      /* 隐私模式下 sessionStorage 可能不可用 */
+    }
+  }, 500);
+
+  const countdown = Math.max(0, Math.floor(Number(cfg.countdown) || 0));
+  if (countdown > 0) {
+    countdownOverlay = document.createElement("div");
+    countdownOverlay.setAttribute("role", "dialog");
+    countdownOverlay.setAttribute("aria-modal", "true");
+    countdownOverlay.setAttribute("aria-label", "屏幕录制倒计时");
+    countdownOverlay.style.cssText =
+      "position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:100000;" +
+      "background:rgba(15,23,42,.9);color:#fff;padding:28px 36px;border-radius:14px;" +
+      "display:flex;flex-direction:column;align-items:center;gap:18px;min-width:200px;" +
+      "font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;" +
+      "box-shadow:0 24px 60px -20px rgba(0,0,0,.6)";
+
+    countdownOverlay.innerHTML =
+      '<div data-count style="font-size:48px;font-weight:700;line-height:1">' + countdown + "</div>" +
+      '<div style="font-size:13px;color:rgba(255,255,255,.72)">录制即将开始</div>' +
+      '<button type="button" style="border:1px solid rgba(255,255,255,.28);border-radius:8px;' +
+      'background:rgba(255,255,255,.08);color:#fff;padding:8px 18px;font-size:14px;cursor:pointer">取消录制</button>';
+
+    const countEl = countdownOverlay.querySelector("[data-count]");
+    countdownOverlay.querySelector("button").addEventListener("click", () => cancel("countdown"));
+    document.body.appendChild(countdownOverlay);
+
+    const onKeyDown = (event) => {
+      if (event.key === "Escape") cancel("escape");
+    };
+    document.addEventListener("keydown", onKeyDown);
+    removeKeyListener = () => document.removeEventListener("keydown", onKeyDown);
+
+    emit("countdown", { remaining: countdown });
+    let remaining = countdown;
+    countdownTimer = setInterval(() => {
+      remaining -= 1;
+      if (remaining > 0) {
+        countEl.textContent = String(remaining);
+        emit("countdown", { remaining });
+        return;
+      }
+      clearInterval(countdownTimer);
+      countdownTimer = 0;
+      removeOverlays();
+      start();
+    }, 1000);
+  } else {
+    start();
+  }
+
+  return {
+    stop() {
+      if (recorder && recorder.state !== "inactive") {
+        try { recorder.stop(); } catch (error) { /* 忽略 */ }
+      } else if (!finished) {
+        cancel("manual-stop");
+      }
+    },
+    cancel,
+    getRecorder: () => recorder,
+    getStream: () => stream,
+    isRecording: () => !!recorder && recorder.state === "recording",
+  };
 };
 
 //模板HTML字符串与JSON对象绑定
@@ -10790,19 +11276,6 @@ if (_config.recordVideo === "true") {
       console.log("倒计时结束，录制即将开始！");
       // this.updateView(elem, app); // 注意：箭头函数没有自己的 this，如需使用外部 this 请确认上下文
       // 这里可以播放提示音、闪烁UI等
-    },
-    (videoBlob) => {
-      console.log("录制结束，可以处理 videoBlob");
-      // 结束处理...
-      const url = URL.createObjectURL(videoBlob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "recorded-video.webm";
-      a.click();
-      setTimeout(function () {
-        window.URL.revokeObjectURL(url);
-        a.remove();
-      }, 2000);
     }
   );
 }

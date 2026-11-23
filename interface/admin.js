@@ -1,8 +1,9 @@
 let WebTool = require("../custom/WebTool.js");
 let ConfigObject = require("../custom/ConfigObject.js");
 let path = require("path");
+const { configFile } = require("../custom/configFile.js");
 let t = path.resolve(__dirname, ".");
-let cPath = t + "/config/" + "common.js";
+let cPath = configFile("common.js");
 let commonData = new ConfigObject(cPath).data;
 let env = require("../custom/env.js");
 const crypto = require("crypto");
@@ -15,7 +16,7 @@ function safeEqual(a, b) {
   return crypto.timingSafeEqual(ba, bb);
 }
 
-let aPath = t + "/config/" + "appConfig.js";
+let aPath = configFile("appConfig.js");
 
 console.log("appConfig path: ", aPath);
 

@@ -33,7 +33,8 @@ const config = {
     user: "test.js",
     gpt: "gpt.js",
     admin: "admin.js",
-    apiKey: "apiKey.js"
+    apiKey: "apiKey.js",
+    controlPanel: "controlPanel.js"
   },
   limitConfig: {
     urls: [/visualTool\/account$/, /\/bucket\/personal/]

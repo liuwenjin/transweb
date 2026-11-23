@@ -1,13 +1,14 @@
 let WebTool = require("../custom/WebTool.js");
 let ConfigObject = require("../custom/ConfigObject.js");
+const { configFile } = require("../custom/configFile.js");
 let mmh3 = require("murmurhash3js");
 let path = require("path");
 let Adapter = require("../custom/Adapter.js");
 let ModelRate = require("../custom/ModelRate.js");
 let t = path.resolve(__dirname, ".");
 let tPath = t + "/config/" + "interface.js";
-let loginedPath = t + "/config/" + "logined.js";
-let cPath = t + "/config/" + "common.js";
+let loginedPath = configFile("logined.js");
+let cPath = configFile("common.js");
 let commonData = new ConfigObject(cPath).data;
 let interface = new ConfigObject(tPath);
 let adapter = new Adapter(interface.data);

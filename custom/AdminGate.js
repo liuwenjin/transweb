@@ -11,10 +11,10 @@
 // 初始化完成后自动回到 404，既不用改环境变量，也不用重启服务。
 
 const fs = require("fs");
-const path = require("path");
+const { configFile } = require("./configFile.js");
 
 const ADMIN_PAGE_RE = /^\/(?:admin|initAdmin|initialize)\.html$/i;
-const DEFAULT_APP_CONFIG_PATH = path.resolve(__dirname, "../interface/config/appConfig.js");
+const DEFAULT_APP_CONFIG_PATH = configFile("appConfig.js");
 
 function isAdminPage(urlPath) {
   return ADMIN_PAGE_RE.test(String(urlPath || ""));

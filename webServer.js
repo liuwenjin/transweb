@@ -2,6 +2,7 @@ let express = require("express");
 let path = require('path');
 let axios = require('axios');
 let env = require("./custom/env.js");
+const { configFile } = require("./custom/configFile.js");
 const rateLimit = require('express-rate-limit');
 const bodyParser = require("body-parser");
 require("body-parser-xml")(bodyParser);
@@ -224,7 +225,7 @@ app.use(function (req, res, next) {
 // 关闭时不返回 CORS 头并直接拒绝带外部 Origin 的跨站请求；开启时按来源白名单放行。
 // 放在最前面，预检 OPTIONS 不进入后续中间件（不改动 body 解析与业务路由）。
 const CrossOrigin = require("./custom/CrossOrigin.js");
-const commonConfig = new ConfigObject(prefix.interface + "common.js");
+const commonConfig = new ConfigObject(configFile("common.js"));
 const commonData = commonConfig.data || {};
 const crossOrigin = CrossOrigin.create(commonData.crossOrigin);
 app.use(crossOrigin.middleware);
@@ -509,7 +510,7 @@ function checkRequestToken(req) {
   req.headers = req.headers || {};
   let token = req.headers['transweb-token'];
   if (token) {
-    let logined = new ConfigObject(prefix.interface + "logined.js");
+    let logined = new ConfigObject(configFile("logined.js"));
     let tData = logined.data;
 
     if (tData[token]) {
@@ -719,12 +720,25 @@ function loadCertificate(dir, keyFile, certFile) {
     return null;
   }
 }
+// 证书优先从服务目录（<TRANSWEB_HOME>/ca）读取，其次读包内 app/ca；
+// 这样升级 npm 包时不会覆盖部署者自己的证书。
+const caDirs = [];
+if (process.env.TRANSWEB_HOME) {
+  caDirs.push(path.join(process.env.TRANSWEB_HOME, "ca"));
+}
+caDirs.push(prefix.ca);
+
 [
   ["transweb.cn", "cn", "key.pem", "cert.pem"],
   ["transweb.com.cn", "com.cn", "ca.key", "ca.crt"]
 ].forEach(function (item) {
-  const loaded = loadCertificate(prefix.ca + "/" + item[1], item[2], item[3]);
-  if (loaded) certificates[item[0]] = loaded;
+  for (const caDir of caDirs) {
+    const loaded = loadCertificate(caDir + "/" + item[1], item[2], item[3]);
+    if (loaded) {
+      certificates[item[0]] = loaded;
+      break;
+    }
+  }
 });
 
 let SSLPORT = env.opt("SSLPORT");

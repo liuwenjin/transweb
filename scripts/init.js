@@ -3,6 +3,7 @@
 // 这些目录/文件均被 .gitignore 排除，不会随仓库分发，需在首次部署时生成。
 const fs = require("fs");
 const path = require("path");
+const { configDir, envFile, isServiceMode } = require("../custom/configFile.js");
 
 const root = path.resolve(__dirname, "..");
 
@@ -20,8 +21,8 @@ const dirs = [
 
 // 运行时数据文件（会话/访客状态，缺失会导致启动或鉴权报错）
 const sessionFiles = {
-  "interface/config/logined.js": "var data={}\n module.exports = data;",
-  "interface/config/guest.js": "var data={}\n module.exports = data;",
+  "logined.js": "var data={}\n module.exports = data;",
+  "guest.js": "var data={}\n module.exports = data;",
 };
 
 function mkdirp(p) {
@@ -38,24 +39,32 @@ for (const d of dirs) {
   }
 }
 
-for (const [rel, content] of Object.entries(sessionFiles)) {
-  const full = path.join(root, rel);
+// 安装模式下会话文件在服务目录 config/；开发模式仍在 interface/config/。
+const cfgDir = configDir();
+mkdirp(cfgDir);
+
+for (const [name, content] of Object.entries(sessionFiles)) {
+  const full = path.join(cfgDir, name);
   if (!fs.existsSync(full)) {
-    mkdirp(path.dirname(full));
     fs.writeFileSync(full, content);
-    console.log("  [文件] " + rel);
+    console.log("  [文件] " + path.relative(root, full));
   }
 }
 
 const envSrc = path.join(root, ".env.example");
-const envDst = path.join(root, ".env");
+const envDst = envFile();
 if (!fs.existsSync(envDst)) {
+  mkdirp(path.dirname(envDst));
   if (fs.existsSync(envSrc)) {
     fs.copyFileSync(envSrc, envDst);
     console.log("  [文件] .env（已从 .env.example 复制，请填写必填项）");
   } else {
     console.log("  [提示] 未找到 .env.example，请手动创建 .env");
   }
+}
+
+if (isServiceMode()) {
+  console.log("  [服务目录] " + process.env.TRANSWEB_HOME);
 }
 
 console.log("\n完成。下一步：编辑 .env 填写必填项，然后运行 `node webServer.js`。");

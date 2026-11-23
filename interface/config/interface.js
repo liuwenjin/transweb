@@ -1,10 +1,9 @@
 
 let ConfigObject = require("../../custom/ConfigObject.js");
-let path = require("path");
-let t = path.resolve(__dirname, ".");
-let cPath = t + "/common.js";
+const { configFile } = require("../../custom/configFile.js");
+let cPath = configFile("common.js");
 let commonData = new ConfigObject(cPath).data;
-let appConfigPath = t + "/appConfig.js";
+let appConfigPath = configFile("appConfig.js");
 let appConfigData = {};
 try {
   appConfigData = require(appConfigPath) || {};
