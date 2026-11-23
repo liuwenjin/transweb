@@ -1136,7 +1136,7 @@ export default {
         location.origin + location.pathname,
         params
       );
-      localStorage.agentInput = `请为下面这件作品设计一张 3:4 竖版展示海报。
+      localStorage.agentInput = `请为下面这件作品设计一张 5:3 横版展示海报(海报中不要显示比例)。
 作品标题:	${this.content.title}
 作品描述:	${this.content.introduce}
 作者:	${localStorage.userName || "匿名"}
